@@ -24,8 +24,8 @@ Goals of PriceIndices are as follows: a) data processing before price index calc
 You can install the released version of **PriceIndices** from [GitHub](https://github.com/) with:
 
 ``` r
-install_github("JacekBialek/PriceIndices")
-
+library("devtools")
+devtools::install_github("JacekBialek/PriceIndices")
 ```
 
 ## The functions of this package can be categorized as follows:

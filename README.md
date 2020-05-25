@@ -12,7 +12,8 @@ Installation
 You can install the released version of **PriceIndices** from [GitHub](https://github.com/) with:
 
 ``` r
-install_github("JacekBialek/PriceIndices")
+library("devtools")
+devtools::install_github("JacekBialek/PriceIndices")
 ```
 
 The functions of this package can be categorized as follows:
@@ -493,19 +494,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.456374
-#> 2 403249 1.934596
-#> 3 400033 1.872000
-#> 4 402609 1.871031
-#> 5 406223 1.552595
-#> 6 406224 1.855069
+#> 1 400032 1.268160
+#> 2 403249 1.649378
+#> 3 400033 1.021428
+#> 4 402609 1.999214
+#> 5 406223 1.394702
+#> 6 406224 1.963596
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9834372
+#> [1] 0.9788181
 ```
 
 <a id="ad7"> </a>
