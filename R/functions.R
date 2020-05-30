@@ -1,4 +1,6 @@
 
+
+
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -169,15 +171,15 @@ filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), l
  lubridate::day(start2)<-lubridate::days_in_month(start2)
  lubridate::day(end2)<-lubridate::days_in_month(end2)
  data<-dplyr::filter(data, (data$time>=start & data$time<=start2) | (data$time>=end & data$time<=end2))
- filter1="extremeprices"
- filter2="lowsales"
- names=c(filter1,filter2)
+ filter1<-"extremeprices"
+ filter2<-"lowsales"
+ afilters<-c(filter1, filter2)
  if ((start==end) | length(filters)==0) return (data)
- else if (length(base::intersect(filters,names))==0) stop("there are no such filters")
+ else if (length(base::intersect(filters,afilters))==0) stop("there are no such filters")
  data1<-data[0:0,]
  data2<-data[0:0,]
  data3<-data[0:0,]
- if (length(base::intersect(filters,filter1))==1) {  if ((length(pquantiles)+length(plimits))==0) data1<-data
+ if (filter1 %in% filters) {  if ((length(pquantiles)+length(plimits))==0) data1<-data
                                                      else {id<-matched(data,start,end)
                                                      priceshares<-c()
                                                      for (i in 1:length(id))        priceshares<-c(priceshares,price(data,period=end,ID=id[i])/price(data,period=start,ID=id[i]))
@@ -206,7 +208,7 @@ filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), l
                                                    {data1<-data
                                                     data2<-data 
                                                    }
-if (length(base::intersect(filters,filter2))==1) { if (lambda<=0) data3<-data
+if (filter2 %in% filters) { if (lambda<=0) data3<-data
                                                      id<-matched(data,start,end)
                                                      expenditures_start<-sales(data, period=start, set=id)
                                                      expenditures_end<-sales(data, period=end, set=id)
@@ -348,6 +350,8 @@ data_selecting<-function(data, include=c(), must=c(), exclude=c())
 
 
 matched<-function(data,period1,period2, type="prodID", interval=FALSE) {
+ atype<-c("retID","prodID","codeIN", "codeOUT", "description") #allowed values for 'type' parameter
+ if (!(type %in% atype)) stop ("The 'type' parameter has a wrong value")
  if (nrow(data)==0) stop("A data frame is empty")
  period1<-paste(period1,"-01",sep="") 
  period1<-as.Date(period1)
@@ -455,6 +459,8 @@ return(set)
 
 
  available<-function(data,period1,period2, type="prodID", interval=FALSE) {
+ atype<-c("retID","prodID","codeIN", "codeOUT", "description") #allowed values for 'type' parameter
+ if (!(type %in% atype)) stop ("The 'type' parameter has a wrong value")
  if (nrow(data)==0) stop("A data frame is empty")
  period1<-paste(period1,"-01",sep="") 
  period1<-as.Date(period1)
@@ -560,6 +566,8 @@ return(set)
 #' @export
 
 matched_index<-function(data,period1,period2, type="prodID", interval=FALSE) {
+ atype<-c("retID","prodID","codeIN", "codeOUT", "description") #allowed values for 'type' parameter
+ if (!(type %in% atype)) stop ("The 'type' parameter has a wrong value")
                                       if (nrow(data)==0) stop("A data frame is empty")
                                       a<-length(matched(data, period1, period2, type, interval))
                                       b<-length(available(data, period1, period2,type, interval))
@@ -584,6 +592,8 @@ matched_index<-function(data,period1,period2, type="prodID", interval=FALSE) {
 
 matched_fig<-function (data, start, end, type="prodID", fixedbase=TRUE, figure=TRUE)
 {
+atype<-c("retID","prodID","codeIN", "codeOUT", "description") #allowed values for 'type' parameter
+if (!(type %in% atype)) stop ("The 'type' parameter has a wrong value")
 if (nrow(data)==0) stop("A data frame is empty")
 start<-paste(start,"-01",sep="")
 end<-paste(end,"-01",sep="")
@@ -5098,7 +5108,9 @@ tpd_fbmw2<-function(data,start,end)  { if (start==end) return (1)
 #' tpd_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)
 #' @export
 tpd_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{if (start==end) return (1)
+{asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+ if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
+ if (start==end) return (1)
  if (nrow(data)==0) stop("A data frame is empty")
   t0<-start
   start<-paste(start,"-01",sep="")
@@ -5173,7 +5185,9 @@ var<-var*tpd(data,tm,t,wstart=tT,window)/tpd(data,tm,t1,wstart=tT1,window)
 #' geks_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)
 #' @export
 geks_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ if (start==end) return (1)
+{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+  if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
+  if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
   t0<-start
   start<-paste(start,"-01",sep="")
@@ -5247,7 +5261,9 @@ else return(set)
 #' @export
 
 geksj_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ if (start==end) return (1)
+{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+  if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
+  if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
   t0<-start
   start<-paste(start,"-01",sep="")
@@ -5321,7 +5337,9 @@ else return(set)
 #' geksw_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)
 #' @export
 geksw_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ if (start==end) return (1)
+{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+  if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
+  if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
   t0<-start
   start<-paste(start,"-01",sep="")
@@ -5397,7 +5415,9 @@ else return(set)
 #' ccdi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)
 #' @export
 ccdi_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ if (start==end) return (1)
+{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+  if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
+  if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
   t0<-start
   start<-paste(start,"-01",sep="")
@@ -5470,8 +5490,10 @@ var<-var*ccdi(data,tm,t,wstart=tT,window)/ccdi(data,tm,t1,wstart=tT1,window)
 #' gk_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)
 #' @export
 gk_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{if (start==end) return (1)
-   if (nrow(data)==0) stop("A data frame is empty")
+{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+  if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
+  if (start==end) return (1)
+  if (nrow(data)==0) stop("A data frame is empty")
   t0<-start
   start<-paste(start,"-01",sep="")
   end<-paste(end,"-01",sep="")
@@ -5540,7 +5562,10 @@ else return(set)
 #' @export
 
 price_index<-function(data, start, end, formula="fisher", window=13, splice="movement", base=start, sigma=0.7, interval=FALSE) 
-{
+{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+  if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
+  aformula<-c("jevons","dutot","carli","cswd","harmonic","bmw","laspeyres","paasche","fisher","tornqvist","geolaspeyres","geopaasche","drobisch","marshall_edgeworth","walsh","bialek","banajree","davies","stuvel","palgrave","geary_khamis","lehr","vartia","sato_vartia","lloyd_moulton","agmean","young","geoyoung","lowe","geolowe","chjevons","chdutot","chcarli","chcswd","chharmonic","chlaspeyres","chpaasche","chfisher","chtornqvist","chgeolaspeyres","chgeopaasche","chdrobisch","chmarshall_edgeworth","chwalsh","chbialek","chbanajree","chdavies","chstuvel","chpalgrave","chgeary_khamis","chlehr","chvartia","chsato_vartia","chlloyd_moulton","chagmean","chyoung","chgeoyoung","chlowe","chgeolowe","chbmw","geks","geksj","geksw","ccdi","gk","tpd","geks_splice","geksj_splice","geksw_splice","ccdi_splice","gk_splice","tpd_splice","geks_fbew","geks_fbmw","geksj_fbew","geksj_fbmw","geksw_fbew","geksw_fbmw","ccdi_fbew","ccdi_fbmw","gk_fbew","gk_fbmw","tpd_fbew","tpd_fbmw")
+  if (!(formula %in% aformula)) stop ("There is a typo in the index name")
   if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
   if (sigma==1) stop("A specification of the parameter 'sigma' is wrong")
@@ -5811,7 +5836,7 @@ price_indices<-function(data, start, end, bilateral=c(), bindex=c(), base=c(), c
                       if (length(splicemulti)>0) {for (i in 1:length(splicemulti)) ex<-c(ex, price_index(data, start, end, formula=splicemulti[i], window=splicewindow[i], splice=splice[i], interval=FALSE))
                       results5<-data.frame(namesplicemulti, ex)
                       colnames(results5)<-c("index formula","value") }
-                      results<-cbind(results1, results2, results3,results4,results5)
+                      results<-base::rbind(results1, results2, results3,results4,results5)
                       colnames(results)<-c("index formula","value")
                        }  
    else {              
@@ -5925,6 +5950,10 @@ ggplot2::ggplot(graph, ggplot2::aes(x=date, y=value, col=formula)) + ggplot2::ge
 
 final_index<-function(datasets=list(), start, end, formula="fisher", window=13, splice="movement", base=start, sigma=0.7, aggrret="tornqvist", aggrsets="tornqvist", interval=FALSE)
 { 
+aaggrret<-c("none","laspeyres","paasche","geolaspeyres","geopaasche","fisher","tornqvist","arithmetic","geometric") 
+if (!(aggrret %in% aaggrret)) stop ("The 'aggrret' parameter has a wrong value")
+aaggrsets<-c("none","laspeyres","paasche","geolaspeyres","geopaasche","fisher","tornqvist","arithmetic","geometric") 
+if (!(aggrsets %in% aaggrsets)) stop ("The 'aggrsets' parameter has a wrong value")
 for (m in 1:length(datasets)) if (nrow(data.frame(datasets[[m]]))==0) stop("At least one data frame is empty")
 start<-paste(start,"-01",sep="") 
 end<-paste(end,"-01",sep="")  
