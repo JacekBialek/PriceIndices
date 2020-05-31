@@ -1,6 +1,5 @@
 
 
-
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -176,7 +175,8 @@ filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), l
  afilters<-c(filter1, filter2)
  if ((start==end) | length(filters)==0) return (data)
  else if (length(base::intersect(filters,afilters))==0) stop("there are no such filters")
- data1<-data[0:0,]
+ if (length(base::setdiff(filters, base::intersect(filters, afilters)))>0)  stop("At least one filter's name is wrong")
+ data1<-data[0:0,] 
  data2<-data[0:0,]
  data3<-data[0:0,]
  if (filter1 %in% filters) {  if ((length(pquantiles)+length(plimits))==0) data1<-data
