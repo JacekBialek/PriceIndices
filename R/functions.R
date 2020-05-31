@@ -1,5 +1,4 @@
 
-
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -184,18 +183,21 @@ filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), l
                                                      priceshares<-c()
                                                      for (i in 1:length(id))        priceshares<-c(priceshares,price(data,period=end,ID=id[i])/price(data,period=start,ID=id[i]))
                                                           }
-                                                     if (length(pquantiles)>0) 
+                                                       if (length(pquantiles)>0) 
                                                         {
-                                                        tresh<-c(0,1)
-                                                     if (!((pquantiles[1]==tresh[1]) & (pquantiles[2]==tresh[2]) )) {
+                                                       tresh<-c(0,1)
+                                                       if ((pquantiles[1]==tresh[1]) & (pquantiles[2]==tresh[2])) {
+                                                       data1<-data
+                                                        }
+                                                        else {
                                                         qq<-stats::quantile(priceshares,probs=pquantiles,names=FALSE)
                                                         #selecting the sample by checking condition
                                                         id1<-c()
                                                         for (i in 1:length(id)) 
-                                                        if ((priceshares[i]>=qq[1]) & (priceshares[i]<=qq[2])) id1<-c(id1,id[i])  
+                                                        if ((priceshares[i]>=qq[1]) & (priceshares[i]<=qq[2]))  id1<-c(id1,id[i])  
                                                         data1<-dplyr::filter(data, data$prodID %in% id1)
                                                         }
-                                                        } else data1<-data
+                                                        } 
                                                        if (length(plimits)>0)
                                                        {
                                                         #selecting the sample by chacking condition
