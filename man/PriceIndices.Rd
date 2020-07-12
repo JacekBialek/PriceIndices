@@ -157,7 +157,9 @@ The list of package functions is as follows:
 \code{\link{chgeoyoung}}
 
 \code{\link{chgeohybrid}}
+
 \code{\link{chhybrid}}
+
 \code{\link{chlaspeyres}}
 
 \code{\link{chlehr}}
