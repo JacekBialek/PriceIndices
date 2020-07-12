@@ -5086,16 +5086,18 @@ tpd_fbmw2<-function(data,start,end)  { if (start==end) return (1)
 
 #' @title  Extending the multilateral TPD price index by using window splicing methods.
 #'
-#' @description This function returns a value (or values) of the multilateral TPD price index (Time Product Dummy index) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References})
+#' @description This function returns a value (or values) of the multilateral TPD price index (Time Product Dummy index) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
-#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean".
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
 #' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
 #' @rdname tpd_splice
-#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral TPD price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral TPD price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
 #' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
 #'
 #' {de  Haan,  J.  and  F.  Krsinich  (2014). \emph{Time  Dummy  Hedonic  and  Quality-Adjusted  Unit Value Indexes: Do They Really Differ?} Paper presented at the Society for Economic Measurement Conference, 18-20 August 2014, Chicago, U.S.}
@@ -5110,7 +5112,7 @@ tpd_fbmw2<-function(data,start,end)  { if (start==end) return (1)
 #' tpd_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)
 #' @export
 tpd_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+{asplice<-c("movement","window","half","mean","window_published","half_published","mean_published") #allowed values for 'splice' parameter
  if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
  if (start==end) return (1)
  if (nrow(data)==0) stop("A data frame is empty")
@@ -5149,12 +5151,27 @@ tpd_splice<-function (data,start,end, window=13, splice="movement",interval=FALS
                                        if (splice=="mean") {var<-1
                                        for (m in 1:(window-1)) {tm<-start
                                        lubridate::month(tm)<-lubridate::month(tm)-m
-                                      tm<-substr(tm,0,7)
+                                       tm<-substr(tm,0,7)
 var<-var*tpd(data,tm,t,wstart=tT,window)/tpd(data,tm,t1,wstart=tT1,window) 
+                                       }
+                                       var<-var^(1/(window-1))
+                                       set<-c(set, set[length(set)]*var)
                                                               }
-                                      var<-var^(1/(window-1))
-                                      set<-c(set, set[length(set)]*var)
+                                       if (splice=="window_published")
+                                       set<-c(set, set[length(set)+1-(window-1)]*tpd(data,tT,t,wstart=tT,window))
+                                       if (splice=="half_published")
+                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*tpd(data,th,t,wstart=tT,window))  
+                                       if (splice=="mean_published") {var<-1
+                                       for (m in 1:(window-1)) {tm<-start
+                                       lubridate::month(tm)<-lubridate::month(tm)-m
+                                       tm<-substr(tm,0,7)
+var<-var*set[length(set)+1-m]*tpd(data,tm,t,wstart=tT,window) 
+                                       }
+                                       var<-var^(1/(window-1))
+                                       set<-c(set, var)
                                                               }
+                                       
+                                       
                                              } 
                                        }
  if (interval==FALSE) return (set[length(set)])
@@ -5165,16 +5182,18 @@ var<-var*tpd(data,tm,t,wstart=tT,window)/tpd(data,tm,t1,wstart=tT1,window)
 
 #' @title  Extending the multilateral GEKS price index by using window splicing methods.
 #'
-#' @description This function returns a value (or values) of the multilateral GEKS price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}).
+#' @description This function returns a value (or values) of the multilateral GEKS price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
-#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean".
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
 #' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
 #' @rdname geks_splice
-#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral GEKS price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral GEKS price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
 #' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
 #'
 #' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
@@ -5187,7 +5206,7 @@ var<-var*tpd(data,tm,t,wstart=tT,window)/tpd(data,tm,t1,wstart=tT1,window)
 #' geks_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)
 #' @export
 geks_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+{ asplice<-c("movement","window","half","mean","window_published","half_published","mean_published") #allowed values for 'splice' parameter
   if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
   if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
@@ -5232,6 +5251,19 @@ var<-var*geks(data,tm,t,wstart=tT,window)/geks(data,tm,t1,wstart=tT1,window)
                                        var<-var^(1/(window-1))
                                        set<-c(set, set[length(set)]*var)
                                                                 }
+                                       if (splice=="window_published")
+                                       set<-c(set, set[length(set)+1-(window-1)]*geks(data,tT,t,wstart=tT,window))
+                                       if (splice=="half_published")
+                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*geks(data,th,t,wstart=tT,window))  
+                                       if (splice=="mean_published") {var<-1
+                                       for (m in 1:(window-1)) {tm<-start
+                                       lubridate::month(tm)<-lubridate::month(tm)-m
+                                       tm<-substr(tm,0,7)
+var<-var*set[length(set)+1-m]*geks(data,tm,t,wstart=tT,window) 
+                                       }
+                                       var<-var^(1/(window-1))
+                                       set<-c(set, var)
+                                                              }
                                              } 
                                        }
 if (interval==FALSE) return (set[length(set)])
@@ -5240,16 +5272,18 @@ else return(set)
 
 #' @title  Extending the multilateral GEKS-J price index by using window splicing methods.
 #'
-#' @description This function returns a value (or values) of the multilateral GEKS-J price index (GEKS based on the Jevons formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}).
+#' @description This function returns a value (or values) of the multilateral GEKS-J price index (GEKS based on the Jevons formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character). A column \code{quantities} is needed because this function uses unit values as monthly prices.
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
-#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean".
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
 #' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
 #' @rdname geksj_splice
-#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral GEKS-J price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral GEKS-J price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
 #' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
 #'
 #' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
@@ -5263,7 +5297,7 @@ else return(set)
 #' @export
 
 geksj_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+{ asplice<-c("movement","window","half","mean","window_published","half_published","mean_published") #allowed values for 'splice' parameter
   if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
   if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
@@ -5308,6 +5342,19 @@ var<-var*geksj(data,tm,t,wstart=tT,window)/geksj(data,tm,t1,wstart=tT1,window)
                                        var<-var^(1/(window-1))
                                        set<-c(set, set[length(set)]*var)
                                                             }
+                                       if (splice=="window_published")
+                                       set<-c(set, set[length(set)+1-(window-1)]*geksj(data,tT,t,wstart=tT,window))
+                                       if (splice=="half_published")
+                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*geksj(data,th,t,wstart=tT,window))  
+                                       if (splice=="mean_published") {var<-1
+                                       for (m in 1:(window-1)) {tm<-start
+                                       lubridate::month(tm)<-lubridate::month(tm)-m
+                                       tm<-substr(tm,0,7)
+var<-var*set[length(set)+1-m]*geksj(data,tm,t,wstart=tT,window) 
+                                       }
+                                       var<-var^(1/(window-1))
+                                       set<-c(set, var)
+                                                              }
                                              } 
                                       }
 if (interval==FALSE) return (set[length(set)])
@@ -5317,16 +5364,18 @@ else return(set)
 
 #' @title  Extending the multilateral GEKS-W price index by using window splicing methods.
 #'
-#' @description This function returns a value (or values) of the multilateral GEKS-W price index (GEKS based on the Walsh formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}).
+#' @description This function returns a value (or values) of the multilateral GEKS-W price index (GEKS based on the Walsh formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
-#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean".
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
 #' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
 #' @rdname geksw_splice
-#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral GEKS-W price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral GEKS-W price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
 #' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
 #'
 #' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
@@ -5339,7 +5388,7 @@ else return(set)
 #' geksw_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)
 #' @export
 geksw_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+{ asplice<-c("movement","window","half","mean","window_published","half_published","mean_published") #allowed values for 'splice' parameter
   if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
   if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
@@ -5384,6 +5433,19 @@ var<-var*geksw(data,tm,t,wstart=tT,window)/geksw(data,tm,t1,wstart=tT1,window)
                                        var<-var^(1/(window-1))
                                        set<-c(set, set[length(set)]*var)
                                                                }
+                                       if (splice=="window_published")
+                                       set<-c(set, set[length(set)+1-(window-1)]*geksw(data,tT,t,wstart=tT,window))
+                                       if (splice=="half_published")
+                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*geksw(data,th,t,wstart=tT,window))  
+                                       if (splice=="mean_published") {var<-1
+                                       for (m in 1:(window-1)) {tm<-start
+                                       lubridate::month(tm)<-lubridate::month(tm)-m
+                                       tm<-substr(tm,0,7)
+var<-var*set[length(set)+1-m]*geksw(data,tm,t,wstart=tT,window) 
+                                       }
+                                       var<-var^(1/(window-1))
+                                       set<-c(set, var)
+                                                              }
                                              } 
                                        }
 if (interval==FALSE) return (set[length(set)])
@@ -5393,15 +5455,15 @@ else return(set)
 
 #' @title  Extending the multilateral CCDI price index by using window splicing methods.
 #'
-#' @description This function returns a value (or values) of the multilateral CCDI price index (GEKS based on the Tornqvist formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}).
+#' @description This function returns a value (or values) of the multilateral CCDI price index (GEKS based on the Tornqvist formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
-#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean".
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
 #' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
 #' @rdname ccdi_splice
-#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral CCDI price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral CCDI price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Caves, D.W., Christensen, L.R. and Diewert, W.E. (1982). \emph{Multilateral comparisons of output, input, and productivity using superlative index numbers.} Economic Journal 92, 73-86.}
 #'
@@ -5417,7 +5479,7 @@ else return(set)
 #' ccdi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)
 #' @export
 ccdi_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+{ asplice<-c("movement","window","half","mean","window_published","half_published","mean_published") #allowed values for 'splice' parameter
   if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
   if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
@@ -5462,6 +5524,19 @@ var<-var*ccdi(data,tm,t,wstart=tT,window)/ccdi(data,tm,t1,wstart=tT1,window)
                                        var<-var^(1/(window-1))
                                        set<-c(set, set[length(set)]*var)
                                                            }
+                                       if (splice=="window_published")
+                                       set<-c(set, set[length(set)+1-(window-1)]*ccdi(data,tT,t,wstart=tT,window))
+                                       if (splice=="half_published")
+                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*ccdi(data,th,t,wstart=tT,window))  
+                                       if (splice=="mean_published") {var<-1
+                                       for (m in 1:(window-1)) {tm<-start
+                                       lubridate::month(tm)<-lubridate::month(tm)-m
+                                       tm<-substr(tm,0,7)
+var<-var*set[length(set)+1-m]*ccdi(data,tm,t,wstart=tT,window) 
+                                       }
+                                       var<-var^(1/(window-1))
+                                       set<-c(set, var)
+                                                              }
                                              } 
                                        }
  if (interval==FALSE) return (set[length(set)])
@@ -5470,16 +5545,18 @@ var<-var*ccdi(data,tm,t,wstart=tT,window)/ccdi(data,tm,t1,wstart=tT1,window)
 
 #' @title  Extending the multilateral Geary-Khamis price index by using window splicing methods.
 #'
-#' @description This function returns a value (or values) of the multilateral Geary-Khamis price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}).
+#' @description This function returns a value (or values) of the multilateral Geary-Khamis price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
-#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean".
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
 #' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
 #' @rdname gk_splice
-#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral Geary-Khamis price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral Geary-Khamis price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
 #' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
 #'
 #' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
@@ -5492,7 +5569,7 @@ var<-var*ccdi(data,tm,t,wstart=tT,window)/ccdi(data,tm,t1,wstart=tT1,window)
 #' gk_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)
 #' @export
 gk_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
+{ asplice<-c("movement","window","half","mean","window_published","half_published","mean_published") #allowed values for 'splice' parameter
   if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
   if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
@@ -5537,6 +5614,19 @@ var<-var*gk(data,tm,t,wstart=tT,window)/gk(data,tm,t1,wstart=tT1,window)
                                        var<-var^(1/(window-1))
                                        set<-c(set, set[length(set)]*var)
                                                                 }
+                                       if (splice=="window_published")
+                                       set<-c(set, set[length(set)+1-(window-1)]*gk(data,tT,t,wstart=tT,window))
+                                       if (splice=="half_published")
+                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*gk(data,th,t,wstart=tT,window))  
+                                       if (splice=="mean_published") {var<-1
+                                       for (m in 1:(window-1)) {tm<-start
+                                       lubridate::month(tm)<-lubridate::month(tm)-m
+                                       tm<-substr(tm,0,7)
+var<-var*set[length(set)+1-m]*gk(data,tm,t,wstart=tT,window) 
+                                       }
+                                       var<-var^(1/(window-1))
+                                       set<-c(set, var)
+                                                              }
                                              } 
                                        }
 if (interval==FALSE) return (set[length(set)])
@@ -5566,7 +5656,7 @@ else return(set)
 price_index<-function(data, start, end, formula="fisher", window=13, splice="movement", base=start, sigma=0.7, interval=FALSE) 
 { asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
   if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
-  aformula<-c("jevons","dutot","carli","cswd","harmonic","bmw","laspeyres","paasche","fisher","tornqvist","geolaspeyres","geopaasche","drobisch","marshall_edgeworth","walsh","bialek","banajree","davies","stuvel","palgrave","geary_khamis","lehr","vartia","sato_vartia","lloyd_moulton","agmean","young","geoyoung","lowe","geolowe","chjevons","chdutot","chcarli","chcswd","chharmonic","chlaspeyres","chpaasche","chfisher","chtornqvist","chgeolaspeyres","chgeopaasche","chdrobisch","chmarshall_edgeworth","chwalsh","chbialek","chbanajree","chdavies","chstuvel","chpalgrave","chgeary_khamis","chlehr","chvartia","chsato_vartia","chlloyd_moulton","chagmean","chyoung","chgeoyoung","chlowe","chgeolowe","chbmw","geks","geksj","geksw","ccdi","gk","tpd","geks_splice","geksj_splice","geksw_splice","ccdi_splice","gk_splice","tpd_splice","geks_fbew","geks_fbmw","geksj_fbew","geksj_fbmw","geksw_fbew","geksw_fbmw","ccdi_fbew","ccdi_fbmw","gk_fbew","gk_fbmw","tpd_fbew","tpd_fbmw")
+  aformula<-c("jevons","dutot","carli","cswd","harmonic","bmw","laspeyres","paasche","fisher","tornqvist","geolaspeyres","geopaasche","drobisch","marshall_edgeworth","walsh","bialek","banajree","davies","stuvel","palgrave","geary_khamis","lehr","vartia","sato_vartia","lloyd_moulton","agmean","young","geoyoung","lowe","geolowe","chjevons","chdutot","chcarli","chcswd","chharmonic","chlaspeyres","chpaasche","chfisher","chtornqvist","chgeolaspeyres","chgeopaasche","chdrobisch","chmarshall_edgeworth","chwalsh","chbialek","chbanajree","chdavies","chstuvel","chpalgrave","chgeary_khamis","chlehr","chvartia","chsato_vartia","chlloyd_moulton","chagmean","chyoung","chgeoyoung","chlowe","chgeolowe","chbmw","geks","geksj","geksw","ccdi","gk","tpd","geks_splice","geksj_splice","geksw_splice","ccdi_splice","gk_splice","tpd_splice","geks_fbew","geks_fbmw","geksj_fbew","geksj_fbmw","geksw_fbew","geksw_fbmw","ccdi_fbew","ccdi_fbmw","gk_fbew","gk_fbmw","tpd_fbew","tpd_fbmw","hybrid", "geohybrid", "chhybrid", "chgeohybrid")
   if (!(formula %in% aformula)) stop ("There is a typo in the index name")
   if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
@@ -5604,11 +5694,14 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
                        if (formula=="geoyoung") set<-geoyoung(data, start, end, base)
                        if (formula=="lowe") set<-lowe(data, start, end, base)
                        if (formula=="geolowe") set<-geolowe(data, start, end, base)
+                       if (formula=="hybrid") set<-hybrid(data, start, end, base)
+                       if (formula=="geohybrid") set<-geohybrid(data, start, end, base)
                        #chain indices
                        if (formula=="chjevons") set<-chjevons(data, start,end)
                        if (formula=="chdutot") set<-chdutot(data, start,end)
                        if (formula=="chcarli") set<-chcarli(data, start,end)
                        if (formula=="chcswd") set<-chcswd(data, start,end)
+                       if (formula=="chbmw") set<-chbmw(data, start, end)
                        if (formula=="chharmonic") set<-chharmonic(data, start,end)
                        if (formula=="chlaspeyres") set<-chlaspeyres(data, start,end)
                        if (formula=="chpaasche") set<-chpaasche(data, start,end)
@@ -5634,7 +5727,8 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
                        if (formula=="chgeoyoung") set<-chgeoyoung(data, start, end, base)
                        if (formula=="chlowe") set<-chlowe(data, start, end, base)
                        if (formula=="chgeolowe") set<-chgeolowe(data, start, end, base)
-                       if (formula=="chbmw") set<-chbmw(data, start, end)
+                       if (formula=="chhybrid") set<-chhybrid(data, start, end, base)
+                       if (formula=="chgeohybrid") set<-chgeohybrid(data, start, end, base)
                        #multilateral indices
                        if (formula=="geks") set<-geks(data, start, end, start, window)
                        if (formula=="geksj") set<-geksj(data, start, end, start, window)
@@ -5698,11 +5792,14 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
                        if (formula=="geoyoung") set<-geoyoung(data, start,end,base,interval)
                        if (formula=="lowe") set<-lowe(data, start,end,base,interval)
                        if (formula=="geolowe") set<-geolowe(data, start,end,base,interval)
+                       if (formula=="hybrid") set<-hybrid(data, start,end,base,interval)
+                       if (formula=="geohybrid") set<-geohybrid(data, start,end,base,interval)
                        #chain indices
                        if (formula=="chjevons") set<-chjevons(data, start,end,interval)
                        if (formula=="chdutot") set<-chdutot(data, start,end,interval)
                        if (formula=="chcarli") set<-chcarli(data, start,end,interval)
                        if (formula=="chcswd") set<-chcswd(data, start,end,interval)
+                       if (formula=="chbmw") set<-chbmw(data, start,end,interval)
                        if (formula=="chharmonic") set<-chharmonic(data, start,end,interval)
                        if (formula=="chlaspeyres") set<-chlaspeyres(data, start,end,interval)
                        if (formula=="chpaasche") set<-chpaasche(data, start,end,interval)
@@ -5728,7 +5825,8 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
                        if (formula=="chgeoyoung") set<-chgeoyoung(data, start,end,base,interval)
                        if (formula=="chlowe") set<-chlowe(data, start,end,base,interval)
                        if (formula=="chgeolowe") set<-chgeolowe(data, start,end,base,interval)
-                       if (formula=="chbmw") set<-chbmw(data, start,end,interval)               
+                       if (formula=="chhybrid") set<-chhybrid(data, start,end,base,interval)
+                       if (formula=="chgeohybrid") set<-chgeohybrid(data, start,end,base,interval)
                        #extended multilateral indices
                        if (formula=="geks_splice") set<-geks_splice(data, start, end, window, splice, interval)
                        if (formula=="geksj_splice") set<-geksj_splice(data, start, end, window, splice, interval)
@@ -5973,7 +6071,7 @@ w_end_set<-c()
 index_set<-c()
 for (m in 1:length(datasets))  {set<-data.frame(datasets[[m]])
 #limiting to matched products depending on the used price index formula 
-if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw") | (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe"))
+if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw") | (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe") | (formula=="hybrid") | (formula=="geohybrid"))
 id<-matched(set, period1=substr(start,0,7), period2=substr(end,0,7), type="retID", FALSE)
 else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd")) {
 wend<-start
@@ -5999,7 +6097,7 @@ w_end_ret<-c()
 id_ok<-c()
 for (k in 1:length(id)) { 
 subset<-dplyr::filter(set, set$retID==id[k])
-if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw") | (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe"))
+if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw") | (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe") | (formula=="hybrid") | (formula=="geohybrid"))
 idp<-matched(subset, period1=substr(start,0,7), period2=substr(end,0,7), type="prodID", FALSE)
 else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd")) {
 wend<-start
@@ -6151,7 +6249,7 @@ w_end_set<-c()
 index_set<-c()
 for (m in 1:length(datasets))  {set<-data.frame(datasets[[m]])
 #limiting to matched products depending on the used price index formula - part 2 (rest of indices)
-if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw")| (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe"))
+if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw")| (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe") | (formula=="hybrid") | (formula=="geohybrid"))
 id<-matched(set, period1=substr(start,0,7), period2=substr(end,0,7), type="retID", FALSE)
 else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd")) id<-idd[[m]]
 else if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice")) id<-idd[[m]]
@@ -6170,7 +6268,7 @@ id_ok<-c()
 for (k in 1:length(id)) { 
 subset<-dplyr::filter(set, set$retID==id[k])
                             
-if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw") | (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe"))
+if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw") | (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe") | (formula=="hybrid") | (formula=="geohybrid"))
 idp<-matched(subset, period1=substr(start,0,7), period2=substr(end,0,7), type="prodID", FALSE)
 else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd")) {
 wend<-start

@@ -222,7 +222,7 @@ This package includes 6 functions for calculating the following bilateral unweig
 | Price Index | Function | 
 |----------------|---------------|
 | BMW (2007) | bmw |
-|  Carli (1804) | carli |
+| Carli (1804) | carli |
 | CSWD (1980,1992) | cswd |
 | Dutot (1738) | dutot |
 | Jevons (1865) | jevons |
@@ -237,7 +237,7 @@ jevons(milk, start="2018-12", end="2020-01", interval=TRUE)
 
 ### Functions for bilateral weighted price index calculation
 
-This package includes 24 functions for calculating the following bilateral weighted price indices: 
+This package includes 26 functions for calculating the following bilateral weighted price indices: 
 
 | Price Index | Function | 
 |----------------|---------------|
@@ -252,6 +252,8 @@ This package includes 24 functions for calculating the following bilateral weigh
 | Geo-Lowe| geolowe |
 | Geo-Paasche | geopaasche |
 | Geo-Young | geoyoung |
+| Geo-hybrid (2020) | geohybrid |
+| Hybrid (2020) | hybrid |
 | Laspeyres (1871) | laspeyres |
 | Lehr (1885) | lehr |
 | Lloyd-Moulton (1975,1996) | lloyd_moulton |
@@ -276,12 +278,12 @@ lowe(milk, start="2019-12", end="2020-02", base="2018-12", interval=TRUE)
 
 ### Functions for chain price index calculation
 
-This package includes 30 functions for calculating the following chain price indices (weighted and unweighted):
+This package includes 32 functions for calculating the following chain price indices (weighted and unweighted):
 
 | Price Index | Function | 
 |----------------|---------------|
 | Chain BMW  | chbmw |
-|  Chain Carli | chcarli |
+| Chain Carli | chcarli |
 | Chain CSWD  | chcswd |
 | Chain Dutot  | chdutot |
 | Chain Jevons  | chjevons |
@@ -297,6 +299,8 @@ This package includes 30 functions for calculating the following chain price ind
 | Chain Geo-Lowe| chgeolowe |
 | Chain Geo-Paasche | chgeopaasche |
 | Chain Geo-Young | chgeoyoung |
+| Chain Geo-hybrid | chgeohybrid |
+| Chain Hybrid | chhybrid |
 | Chain Laspeyres  | chlaspeyres |
 | Chain Lehr  | chlehr |
 | Chain Lloyd-Moulton  | chlloyd_moulton |
@@ -326,8 +330,8 @@ This package includes 6 functions for calculating multilateral price indices and
 | Price Index | Function | 
 |----------------|---------------|
 | CCDI  | ccdi |
-|  GEKS | geks |
-|  GEKS-J | geksj |
+| GEKS | geks |
+| GEKS-J | geksj |
 | GEKS-W  | geksw |
 | Geary-Khamis  | gk |
 | Quality Adjusted Unit Value  | QU|
@@ -364,13 +368,13 @@ This package includes 6 functions for calculating splice indices:
 | Price Index | Function | 
 |----------------|---------------|
 | Splice CCDI  | ccdi_splcie |
-|  Splice GEKS | geks_splice |
-|  Splice GEKS-J | geksj_splice |
-|Splice GEKS-W  | geksw_splice |
+| Splice GEKS | geks_splice |
+| Splice GEKS-J | geksj_splice |
+| Splice GEKS-W  | geksw_splice |
 | Splice Geary-Khamis  | gk_splice |
 | Splice Time Product Dummy | tpd_splice |
 
-These functions return a value (or values) of the selected multilateral  price index extended by using window splicing methods (defined by the **splice** parameter). Available splicing methods are: **movement splice**, **window splice**, **half splice** and **mean splice** (see documentation). The first considered time window is defined by the **start** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). Functions measure the price dynamics by comparing the **end** period to the **start** period, i.e. if the time interval **<start, end>** exceeds the defined time window then splicing methods are used. If the **interval** parameter is set to TRUE, then all fixed base multilateral indices are presented (the fixed base month is defined by **start**). To get information about both price index values and corresponding dates, please see functions: **price_index**, **price_indices** or **final_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the **final_index** function). For instance, let us calculate the **extended Time Product Dummy** index by using the **half splice method** with a 10-month time window:
+These functions return a value (or values) of the selected multilateral  price index extended by using window splicing methods (defined by the **splice** parameter). Available splicing methods are: **movement splice**, **window splice**, **half splice**, **mean splice** and their additional variants: **window splice on published indices (WISP)**, **half splice on published indices (HASP)** and **mean splice on published indices** (see documentation). The first considered time window is defined by the **start** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). Functions measure the price dynamics by comparing the **end** period to the **start** period, i.e. if the time interval **<start, end>** exceeds the defined time window then splicing methods are used. If the **interval** parameter is set to TRUE, then all fixed base multilateral indices are presented (the fixed base month is defined by **start**). To get information about both price index values and corresponding dates, please see functions: **price_index**, **price_indices** or **final_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the **final_index** function). For instance, let us calculate the **extended Time Product Dummy** index by using the **half splice method** with a 10-month time window:
 
 ```{r}
 tpd_splice(milk, start="2018-12", end="2020-02",window=10,splice="half",interval=TRUE)
@@ -383,10 +387,10 @@ This package includes 6 functions for calculating extensions of multilateral ind
 
 | Price Index | Function | 
 |----------------|---------------|
-| FBEW CCDI  | ccdi_fbew |
-|  FBEW  GEKS | geks_fbew |
-|  FBEW  GEKS-J | geksj_fbew |
-|FBEW  GEKS-W  | geksw_fbew |
+| FBEW  CCDI  | ccdi_fbew |
+| FBEW  GEKS | geks_fbew |
+| FBEW  GEKS-J | geksj_fbew |
+| FBEW  GEKS-W  | geksw_fbew |
 | FBEW  Geary-Khamis  | gk_fbew |
 | FBEW  Time Product Dummy | tpd_fbew |
 
@@ -405,9 +409,9 @@ This package includes 6 functions for calculating extensions of multilateral ind
 | Price Index | Function | 
 |----------------|---------------|
 | FBMW CCDI  | ccdi_fbmw |
-|  FBMW  GEKS | geks_fbmw |
-|  FBMW  GEKS-J | geksj_fbmw |
-|FBMW  GEKS-W  | geksw_fbmw |
+| FBMW  GEKS | geks_fbmw |
+| FBMW  GEKS-J | geksj_fbmw |
+| FBMW  GEKS-W  | geksw_fbmw |
 | FBMW  Geary-Khamis  | gk_fbmw |
 | FBMW  Time Product Dummy | tpd_fbmw |
 

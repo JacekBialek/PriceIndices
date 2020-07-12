@@ -192,9 +192,9 @@ nrow(data_without_filters)
 nrow(filter1)
 #> [1] 378
 nrow(filter2)
-#> [1] 381
+#> [1] 0
 nrow(filter3)
-#> [1] 180
+#> [1] 0
 ```
 
 You can also use **data\_filtering** for each pair of subsequent months from the considered time interval under the condition that this filtering is done for each outlet (**retID**) separately, e.g.
@@ -372,7 +372,7 @@ jevons(milk, start="2018-12", end="2020-01", interval=TRUE)
 
 ### Functions for bilateral weighted price index calculation
 
-This package includes 24 functions for calculating the following bilateral weighted price indices:
+This package includes 26 functions for calculating the following bilateral weighted price indices:
 
 | Price Index               | Function            |
 |---------------------------|---------------------|
@@ -387,6 +387,8 @@ This package includes 24 functions for calculating the following bilateral weigh
 | Geo-Lowe                  | geolowe             |
 | Geo-Paasche               | geopaasche          |
 | Geo-Young                 | geoyoung            |
+| Geo-hybrid (2020)         | geohybrid           |
+| Hybrid (2020)             | hybrid              |
 | Laspeyres (1871)          | laspeyres           |
 | Lehr (1885)               | lehr                |
 | Lloyd-Moulton (1975,1996) | lloyd\_moulton      |
@@ -416,7 +418,7 @@ lowe(milk, start="2019-12", end="2020-02", base="2018-12", interval=TRUE)
 
 ### Functions for chain price index calculation
 
-This package includes 30 functions for calculating the following chain price indices (weighted and unweighted):
+This package includes 32 functions for calculating the following chain price indices (weighted and unweighted):
 
 | Price Index              | Function              |
 |--------------------------|-----------------------|
@@ -437,6 +439,8 @@ This package includes 30 functions for calculating the following chain price ind
 | Chain Geo-Lowe           | chgeolowe             |
 | Chain Geo-Paasche        | chgeopaasche          |
 | Chain Geo-Young          | chgeoyoung            |
+| Chain Geo-hybrid         | chgeohybrid           |
+| Chain Hybrid             | chhybrid              |
 | Chain Laspeyres          | chlaspeyres           |
 | Chain Lehr               | chlehr                |
 | Chain Lloyd-Moulton      | chlloyd\_moulton      |
@@ -494,19 +498,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.268160
-#> 2 403249 1.649378
-#> 3 400033 1.021428
-#> 4 402609 1.999214
-#> 5 406223 1.394702
-#> 6 406224 1.963596
+#> 1 400032 1.661535
+#> 2 403249 1.483543
+#> 3 400033 1.168509
+#> 4 402609 1.876965
+#> 5 406223 1.066163
+#> 6 406224 1.247933
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9788181
+#> [1] 0.9934551
 ```
 
 <a id="ad7"> </a>
@@ -524,7 +528,7 @@ This package includes 6 functions for calculating splice indices:
 | Splice Geary-Khamis       | gk\_splice    |
 | Splice Time Product Dummy | tpd\_splice   |
 
-These functions return a value (or values) of the selected multilateral price index extended by using window splicing methods (defined by the **splice** parameter). Available splicing methods are: **movement splice**, **window splice**, **half splice** and **mean splice** (see documentation). The first considered time window is defined by the **start** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). Functions measure the price dynamics by comparing the **end** period to the **start** period, i.e. if the time interval **<start, end>** exceeds the defined time window then splicing methods are used. If the **interval** parameter is set to TRUE, then all fixed base multilateral indices are presented (the fixed base month is defined by **start**). To get information about both price index values and corresponding dates, please see functions: **price\_index**, **price\_indices** or **final\_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the **final\_index** function). For instance, let us calculate the **extended Time Product Dummy** index by using the **half splice method** with a 10-month time window:
+These functions return a value (or values) of the selected multilateral price index extended by using window splicing methods (defined by the **splice** parameter). Available splicing methods are: **movement splice**, **window splice**, **half splice**, **mean splice** and their additional variants: **window splice on published indices (WISP)**, **half splice on published indices (HASP)** and **mean splice on published indices** (see documentation). The first considered time window is defined by the **start** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). Functions measure the price dynamics by comparing the **end** period to the **start** period, i.e. if the time interval **<start, end>** exceeds the defined time window then splicing methods are used. If the **interval** parameter is set to TRUE, then all fixed base multilateral indices are presented (the fixed base month is defined by **start**). To get information about both price index values and corresponding dates, please see functions: **price\_index**, **price\_indices** or **final\_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the **final\_index** function). For instance, let us calculate the **extended Time Product Dummy** index by using the **half splice method** with a 10-month time window:
 
 ``` r
 tpd_splice(milk, start="2018-12", end="2020-02",window=10,splice="half",interval=TRUE)
