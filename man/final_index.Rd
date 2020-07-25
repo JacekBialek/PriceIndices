@@ -29,7 +29,7 @@ final_index(
 
 \item{window}{The length of the time window if the multilateral index is selected (as positive integer: typically multilateral methods are based on the 13-month time window and thus the default value is 13).}
 
-\item{splice}{A character string indicating the splicing method (if the multilateral splicing index is selected). Available options are: "movement", "window","half" and "mean".}
+\item{splice}{A character string indicating the splicing method (if the multilateral splicing index is selected). Available options are: "movement", "window","half", "mean" and also "window_published", "half_published" and "mean_published".}
 
 \item{base}{The prior period used in the Young- or Lowe-type price indices (as character) limited to the year and month, e.g. "2020-01".}
 

@@ -1,4 +1,5 @@
 
+
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -656,7 +657,7 @@ price<-function(data, period, ID)
 
 
 
-#' @title  Providing prices (unit value) of sold products
+#' @title  Providing prices (unit values) of sold products
 #'
 #' @description The function returns prices (unit values) of sold products with given IDs. 
 #' @param data The user's data frame. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric or character) with unique product IDs. 
@@ -5642,7 +5643,7 @@ else return(set)
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param formula The character string indicating the price index formula is to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.
 #' @param window The length of the time window if the multilateral index is selected (as positive integer: typically multilateral methods are based on the 13-month time window).
-#' @param splice A character string indicating the splicing method (if the multilateral splicing index is selected). Available options are: "movement", "window","half","mean".
+#' @param splice A character string indicating the splicing method (if the multilateral splicing index is selected). Available options are: "movement", "window","half","mean" and their additional variants: "window_published", "half_published" and "mean_published". 
 #' @param base The prior period used in the Young- or Lowe-type price indices (as character) limited to the year and month, e.g. "2020-01".
 #' @param sigma The elasticity of substitution parameter used in the Lloyed-Moulton and AG Mean indices (as numeric).
 #' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).
@@ -5887,7 +5888,7 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
 #' @param sigma The vector of elasticity of substitution parameters used in the Lloyed-Moulton and AG Mean indices.
 #' @param fbwindow A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index (if it is selected by \code{fbmulti}).
 #' @param splicewindow A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index (if it is selected by \code{splicemulti}).
-#' @param splice A vector of character strings. Each element of the vector indicates the splicing method is to be used for the corresponding multilateral index (if it is selected by \code{splicemulti} ). Available values of vector elements are: "movement", "window","half","mean".
+#' @param splice A vector of character strings. Each element of the vector indicates the splicing method is to be used for the corresponding multilateral index (if it is selected by \code{splicemulti} ). Available values of vector elements are: "movement", "window","half","mean" and their additional variants: "window_published", "half_published" and "mean_published".
 #' @param namebilateral A vector of character strings describing names of bilateral price indices that are to be displayed. If this vector is empty, then default names are used.
 #' @param namebindex A vector of character strings describing names of Young- and/or Lowe-type price indices are to be displayed. If this vector is empty, then default names are used.
 #' @param namecesindex A vector of character strings describing names of CES price indices that are to be displayed. If this vector is empty, then default names are used.
@@ -6030,7 +6031,7 @@ ggplot2::ggplot(graph, ggplot2::aes(x=date, y=value, col=formula)) + ggplot2::ge
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param formula The character string indicating the (final or main) price index formula is to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.
 #' @param window The length of the time window if the multilateral index is selected (as positive integer: typically multilateral methods are based on the 13-month time window and thus the default value is 13).
-#' @param splice A character string indicating the splicing method (if the multilateral splicing index is selected). Available options are: "movement", "window","half" and "mean".
+#' @param splice A character string indicating the splicing method (if the multilateral splicing index is selected). Available options are: "movement", "window","half", "mean" and also "window_published", "half_published" and "mean_published".
 #' @param base The prior period used in the Young- or Lowe-type price indices (as character) limited to the year and month, e.g. "2020-01".
 #' @param sigma The elasticity of substitution parameter used in the Lloyed-Moulton and AG Mean indices (as numeric).
 #' @param aggrret A character string indicating the formula for aggregation over outlets (retailer sale points). Available options are: "none", "laspeyres", "paasche", "geolaspeyres", "geopaasche", "fisher", "tornqvist", "arithmetic" and "geometric". The first option means that there is no aggregating over outlets. The last two options mean unweighted methods of aggregating, i.e. the arithmetic or geometric mean is used. 

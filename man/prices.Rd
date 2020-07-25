@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{prices}
 \alias{prices}
-\title{Providing prices (unit value) of sold products}
+\title{Providing prices (unit values) of sold products}
 \usage{
 prices(data, period, set = c())
 }

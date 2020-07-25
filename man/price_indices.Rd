@@ -51,7 +51,7 @@ price_indices(
 
 \item{splicewindow}{A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index (if it is selected by \code{splicemulti}).}
 
-\item{splice}{A vector of character strings. Each element of the vector indicates the splicing method is to be used for the corresponding multilateral index (if it is selected by \code{splicemulti} ). Available values of vector elements are: "movement", "window","half","mean".}
+\item{splice}{A vector of character strings. Each element of the vector indicates the splicing method is to be used for the corresponding multilateral index (if it is selected by \code{splicemulti} ). Available values of vector elements are: "movement", "window","half","mean" and their additional variants: "window_published", "half_published" and "mean_published".}
 
 \item{namebilateral}{A vector of character strings describing names of bilateral price indices that are to be displayed. If this vector is empty, then default names are used.}
 
