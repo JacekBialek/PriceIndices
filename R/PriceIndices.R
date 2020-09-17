@@ -1,7 +1,7 @@
 #' The list of package functions and their demonstration
 #'
 #' The \strong{PriceIndices} package is a tool for Bilateral and Multilateral Price Index Calculations. 
-#' A demonstration of package functions is here: \href{ https://drive.google.com/file/d/1uVH6zdnNg4P6HhhV4QyZ0YOHSpAncl20/view?usp=sharing }{README}.
+#' A demonstration of package functions is here: \href{ https://drive.google.com/file/d/1TGaxtTgOZwGvU0CqT45ltiAMRiFK3fPL/view?usp=sharing }{README}.
 #' The list of package functions is as follows:
 #'
 #' @docType package

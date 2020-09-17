@@ -157,7 +157,7 @@ return (pairs)
 }
 
 #filtering where only two months are compared
-filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), lambda=1.25)
+filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), dplimits=c(),lambda=1.25)
 {
  if (nrow(data)==0) stop("A data frame is empty")
  
@@ -172,13 +172,15 @@ filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), l
  data<-dplyr::filter(data, (data$time>=start & data$time<=start2) | (data$time>=end & data$time<=end2))
  filter1<-"extremeprices"
  filter2<-"lowsales"
- afilters<-c(filter1, filter2)
+ filter3<-"dumpprices"
+ afilters<-c(filter1, filter2,filter3)
  if ((start==end) | length(filters)==0) return (data)
  else if (length(base::intersect(filters,afilters))==0) stop("there are no such filters")
  if (length(base::setdiff(filters, base::intersect(filters, afilters)))>0)  stop("At least one filter's name is wrong")
  data1<-data[0:0,] 
  data2<-data[0:0,]
  data3<-data[0:0,]
+ data4<-data[0:0,]
  if (filter1 %in% filters) {  if ((length(pquantiles)+length(plimits))==0) data1<-data
                                                      else {id<-matched(data,start,end)
                                                      priceshares<-c()
@@ -198,7 +200,7 @@ filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), l
                                                         if ((priceshares[i]>=qq[1]) & (priceshares[i]<=qq[2]))  id1<-c(id1,id[i])  
                                                         data1<-dplyr::filter(data, data$prodID %in% id1)
                                                         }
-                                                        } 
+                                                        } else data1<-data
                                                        if (length(plimits)>0)
                                                        {
                                                         #selecting the sample by chacking condition
@@ -222,13 +224,31 @@ if (filter2 %in% filters) { if (lambda<=0) data3<-data
                                                      if (0.5*((expenditures_start[i]/sum_start)+(expenditures_end[i]/sum_end))>(1/(length(id)*lambda)))                                                          id3<-c(id3,id[i])
                                                      data3<-dplyr::filter(data, data$prodID %in% id3)
                                                    } else data3<-data
+
+if (filter3 %in% filters) { if (!(length(dplimits)==2)) data4<-data
+                            else {
+                                                     id<-matched(data,start,end)
+                                                     expenditures_start<-sales(data, period=start, set=id)
+                                                     expenditures_end<-sales(data, period=end, set=id)
+                                                     priceshares<-c()
+                                                     for (i in 1:length(id))        priceshares<-c(priceshares,price(data,period=end,ID=id[i])/price(data,period=start,ID=id[i]))
+                                                     id4<-c()
+                                                     for (i in 1:length(id)) 
+                                                     if
+((priceshares[i]>=dplimits[1]) | ((expenditures_end[i]/expenditures_start[i])>=dplimits[2]))                                                                                 id4<-c(id4,id[i])
+                                                     data4<-dplyr::filter(data, data$prodID %in% id4)
+                                 }
+                                                   } else data4<-data 
+ 
+ 
 data_final<-dplyr::intersect(data1,data2)
 data_final<-dplyr::intersect(data_final,data3)
+data_final<-dplyr::intersect(data_final,data4)
 return (data_final)   
    }
 
 #filtering where each subsequent months from the considered time interval are compared
-filtering_interval<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), lambda=1.25)
+filtering_interval<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), dplimits=c(),lambda=1.25)
 {
  if (nrow(data)==0) stop("A data frame is empty")
  start<-paste(start,"-01",sep="") 
@@ -243,7 +263,7 @@ filtering_interval<-function(data, start, end, filters=c(), plimits=c(),pquantil
  data_set<-data[0:0,]
  while (start<end)
  {
-   d<-filtering(data,start,start2,filters,plimits,pquantiles,lambda)
+   d<-filtering(data,start,start2,filters,plimits,pquantiles,dplimits,lambda)
    data_set<-dplyr::union(data_set,d)
    lubridate::month(start)<-lubridate::month(start)+1
    lubridate::month(start2)<-lubridate::month(start2)+1
@@ -257,14 +277,15 @@ filtering_interval<-function(data, start, end, filters=c(), plimits=c(),pquantil
 #' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
-#' @param filters A vector of filter names (options are: \code{extremeprices} and/or \code{lowsales}). 
+#' @param filters A vector of filter names (options are: \code{extremeprices}, \code{dumpprices} and/or \code{lowsales}). 
 #' @param plimits A two-dimensional vector of thresholds  for minimum and maximum price change (it works if one of the chosen filters is \code{extremeprices} filter). 
 #' @param pquantiles A two-dimensional vector of quantile levels for minimum and maximum price change (it works if one of the chosen filters is \code{extremeprices} filter).
+#' @param dplimits A two-dimensional vector of thresholds for maximum price drop and maximum ependiture drop (it works if one of the chosen filters is \code{dumpprices} filter). 
 #' @param lambda The lambda parameter for \code{lowsales} filter (see \code{References} below).
 #' @param interval A logical value indicating whether the filtering process concerns only two periods defined by \code{start} and \code{end} parameters (then the \code{interval} is set to FALSE) or whether that function is to filter products sold during the whole time interval <start, end>, i.e. any subsequent months are compared. 
 #' @param retailers A logical parameter indicating whether filtering should be done for each outlet (\code{retID}) separately. If it is set to FALSE, then there is no need to consider the \code{retID} column.
 #' @rdname data_filtering
-#' @return This function returns a filtered data set (a reduced user's data frame). If the set of \code{filters} is empty, then the function returns the original data frame (defined by the \code{data} parameter) limited to considered months. On the other hand, if both filters are chosen, i.e. \code{filters=c(extremeprices, lowsales)}, then these filters work independently and a summary result is returned. Please note that both variants of \code{extremeprices} filter can be chosen at the same time, i.e. \code{plimits} and \code{pquantiles}, and they work also independently.
+#' @return This function returns a filtered data set (a reduced user's data frame). If the set of \code{filters} is empty, then the function returns the original data frame (defined by the \code{data} parameter) limited to considered months. On the other hand, if all filters are chosen, i.e. \code{filters=c(extremeprices,dumpprices,lowsales)}, then these filters work independently and a summary result is returned. Please note that both variants of \code{extremeprices} filter can be chosen at the same time, i.e. \code{plimits} and \code{pquantiles}, and they work also independently.
 #' @references
 #' {Van Loon, K., Roels, D. (2018) \emph{Integrating big data in Belgian CPI}. Meeting of the Group of Experts on Consumer Price Indices, Geneva.}
 #' @examples 
@@ -272,30 +293,29 @@ filtering_interval<-function(data, start, end, filters=c(), plimits=c(),pquantil
 #' data_filtering(milk,start="2018-12",end="2019-03",filters=c("extremeprices","lowsales"), plimits=c(0.25,2))
 #' @export
 
-data_filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), lambda=1.25, interval=FALSE, retailers=FALSE)
-{
+data_filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), dplimits=c(),lambda=1.25, interval=FALSE, retailers=FALSE)
+{ 
   if (nrow(data)==0) stop("A data frame is empty") 
-  if (retailers==FALSE) { if (interval==FALSE) return (filtering(data,start,end,filters,plimits, pquantiles,lambda))
-                         else return (filtering_interval(data,start,end,filters,plimits, pquantiles,lambda))  
+  if (retailers==FALSE) { if (interval==FALSE) return (filtering(data,start,end,filters,plimits, pquantiles,dplimits, lambda))
+                         else return (filtering_interval(data,start,end,filters,plimits, pquantiles,dplimits, lambda))  
                         }
   else { if (interval==FALSE) {ret<-matched(data, period1=start,period2=end, type="retID", interval=FALSE)
                                data_set<-data[0:0,]
                                for (i in (1:length(ret))) {rs<-dplyr::filter(data, data$retID==ret[i])
-                                                           d<-filtering(rs,start,end,filters,plimits, pquantiles,lambda)
+                                                           d<-filtering(rs,start,end,filters,plimits, pquantiles,dplimits,lambda)
                                                            data_set<-dplyr::union(data_set,d)
                                                           }
                               }
          else {                ret<-matched(data, period1=start,period2=end, type="retID", interval=TRUE)
                                data_set<-data[0:0,]
                                for (i in (1:length(ret))) {rs<-dplyr::filter(data, data$retID==ret[i])
-                                                          d<-filtering_interval(rs,start,end,filters,plimits, pquantiles,lambda)
+                                                          d<-filtering_interval(rs,start,end,filters,plimits, pquantiles,dplimits,lambda)
                                                            data_set<-dplyr::union(data_set,d)
                                                           }
               }
        return (data_set)
        }
 }
-
 
 #' @title  Selecting products from the user's data set for further price index calculations
 #'

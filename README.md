@@ -1,3 +1,8 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 
 PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 ================================================================================
@@ -12,8 +17,8 @@ Installation
 You can install the released version of **PriceIndices** from [GitHub](https://github.com/) with:
 
 ``` r
-library("devtools")
-devtools::install_github("JacekBialek/PriceIndices")
+library("remotes")
+remotes::install_github("JacekBialek/PriceIndices")
 ```
 
 The functions of this package can be categorized as follows:
@@ -175,12 +180,13 @@ jevons(data2, start="2018-12", end="2019-02")
 
 **data\_filtering**
 
-This function returns a filtered data set, i.e. a reduced user's data frame with the same columns and rows limited by a criterion defined by the **filters** parameter (see documentation).If the set of filters is empty then the function returns the original data frame (defined by the **data** parameter). On the other hand, if both filters are chosen, i.e. *filters=c(extremeprices, lowsales)*, then these filters work independently and a summary result is returned. Please note that both variants of the *extremeprices* filter can be chosen at the same time, i.e. *plimits* and *pquantiles*, and they work also independently. For example, let us assume we consider three filters: **filter1** is to reject 1% of the lowest and 1% of the highest price changes comparing March 2019 to December 2018, **filter2** is to reject products with the price ratio being less than 0.5 or bigger than 2 in the same time, **filter3** rejects the same products as **filter2** rejects and also products with relatively *low sale* in compared months.
+This function returns a filtered data set, i.e. a reduced user's data frame with the same columns and rows limited by a criterion defined by the **filters** parameter (see documentation). If the set of filters is empty then the function returns the original data frame (defined by the **data** parameter). On the other hand, if all filters are chosen, i.e. *filters=c(extremeprices, dumpprices, lowsales)*, then these filters work independently and a summary result is returned. Please note that both variants of the *extremeprices* filter can be chosen at the same time, i.e. *plimits* and *pquantiles*, and they work also independently. For example, let us assume we consider three filters: **filter1** is to reject 1% of the lowest and 1% of the highest price changes comparing March 2019 to December 2018, **filter2** is to reject products with the price ratio being less than 0.5 or bigger than 2 in the same time, **filter3** rejects the same products as **filter2** rejects and also products with relatively *low sale* in compared months, **filter4** rejects products with the price ratio being less than 0.9 and with the expenditure ratio being less than 0.8 in the same time.
 
 ``` r
 filter1<-data_filtering(milk,start="2018-12",end="2019-03",filters=c("extremeprices"),pquantiles=c(0.01,0.99))
 filter2<-data_filtering(milk,start="2018-12",end="2019-03",filters=c("extremeprices"),plimits=c(0.5,2))
 filter3<-data_filtering(milk,start="2018-12",end="2019-03",filters=c("extremeprices","lowsales"),plimits=c(0.5,2))
+filter4<-data_filtering(milk,start="2018-12",end="2019-03",filters=c("dumpprices"),dplimits=c(0.9,0.8))
 ```
 
 These three filters differ from each other with regard to the data reduction level:
@@ -192,9 +198,11 @@ nrow(data_without_filters)
 nrow(filter1)
 #> [1] 378
 nrow(filter2)
-#> [1] 0
+#> [1] 381
 nrow(filter3)
-#> [1] 0
+#> [1] 180
+nrow(filter4)
+#> [1] 374
 ```
 
 You can also use **data\_filtering** for each pair of subsequent months from the considered time interval under the condition that this filtering is done for each outlet (**retID**) separately, e.g.
@@ -498,19 +506,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.661535
-#> 2 403249 1.483543
-#> 3 400033 1.168509
-#> 4 402609 1.876965
-#> 5 406223 1.066163
-#> 6 406224 1.247933
+#> 1 400032 1.062129
+#> 2 403249 1.511622
+#> 3 400033 1.205243
+#> 4 402609 1.791033
+#> 5 406223 1.956774
+#> 6 406224 1.743022
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9934551
+#> [1] 0.9635377
 ```
 
 <a id="ad7"> </a>
