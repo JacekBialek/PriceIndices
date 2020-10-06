@@ -1,5 +1,3 @@
-
-
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -5161,7 +5159,7 @@ tpd_splice<-function (data,start,end, window=13, splice="movement",interval=FALS
                                        tT1<-start
                                        lubridate::month(tT1)<-lubridate::month(tT1)-(window-1)-1
                                        th<-start
-                                       lubridate::month(th)<-lubridate::month(th)-ceiling(window/2)
+                                       lubridate::month(th)<-lubridate::month(th)-floor(window/2)
                                        t1<-substr(t1,0,7)
                                        tT<-substr(tT,0,7)
                                        tT1<-substr(tT1,0,7)
@@ -5181,7 +5179,7 @@ var<-var*tpd(data,tm,t,wstart=tT,window)/tpd(data,tm,t1,wstart=tT1,window)
                                        if (splice=="window_published")
                                        set<-c(set, set[length(set)+1-(window-1)]*tpd(data,tT,t,wstart=tT,window))
                                        if (splice=="half_published")
-                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*tpd(data,th,t,wstart=tT,window))  
+                                       set<-c(set, set[length(set)+1-floor(window/2)]*tpd(data,th,t,wstart=tT,window))  
                                        if (splice=="mean_published") {var<-1
                                        for (m in 1:(window-1)) {tm<-start
                                        lubridate::month(tm)<-lubridate::month(tm)-m
@@ -5255,7 +5253,7 @@ geks_splice<-function (data,start,end, window=13, splice="movement",interval=FAL
                                        tT1<-start
                                        lubridate::month(tT1)<-lubridate::month(tT1)-(window-1)-1
                                        th<-start
-                                       lubridate::month(th)<-lubridate::month(th)-ceiling(window/2)
+                                       lubridate::month(th)<-lubridate::month(th)-floor(window/2)
                                        t1<-substr(t1,0,7)
                                        tT<-substr(tT,0,7)
                                        tT1<-substr(tT1,0,7)
@@ -5275,7 +5273,7 @@ var<-var*geks(data,tm,t,wstart=tT,window)/geks(data,tm,t1,wstart=tT1,window)
                                        if (splice=="window_published")
                                        set<-c(set, set[length(set)+1-(window-1)]*geks(data,tT,t,wstart=tT,window))
                                        if (splice=="half_published")
-                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*geks(data,th,t,wstart=tT,window))  
+                                       set<-c(set, set[length(set)+1-floor(window/2)]*geks(data,th,t,wstart=tT,window))  
                                        if (splice=="mean_published") {var<-1
                                        for (m in 1:(window-1)) {tm<-start
                                        lubridate::month(tm)<-lubridate::month(tm)-m
@@ -5346,7 +5344,7 @@ geksj_splice<-function (data,start,end, window=13, splice="movement",interval=FA
                                        tT1<-start
                                        lubridate::month(tT1)<-lubridate::month(tT1)-(window-1)-1
                                        th<-start
-                                       lubridate::month(th)<-lubridate::month(th)-ceiling(window/2)
+                                       lubridate::month(th)<-lubridate::month(th)-floor(window/2)
                                        t1<-substr(t1,0,7)
                                        tT<-substr(tT,0,7)
                                        tT1<-substr(tT1,0,7)
@@ -5366,7 +5364,7 @@ var<-var*geksj(data,tm,t,wstart=tT,window)/geksj(data,tm,t1,wstart=tT1,window)
                                        if (splice=="window_published")
                                        set<-c(set, set[length(set)+1-(window-1)]*geksj(data,tT,t,wstart=tT,window))
                                        if (splice=="half_published")
-                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*geksj(data,th,t,wstart=tT,window))  
+                                       set<-c(set, set[length(set)+1-floor(window/2)]*geksj(data,th,t,wstart=tT,window))  
                                        if (splice=="mean_published") {var<-1
                                        for (m in 1:(window-1)) {tm<-start
                                        lubridate::month(tm)<-lubridate::month(tm)-m
@@ -5437,7 +5435,7 @@ geksw_splice<-function (data,start,end, window=13, splice="movement",interval=FA
                                        tT1<-start
                                        lubridate::month(tT1)<-lubridate::month(tT1)-(window-1)-1
                                        th<-start
-                                       lubridate::month(th)<-lubridate::month(th)-ceiling(window/2)
+                                       lubridate::month(th)<-lubridate::month(th)-floor(window/2)
                                        t1<-substr(t1,0,7)
                                        tT<-substr(tT,0,7)
                                        tT1<-substr(tT1,0,7)
@@ -5457,7 +5455,7 @@ var<-var*geksw(data,tm,t,wstart=tT,window)/geksw(data,tm,t1,wstart=tT1,window)
                                        if (splice=="window_published")
                                        set<-c(set, set[length(set)+1-(window-1)]*geksw(data,tT,t,wstart=tT,window))
                                        if (splice=="half_published")
-                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*geksw(data,th,t,wstart=tT,window))  
+                                       set<-c(set, set[length(set)+1-floor(window/2)]*geksw(data,th,t,wstart=tT,window))  
                                        if (splice=="mean_published") {var<-1
                                        for (m in 1:(window-1)) {tm<-start
                                        lubridate::month(tm)<-lubridate::month(tm)-m
@@ -5528,7 +5526,7 @@ ccdi_splice<-function (data,start,end, window=13, splice="movement",interval=FAL
                                        tT1<-start
                                        lubridate::month(tT1)<-lubridate::month(tT1)-(window-1)-1
                                        th<-start
-                                       lubridate::month(th)<-lubridate::month(th)-ceiling(window/2)
+                                       lubridate::month(th)<-lubridate::month(th)-floor(window/2)
                                        t1<-substr(t1,0,7)
                                        tT<-substr(tT,0,7)
                                        tT1<-substr(tT1,0,7)
@@ -5548,7 +5546,7 @@ var<-var*ccdi(data,tm,t,wstart=tT,window)/ccdi(data,tm,t1,wstart=tT1,window)
                                        if (splice=="window_published")
                                        set<-c(set, set[length(set)+1-(window-1)]*ccdi(data,tT,t,wstart=tT,window))
                                        if (splice=="half_published")
-                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*ccdi(data,th,t,wstart=tT,window))  
+                                       set<-c(set, set[length(set)+1-floor(window/2)]*ccdi(data,th,t,wstart=tT,window))  
                                        if (splice=="mean_published") {var<-1
                                        for (m in 1:(window-1)) {tm<-start
                                        lubridate::month(tm)<-lubridate::month(tm)-m
@@ -5618,7 +5616,7 @@ gk_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE
                                        tT1<-start
                                        lubridate::month(tT1)<-lubridate::month(tT1)-(window-1)-1
                                        th<-start
-                                       lubridate::month(th)<-lubridate::month(th)-ceiling(window/2)
+                                       lubridate::month(th)<-lubridate::month(th)-floor(window/2)
                                        t1<-substr(t1,0,7)
                                        tT<-substr(tT,0,7)
                                        tT1<-substr(tT1,0,7)
@@ -5638,7 +5636,7 @@ var<-var*gk(data,tm,t,wstart=tT,window)/gk(data,tm,t1,wstart=tT1,window)
                                        if (splice=="window_published")
                                        set<-c(set, set[length(set)+1-(window-1)]*gk(data,tT,t,wstart=tT,window))
                                        if (splice=="half_published")
-                                       set<-c(set, set[length(set)+1-ceiling(window/2)]*gk(data,th,t,wstart=tT,window))  
+                                       set<-c(set, set[length(set)+1-floor(window/2)]*gk(data,th,t,wstart=tT,window))  
                                        if (splice=="mean_published") {var<-1
                                        for (m in 1:(window-1)) {tm<-start
                                        lubridate::month(tm)<-lubridate::month(tm)-m
@@ -5677,7 +5675,7 @@ else return(set)
 price_index<-function(data, start, end, formula="fisher", window=13, splice="movement", base=start, sigma=0.7, interval=FALSE) 
 { asplice<-c("movement","window","half","mean") #allowed values for 'splice' parameter
   if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
-  aformula<-c("jevons","dutot","carli","cswd","harmonic","bmw","laspeyres","paasche","fisher","tornqvist","geolaspeyres","geopaasche","drobisch","marshall_edgeworth","walsh","bialek","banajree","davies","stuvel","palgrave","geary_khamis","lehr","vartia","sato_vartia","lloyd_moulton","agmean","young","geoyoung","lowe","geolowe","chjevons","chdutot","chcarli","chcswd","chharmonic","chlaspeyres","chpaasche","chfisher","chtornqvist","chgeolaspeyres","chgeopaasche","chdrobisch","chmarshall_edgeworth","chwalsh","chbialek","chbanajree","chdavies","chstuvel","chpalgrave","chgeary_khamis","chlehr","chvartia","chsato_vartia","chlloyd_moulton","chagmean","chyoung","chgeoyoung","chlowe","chgeolowe","chbmw","geks","geksj","geksw","ccdi","gk","tpd","geks_splice","geksj_splice","geksw_splice","ccdi_splice","gk_splice","tpd_splice","geks_fbew","geks_fbmw","geksj_fbew","geksj_fbmw","geksw_fbew","geksw_fbmw","ccdi_fbew","ccdi_fbmw","gk_fbew","gk_fbmw","tpd_fbew","tpd_fbmw","hybrid", "geohybrid", "chhybrid", "chgeohybrid")
+  aformula<-c("jevons","dutot","carli","cswd","harmonic","bmw","laspeyres","paasche","fisher","tornqvist","geolaspeyres","geopaasche","drobisch","marshall_edgeworth","walsh","bialek","banajree","davies","stuvel","palgrave","geary_khamis","lehr","vartia","sato_vartia","lloyd_moulton","agmean","young","geoyoung","lowe","geolowe","chjevons","chdutot","chcarli","chcswd","chharmonic","chlaspeyres","chpaasche","chfisher","chtornqvist","chgeolaspeyres","chgeopaasche","chdrobisch","chmarshall_edgeworth","chwalsh","chbialek","chbanajree","chdavies","chstuvel","chpalgrave","chgeary_khamis","chlehr","chvartia","chsato_vartia","chlloyd_moulton","chagmean","chyoung","chgeoyoung","chlowe","chgeolowe","chbmw","geks","geksj","geksw","ccdi","gk","tpd","geks_splice","geksj_splice","geksw_splice","ccdi_splice","gk_splice","tpd_splice","geks_fbew","geks_fbmw","geksj_fbew","geksj_fbmw","geksw_fbew","geksw_fbmw","ccdi_fbew","ccdi_fbmw","gk_fbew","gk_fbmw","tpd_fbew","tpd_fbmw","hybrid", "geohybrid", "chhybrid", "chgeohybrid","SPQ","geksl","wgeksl","geksl_splice","wgeksl_splice","geksl_fbew","wgeksl_fbew","geksl_fbmw","wgeksl_fbmw")
   if (!(formula %in% aformula)) stop ("There is a typo in the index name")
   if (start==end) return (1)
   if (nrow(data)==0) stop("A data frame is empty")
@@ -5757,15 +5755,24 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
                        if (formula=="ccdi") set<-geks(data, start, end, start, window)
                        if (formula=="gk") set<-gk(data, start, end, start, window)
                        if (formula=="tpd") set<-tpd(data, start, end, start, window)
+                       if (formula=="SPQ") set<-SPQ(data, start, end, interval)
+                       if (formula=="geksl") set<-geksl(data, start, end, start, window)
+                       if (formula=="wgeksl") set<-wgeksl(data, start, end, start, window)
                        #extended multilateral indices
                        if (formula=="geks_splice") set<-geks_splice(data, start, end, window, splice, interval)
+                       if (formula=="geksl_splice") set<-geksl_splice(data, start, end, window, splice, interval)
+                       if (formula=="wgeksl_splice") set<-wgeksl_splice(data, start, end, window, splice, interval)
                        if (formula=="geksj_splice") set<-geksj_splice(data, start, end, window, splice, interval)
                        if (formula=="geksw_splice") set<-geksw_splice(data, start, end, window, splice, interval)
                        if (formula=="ccdi_splice") set<-ccdi_splice(data, start, end, window, splice, interval)
                        if (formula=="gk_splice") set<-gk_splice(data, start, end, window, splice, interval)
                        if (formula=="tpd_splice") set<-tpd_splice(data, start, end, window, splice, interval)
                        if (formula=="geks_fbew") set<-geks_fbew(data, start, end)
+                       if (formula=="geksl_fbew") set<-geksl_fbew(data, start, end)
+                       if (formula=="wgeksl_fbew") set<-wgeksl_fbew(data, start, end)
                        if (formula=="geks_fbmw") set<-geks_fbew(data, start, end)
+                       if (formula=="geksl_fbmw") set<-geksl_fbew(data, start, end)
+                       if (formula=="wgeksl_fbmw") set<-wgeksl_fbew(data, start, end)
                        if (formula=="geksj_fbew") set<-geksj_fbew(data, start, end)
                        if (formula=="geksj_fbmw") set<-geksj_fbew(data, start, end)
                        if (formula=="geksw_fbew") set<-geksw_fbew(data, start, end)
@@ -5848,8 +5855,12 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
                        if (formula=="chgeolowe") set<-chgeolowe(data, start,end,base,interval)
                        if (formula=="chhybrid") set<-chhybrid(data, start,end,base,interval)
                        if (formula=="chgeohybrid") set<-chgeohybrid(data, start,end,base,interval)
+                       #SPQ multilateral
+                       if (formula=="SPQ") set<-SPQ(data, start, end, interval)
                        #extended multilateral indices
                        if (formula=="geks_splice") set<-geks_splice(data, start, end, window, splice, interval)
+                       if (formula=="geksl_splice") set<-geksl_splice(data, start, end, window, splice, interval)
+                       if (formula=="wgeksl_splice") set<-wgeksl_splice(data, start, end, window, splice, interval)
                        if (formula=="geksj_splice") set<-geksj_splice(data, start, end, window, splice, interval)
                        if (formula=="geksw_splice") set<-geksw_splice(data, start, end, window, splice, interval)
                        if (formula=="ccdi_splice") set<-ccdi_splice(data, start, end, window, splice, interval) 
@@ -5867,13 +5878,19 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
                        t<-substr(start2,0,7)
                        #multilateral indices
                        if (formula=="geks") set<-c(set,geks(data, t0, t, t0, window))
+                       if (formula=="geksl") set<-c(set,geksl(data, t0, t, t0, window))
+                       if (formula=="wgeksl") set<-c(set,wgeksl(data, t0, t, t0, window))
                        if (formula=="geksj") set<-c(set,geksj(data, t0, t, t0, window))
                        if (formula=="geksw") set<-c(set,geksw(data, t0, t, t0, window))
                        if (formula=="ccdi") set<-c(set,ccdi(data, t0, t, t0, window))
                        if (formula=="gk") set<-c(set,gk(data, t0, t, t0, window))
                        if (formula=="tpd") set<-c(set,tpd(data, t0, t, t0, window))
                        if (formula=="geks_fbew") set<-c(set,geks_fbew(data, t0, t))
+                       if (formula=="geksl_fbew") set<-c(set,geksl_fbew(data, t0, t))
+                       if (formula=="wgeksl_fbew") set<-c(set,wgeksl_fbew(data, t0, t))
                        if (formula=="geks_fbmw") set<-c(set,geks_fbmw(data, t0, t))
+                       if (formula=="geksl_fbmw") set<-c(set,geksl_fbmw(data, t0, t))
+                       if (formula=="wgeksl_fbmw") set<-c(set,wgeksl_fbmw(data, t0, t))
                        if (formula=="geksj_fbew") set<-c(set,geksj_fbew(data, t0, t))
                        if (formula=="geksj_fbmw") set<-c(set,geksj_fbmw(data, t0, t))
                        if (formula=="geksw_fbew") set<-c(set,geksw_fbew(data, t0, t))
@@ -5902,6 +5919,7 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
 #' @param bilateral A vector of character strings indicating bilateral price index formulas that are to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.
 #' @param bindex A vector of character strings indicating Lowe- or Young-type price index formulas that are to be calculated. Available options are: \code{young},\code{geoyoung},\code{lowe} and \code{geolowe}. 
 #' @param cesindex A vector of character strings indicating CES price index formulas that are to be calculated. To see available options, please use the link: \code{\link{PriceIndices}}.
+#' @param simindex A vector of character strings indicating multilateral price index formulas based on relative price and quantity similarity that are to be calculated. To see available options, please use the link: \code{\link{PriceIndices}}.
 #' @param fbmulti A vector of character strings indicating multilateral price index formulas that are to be calculated. The available set of indices includes full-window multilateral indices or their FBEW and FBMW extensions.To see available options, please use the link: \code{\link{PriceIndices}}.
 #' @param splicemulti A vector of character strings indicating multilateral price index formulas that are to be extended by using splicing methods. To see available options. please use the link: \code{\link{PriceIndices}}.
 #' @param base The vector of prior periods used in the Young- or Lowe-type price indices. Each element of the vector (as character) must be limited to the year and month, e.g. "2020-01".
@@ -5912,6 +5930,7 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
 #' @param namebilateral A vector of character strings describing names of bilateral price indices that are to be displayed. If this vector is empty, then default names are used.
 #' @param namebindex A vector of character strings describing names of Young- and/or Lowe-type price indices are to be displayed. If this vector is empty, then default names are used.
 #' @param namecesindex A vector of character strings describing names of CES price indices that are to be displayed. If this vector is empty, then default names are used.
+#' @param namesimindex A vector of character strings describing names of multilateral price index formulas based on relative price and quantity similarity that are to be displayed. If this vector is empty, then default names are used.
 #' @param namefbmulti A vector of character strings describing names of full-window multilateralindices or their FBEW and FBMW extensions that are to be displayed. If this vector is empty, then default names are used.
 #' @param namesplicemulti  A vector of character strings describing names of multilateral splice indices that are to be displayed. If this vector is empty, then default names are used.
 #' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).
@@ -5921,7 +5940,7 @@ price_index<-function(data, start, end, formula="fisher", window=13, splice="mov
 #' price_indices(milk, start="2018-12", end="2019-04",bilateral=c("jevons"),fbmulti=c("tpd"),fbwindow=c(6),interval=TRUE)
 #' price_indices(milk, start="2018-12", end="2019-05",fbmulti=c("tpd","geks"),fbwindow=c(10,12),interval=TRUE)
 #' @export
-price_indices<-function(data, start, end, bilateral=c(), bindex=c(), base=c(), cesindex=c(), sigma=c(), fbmulti=c(), fbwindow=c(), splicemulti=c(), splicewindow=c(), splice=c(), namebilateral=bilateral, namebindex=bindex, namecesindex=cesindex, namefbmulti=fbmulti, namesplicemulti=splicemulti,interval=FALSE) 
+price_indices<-function(data, start, end, bilateral=c(), bindex=c(), base=c(), cesindex=c(), sigma=c(), simindex=c(),fbmulti=c(), fbwindow=c(), splicemulti=c(), splicewindow=c(), splice=c(), namebilateral=bilateral, namebindex=bindex, namecesindex=cesindex, namesimindex=simindex,namefbmulti=fbmulti, namesplicemulti=splicemulti,interval=FALSE) 
 { 
   if (nrow(data)==0) stop("A data frame is empty") 
   if (!(length(bindex)==length(base))) stop("Length of 'bindex' must be the same as length of 'base'")
@@ -5930,18 +5949,20 @@ price_indices<-function(data, start, end, bilateral=c(), bindex=c(), base=c(), c
   if (!(length(fbmulti)==length(fbwindow))) stop("Length of 'fbmulti' must be the same as length of 'fbwindow'")
   if (!(length(splicemulti)==length(splicewindow))) stop("Length of 'splicemulti' must be the same as length of 'splicewindow'")
   if (!(length(splicemulti)==length(splice))) stop("Length of 'splicemulti' must be the same as length of 'splice'")
-  if (length(bilateral)+length(bindex)+length(cesindex)+length(fbmulti)+length(splicemulti)==0) stop("at least one price index formula must be chosen")
+  if (length(bilateral)+length(bindex)+length(cesindex)+length(fbmulti)+length(splicemulti)+length(simindex)==0) stop("at least one price index formula must be chosen")
    if (interval==FALSE) {
                       results1<-NULL
                       results2<-NULL
                       results3<-NULL
                       results4<-NULL
                       results5<-NULL
+                      results6<-NULL
                       bil<-c()
                       b<-c()
                       ces<-c()
                       full<-c()
                       ex<-c()
+                      sind<-c()
                       if (length(bilateral)>0) {for (i in 1:length(bilateral)) bil<-c(bil, price_index(data, start, end, formula=bilateral[i], interval=FALSE))
                       results1<-data.frame(namebilateral, bil)
                       colnames(results1)<-c("index formula","value") }
@@ -5957,7 +5978,10 @@ price_indices<-function(data, start, end, bilateral=c(), bindex=c(), base=c(), c
                       if (length(splicemulti)>0) {for (i in 1:length(splicemulti)) ex<-c(ex, price_index(data, start, end, formula=splicemulti[i], window=splicewindow[i], splice=splice[i], interval=FALSE))
                       results5<-data.frame(namesplicemulti, ex)
                       colnames(results5)<-c("index formula","value") }
-                      results<-base::rbind(results1, results2, results3,results4,results5)
+                      if (length(simindex)>0) {for (i in 1:length(simindex)) sind<-c(sind, price_index(data, start, end, formula=simindex[i], interval=FALSE))
+                      results6<-data.frame(namesimindex, sind)
+                      colnames(results6)<-c("index formula","value") }
+                      results<-base::rbind(results1, results2, results3,results4,results5,results6)
                       colnames(results)<-c("index formula","value")
                        }  
    else {              
@@ -5998,7 +6022,15 @@ price_indices<-function(data, start, end, bilateral=c(), bindex=c(), base=c(), c
 colnames(results)[k]=namesplicemulti[i]
                                                                                     }
                                               }
-        }
+
+                      if (length(simindex)>0) {
+                      for (i in 1:length(simindex)) {k<-length(bilateral)+1+length(bindex)+length(cesindex)+length(fbmulti)+length(splicemulti)+i
+                      results$k<-price_index(data, substr(start,0,7), substr(end,0,7), formula=simindex[i], interval=TRUE)[[2]]
+colnames(results)[k]=namesimindex[i]
+                                                                                    }
+                                              }
+                      
+                              }
 return(results)
 }
 
@@ -6011,6 +6043,7 @@ return(results)
 #' @param bilateral A vector of character strings indicating bilateral price index formulas that are to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.
 #' @param bindex A vector of character strings indicating Lowe- or Young-type price index formulas that are to be calculated. Available options are: \code{young}, \code{geoyoung}, \code{lowe} and \code{geolowe}. 
 #' @param cesindex A vector of character strings indicating CES price index formulas that are to be calculated. To see available options, please use the link: \code{\link{PriceIndices}}.
+#' @param simindex A vector of character strings indicating multilateral price index formulas based on relative price and quantity similarity that are to be calculated. To see available options, please use the link: \code{\link{PriceIndices}}.
 #' @param fbmulti A vector of character strings indicating multilateral price index formulas that are to be calculated. The available set of indices includes full-window multilateral indices or their FBEW and FBMW extensions.To see available options, please use the link: \code{\link{PriceIndices}}.
 #' @param splicemulti The vector of character strings indicating multilateral price index formulas are to be extended by using splicing methods. To see available options please use the link: \code{\link{PriceIndices}}.
 #' @param base The vector of prior periods used in the Young- or Lowe-type price indices. Each element of the vector (as character) must be limited to the year and month, e.g. "2020-01".
@@ -6021,6 +6054,7 @@ return(results)
 #' @param namebilateral A vector of character strings describing names of bilateral price indices that are to be displayed. If this vector is empty, then default names are used.
 #' @param namebindex A vector of character strings describing names of Young- and/or Lowe-type price indices are to be displayed. If this vector is empty then default names are used.
 #' @param namecesindex A vector of character strings describing names of CES price indices that are to be displayed. If this vector is empty, then default names are used.
+#' @param namesimindex A vector of character strings describing names of multilateral price index formulas based on relative price and quantity similarity that are to be displayed. If this vector is empty, then default names are used.
 #' @param namefbmulti A vector of character strings describing names of full-window multilateralindices or their FBEW and FBMW extensions that are to be displayed. If this vector is empty, then default names are used.
 #' @param namesplicemulti  A vector of character strings describing names of multilateral splice indices that are to be displayed. If this vector is empty, then default names are used.
 #' @rdname compare_indices
@@ -6031,12 +6065,12 @@ return(results)
 #' @export
 
 
-compare_indices<-function(data, start, end, bilateral=c(), bindex=c(), base=c(), cesindex=c(), sigma=c(), fbmulti=c(), fbwindow=c(), splicemulti=c(), splicewindow=c(), splice=c(), namebilateral=bilateral, namebindex=bindex, namecesindex=cesindex, namefbmulti=fbmulti, namesplicemulti=splicemulti)
+compare_indices<-function(data, start, end, bilateral=c(), bindex=c(), base=c(), cesindex=c(), sigma=c(), simindex=c(),fbmulti=c(), fbwindow=c(), splicemulti=c(), splicewindow=c(), splice=c(), namebilateral=bilateral, namebindex=bindex, namecesindex=cesindex, namesimindex=simindex,namefbmulti=fbmulti, namesplicemulti=splicemulti)
 {
 if (nrow(data)==0) stop("A data frame is empty")
-if (length(bilateral)+length(bindex)+length(cesindex)+length(fbmulti)+length(splicemulti)==0) stop("at least one price index formula must be chosen")
+if (length(bilateral)+length(bindex)+length(cesindex)+length(fbmulti)+length(splicemulti)+length(simindex)==0) stop("at least one price index formula must be chosen")
 #main body
-graph<-price_indices(data, start, end, bilateral, bindex, base, cesindex, sigma, fbmulti, fbwindow, splicemulti, splicewindow, splice, namebilateral, namebindex, namecesindex, namefbmulti, namesplicemulti, interval=TRUE) 
+graph<-price_indices(data, start, end, bilateral, bindex, base, cesindex, sigma, simindex,fbmulti, fbwindow, splicemulti, splicewindow, splice, namebilateral, namebindex, namecesindex, namesimindex,namefbmulti, namesplicemulti, interval=TRUE) 
 graph$date<-as.Date(paste(graph$date,"-01",sep=""))
 graph<-reshape::melt(graph, id.var='date') 
 colnames(graph)<-c("date","formula","value")
@@ -6094,17 +6128,17 @@ for (m in 1:length(datasets))  {set<-data.frame(datasets[[m]])
 #limiting to matched products depending on the used price index formula 
 if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw") | (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe") | (formula=="hybrid") | (formula=="geohybrid"))
 id<-matched(set, period1=substr(start,0,7), period2=substr(end,0,7), type="retID", FALSE)
-else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd")) {
+else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd") | (formula=="geksl")| (formula=="wgeksl")) {
 wend<-start
 lubridate::month(wend)<-lubridate::month(wend)+window-1
 id<-matched(set, period1=substr(start,0,7), period2=substr(end,0,7), type="retID", TRUE)
                                                                                                             }
-else if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice")){
+else if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice") | (formula=="geksl_splice") | (formula=="wgeksl_splice")){
 wend<-start
 lubridate::month(wend)<-lubridate::month(wend)+window-1
 id<-matched(set, period1=substr(start,0,7), period2=substr(max(wend,end),0,7), type="retID", TRUE)
              }
-else if ((formula=="geks_fbmw") | (formula=="geksw_fbmw") | (formula=="geksj_fbmw") | (formula=="ccdi_fbmw") |    (formula=="gk_fbmw") | (formula=="tpd_wbmw")){
+else if ((formula=="geks_fbmw") | (formula=="geksw_fbmw") | (formula=="geksj_fbmw") | (formula=="ccdi_fbmw") |    (formula=="gk_fbmw") | (formula=="tpd_wbmw") | (formula=="geksl_fbmw") | (formula=="wgeksl_fbmw")){
 wstart<-end
 lubridate::year(wstart)<-lubridate::year(wstart)-1
 if (lubridate::year(start)==lubridate::year(end)) id<-matched(set, period1=substr(wstart,0,7), period2=substr(end,0,7), type="retID", TRUE)
@@ -6120,17 +6154,17 @@ for (k in 1:length(id)) {
 subset<-dplyr::filter(set, set$retID==id[k])
 if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw") | (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe") | (formula=="hybrid") | (formula=="geohybrid"))
 idp<-matched(subset, period1=substr(start,0,7), period2=substr(end,0,7), type="prodID", FALSE)
-else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd")) {
+else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd") | (formula=="geksl") | (formula=="wgeksl")) {
 wend<-start
 lubridate::month(wend)<-lubridate::month(wend)+window-1
 idp<-matched(subset, period1=substr(start,0,7), period2=substr(end,0,7), type="prodID", TRUE)
                                                                                                             }
-else if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice")){
+else if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice") | (formula=="geksl_splice") | (formula=="wgeksl_splice")){
 wend<-start
 lubridate::month(wend)<-lubridate::month(wend)+window-1
 idp<-matched(subset, period1=substr(start,0,7), period2=substr(max(wend,end),0,7), type="prodID", TRUE)
              }
-else if ((formula=="geks_fbmw") | (formula=="geksw_fbmw") | (formula=="geksj_fbmw") | (formula=="ccdi_fbmw") |    (formula=="gk_fbmw") | (formula=="tpd_wbmw")){
+else if ((formula=="geks_fbmw") | (formula=="geksw_fbmw") | (formula=="geksj_fbmw") | (formula=="ccdi_fbmw") |    (formula=="gk_fbmw") | (formula=="tpd_wbmw")| (formula=="geksl_fbmw") | (formula=="wgeksl_fbmw")){
 wstart<-end
 lubridate::year(wstart)<-lubridate::year(wstart)-1
 if (lubridate::year(start)==lubridate::year(end)) idp<-matched(subset, period1=substr(wstart,0,7), period2=substr(end,0,7), type="prodID", TRUE)
@@ -6238,7 +6272,7 @@ index_ret<-prod(retindex^(0.5*(w_start_ret/w_start+w_end_ret/w_end)))
                        lubridate::month(st)<-lubridate::month(st)+1
                                        }
                        #limiting to matched products depending on the used price index formula - part 1
-                       if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd"))
+                       if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd") | (formula=="geksl") | (formula=="wgeksl"))
                        {
                        wend<-start
                        lubridate::month(wend)<-lubridate::month(wend)+window-1
@@ -6246,7 +6280,7 @@ index_ret<-prod(retindex^(0.5*(w_start_ret/w_start+w_end_ret/w_end)))
                        idd[[m]]<-matched(set, period1=substr(start,0,7), period2=substr(wend,0,7), type="retID", TRUE)
                                                         }
                         }
-                       if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice"))
+                       if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice")| (formula=="geksl_splice") | (formula=="wgeksl_splice"))
                       { 
                        wend<-start
                        lubridate::month(wend)<-lubridate::month(wend)+window-1
@@ -6272,9 +6306,9 @@ for (m in 1:length(datasets))  {set<-data.frame(datasets[[m]])
 #limiting to matched products depending on the used price index formula - part 2 (rest of indices)
 if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw")| (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe") | (formula=="hybrid") | (formula=="geohybrid"))
 id<-matched(set, period1=substr(start,0,7), period2=substr(end,0,7), type="retID", FALSE)
-else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd")) id<-idd[[m]]
-else if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice")) id<-idd[[m]]
-else if ((formula=="geks_fbmw") | (formula=="geksw_fbmw") | (formula=="geksj_fbmw") | (formula=="ccdi_fbmw") |    (formula=="gk_fbmw") | (formula=="tpd_wbmw")){
+else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd") | (formula=="geksl") | (formula=="wgeksl")) id<-idd[[m]]
+else if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice") | (formula=="geksl_splice") | (formula=="wgeksl_splice")) id<-idd[[m]]
+else if ((formula=="geks_fbmw") | (formula=="geksw_fbmw") | (formula=="geksj_fbmw") | (formula=="ccdi_fbmw") |    (formula=="gk_fbmw") | (formula=="tpd_wbmw") | (formula=="geksl_fbmw") | (formula=="wgeksl_fbmw")){
 wstart<-end
 lubridate::year(wstart)<-lubridate::year(wstart)-1
 if (lubridate::year(start)==lubridate::year(end)) id<-matched(set, period1=substr(wstart,0,7), period2=substr(end,0,7), type="retID", TRUE)
@@ -6291,17 +6325,17 @@ subset<-dplyr::filter(set, set$retID==id[k])
                             
 if ((formula=="jevons") | (formula=="dutot") | (formula=="carli") | (formula=="cswd") | (formula=="harmonic") | (formula=="bmw") | (formula=="laspeyres") | (formula=="paasche") | (formula=="fisher") |(formula=="tornqvist") | (formula=="geolaspeyres") | (formula=="geopaasche") | (formula=="drobisch") | (formula=="marshall_edgeworth") | (formula=="walsh") | (formula=="bialek") | (formula=="banajree") | (formula=="davies") | (formula=="stuvel") | (formula=="palgrave") | (formula=="geary_khamis") | (formula=="lehr") | (formula=="vartia") | (formula=="sato_vartia") | (formula=="lloyd_moulton") | (formula=="agmean") | (formula=="young") | (formula=="geoyoung") | (formula=="lowe") | (formula=="geolowe") | (formula=="hybrid") | (formula=="geohybrid"))
 idp<-matched(subset, period1=substr(start,0,7), period2=substr(end,0,7), type="prodID", FALSE)
-else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd")) {
+else if ((formula=="geks") | (formula=="geksw") | (formula=="geksj") | (formula=="ccdi") | (formula=="gk") | (formula=="tpd")| (formula=="geksl") | (formula=="wgeksl")) {
 wend<-start
 lubridate::month(wend)<-lubridate::month(wend)+window-1
 idp<-matched(subset, period1=substr(start,0,7), period2=substr(end,0,7), type="prodID", TRUE)
                                                                                                             }
-else if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice")){
+else if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice")| (formula=="geksl_splice")| (formula=="wgeksl_splice")){
 wend<-start
 lubridate::month(wend)<-lubridate::month(wend)+window-1
 idp<-matched(subset, period1=substr(start,0,7), period2=substr(max(wend,end),0,7), type="prodID", TRUE)
              }
-else if ((formula=="geks_fbmw") | (formula=="geksw_fbmw") | (formula=="geksj_fbmw") | (formula=="ccdi_fbmw") |    (formula=="gk_fbmw") | (formula=="tpd_wbmw")){
+else if ((formula=="geks_fbmw") | (formula=="geksw_fbmw") | (formula=="geksj_fbmw") | (formula=="ccdi_fbmw") |    (formula=="gk_fbmw") | (formula=="tpd_wbmw") | (formula=="geksl_fbmw") | (formula=="wgeksl_fbmw")){
 wstart<-end
 lubridate::year(wstart)<-lubridate::year(wstart)-1
 if (lubridate::year(start)==lubridate::year(end)) idp<-matched(subset, period1=substr(wstart,0,7), period2=substr(end,0,7), type="prodID", TRUE)
@@ -6315,7 +6349,7 @@ id<-id_ok
 if (length(id)==0) stop("At least one subset does not include matched products")
 ##------------------------------------------------------------------                                   
 for (k in 1:length(id)) { subset<-dplyr::filter(set, set$retID==id[k])
-if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice"))
+if ((formula=="geks_splice") | (formula=="geksw_splice") | (formula=="geksj_splice") | (formula=="ccdi_splice") | (formula=="gk_splice") | (formula=="tpd_splice") | (formula=="geksl_splice") | (formula=="wgeksl_splice"))
 retindex<-c(retindex,retindexx[[m]][[k]][dist(start,end)+1]) 
 else retindex<-c(retindex, price_index(subset, substr(start,0,7), substr(end,0,7), formula, window, splice, base, sigma, interval=FALSE))
 d_start<-dplyr::filter(subset, lubridate::year(subset$time)==lubridate::year(start) & lubridate::month(subset$time)==lubridate::month(start))
