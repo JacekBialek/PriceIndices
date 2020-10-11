@@ -11,6 +11,7 @@ data_filtering(
   filters = c(),
   plimits = c(),
   pquantiles = c(),
+  dplimits = c(),
   lambda = 1.25,
   interval = FALSE,
   retailers = FALSE
@@ -23,11 +24,13 @@ data_filtering(
 
 \item{end}{The research period (as character) limited to the year and month, e.g. "2020-04".}
 
-\item{filters}{A vector of filter names (options are: \code{extremeprices} and/or \code{lowsales}).}
+\item{filters}{A vector of filter names (options are: \code{extremeprices}, \code{dumpprices} and/or \code{lowsales}).}
 
 \item{plimits}{A two-dimensional vector of thresholds  for minimum and maximum price change (it works if one of the chosen filters is \code{extremeprices} filter).}
 
 \item{pquantiles}{A two-dimensional vector of quantile levels for minimum and maximum price change (it works if one of the chosen filters is \code{extremeprices} filter).}
+
+\item{dplimits}{A two-dimensional vector of thresholds for maximum price drop and maximum ependiture drop (it works if one of the chosen filters is \code{dumpprices} filter).}
 
 \item{lambda}{The lambda parameter for \code{lowsales} filter (see \code{References} below).}
 
@@ -36,7 +39,7 @@ data_filtering(
 \item{retailers}{A logical parameter indicating whether filtering should be done for each outlet (\code{retID}) separately. If it is set to FALSE, then there is no need to consider the \code{retID} column.}
 }
 \value{
-This function returns a filtered data set (a reduced user's data frame). If the set of \code{filters} is empty, then the function returns the original data frame (defined by the \code{data} parameter) limited to considered months. On the other hand, if both filters are chosen, i.e. \code{filters=c(extremeprices, lowsales)}, then these filters work independently and a summary result is returned. Please note that both variants of \code{extremeprices} filter can be chosen at the same time, i.e. \code{plimits} and \code{pquantiles}, and they work also independently.
+This function returns a filtered data set (a reduced user's data frame). If the set of \code{filters} is empty, then the function returns the original data frame (defined by the \code{data} parameter) limited to considered months. On the other hand, if all filters are chosen, i.e. \code{filters=c(extremeprices,dumpprices,lowsales)}, then these filters work independently and a summary result is returned. Please note that both variants of \code{extremeprices} filter can be chosen at the same time, i.e. \code{plimits} and \code{pquantiles}, and they work also independently.
 }
 \description{
 This function returns a filtered data set, i.e. a reduced user's data frame with the same columns and rows limited by a criterion defined by \code{filters}.

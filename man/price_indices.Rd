@@ -13,6 +13,7 @@ price_indices(
   base = c(),
   cesindex = c(),
   sigma = c(),
+  simindex = c(),
   fbmulti = c(),
   fbwindow = c(),
   splicemulti = c(),
@@ -21,6 +22,7 @@ price_indices(
   namebilateral = bilateral,
   namebindex = bindex,
   namecesindex = cesindex,
+  namesimindex = simindex,
   namefbmulti = fbmulti,
   namesplicemulti = splicemulti,
   interval = FALSE
@@ -43,6 +45,8 @@ price_indices(
 
 \item{sigma}{The vector of elasticity of substitution parameters used in the Lloyed-Moulton and AG Mean indices.}
 
+\item{simindex}{A vector of character strings indicating multilateral price index formulas based on relative price and quantity similarity that are to be calculated. To see available options, please use the link: \code{\link{PriceIndices}}.}
+
 \item{fbmulti}{A vector of character strings indicating multilateral price index formulas that are to be calculated. The available set of indices includes full-window multilateral indices or their FBEW and FBMW extensions.To see available options, please use the link: \code{\link{PriceIndices}}.}
 
 \item{fbwindow}{A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index (if it is selected by \code{fbmulti}).}
@@ -58,6 +62,8 @@ price_indices(
 \item{namebindex}{A vector of character strings describing names of Young- and/or Lowe-type price indices are to be displayed. If this vector is empty, then default names are used.}
 
 \item{namecesindex}{A vector of character strings describing names of CES price indices that are to be displayed. If this vector is empty, then default names are used.}
+
+\item{namesimindex}{A vector of character strings describing names of multilateral price index formulas based on relative price and quantity similarity that are to be displayed. If this vector is empty, then default names are used.}
 
 \item{namefbmulti}{A vector of character strings describing names of full-window multilateralindices or their FBEW and FBMW extensions that are to be displayed. If this vector is empty, then default names are used.}
 

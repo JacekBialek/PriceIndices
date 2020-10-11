@@ -4,7 +4,13 @@
 \alias{data_selecting}
 \title{Selecting products from the user's data set for further price index calculations}
 \usage{
-data_selecting(data, include = c(), must = c(), exclude = c())
+data_selecting(
+  data,
+  include = c(),
+  must = c(),
+  exclude = c(),
+  sensitivity = TRUE
+)
 }
 \arguments{
 \item{data}{The user's data frame. It must contain a column \code{description} (as character).}
@@ -14,6 +20,8 @@ data_selecting(data, include = c(), must = c(), exclude = c())
 \item{must}{A vector consisting of words and phrases. The function reduces the data set to one in which the \code{description} column contains each of these values.}
 
 \item{exclude}{A vector consisting of words and phrases. The function reduces the data set to one in which the \code{description} column does not contain any of these values.}
+
+\item{sensitivity}{A logical parameter indicating whether sensitivity to lowercase and uppercase letters is taken into consideration (if yes, its value is TRUE).}
 }
 \value{
 The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: \code{include}, \code{must} and \code{exclude}. Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters.

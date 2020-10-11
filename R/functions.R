@@ -1,3 +1,4 @@
+
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -322,6 +323,7 @@ data_filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c
 #' @param include A vector consisting of words and phrases. The function reduces the data set to one in which the \code{description} column contains any of these values.
 #' @param must A vector consisting of words and phrases. The function reduces the data set to one in which the \code{description} column contains each of these values.
 #' @param exclude A vector consisting of words and phrases. The function reduces the data set to one in which the \code{description} column does not contain any of these values.
+#' @param sensitivity A logical parameter indicating whether sensitivity to lowercase and uppercase letters is taken into consideration (if yes, its value is TRUE). 
 #' @rdname data_selecting
 #' @return The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: \code{include}, \code{must} and \code{exclude}. Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters.
 #' @examples 
@@ -329,24 +331,26 @@ data_filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c
 #' data_selecting(milk, must=c("milk"), exclude=c("paust"))
 #' @export
 
-data_selecting<-function(data, include=c(), must=c(), exclude=c())
+data_selecting<-function(data, include=c(), must=c(), exclude=c(), sensitivity=TRUE)
 {
  if (nrow(data)==0) stop("A data frame is empty")
+ if (sensitivity==TRUE) data$description<-tolower(data$description)
  if (length(must)==0) set3<-data 
  else
- {
+ {if (sensitivity==TRUE) must<-tolower(must)
  set3<-dplyr::filter(data, stringr::str_detect(data$description, must[1]))
  if (length(must)>1) for (i in 2: length(must)) set3<-dplyr::intersect(set3,dplyr::filter(data,     stringr::str_detect(data$description, must[i])))
  }
  if (length(include)==0) set1<-data
  else
- {  
+ { if (sensitivity==TRUE) include<-tolower(include) 
  set1<-dplyr::filter(data, stringr::str_detect(data$description, include[1]))
   if (length(include)>1) for (i in 2: length(include)) set1<-dplyr::union(set1,dplyr::filter(data, stringr::str_detect(data$description, include[i])))
  }
  if (length(exclude)==0) set<-set1
  else
-   {set2<-dplyr::filter(data, stringr::str_detect(data$description, exclude[1]))
+   {if (sensitivity==TRUE) exclude<-tolower(exclude)
+   set2<-dplyr::filter(data, stringr::str_detect(data$description, exclude[1]))
    if (length(exclude)>1) for (i in 2: length(exclude)) set2<-dplyr::union(set2,dplyr::filter(data, stringr::str_detect(data$description, exclude[i])))
    set<-dplyr::setdiff(set1,set2)
    }
