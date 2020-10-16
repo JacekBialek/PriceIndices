@@ -9,7 +9,8 @@ data_selecting(
   include = c(),
   must = c(),
   exclude = c(),
-  sensitivity = TRUE
+  sensitivity = TRUE,
+  coicop = NULL
 )
 }
 \arguments{
@@ -22,9 +23,11 @@ data_selecting(
 \item{exclude}{A vector consisting of words and phrases. The function reduces the data set to one in which the \code{description} column does not contain any of these values.}
 
 \item{sensitivity}{A logical parameter indicating whether sensitivity to lowercase and uppercase letters is taken into consideration (if yes, its value is TRUE).}
+
+\item{coicop}{An optional parameter indicating a value for an additional column \code{coicop} which is added to the resulting data frame}
 }
 \value{
-The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: \code{include}, \code{must} and \code{exclude}. Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters.
+The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: \code{include}, \code{must} and \code{exclude} (an additional column \code{coicop} is optional). Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters only when \code{sensitivity} is set to TRUE.
 }
 \description{
 The function returns a subset of the user's data set obtained by selection based on keywords and phrases.

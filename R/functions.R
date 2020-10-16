@@ -324,14 +324,15 @@ data_filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c
 #' @param must A vector consisting of words and phrases. The function reduces the data set to one in which the \code{description} column contains each of these values.
 #' @param exclude A vector consisting of words and phrases. The function reduces the data set to one in which the \code{description} column does not contain any of these values.
 #' @param sensitivity A logical parameter indicating whether sensitivity to lowercase and uppercase letters is taken into consideration (if yes, its value is TRUE). 
+#' @param coicop An optional parameter indicating a value for an additional column \code{coicop} which is added to the resulting data frame
 #' @rdname data_selecting
-#' @return The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: \code{include}, \code{must} and \code{exclude}. Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters.
+#' @return The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: \code{include}, \code{must} and \code{exclude} (an additional column \code{coicop} is optional). Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters only when \code{sensitivity} is set to TRUE.
 #' @examples 
 #' data_selecting(milk, include=c("milk"), must=c("UHT"))
 #' data_selecting(milk, must=c("milk"), exclude=c("paust"))
 #' @export
 
-data_selecting<-function(data, include=c(), must=c(), exclude=c(), sensitivity=TRUE)
+data_selecting<-function(data, include=c(), must=c(), exclude=c(), sensitivity=TRUE,coicop=NULL)
 {
  if (nrow(data)==0) stop("A data frame is empty")
  if (sensitivity==TRUE) data$description<-tolower(data$description)
@@ -354,7 +355,9 @@ data_selecting<-function(data, include=c(), must=c(), exclude=c(), sensitivity=T
    if (length(exclude)>1) for (i in 2: length(exclude)) set2<-dplyr::union(set2,dplyr::filter(data, stringr::str_detect(data$description, exclude[i])))
    set<-dplyr::setdiff(set1,set2)
    }
-  return (dplyr::intersect(set,set3))
+ new_set<-dplyr::intersect(set,set3)
+ if (length(coicop)>0) new_set$coicop<-coicop
+ return (new_set) 
 }
 
 
