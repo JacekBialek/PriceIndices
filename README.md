@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 
 PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 ================================================================================
@@ -82,7 +77,7 @@ head(data_preparing(milk, description=FALSE))
 
 **data\_selecting**
 
-The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: **include**, **must** and **exclude** (see documentation). Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters.
+The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: **include**, **must** and **exclude** (an additional column **coicop** is optional). Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters only when **sensitivity** is set to TRUE.
 
 For instance, please use
 
@@ -90,19 +85,19 @@ For instance, please use
 subgroup1<-data_selecting(milk, include=c("milk"), must=c("UHT"))
 head(subgroup1)
 #>         time prices quantities prodID retID       description
-#> 1 2018-12-01   2.99        113  60010  1311 full-fat milk UHT
-#> 2 2018-12-01   2.29        650 401350  1311 full-fat milk UHT
-#> 3 2018-12-01   2.68        304 402570  1311 full-fat milk UHT
-#> 4 2018-12-01   2.65        137 405419  1311 full-fat milk UHT
-#> 5 2018-12-01   2.99        560  60010  2210 full-fat milk UHT
-#> 6 2018-12-01   2.50       1914 401350  2210 full-fat milk UHT
+#> 1 2018-12-01   2.99        113  60010  1311 full-fat milk uht
+#> 2 2018-12-01   2.29        650 401350  1311 full-fat milk uht
+#> 3 2018-12-01   2.68        304 402570  1311 full-fat milk uht
+#> 4 2018-12-01   2.65        137 405419  1311 full-fat milk uht
+#> 5 2018-12-01   2.99        560  60010  2210 full-fat milk uht
+#> 6 2018-12-01   2.50       1914 401350  2210 full-fat milk uht
 ```
 
 to obtain the subset of **milk** limited to *UHT* category:
 
 ``` r
 unique(subgroup1$description)
-#> [1] "full-fat milk UHT" "low-fat milk UHT"
+#> [1] "full-fat milk uht" "low-fat milk uht"
 ```
 
 You can use
@@ -123,7 +118,7 @@ to obtain the subset of **milk** with products which are not *pasteurized* and w
 
 ``` r
 unique(subgroup2$description)
-#> [1] "powdered milk"     "full-fat milk UHT" "low-fat milk UHT"
+#> [1] "powdered milk"     "full-fat milk uht" "low-fat milk uht"
 ```
 
 **data\_matching**
@@ -506,19 +501,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.062129
-#> 2 403249 1.511622
-#> 3 400033 1.205243
-#> 4 402609 1.791033
-#> 5 406223 1.956774
-#> 6 406224 1.743022
+#> 1 400032 1.316995
+#> 2 403249 1.940223
+#> 3 400033 1.389320
+#> 4 402609 1.819025
+#> 5 406223 1.870617
+#> 6 406224 1.137677
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9635377
+#> [1] 0.9760472
 ```
 
 <a id="ad7"> </a>
