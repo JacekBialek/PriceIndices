@@ -1,4 +1,6 @@
 
+
+
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -72,7 +74,8 @@ if (nrow(data)==0) stop("A data frame is empty")
 #checking condition for 'precision'  
 if ((precision<0) | (precision>1)) stop("parametr 'precision' must belong to [0,1]")
  
-#preapering data set  
+#preapering data set 
+columns<-c()
 start<-paste(start,"-01",sep="")
 end<-paste(end,"-01",sep="")
 start<-as.Date(start)
@@ -80,9 +83,23 @@ end<-as.Date(end)
 lubridate::day(end)<-lubridate::days_in_month(end)
 if (interval==TRUE) data<-dplyr::filter(data, data$time>=start & data$time<=end)
 else data<-dplyr::filter(data,(lubridate::year(data$time)==lubridate::year(start) & lubridate::month(data$time)==lubridate::month(start)) | (lubridate::year(data$time)==lubridate::year(end) & lubridate::month(data$time)==lubridate::month(end)))
-if (description==TRUE) data$description<-as.character(data$description)
-if (description==TRUE) data$descriptionID<-data$description
 data<-stats::na.omit(data) 
+#original dataset
+data_oryginal<-data
+if (description==TRUE) {data$description<-as.character(data$description)
+data$descriptionID<-data$description
+columns<-c(columns, "descriptionID")
+                       }
+
+#reducing a dataset
+if (codeIN==TRUE) columns<-c(columns, "codeIN")
+if (codeOUT==TRUE) columns<-c(columns, "codeOUT")
+if (description==TRUE) columns<-c(columns, "description")
+if (length(variables)>0) columns<-c(columns, variables)
+
+data<-dplyr::select(data,columns)
+data<-dplyr::distinct(data)
+
 #main body
 if (codeIN==TRUE & codeOUT==TRUE & description==TRUE)
 {
@@ -152,8 +169,24 @@ else if (codeIN==FALSE & codeOUT==TRUE & description==FALSE) {pairs<-data
                                                               pairs$prodID<-pairs$codeOUT
                                                              }
 else if (codeIN==FALSE & codeOUT==FALSE & description==FALSE) stop("at least one of parameters: codeIN, codeOUT or description must be TRUE")
-return (pairs)  
+
+#pairs - new dataframe with reduced dataframe with matched products (additional column: prodID)
+#now, let us back to the oryginal dataset, i.e. 'data_oryginal'
+
+#names of columns which are considered in matching process
+columns<-colnames(dplyr::select(pairs, -prodID))
+
+match<-function (i) {df<-data_oryginal[i,]
+                     df2<-pairs
+                     for (k in 1:length(columns)) df2<-dplyr::filter(df2,df2[,columns[k]]==df[,columns[k]])
+                     return (df2$prodID)
+                    }
+prodID<-sapply(seq(1,nrow(data_oryginal)),match)
+data_oryginal$prodID<-prodID
+
+return (data_oryginal)  
 }
+
 
 #filtering where only two months are compared
 filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c(), dplimits=c(),lambda=1.25)

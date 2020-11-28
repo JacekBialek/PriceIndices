@@ -6,7 +6,7 @@
 \title{The list of package functions and their demonstration}
 \description{
 The \strong{PriceIndices} package is a tool for Bilateral and Multilateral Price Index Calculations. 
-A demonstration of package functions is here: \href{ https://drive.google.com/file/d/1-WX9jLlhwRwnm3XtZSx5ZDGzunWLpKjn/view?usp=sharing }{README}.
+A demonstration of package functions is here: \href{ https://drive.google.com/file/d/1sF5CNXpudIf69GnTWodiNVxg6e3RlNtC/view?usp=sharing }{README}.
 The list of package functions is as follows:
 }
 \section{Data sets}{
