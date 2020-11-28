@@ -1,6 +1,5 @@
 
 
-
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -74,7 +73,8 @@ if (nrow(data)==0) stop("A data frame is empty")
 #checking condition for 'precision'  
 if ((precision<0) | (precision>1)) stop("parametr 'precision' must belong to [0,1]")
  
-#preapering data set 
+
+#preparing data set 
 columns<-c()
 start<-paste(start,"-01",sep="")
 end<-paste(end,"-01",sep="")
