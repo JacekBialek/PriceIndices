@@ -1,5 +1,6 @@
 
 
+
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -90,7 +91,7 @@ if (description==TRUE) {data$description<-as.character(data$description)
 data$descriptionID<-data$description
 columns<-c(columns, "descriptionID")
                        }
-
+if (length(columns)==0) stop("At least one column for matching must be selected!")
 #reducing a dataset
 if (codeIN==TRUE) columns<-c(columns, "codeIN")
 if (codeOUT==TRUE) columns<-c(columns, "codeOUT")
