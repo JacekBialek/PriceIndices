@@ -36,12 +36,13 @@ price_index(
 \item{interval}{A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).}
 }
 \value{
-This function returns a value or values of the selected price index. If the \code{interval} parameter is set to TRUE then it returns a data frame with two columns: dates and index values. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).
+This function returns a value or values of the selected price index. If the \code{interval} parameter is set to TRUE then it returns a data frame with two columns: dates and index values. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).
 }
 \description{
 This function returns a value or values of the selected price index.
 }
 \examples{
-price_index(milk, start="2018-12", end="2020-02",formula="walsh",interval=FALSE)
-price_index(milk, start="2018-12", end="2020-02",formula="tpd_splice",splice="half",interval=TRUE)
+\donttest{price_index(milk, start="2018-12", end="2020-02",formula="walsh",interval=FALSE)}
+\donttest{price_index(milk, start="2018-12",end="2020-02",formula="tpd_splice",
+splice="half",interval=TRUE)}
 }

@@ -72,12 +72,14 @@ price_indices(
 \item{interval}{A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).}
 }
 \value{
-This general function returns a value or values of the selected price indices. If the \code{interval} parameter is set to TRUE, then it returns a data frame where its first column indicates dates and the remaining columns show corresponding values of all selected price indices. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating please use the \code{\link{final_index}} function).
+This general function returns a value or values of the selected price indices. If the \code{interval} parameter is set to TRUE, then it returns a data frame where its first column indicates dates and the remaining columns show corresponding values of all selected price indices. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).
 }
 \description{
 This function returns a value or values of the selected price indices.
 }
 \examples{
-price_indices(milk, start="2018-12", end="2019-04",bilateral=c("jevons"),fbmulti=c("tpd"),fbwindow=c(6),interval=TRUE)
-price_indices(milk, start="2018-12", end="2019-05",fbmulti=c("tpd","geks"),fbwindow=c(10,12),interval=TRUE)
+\donttest{price_indices(milk, start="2018-12",end="2019-04",bilateral=c("jevons"),
+fbmulti=c("tpd"),fbwindow=c(6),interval=TRUE)}
+\donttest{price_indices(milk, start="2018-12", end="2019-05",
+fbmulti=c("tpd","geks"),fbwindow=c(10,12),interval=TRUE)}
 }

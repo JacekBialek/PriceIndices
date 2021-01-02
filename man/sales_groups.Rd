@@ -40,6 +40,7 @@ milk1<-dplyr::filter(milk, milk$description==categories[1])
 milk2<-dplyr::filter(milk, milk$description==categories[2])
 milk3<-dplyr::filter(milk, milk$description==categories[3])
 ## Sample use of this function:
-sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-04", shares=TRUE)
-sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07", barplot=TRUE, names=categories)
+sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04",end="2019-04",shares=TRUE)
+sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04",end="2019-07", 
+barplot=TRUE, names=categories)
 }

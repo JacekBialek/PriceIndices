@@ -1,20 +1,39 @@
 #' The list of package functions and their demonstration
 #'
 #' The \strong{PriceIndices} package is a tool for Bilateral and Multilateral Price Index Calculations. 
-#' A demonstration of package functions is here: \href{ https://drive.google.com/file/d/1sF5CNXpudIf69GnTWodiNVxg6e3RlNtC/view?usp=sharing }{README}.
+#' A demonstration of package functions is here: \href{ https://github.com/JacekBialek/important_documents/blob/main/README.pdf }{README}.
+#' The package documentation can be found \href{https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_1.1.0.pdf}{HERE}.
 #' The list of package functions is as follows:
 #'
 #' @docType package
 #' @name PriceIndices
-#' @section Data sets:
+#' @section Data sets in the package and generating artificial scanner data sets:
+#' \code{\link{dataMATCH}}
+#'
+#' \code{\link{dataCOICOP}}
+#'
 #' \code{\link{milk}} 
 #'
-#' \code{\link{dataMATCH}}
+#' \code{\link{sugar}}
+#'
+#' \code{\link{coffee}}
+#'
+#' \code{\link{generate}}
+#'
+#' \code{\link{tindex}}
 #'
 #' @section Functions for data processing:
 #' \code{\link{data_preparing}} 
 #'
 #' \code{\link{data_selecting}}
+#'
+#' \code{\link{data_classifying}}
+#'
+#' \code{\link{model_classification}}
+#'
+#' \code{\link{save_model}}
+#'
+#' \code{\link{load_model}}
 #'
 #' \code{\link{data_matching}} 
 #'
@@ -181,11 +200,17 @@
 #'
 #' \code{\link{geksw}}
 #'
+#' \code{\link{geksl}}
+#'
+#' \code{\link{wgeksl}}
+#'
 #' \code{\link{gk}}
 #'
 #' \code{\link{QU}}
 #'
 #' \code{\link{tpd}}
+#'
+#' \code{\link{SPQ}}
 #'
 #' @section Functions for extending multilateral price indices by using splicing methods:
 #' \code{\link{ccdi_splice}} 
@@ -195,6 +220,10 @@
 #' \code{\link{geksj_splice}}
 #'
 #' \code{\link{geksw_splice}}
+#'
+#' \code{\link{geksl_splice}}
+#'
+#' \code{\link{wgeksl_splice}}
 #'
 #' \code{\link{gk_splice}}
 #'
@@ -209,6 +238,10 @@
 #'
 #' \code{\link{geksw_fbew}}
 #'
+#' \code{\link{geksl_fbew}}
+#'
+#' \code{\link{wgeksl_fbew}}
+#'
 #' \code{\link{gk_fbew}}
 #'
 #' \code{\link{tpd_fbew}}
@@ -222,6 +255,10 @@
 #'
 #' \code{\link{geksw_fbmw}}
 #'
+#' \code{\link{geksl_fbmw}}
+#'
+#' \code{\link{wgeksl_fbmw}}
+#'
 #' \code{\link{gk_fbmw}}
 #'
 #' \code{\link{tpd_fbmw}}
@@ -232,6 +269,8 @@
 #' \code{\link{price_indices}}
 #'
 #' \code{\link{final_index}}
+#'
+#' \code{\link{final_index2}}
 #'
 #' @section Functions for graphical comparison of price indices:
 #' \code{\link{compare_indices}} 

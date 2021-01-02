@@ -19,8 +19,11 @@ This function returns a figure with plots of previously calculated price indices
 }
 \examples{
 ## Caluclating two indices by using two different package functions:
-index1<-final_index(datasets=list(milk), start="2018-12", end="2019-12",formula="walsh",interval=TRUE)
-index2<-price_index(milk,start="2018-12", end="2019-12",formula="geks",interval=TRUE)
+\donttest{index1<-final_index(datasets=list(milk), start="2018-12", 
+end="2019-12",formula="walsh",interval=TRUE)}
+\donttest{index2<-price_index(milk,start="2018-12", end="2019-12",
+formula="geks",interval=TRUE)}
 ## Graphical comparison of these two indices 
-compare_final_indices(finalindices=list(index1,index2), names=c("Walsh index", "GEKS index"))
+\donttest{compare_final_indices(finalindices=list(index1,index2), 
+names=c("Walsh index", "GEKS index"))}
 }

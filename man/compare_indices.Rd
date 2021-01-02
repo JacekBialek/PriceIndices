@@ -75,6 +75,8 @@ This function calculates selected bilateral or/and multilateral price indices an
 This function returns a figure with plots of selected price indices.
 }
 \examples{
-compare_indices(milk, start="2018-12", end="2019-04",bilateral=c("jevons"),fbmulti=c("tpd"),fbwindow=c(6))
-compare_indices(milk, start="2018-12", end="2019-05",fbmulti=c("tpd","geks"),fbwindow=c(10,12))
+\donttest{compare_indices(milk, start="2018-12", end="2019-04",
+bilateral=c("jevons"),fbmulti=c("tpd"),fbwindow=c(6))}
+\donttest{compare_indices(milk, start="2018-12", end="2019-05",
+fbmulti=c("tpd","geks"),fbwindow=c(10,12))}
 }

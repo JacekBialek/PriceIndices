@@ -18,14 +18,14 @@ gk(data, start, end, wstart = start, window = 13)
 \item{window}{The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).}
 }
 \value{
-This function returns a value of the multilateral Geary-Khamis price index which considers the time window defined by \code{wstart} and \code{window} parameters. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use \code{\link{final_index}} function).
+This function returns a value of the multilateral Geary-Khamis price index which considers the time window defined by \code{wstart} and \code{window} parameters. The Geary-Khamis price index is calculated by using a special iterative algorithm from \code{Chessa (2016)}. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).
 }
 \description{
 This function returns a value of the multilateral Geary-Khamis price index.
 }
 \examples{
-gk(milk, start="2019-01", end="2019-08",window=10)
-gk(milk, start="2018-12", end="2019-12")
+\donttest{gk(milk, start="2019-01", end="2019-08",window=10)}
+\donttest{gk(milk, start="2018-12", end="2019-12")}
 }
 \references{
 {Geary, R. G. (1958). \emph{A Note on Comparisons of Exchange Rates and Purchasing Power between Countries.} Journal of the Royal Statistical Society, Series A, 121, 97-99.}

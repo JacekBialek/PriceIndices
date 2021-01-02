@@ -45,8 +45,10 @@ This function returns a filtered data set (a reduced user's data frame). If the 
 This function returns a filtered data set, i.e. a reduced user's data frame with the same columns and rows limited by a criterion defined by \code{filters}.
 }
 \examples{
-data_filtering(milk,start="2018-12",end="2019-03",filters=c("extremeprices"),pquantiles=c(0.01,0.99),interval=TRUE)
-data_filtering(milk,start="2018-12",end="2019-03",filters=c("extremeprices","lowsales"), plimits=c(0.25,2))
+data_filtering(milk,start="2018-12",end="2019-03",
+filters=c("extremeprices"),pquantiles=c(0.01,0.99),interval=TRUE)
+data_filtering(milk,start="2018-12",end="2019-03",
+filters=c("extremeprices","lowsales"), plimits=c(0.25,2))
 }
 \references{
 {Van Loon, K., Roels, D. (2018) \emph{Integrating big data in Belgian CPI}. Meeting of the Group of Experts on Consumer Price Indices, Geneva.}

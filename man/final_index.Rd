@@ -48,11 +48,14 @@ This function returns a value or values of the selected (final) price index taki
 This function returns a value or values of the selected (final) price index taking into consideration aggregation over product subgroups and/or over outlets.
 }
 \examples{
-final_index(datasets=list(milk), start="2018-12", end="2020-02",formula="walsh",aggrret="paasche",aggrsets="none")
+\donttest{ final_index(datasets=list(milk),start="2018-12",end="2020-02",
+formula="walsh",aggrret="paasche",aggrsets="none")}
 ## defining two subgroups of milk
-g1<-dplyr::filter(milk, milk$description=="full-fat milk UHT")
-g2<-dplyr::filter(milk, milk$description=="low-fat milk UHT")
-## Final price index calculations (for the whole time interval) with aggregating over subgroups g1 and g2 and over outlets
+\donttest{g1<-dplyr::filter(milk, milk$description=="full-fat milk UHT")}
+\donttest{g2<-dplyr::filter(milk, milk$description=="low-fat milk UHT")}
+## Final price index calculations (for the whole time interval) 
+## with aggregating over subgroups g1 and g2 and over outlets
 ## Please note that the default value (formula) for aggregating over outlets is "tornqvist""
-final_index(datasets=list(g1,g2), start="2018-12", end="2019-12",formula="fisher",aggrsets="geometric",interval=TRUE)
+\donttest{final_index(datasets=list(g1,g2), start="2018-12",
+end="2019-12",formula="fisher",aggrsets="geometric",interval=TRUE)}
 }

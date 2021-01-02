@@ -22,7 +22,8 @@ This function returns a value of the quality adjusted unit value index (QU index
 This function returns a value of the quality adjusted unit value index (QU index) for a given set of adjustment factors.
 }
 \examples{
-## Creating a data frame with artificial adjustment factors (random numbers from uniform distribution U[1,2])
+## Creating a data frame with artificial adjustment factors 
+## (random numbers from uniform distribution U[1,2])
 prodID<-unique(milk$prodID)
 values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
