@@ -12,12 +12,10 @@ save_model(model = list(), dir = "ML_model")
 \item{dir}{The name of the directory where the selected model should be saved. The directory with all necessary files will be created in the working directory.}
 }
 \value{
-This function saves a list of model elements on the disk, i.e. the resulting 8 files are written into the new directory specified by \code{dir}. The list should be obtained previously via the \code{model_classification} function. After saving the model it can be loaded any time by using \code{load_model} function.
-
-This function saves a list of model elements on the disk, i.e. the resulting 8 files are written into the new directory specified by \code{dir}. The list should be obtained previously via the \code{model_classification} function. After saving the model it can be loaded any time by using \code{load_model} function.
+This function saves a list of ML model elements on the disk, i.e. the resulting 8 files are written into the new directory specified by \code{dir}. The list should be obtained previously using the \code{model_classification} function. After saving the model, it can be loaded at any time by using the \code{load_model} function.
 }
 \description{
-This function saves a list of model elements on the disk, i.e. the resulting 8 files are written.
+This function saves a list of machine learning model elements on the disk, i.e. the resulting 8 files are written.
 }
 \examples{
 #Building the model

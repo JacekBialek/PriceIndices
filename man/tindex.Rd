@@ -7,21 +7,19 @@
 tindex(pmi = c(), psigma = c(), start, ratio = TRUE)
 }
 \arguments{
-\item{pmi}{A numeric vector indicating \code{mi} parameters for lognormally distributed prices from following months.}
+\item{pmi}{A numeric vector indicating \code{mi} parameters for lognormally distributed prices from the subsequent months.}
 
-\item{psigma}{A numeric vector indicating \code{sigma} parameters for lognormally distributed prices from following months.}
+\item{psigma}{A numeric vector indicating \code{sigma} parameters for lognormally distributed prices from the subsequent months.}
 
-\item{start}{The first period in the generated data frame (as character) limited to the year and month, e.g. "2019-12".}
+\item{start}{The first period in the generated data frame (as character) limited to the year and month, e.g. '2019-12'.}
 
-\item{ratio}{A logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.}
+\item{ratio}{A logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE, then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.}
 }
 \value{
 This function calculates the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by \code{start} parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by \code{pmi} and \code{sigma} parameters. The \code{ratio} parameter allows to control the definition of resulting theoretical price index values. The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. The generated dataset is ready for further price index calculations.
-
-This function calculates the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by \code{start} parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by \code{pmi} and \code{sigma} parameters. The \code{ratio} parameter allows to control the definition of resulting theoretical price index values. The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. The generated dataset is ready for further price index calculations.
 }
 \description{
-This function calculates the theoretical value of the unweighted price index for lognormally distributed prices
+This function calculates the theoretical value of the unweighted price index for lognormally distributed prices.
 }
 \examples{
 tindex(pmi=c(1,1.2,1.3),psigma=c(0.1,0.2,0.15),start="2020-01")
