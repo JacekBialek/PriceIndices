@@ -2,15 +2,14 @@
 
 #' @title  Calculating the bilateral hybrid price index
 #'
-#' @description This function returns a value (or vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
+#' @description This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
-#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
-#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
-#' @param base The prior period used in the hybrid price index formula (as character) limited to the year and month, e.g. "2020-01"
+#' @param start The base period (as character) limited to the year and month, e.g. '2020-03'.
+#' @param end The research period (as character) limited to the year and month, e.g. '2020-04'.
+#' @param base The prior period used in the hybrid price index formula (as character) limited to the year and month, e.g. '2020-01'.
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname hybrid
-#' @return The function returns a value (or vector of values) of the bilateral hybrid price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
-#' @return The function returns a value (or vector of values) of the bilateral hybrid price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or a vector of values) of the bilateral hybrid price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}}, \code{\link{final_index}} or \code{\link{final_index2}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or \code{\link{final_index2}} function).   
 #' @references
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
@@ -259,21 +258,20 @@ chgeohybrid<-function(data,start,end, base=start,interval=FALSE)  { if (start==e
 
 #' @title  Generating an artificial scanner dataset
 #'
-#' @description This function provides an artificial scanner datasets where prices and quantities are lognormally distributed.
-#' @param pmi A numeric vector indicating \code{mi} parameters for lognormally distributed prices from following months.
-#' @param psigma A numeric vector indicating \code{sigma} parameters for lognormally distributed prices from following months.
-#' @param qmi A numeric vector indicating \code{mi} parameters for lognormally distributed quantities from following months.
-#' @param qsigma A numeric vector indicating \code{sigma} parameters for lognormally distributed quantities from following months.
-#' @param prec A two-dimensional numeric vector indicating a precision, i.e. the number of decimal places, for presenting prices and quantities.
+#' @description This function provides artificial scanner datasets where prices and quantities are lognormally distributed.
+#' @param pmi A numeric vector indicating \code{mi} parameters for lognormally distributed prices from the subsequent months.
+#' @param psigma A numeric vector indicating \code{sigma} parameters for lognormally distributed prices from the subsequent months.
+#' @param qmi A numeric vector indicating \code{mi} parameters for lognormally distributed quantities from the subsequent months.
+#' @param qsigma A numeric vector indicating \code{sigma} parameters for lognormally distributed quantities from the subsequent months.
+#' @param prec A two-dimensional numeric vector indicating precision, i.e. the number of decimal places, for presenting prices and quantities.
 #' @param n An integer parameter indicating the number of products which are to be generated.
-#' @param n0 An integer parameter indicating the first (the smallest) prodID
+#' @param n0 An integer parameter indicating the first (the smallest) prodID.
 #' @param r An integer parameter indicating the number of outlets (retailer sale points) for which prices and quantities are to be generated.
-#' @param r0 n0 An integer parameter indicating the first (the smallest) retID
-#' @param start The first period in the generated data frame (as character) limited to the year and month, e.g. "2019-12".
-#' @param days A logical parameter indicating whether the trading day in a given month is to be randomized. The default value of \code{days} is FALSE which means that each transaction for a given month takes place on the first day of the month.
+#' @param r0 n0 An integer parameter indicating the first (the smallest) retID.
+#' @param start The first period in the generated data frame (as character) limited to the year and month, e.g. '2019-12'.
+#' @param days A logical parameter indicating whether the trading day in a given month is to be randomised. The default value of \code{days} is FALSE, which means that each transaction for a given month takes place on the first day of the month.
 #' @rdname generate
-#' @return This function returns an artificial scanner dataset where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by \code{pmi}, \code{sigma}, \code{qmi} and \code{qsigma} parameters. This function works for the fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.   
-#' @return This function returns an artificial scanner dataset where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by \code{pmi}, \code{sigma}, \code{qmi} and \code{qsigma} parameters. This function works for the fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.   
+#' @return This function returns an artificial scanner dataset where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by \code{pmi}, \code{sigma}, \code{qmi} and \code{qsigma} parameters. This function works for a fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.   
 #'
 #' @examples 
 #' generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(3,4,4),
@@ -324,13 +322,12 @@ generate<-function(pmi=c(),psigma=c(),qmi=c(),qsigma=c(),prec=c(2,0),n=100,n0=1,
 
 #' @title  Calculating theoretical (expected) values of the unweighted price index
 #'
-#' @description This function calculates the theoretical value of the unweighted price index for lognormally distributed prices
-#' @param pmi A numeric vector indicating \code{mi} parameters for lognormally distributed prices from following months.
-#' @param psigma A numeric vector indicating \code{sigma} parameters for lognormally distributed prices from following months.
-#' @param start The first period in the generated data frame (as character) limited to the year and month, e.g. "2019-12".
-#' @param ratio A logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.
+#' @description This function calculates the theoretical value of the unweighted price index for lognormally distributed prices.
+#' @param pmi A numeric vector indicating \code{mi} parameters for lognormally distributed prices from the subsequent months.
+#' @param psigma A numeric vector indicating \code{sigma} parameters for lognormally distributed prices from the subsequent months.
+#' @param start The first period in the generated data frame (as character) limited to the year and month, e.g. '2019-12'.
+#' @param ratio A logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE, then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.
 #' @rdname tindex
-#' @return This function calculates the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by \code{start} parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by \code{pmi} and \code{sigma} parameters. The \code{ratio} parameter allows to control the definition of resulting theoretical price index values. The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. The generated dataset is ready for further price index calculations.
 #' @return This function calculates the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by \code{start} parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by \code{pmi} and \code{sigma} parameters. The \code{ratio} parameter allows to control the definition of resulting theoretical price index values. The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. The generated dataset is ready for further price index calculations.
 #'
 #' @examples 
@@ -381,14 +378,13 @@ tindex<-function(pmi=c(),psigma=c(),start, ratio=TRUE)
 
 #' @title  Calculating the relative price and/or quantity dissimilarity measure between periods
 #'
-#' @description This function returns a value of the relative price and/or quantity dissimilarity measure
+#' @description This function returns a value of the relative price and/or quantity dissimilarity measure.
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
-#' @param period1 The first period (as character) limited to the year and month, e.g. "2019-03".
-#' @param period2 The second period (as character) limited to the year and month, e.g. "2019-04".
-#' @param type The parameter indicates what type of dissimilarity measure is to be calculated . Possible values of the \code{type} parameter are: \code{p} (for the price dissimilarity measure calculation), \code{q} (for the quantity dissimilarity measure calculation) or \code{pq} (for the dSPQ measure calculation, i.e. the measure of relative price and quantity dissimilarity - see \code{References}).
+#' @param period1 The first period (as character) limited to the year and month, e.g. '2019-03'.
+#' @param period2 The second period (as character) limited to the year and month, e.g. '2019-04'.
+#' @param type The parameter indicates what type of dissimilarity measure is to be calculated. Possible values of the \code{type} parameter are: \code{p} (for the price dissimilarity measure calculation), \code{q} (for the quantity dissimilarity measure calculation) or \code{pq} (for the dSPQ measure calculation, i.e. the measure of relative price and quantity dissimilarity - see \code{References}).
 #' @rdname dissimilarity
-#' @return This function returns a value of the relative price (dSP) and/or quantity (dSQ) dissimilarity measure. In a special case, when the \code{type} parameter is set to \code{pq}, the function provides the value of dSPQ measure (relative price and quantity dissimilarity measure calculated as min(dSP,dSQ). 
-#' @return This function returns a value of the relative price (dSP) and/or quantity (dSQ) dissimilarity measure. In a special case, when the \code{type} parameter is set to \code{pq}, the function provides the value of dSPQ measure (relative price and quantity dissimilarity measure calculated as min(dSP,dSQ). 
+#' @return This function returns a value of the relative price (dSP) and/or quantity (dSQ) dissimilarity measure. In a special case, when the \code{type} parameter is set to \code{pq}, the function provides the value of dSPQ measure (the relative price and quantity dissimilarity measure calculated as min(dSP,dSQ). 
 #' @references
 #' {Diewert, E. (2020). \emph{The Chain Drift Problem and Multilateral Indexes.} Chapter 6 in: Consumer Price Index Theory (draft)}
 #'
@@ -442,16 +438,15 @@ data<-dplyr::filter(data,(lubridate::year(data$time)==lubridate::year(r) & lubri
 
 #' @title  Presenting the relative price and/or quantity dissimilarity measure over time
 #'
-#' @description This function presents values of the relative price and/or quantity dissimilarity measure over time
+#' @description This function presents values of the relative price and/or quantity dissimilarity measure over time.
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
-#' @param start The base period (as character) limited to the year and month, e.g. "2019-03".
-#' @param end The research period (as character) limited to the year and month, e.g. "2019-07".
-#' @param type The parameter indicates what type of dissimilarity measure is to be calculated . Possible values of the \code{type} parameter are: \code{p} (for the price dissimilarity measure calculation), \code{q} (for the quantity dissimilarity measure calculation) or \code{pq} (for the dSPQ measure calculation, i.e. the measure of relative price and quantity dissimilarity - see \code{References}).
-#' @param benchmark The benchmark period (as character) limited to the year and month, e.g. "2019-07".
-#' @param figure A logical parameter indicating the resulting object. If it is TRUE the function presents the above-mentioned dissimilarities over time via a figure. Otherwise, the functions returns a dataframe.  
+#' @param start The base period (as character) limited to the year and month, e.g. '2019-03'.
+#' @param end The research period (as character) limited to the year and month, e.g. '2019-07'.
+#' @param type The parameter indicates what type of dissimilarity measure is to be calculated. Possible values of the \code{type} parameter are: \code{p} (for the price dissimilarity measure calculation), \code{q} (for the quantity dissimilarity measure calculation) or \code{pq} (for the dSPQ measure calculation, i.e. the measure of relative price and quantity dissimilarity - see \code{References}).
+#' @param benchmark The benchmark period (as character) limited to the year and month, e.g. '2019-07'.
+#' @param figure A logical parameter indicating the resulting object. If it is TRUE, the function presents the above-mentioned dissimilarities over time via a figure. Otherwise, the function returns a dataframe.  
 #' @rdname dissimilarity_fig
-#' @return This function presents values of the relative price and/or quantity dissimilarity measure over time. The user can choose a benchmark period (defined by \code{benchmark}) and the type of dissimilarity measure is to be calculated (defined by \code{type}). The obtained results of dissimilarities over time can be presented in a dataframe form or via a figure (the default value of \code{figure} is TRUE which results a figure). 
-#' @return This function presents values of the relative price and/or quantity dissimilarity measure over time. The user can choose a benchmark period (defined by \code{benchmark}) and the type of dissimilarity measure is to be calculated (defined by \code{type}). The obtained results of dissimilarities over time can be presented in a dataframe form or via a figure (the default value of \code{figure} is TRUE which results a figure). 
+#' @return This function presents values of the relative price and/or quantity dissimilarity measure over time. The user can choose a benchmark period (defined by \code{benchmark}) and the type of dissimilarity measure is to be calculated (defined by \code{type}). The obtained results of dissimilarities over time can be presented in a dataframe form or via a figure (the default value of \code{figure} is TRUE, which results in a figure). 
 #' @references
 #' {Diewert, E. (2020). \emph{The Chain Drift Problem and Multilateral Indexes.} Chapter 6 in: Consumer Price Index Theory (draft)}
 #'
@@ -527,14 +522,13 @@ ggplot2::ggplot(tab, ggplot2::aes(x=date, y=dissimilarity)) + ggplot2::geom_poin
 
 #' @title  Calculating the multilateral SPQ price index 
 #'
-#' @description This function returns a value of the multilateral SPQ price index which is based on the relative price and quantity dissimilarity measure
+#' @description This function returns a value of the multilateral SPQ price index which is based on the relative price and quantity dissimilarity measure.
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
-#' @param start The base period (as character) limited to the year and month, e.g. "2019-03".
-#' @param end The research period (as character) limited to the year and month, e.g. "2019-07".
+#' @param start The base period (as character) limited to the year and month, e.g. '2019-03'.
+#' @param end The research period (as character) limited to the year and month, e.g. '2019-07'.
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE). 
 #' @rdname SPQ
-#' @return This function returns a value of the multilateral SPQ price index which is based on the relative price and quantity dissimilarity measure (see \code{References}). If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). 
-#' @return This function returns a value of the multilateral SPQ price index which is based on the relative price and quantity dissimilarity measure (see \code{References}). If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function). 
+#' @return This function returns a value of the multilateral SPQ price index which is based on the relative price and quantity dissimilarity measure (see \code{References}). If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}}, \code{\link{final_index}} or \code{\link{final_index2}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or \code{\link{final_index2}} function). 
 #' @references
 #' {Diewert, E. (2020). \emph{The Chain Drift Problem and Multilateral Indexes.} Chapter 6 in: Consumer Price Index Theory (draft)}
 #'
@@ -1147,6 +1141,7 @@ ggplot2::ggplot(result, ggplot2::aes(x=date, y=value, col=group)) + ggplot2::geo
                        }    
       }
 }
+
 
 
 

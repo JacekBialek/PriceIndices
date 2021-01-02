@@ -1,6 +1,6 @@
 
 
-#' @title  Building the machine-learning model for product classification
+#' @title  Building the machine learning model for product classification
 #'
 #' @description This function provides a trained machine learning model to classify products into coicop groups. In addition, the function returns the characteristics of the model and figures describing the learning process.
 #' @param data_train Training data set for the model. This set must contain all the columns defined by the \code{indicators} parameter and the \code{coicop} column (with matched coicop groups to all products). If the \code{key_words} vector is non-empty, the set should also contain a \code{description} column. Ideally, the indicators should be of the numerical type. If the indicator is not of the numerical type, it will be converted to this type.
@@ -14,8 +14,6 @@
 #' @param grid The list of vectors of parameters which are taken into consideration during the \code{Extreme Gradient Boosting training}. The default value of this list is as follows: \code{grid=list(eta=c(0.05,0.1,0.2),max_depth=c(6),min_child_weight=c(1),max_delta_step=c(0),subsample=c(1),gamma=c(0),lambda=c(1),alpha=c(0)}. The complete list of parameters for the used \code{Tree Booster} is available online \href{ https://xgboost.readthedocs.io/en/latest/parameter.html }{here}.
 #' @rdname model_classification
 #' @return In general, this function provides a trained machine learning model to classify products into coicop groups. In addition, the function returns the characteristics of the model and figures describing the learning process. The machine learning process is based on the \code{XGBoost} algorithm (from the \code{XGBoost} package) which is an implementation of gradient boosted decision trees designed for speed and performance. The function takes into account each combination of model parameters (specified by the \code{grid} list) and provides, inter alia, an optimally trained model (a model that minimizes the error rate calculated on the basis of a fixed value of the \code{w} parameter). After all, the function returns a list of the following objects: \code{model} - the optimally trained model; \code{best_parameters} - a set of parameters of the optimal model;  \code{indicators} - a vector of all indicators used; \code{key_words} - a vector of all key words and phrases used; \code{coicops} - a dataframe with categorized COICOPs; \code{sensitivity} - a value of the used 'sensitivity' parameter; \code{figure_training} - a plot of the error levels calculated for the training set and the tetsing set during the learning process of the returned model (error = 1 - accuracy); \code{figure_importance} - a plot of the relative importance of the used indicators. 
-#' @return In general, this function provides a trained machine learning model to classify products into coicop groups. In addition, the function returns the characteristics of the model and figures describing the learning process. The machine learning process is based on the \code{XGBoost} algorithm (from the \code{XGBoost} package) which is an implementation of gradient boosted decision trees designed for speed and performance. The function takes into account each combination of model parameters (specified by the \code{grid} list) and provides, inter alia, an optimally trained model (a model that minimizes the error rate calculated on the basis of a fixed value of the \code{w} parameter). After all, the function returns a list of the following objects: \code{model} - the optimally trained model; \code{best_parameters} - a set of parameters of the optimal model;  \code{indicators} - a vector of all indicators used; \code{key_words} - a vector of all key words and phrases used; \code{coicops} - a dataframe with categorized COICOPs; \code{sensitivity} - a value of the used 'sensitivity' parameter; \code{figure_training} - a plot of the error levels calculated for the training set and the tetsing set during the learning process of the returned model (error = 1 - accuracy); \code{figure_importance} - a plot of the relative importance of the used indicators. 
-#' @references
 #' {Tianqi Chen and Carlos Guestrin (2016). \emph{XGBoost: A Scalable Tree Boosting System}. 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.}
 #' 
 #' @examples 
@@ -248,12 +246,11 @@ return (data)
 
 #' @title  Saving the machine learning model on the disk
 #'
-#' @description This function saves a list of model elements on the disk, i.e. the resulting 8 files are written.
+#' @description This function saves a list of machine learning model elements on the disk, i.e. the resulting 8 files are written.
 #' @param model A list of 8 elements which identify the previously built machine learning model (the list is obtained via the \code{model_classification} function).
 #' @param dir The name of the directory where the selected model should be saved. The directory with all necessary files will be created in the working directory.
 #' @rdname save_model
-#' @return This function saves a list of model elements on the disk, i.e. the resulting 8 files are written into the new directory specified by \code{dir}. The list should be obtained previously via the \code{model_classification} function. After saving the model it can be loaded any time by using \code{load_model} function.  
-#' @return This function saves a list of model elements on the disk, i.e. the resulting 8 files are written into the new directory specified by \code{dir}. The list should be obtained previously via the \code{model_classification} function. After saving the model it can be loaded any time by using \code{load_model} function.  
+#' @return This function saves a list of ML model elements on the disk, i.e. the resulting 8 files are written into the new directory specified by \code{dir}. The list should be obtained previously using the \code{model_classification} function. After saving the model, it can be loaded at any time by using the \code{load_model} function.  
 #' @examples 
 #' #Building the model
 #' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
@@ -292,11 +289,11 @@ save_model<-function (model=list(), dir="ML_model")
 
 #' @title  Loading the machine learning model from the disk
 #'
-#' @description This function loads a list of model elements from the disk, i.e. the needed 8 files are read.
+#' @description This function loads a list of machine learning model elements from the disk, i.e. the needed 8 files are read.
 #' @param dir The name of the directory from which the machine learning model is to be loaded. The directory must be in the working directory.
 #' @rdname load_model
 #' @return This function loads a list of model elements from the disk, i.e. the needed 8 files are read from the directory selected by \code{dir}. After loading the model it can be used for product classification by using \code{data_classifying} function.  
-#' @return This function loads a list of model elements from the disk, i.e. the needed 8 files are read from the directory selected by \code{dir}. After loading the model it can be used for product classification by using \code{data_classifying} function.  
+#' @return This function loads a list of ML model elements from the disk, i.e. the needed 8 files are read from the directory selected by \code{dir}. After loading the model it can be used for product classification by using \code{data_classifying} function.  
 #' @examples 
 #' #Building the model
 #' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
