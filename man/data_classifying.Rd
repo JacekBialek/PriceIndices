@@ -13,8 +13,6 @@ data_classifying(model = list(), data)
 }
 \value{
 This function provides the indicated data set with an additional column, i.e. \code{coicop_predicted}, which is obtained by using the selected machine learing model.
-
-This function provides the indicated data set with an additional column, i.e. \code{coicop_predicted}, which is obtained by using the selected machine learing model.
 }
 \description{
 This function predicts product COICOP levels via the selected machine learning model.

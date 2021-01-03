@@ -10,8 +10,6 @@ load_model(dir = "ML_model")
 \item{dir}{The name of the directory from which the machine learning model is to be loaded. The directory must be in the working directory.}
 }
 \value{
-This function loads a list of model elements from the disk, i.e. the needed 8 files are read from the directory selected by \code{dir}. After loading the model it can be used for product classification by using \code{data_classifying} function.
-
 This function loads a list of ML model elements from the disk, i.e. the needed 8 files are read from the directory selected by \code{dir}. After loading the model it can be used for product classification by using \code{data_classifying} function.
 }
 \description{

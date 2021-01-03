@@ -1,5 +1,6 @@
 
 
+
 #' @title  Building the machine learning model for product classification
 #'
 #' @description This function provides a trained machine learning model to classify products into coicop groups. In addition, the function returns the characteristics of the model and figures describing the learning process.
@@ -190,7 +191,6 @@ return (list(model=xgb.fit,best_parameters=best_parameters, indicators=indicator
 #' @param data A data set for the model (products with their characteristics). This data set must contain all the columns which were used in the built model. 
 #' @rdname data_classifying
 #' @return This function provides the indicated data set with an additional column, i.e. \code{coicop_predicted}, which is obtained by using the selected machine learing model.  
-#' @return This function provides the indicated data set with an additional column, i.e. \code{coicop_predicted}, which is obtained by using the selected machine learing model.  
 #' @examples 
 #' #Building the model
 #' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
@@ -292,7 +292,6 @@ save_model<-function (model=list(), dir="ML_model")
 #' @description This function loads a list of machine learning model elements from the disk, i.e. the needed 8 files are read.
 #' @param dir The name of the directory from which the machine learning model is to be loaded. The directory must be in the working directory.
 #' @rdname load_model
-#' @return This function loads a list of model elements from the disk, i.e. the needed 8 files are read from the directory selected by \code{dir}. After loading the model it can be used for product classification by using \code{data_classifying} function.  
 #' @return This function loads a list of ML model elements from the disk, i.e. the needed 8 files are read from the directory selected by \code{dir}. After loading the model it can be used for product classification by using \code{data_classifying} function.  
 #' @examples 
 #' #Building the model
