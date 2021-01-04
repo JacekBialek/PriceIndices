@@ -294,7 +294,7 @@ generate<-function(pmi=c(),psigma=c(),qmi=c(),qsigma=c(),prec=c(2,0),n=100,n0=1,
  #time
  time<-c()
  for (i in 1:n) {
-                if (days==TRUE) {nd<-lubridate::day(start)
+                if (days==TRUE) {nd<-lubridate::days_in_month(start)
                 lubridate::day(start)<-sample(nd,1)
                 }
                 time<-c(time,as.character(start))
