@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 
 PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 ================================================================================
@@ -96,12 +91,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.67         17      1     1
-#> 2 2020-01-01   2.72         19      2     1
-#> 3 2020-01-01   2.71         20      3     1
-#> 4 2020-01-01   2.71         25      4     1
-#> 5 2020-01-01   2.88         20      5     1
-#> 6 2020-01-01   2.82         24      6     1
+#> 1 2020-01-01   3.02         18      1     1
+#> 2 2020-01-01   2.65         23      2     1
+#> 3 2020-01-01   2.78         21      3     1
+#> 4 2020-01-01   2.82         21      4     1
+#> 5 2020-01-01   2.81         22      5     1
+#> 6 2020-01-01   2.80         24      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -421,7 +416,7 @@ sales(milk, period="2019-06", set=c(400032, 71772, 82919))
 
 **sales\_groups**
 
-The function returns **values of sales** of products from one or more **datasets** or the corresponding **barplot** for these sales (if **barplot** is set to TRUE). Alternatively, it calculates the **sale shares** (if the **shares** parameter is set to TRUE). As an example, let us create 3 subgroups of **milk** products and let us find out their sale shares for the time interval: April, 2019 - July, 2019. We can obtain precise values for the given **period**:
+The function returns **values of sales** of products from one or more **datasets** or the corresponding **barplot** for these sales (if **barplot** is set to TRUE). Alternatively, it calculates the **sale shares** (if the **shares** parameter is set to TRUE). Please see also the **sales\_groups2** function. As an example, let us create 3 subgroups of **milk** products and let us find out their sale shares for the time interval: April, 2019 - July, 2019. We can obtain precise values for the given **period**:
 
 ``` r
 ctg<-unique(milk$description)
@@ -644,19 +639,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.127959
-#> 2 403249 1.143000
-#> 3 400033 1.656108
-#> 4 402609 1.879463
-#> 5 406223 1.202634
-#> 6 406224 1.372609
+#> 1 400032 1.359428
+#> 2 403249 1.277570
+#> 3 400033 1.724650
+#> 4 402609 1.300249
+#> 5 406223 1.757206
+#> 6 406224 1.879671
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.032642
+#> [1] 1.02521
 ```
 
 <a id="ad8"> </a>

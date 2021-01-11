@@ -56,6 +56,8 @@
 #'
 #' \code{\link{sales_groups}} 
 #' 
+#' \code{\link{sales_groups2}} 
+#' 
 #' \code{\link{pqcor}}
 #'
 #' \code{\link{pqcor_fig}}

@@ -1,5 +1,4 @@
 
-
 #' @title  Calculating the bilateral hybrid price index
 #'
 #' @description This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -1142,6 +1141,35 @@ ggplot2::ggplot(result, ggplot2::aes(x=date, y=value, col=group)) + ggplot2::geo
       }
 }
 
+
+#' @title  Providing information about sales of products 
+#'
+#' @description The function returns values of sales of products or the corresponding barplot for these sales. 
+#' @param data The user's data frame with subgroups of sold products (see \code{by} parameter). The data frame must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities} (as positive numeric). An additional column indicated via \code{by} parameter is also needed.
+#' @param by The column name indicating grouping variable, i.e. this column is used for creating subgroups of products.
+#' @param start The beginning of the considered time interval (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The end of the considered time interval (as character) limited to the year and month, e.g. "2020-04".
+#' @param shares A logical parameter indicating whether the function is to calculate shares of product sales
+#' @param barplot A logical parameter indicating whether the function is to return barplot for product sales. 
+#' @param names A vector of characters describing product groups defined by \code{datasets}.
+#' @rdname sales_groups2
+#' @return The function returns values of sales of products or the corresponding barplot for these sales (if \code{barplot} is TRUE). Alternatively, it calculates the sale shares (if \code{shares} is TRUE).
+#' @examples 
+#' outlets<-as.character(unique(milk$retID))
+#' sales_groups2(milk,by="retID",start="2019-04",end="2019-04",
+#' shares=TRUE,barplot=TRUE,names=outlets)
+#' @export
+
+sales_groups2<-function(data=data.frame(),by, start, end, shares=FALSE, barplot=FALSE, names=c())
+                                  {
+  if (nrow(data)==0) stop("A data set is empty!")
+  ns<-colnames(data)
+  if (!(by %in% ns)) stop ("There is no column specified via 'by' parameter!")
+  group<-as.character(unique(data[,by]))
+  datasets<-list()
+  for (i in 1:length(group)) datasets[[i]]<-dplyr::filter(data, data[,by]==group[i])
+  return (sales_groups(datasets, start, end, shares, barplot, names))
+  }
 
 
 
