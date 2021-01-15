@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Banajree pri
 This function returns a value (or vector of values) of the bilateral Banajree price index.
 }
 \examples{
-banajree(milk, start="2018-12", end="2020-01")
+\donttest{banajree(milk, start="2018-12", end="2020-01")}
 \donttest{banajree(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

@@ -1,4 +1,5 @@
 
+
 #' @title  Calculating the bilateral hybrid price index
 #'
 #' @description This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -1159,9 +1160,9 @@ ggplot2::ggplot(result, ggplot2::aes(x=date, y=value, col=group)) + ggplot2::geo
 #' @rdname sales_groups2
 #' @return The function returns values of sales of products or the corresponding barplot for these sales (if \code{barplot} is TRUE). Alternatively, it calculates the sale shares (if \code{shares} is TRUE).
 #' @examples 
-#' outlets<-as.character(unique(milk$retID))
-#' sales_groups2(milk,by="retID",start="2019-04",end="2019-04",
-#' shares=TRUE,barplot=TRUE,names=outlets)
+#' \donttest{outlets<-as.character(unique(milk$retID))}
+#' \donttest{sales_groups2(milk,by="retID",start="2019-04",end="2019-04",
+#' shares=TRUE,barplot=TRUE,names=outlets)}
 #' @export
 
 sales_groups2<-function(data=data.frame(),by, start, end, shares=FALSE, barplot=FALSE, names=c())

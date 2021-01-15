@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the unweighted bilateral C
 This function returns a value (or vector of values) of the unweighted bilateral Carli price index.
 }
 \examples{
-carli(milk, start="2018-12", end="2020-01")
+\donttest{carli(milk, start="2018-12", end="2020-01")}
 \donttest{carli(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

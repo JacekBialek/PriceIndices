@@ -45,7 +45,7 @@ The resulting data frame is free from missing values, zero or negative prices an
 This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
 }
 \examples{
-data_preparing(milk, time="time",prices="prices",quantities="quantities")
-data_preparing(dataCOICOP, time="time",
-prices="prices",quantities="quantities",additional="coicop")
+\donttest{data_preparing(milk, time="time",prices="prices",quantities="quantities")}
+\donttest{data_preparing(dataCOICOP, time="time",
+prices="prices",quantities="quantities",additional="coicop")}
 }

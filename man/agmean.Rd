@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the bilateral AG Mean pric
 This function returns a value (or vector of values) of the bilateral AG Mean price index.
 }
 \examples{
-agmean(milk, start="2019-01", end="2020-01",sigma=0.5)
+\donttest{agmean(milk, start="2019-01", end="2020-01",sigma=0.5)}
 \donttest{agmean(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

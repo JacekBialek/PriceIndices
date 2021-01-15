@@ -24,6 +24,6 @@ The function returns all values from the indicated column (defined by the \code{
 The function returns all values from the indicated column (defined by the \code{type} parameter) which occur simultaneously in the compared periods or in a given time interval.
 }
 \examples{
-matched(milk, period1="2018-12", period2="2019-12", interval=TRUE)
+\donttest{matched(milk, period1="2018-12", period2="2019-12", interval=TRUE)}
 \donttest{matched(milk, period1="2018-12", period2="2019-12", type="description")}
 }

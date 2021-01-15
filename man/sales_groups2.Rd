@@ -36,7 +36,7 @@ The function returns values of sales of products or the corresponding barplot fo
 The function returns values of sales of products or the corresponding barplot for these sales.
 }
 \examples{
-outlets<-as.character(unique(milk$retID))
-sales_groups2(milk,by="retID",start="2019-04",end="2019-04",
-shares=TRUE,barplot=TRUE,names=outlets)
+\donttest{outlets<-as.character(unique(milk$retID))}
+\donttest{sales_groups2(milk,by="retID",start="2019-04",end="2019-04",
+shares=TRUE,barplot=TRUE,names=outlets)}
 }

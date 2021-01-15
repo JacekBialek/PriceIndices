@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the bilateral Lowe price i
 This function returns a value (or vector of values) of the bilateral Lowe price index.
 }
 \examples{
-lowe(milk, start="2019-01", end="2020-01",base="2018-12")
+\donttest{lowe(milk, start="2019-01", end="2020-01",base="2018-12")}
 \donttest{lowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

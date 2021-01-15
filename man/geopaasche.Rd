@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral geo-logarith
 This function returns a value (or vector of values) of the bilateral geo-logarithmic Paasche price index.
 }
 \examples{
-geopaasche(milk, start="2018-12", end="2020-01")
+\donttest{geopaasche(milk, start="2018-12", end="2020-01")}
 \donttest{geopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

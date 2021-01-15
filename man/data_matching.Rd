@@ -46,6 +46,6 @@ This function returns a data set defined in the first parameter (\code{data}) wi
 }
 \examples{
 data_matching(dataMATCH, start="2018-12",end="2019-02",onlydescription=TRUE,interval=TRUE)
-data_matching(dataMATCH, start="2018-12",end="2019-02",precision=0.98, interval=TRUE)
+\donttest{data_matching(dataMATCH, start="2018-12",end="2019-02",precision=0.98, interval=TRUE)}
 
 }

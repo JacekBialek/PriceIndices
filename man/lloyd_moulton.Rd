@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the bilateral Lloyd-Moulto
 This function returns a value (or vector of values) of the bilateral Lloyd-Moulton price index.
 }
 \examples{
-lloyd_moulton(milk, start="2018-12", end="2020-01",sigma=0.9)
+\donttest{lloyd_moulton(milk, start="2018-12", end="2020-01",sigma=0.9)}
 \donttest{lloyd_moulton(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

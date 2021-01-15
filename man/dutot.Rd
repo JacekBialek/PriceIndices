@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the unweighted bilateral D
 This function returns a value (or vector of values) of the unweighted bilateral Dutot price index.
 }
 \examples{
-dutot(milk, start="2018-12", end="2020-01")
+\donttest{dutot(milk, start="2018-12", end="2020-01")}
 \donttest{dutot(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

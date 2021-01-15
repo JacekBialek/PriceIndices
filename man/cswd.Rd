@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the unweighted bilateral C
 This function returns a value (or vector of values) of the unweighted Carruthers-Sellwood-Ward-Dalen (CSWD) price index.
 }
 \examples{
-cswd(milk, start="2018-12", end="2020-01")
+\donttest{cswd(milk, start="2018-12", end="2020-01")}
 \donttest{cswd(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

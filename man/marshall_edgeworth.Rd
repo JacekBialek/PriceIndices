@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Marshall-Edg
 This function returns a value (or vector of values) of the bilateral Marshall-Edgeworth price index.
 }
 \examples{
-marshall_edgeworth(milk, start="2018-12", end="2020-01")
+\donttest{marshall_edgeworth(milk, start="2018-12", end="2020-01")}
 \donttest{marshall_edgeworth(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

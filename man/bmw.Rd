@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the unweighted bilateral B
 This function returns a value (or vector of values) of the unweighted Balk-Mehrhoff-Walsh (BMW)  price index.
 }
 \examples{
-bmw(milk, start="2018-12", end="2020-01")
+\donttest{bmw(milk, start="2018-12", end="2020-01")}
 \donttest{bmw(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
