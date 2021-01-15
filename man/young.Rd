@@ -25,7 +25,7 @@ This function returns a value (or vector of values) of the bilateral Young price
 }
 \examples{
 young(milk, start="2019-01", end="2020-01",base="2018-12")
-young(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{young(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Young, A. H. (1992). \emph{Alternative Measures of Change in Real Output and Prices.}  Survey of Current Business, 72, 32-48.}

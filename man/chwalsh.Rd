@@ -22,8 +22,8 @@ The function returns a value (or vector of values) of the monthly chained Walsh 
 This function returns a value (or vector of values) of the monthly chained Walsh price index.
 }
 \examples{
-chwalsh(milk, start="2018-12", end="2020-01")
-chwalsh(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chwalsh(milk, start="2018-12", end="2020-01")}
+\donttest{chwalsh(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Walsh, C. M. (1901). \emph{The Measurement of General Exchange Value}. The MacMillan Company, New York.}

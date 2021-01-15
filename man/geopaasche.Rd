@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral geo-logarit
 }
 \examples{
 geopaasche(milk, start="2018-12", end="2020-01")
-geopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{geopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}

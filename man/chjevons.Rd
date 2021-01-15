@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the monthly chained Jevon
 }
 \examples{
 chjevons(milk, start="2018-12", end="2020-01")
-chjevons(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chjevons(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Jevons, W. S., (1865). \emph{The variation of prices and the value of the currency since 1782}. J. Statist. Soc. Lond., 28, 294-320.}

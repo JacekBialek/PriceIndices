@@ -22,8 +22,8 @@ The function returns a value (or vector of values) of the monthly chained Fisher
 This function returns a value (or vector of values) of the monthly chained Fisher price index.
 }
 \examples{
-chfisher(milk, start="2018-12", end="2020-01")
-chfisher(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chfisher(milk, start="2018-12", end="2020-01")}
+\donttest{chfisher(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Fisher, I. (1922). \emph{The Making of Index Numbers}. Boston: Houghton Mifflin.}

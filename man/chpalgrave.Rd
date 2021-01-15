@@ -22,8 +22,8 @@ The function returns a value (or vector of values) of the monthly chained Palgra
 This function returns a value (or vector of values) of the monthly chained Palgrave price index.
 }
 \examples{
-chpalgrave(milk, start="2018-12", end="2020-01")
-chpalgrave(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chpalgrave(milk, start="2018-12", end="2020-01")}
+\donttest{chpalgrave(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Palgrave, R. H. I. (1886). \emph{Currency and Standard of Value in England, France and India and the Rates of Exchange Between these Countries.} Memorandum submitted to the Royal Commission on Depression of trade and Industry, Third Report, Appendix B, 312-390.}

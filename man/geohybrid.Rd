@@ -24,8 +24,8 @@ The function returns a value (or vector of values) of the bilateral geohybrid pr
 This function returns a value (or vector of values) of the bilateral geohybrid price index. The geohybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
 }
 \examples{
-geohybrid(milk, start="2019-12", end="2020-08", base="2018-12")
-geohybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)
+\donttest{geohybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
+\donttest{geohybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 }
 \references{
 {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}

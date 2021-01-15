@@ -20,7 +20,7 @@ This function returns a value of the multilateral weighted GEKS-L price index (t
 This function returns a value of the multilateral weighted GEKS-L price index extended by using the FBMW (Fixed Base Moving Window) method.
 }
 \examples{
-wgeksl_fbmw(milk, start="2019-12", end="2020-04")
+\donttest{wgeksl_fbmw(milk, start="2019-12", end="2020-04")}
 }
 \references{
 {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}

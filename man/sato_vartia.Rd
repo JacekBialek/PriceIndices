@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Vartia-II (
 }
 \examples{
 sato_vartia(milk, start="2018-12", end="2020-01")
-sato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{sato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Sato, K. (1976). \emph{The Ideal Log-Change Index Number.}  The Review of Economics and Statistics, 58(2), 223-228.}

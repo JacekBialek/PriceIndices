@@ -22,8 +22,8 @@ The function returns a value (or vector of values) of the monthly chained Vartia
 This function returns a value (or vector of values) of the monthly chained Vartia-II (Sato-Vartia) price index.
 }
 \examples{
-chsato_vartia(milk, start="2018-12", end="2020-01")
-chsato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chsato_vartia(milk, start="2018-12", end="2020-01")}
+\donttest{chsato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Sato, K. (1976). \emph{The Ideal Log-Change Index Number.}  The Review of Economics and Statistics, 58(2), 223-228.}

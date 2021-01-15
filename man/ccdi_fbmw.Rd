@@ -20,7 +20,7 @@ This function returns a value of the multilateral CCDI price index extended by u
 This function returns a value of the multilateral CCDI price index (GEKS based on the Tornqvist formula) extended by using the FBMW (Fixed Base Moving Window) method.
 }
 \examples{
-ccdi_fbmw(milk, start="2019-12", end="2020-04")
+\donttest{ccdi_fbmw(milk, start="2019-12", end="2020-04")}
 }
 \references{
 {Caves, D.W., Christensen, L.R. and Diewert, W.E. (1982). \emph{Multilateral comparisons of output, input, and productivity using superlative index numbers.} Economic Journal 92, 73-86.}

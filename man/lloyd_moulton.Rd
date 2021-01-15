@@ -25,7 +25,7 @@ This function returns a value (or vector of values) of the bilateral Lloyd-Moult
 }
 \examples{
 lloyd_moulton(milk, start="2018-12", end="2020-01",sigma=0.9)
-lloyd_moulton(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{lloyd_moulton(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Lloyd, P. J. (1975). \emph{Substitution Effects and Biases in Nontrue Price Indices.}  The American Economic Review, 65, 301-313.}

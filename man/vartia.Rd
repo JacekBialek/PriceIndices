@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Vartia-I pr
 }
 \examples{
 vartia(milk, start="2018-12", end="2020-01")
-vartia(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Vartia, Y. 0. (1976). \emph{Ideal Log-Change Index Numbers .}  Scandinavian Journal of Statistics 3(3), 121-126.}

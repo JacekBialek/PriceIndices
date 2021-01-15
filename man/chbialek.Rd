@@ -22,8 +22,8 @@ The function returns a value (or vector of values) of the monthly chained Bialek
 This function returns a value (or vector of values) of the monthly chained Bialek price index.
 }
 \examples{
-chbialek(milk, start="2018-12", end="2020-01")
-chbialek(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chbialek(milk, start="2018-12", end="2020-01")}
+\donttest{chbialek(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Von der Lippe, P. (2012). \emph{Some short notes on the price index of Jacek Bialek}. Econometrics (Ekonometria). 1(35), 76-83.}

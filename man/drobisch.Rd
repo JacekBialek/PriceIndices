@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Drobisch pr
 }
 \examples{
 drobisch(milk, start="2018-12", end="2020-01")
-drobisch(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{drobisch(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Drobisch, M. W. (1871). \emph{Ueber einige Einwurfe gegen die in diesen Jahrbuchern veroffentlichte neue Methode, die Veranderungen der Waarenpreise und des Geldwerths zu berechten}.Jahrbucher fur Nationalokonomie und Statistik, Vol. 16, s. 416-427.}

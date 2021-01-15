@@ -20,7 +20,7 @@ This function returns a value of the multilateral GEKS price index extended by u
 This function returns a value of the multilateral GEKS price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
 }
 \examples{
-geks_fbew(milk, start="2018-12", end="2019-08")
+\donttest{geks_fbew(milk, start="2018-12", end="2019-08")}
 }
 \references{
 {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}

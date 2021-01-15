@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the monthly chained Balk-
 }
 \examples{
 chbmw(milk, start="2018-12", end="2020-01")
-chbmw(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chbmw(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Mehrhoff, J.(2007). \emph{A linear approximation to the Jevons index}. In: Von der Lippe (2007): Index Theory and Price Statistics, Peter Lang: Berlin, Germany.}

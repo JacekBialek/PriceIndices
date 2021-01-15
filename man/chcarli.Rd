@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the monthly chained Carli
 }
 \examples{
 chcarli(milk, start="2018-12", end="2020-01")
-chcarli(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chcarli(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Carli, G. (1804). \emph{Del valore e della proporzione de'metalli monetati}. Scrittori Classici Italiani di Economia Politica, 13, 297-336.}

@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Walsh price
 }
 \examples{
 walsh(milk, start="2018-12", end="2020-01")
-walsh(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{walsh(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Walsh, C. M. (1901). \emph{The Measurement of General Exchange Value}. The MacMillan Company, New York.}

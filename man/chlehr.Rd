@@ -22,8 +22,8 @@ The function returns a value (or vector of values) of the monthly chained Lehr p
 This function returns a value (or vector of values) of the monthly chained Lehr price index.
 }
 \examples{
-chlehr(milk, start="2018-12", end="2020-01")
-chlehr(milk, start="2018-12", end="2020-01", TRUE)
+\donttest{chlehr(milk, start="2018-12", end="2020-01")}
+\donttest{chlehr(milk, start="2018-12", end="2020-01", TRUE)}
 }
 \references{
 {Lehr, J. (1885). \emph{Beitrage zur Statistik der Preise, insbesondere des Geldes und des Holzes.} J. D. Sauerlander, Frankfurt am Main.}

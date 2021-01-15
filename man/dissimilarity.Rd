@@ -23,7 +23,7 @@ This function returns a value of the relative price and/or quantity dissimilarit
 }
 \examples{
 dissimilarity(milk, period1="2018-12",period2="2019-12",type="q")
-dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")
+\donttest{dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")}
 }
 \references{
 {Diewert, E. (2020). \emph{The Chain Drift Problem and Multilateral Indexes.} Chapter 6 in: Consumer Price Index Theory (draft)}

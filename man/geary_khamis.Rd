@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Geary-Khami
 }
 \examples{
 geary_khamis(milk, start="2018-12", end="2020-01")
-geary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{geary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Geary, R. G. (1958). \emph{A Note on Comparisons of Exchange Rates and Purchasing Power between Countries.} Journal of the Royal Statistical Society, Series A, 121, 97-99.}

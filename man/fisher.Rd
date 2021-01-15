@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Fisher pric
 }
 \examples{
 fisher(milk, start="2018-12", end="2020-01")
-fisher(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{fisher(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Fisher, I. (1922). \emph{The Making of Index Numbers}. Boston: Houghton Mifflin.}

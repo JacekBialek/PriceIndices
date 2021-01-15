@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the unweighted Carruthers
 }
 \examples{
 cswd(milk, start="2018-12", end="2020-01")
-cswd(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{cswd(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Carruthers, A.G., Sellwood, D. J, Ward, P. W. (1980). \emph{Recent developments in the retail price index}. Journal of the Royal Statistical Society. Series D (The Statisticain), 29(1), 1-32.}

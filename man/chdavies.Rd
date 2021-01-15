@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the monthly chained Davie
 }
 \examples{
 chdavies(milk, start="2018-12", end="2020-01")
-chdavies(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chdavies(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Davies, G. R. (1924). \emph{The Problem of a Standard Index Number Formula.} Journal of the American Statistical Association, 19 (146), 180-188.}

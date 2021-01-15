@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Marshall-Ed
 }
 \examples{
 marshall_edgeworth(milk, start="2018-12", end="2020-01")
-marshall_edgeworth(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{marshall_edgeworth(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Marshall, A. (1887). \emph{Remedies for Fluctuations of General Prices}. Contemporary Review, 51, 355-375.}

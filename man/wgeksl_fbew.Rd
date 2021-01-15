@@ -20,7 +20,7 @@ This function returns a value of the multilateral weighted GEKS-L price index (t
 This function returns a value of the multilateral weighted GEKS-L price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
 }
 \examples{
-wgeksl_fbew(milk, start="2018-12", end="2019-08")
+\donttest{wgeksl_fbew(milk, start="2018-12", end="2019-08")}
 }
 \references{
 {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}

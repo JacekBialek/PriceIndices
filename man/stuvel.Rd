@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Stuvel pric
 }
 \examples{
 stuvel(milk, start="2018-12", end="2020-01")
-stuvel(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{stuvel(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Stuvel, G. (1957). \emph{A New Index Number Formula.} Econometrica, 25, 123-131.}

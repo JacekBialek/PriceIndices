@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Tornqvist p
 }
 \examples{
 tornqvist(milk, start="2018-12", end="2020-01")
-tornqvist(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{tornqvist(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Tornqvist, L. (1936). \emph{The Bank of Finland's Consumption Price Index}. Bank of Finland Monthly Bulletin 10, 1-8.}

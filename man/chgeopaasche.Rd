@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the monthly chained geo-l
 }
 \examples{
 chgeopaasche(milk, start="2018-12", end="2020-01")
-chgeopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chgeopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}

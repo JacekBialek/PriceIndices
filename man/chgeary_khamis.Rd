@@ -22,8 +22,8 @@ The function returns a value (or vector of values) of the monthly chained Geary-
 This function returns a value (or vector of values) of the monthly chained Geary-Khamis price index.
 }
 \examples{
-chgeary_khamis(milk, start="2018-12", end="2020-01")
-chgeary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chgeary_khamis(milk, start="2018-12", end="2020-01")}
+\donttest{chgeary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Geary, R. G. (1958). \emph{A Note on Comparisons of Exchange Rates and Purchasing Power between Countries.} Journal of the Royal Statistical Society, Series A, 121, 97-99.}

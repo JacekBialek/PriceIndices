@@ -25,7 +25,7 @@ This function returns a value (or vector of values) of the bilateral geometric L
 }
 \examples{
 geolowe(milk, start="2019-01", end="2020-01",base="2018-12")
-geolowe(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{geolowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}

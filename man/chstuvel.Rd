@@ -22,8 +22,8 @@ The function returns a value (or vector of values) of the monthly chained Stuvel
 This function returns a value (or vector of values) of the monthly chained Stuvel price index.
 }
 \examples{
-chstuvel(milk, start="2018-12", end="2020-01")
-chstuvel(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chstuvel(milk, start="2018-12", end="2020-01")}
+\donttest{chstuvel(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Stuvel, G. (1957). \emph{A New Index Number Formula.} Econometrica, 25, 123-131.}

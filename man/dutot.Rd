@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the unweighted bilateral 
 }
 \examples{
 dutot(milk, start="2018-12", end="2020-01")
-dutot(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{dutot(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Dutot, C. F., (1738). \emph{Reflexions Politiques sur les Finances et le Commerce}. The Hague: Les Freres Vaillant et Nicolas Prevost, Vol. 1.}

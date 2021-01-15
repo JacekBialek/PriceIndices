@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the monthly chained "unna
 }
 \examples{
 chharmonic(milk, start="2018-12", end="2020-01")
-chharmonic(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chharmonic(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}

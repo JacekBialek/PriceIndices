@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Laspeyres p
 }
 \examples{
 laspeyres(milk, start="2018-12", end="2020-01")
-laspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{laspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Laspeyres, E. (1871). \emph{Die Berechnung einer mittleren Waarenpreissteigerung}. Jahrbucher fur Nationalokonomie und Statistik 16, 296-314.}

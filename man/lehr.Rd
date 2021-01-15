@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Lehr price 
 }
 \examples{
 lehr(milk, start="2018-12", end="2020-01")
-lehr(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{lehr(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Lehr, J. (1885). \emph{Beitrage zur Statistik der Preise, insbesondere des Geldes und des Holzes.} J. D. Sauerlander, Frankfurt am Main.}

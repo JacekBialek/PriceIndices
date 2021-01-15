@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the monthly chained Laspe
 }
 \examples{
 chlaspeyres(milk, start="2018-12", end="2020-01")
-chlaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chlaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Laspeyres, E. (1871). \emph{Die Berechnung einer mittleren Waarenpreissteigerung}. Jahrbucher fur Nationalokonomie und Statistik 16, 296-314.}

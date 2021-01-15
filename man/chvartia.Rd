@@ -22,8 +22,8 @@ The function returns a value (or vector of values) of the monthly chained Vartia
 This function returns a value (or vector of values) of the monthly chained Vartia-I price index.
 }
 \examples{
-chvartia(milk, start="2018-12", end="2020-01")
-chvartia(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chvartia(milk, start="2018-12", end="2020-01")}
+\donttest{chvartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Vartia, Y. 0. (1976). \emph{Ideal Log-Change Index Numbers .}  Scandinavian Journal of Statistics 3(3), 121-126.}

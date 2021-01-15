@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the monthly chained Paasc
 }
 \examples{
 chpaasche(milk, start="2018-12", end="2020-01")
-chpaasche(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{chpaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Paasche, H. (1874). \emph{Uber die Preisentwicklung der letzten Jahre nach den Hamburger Borsennotirungen}. Jahrbucher fur Nationalokonomie und Statistik, 12, 168-178.}
