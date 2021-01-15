@@ -1,5 +1,5 @@
 Package: PriceIndices
-Title: Calculating Bilateral and Multilateral Price Indices
+Title: Calculating Bilateral and Multilateral Price Indexes
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Jacek",
@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "jacek.bialek@uni.lodz.pl",
            comment = c(ORCID = "0000-0002-0952-5327"))
-Description: Preparing a scanner data set for price dynamics calculations (data selecting, data classification, data matching, data filtering). Computing bilateral and multilateral indices.
+Description: Preparing a scanner data set for price dynamics calculations (data selecting, data classification, data matching, data filtering). Computing bilateral and multilateral indexes.
 Depends:
     R (>= 3.5.0)
 Imports: 
