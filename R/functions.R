@@ -1,6 +1,5 @@
 
 
-
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -1022,7 +1021,7 @@ sales_groups<-function(datasets=list(), start, end, shares=FALSE, barplot=FALSE,
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' jevons(milk, start="2018-12", end="2020-01")
-#' jevons(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{jevons(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 jevons<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -1076,7 +1075,7 @@ jevons<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' dutot(milk, start="2018-12", end="2020-01")
-#' dutot(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{dutot(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 dutot<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -1127,7 +1126,7 @@ dutot<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' carli(milk, start="2018-12", end="2020-01")
-#' carli(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{carli(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 carli<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
@@ -1180,7 +1179,7 @@ carli<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' cswd(milk, start="2018-12", end="2020-01")
-#' cswd(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{cswd(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 cswd<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                   if (nrow(data)==0) stop("A data frame is empty") 
@@ -1235,7 +1234,7 @@ data2<-dplyr::filter(data,(lubridate::year(data$time)==lubridate::year(start) & 
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' harmonic(milk, start="2018-12", end="2020-01")
-#' harmonic(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{harmonic(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 harmonic<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")  
@@ -1287,7 +1286,7 @@ harmonic<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2018). \emph{Harmonised Index of Consumer Prices (HICP). Methodological Manual}. Publication Office of the European union, Luxembourg.}
 #' @examples 
 #' bmw(milk, start="2018-12", end="2020-01")
-#' bmw(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{bmw(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 bmw<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -1343,7 +1342,7 @@ bmw<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' laspeyres(milk, start="2018-12", end="2020-01")
-#' laspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{laspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 laspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -1397,7 +1396,7 @@ laspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' paasche(milk, start="2018-12", end="2020-01")
-#' paasche(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{paasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 paasche<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
@@ -1449,7 +1448,7 @@ paasche<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' fisher(milk, start="2018-12", end="2020-01")
-#' fisher(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{fisher(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 fisher<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -1503,7 +1502,7 @@ fisher<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' tornqvist(milk, start="2018-12", end="2020-01")
-#' tornqvist(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{tornqvist(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 tornqvist<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -1563,7 +1562,7 @@ tornqvist<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' geolaspeyres(milk, start="2018-12", end="2020-01")
-#' geolaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{geolaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 geolaspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -1618,7 +1617,7 @@ geolaspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) return 
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' geopaasche(milk, start="2018-12", end="2020-01")
-#' geopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{geopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 geopaasche<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -1674,7 +1673,7 @@ geopaasche<-function(data,start,end,interval=FALSE)  { if (start==end) return (1
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' drobisch(milk, start="2018-12", end="2020-01")
-#' drobisch(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{drobisch(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 drobisch<-function(data,start,end,interval=FALSE) {if (start==end) return (1)
@@ -1726,7 +1725,7 @@ drobisch<-function(data,start,end,interval=FALSE) {if (start==end) return (1)
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' marshall_edgeworth(milk, start="2018-12", end="2020-01")
-#' marshall_edgeworth(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{marshall_edgeworth(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 marshall_edgeworth<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -1786,8 +1785,9 @@ marshall_edgeworth<-function(data,start,end,interval=FALSE)  { if (start==end) r
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' walsh(milk, start="2018-12", end="2020-01")
-#' walsh(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{walsh(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 walsh<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                   if (nrow(data)==0) stop("A data frame is empty")
                                   start<-paste(start,"-01",sep="")
@@ -1844,7 +1844,7 @@ return(sum(price_end*(quantity_start*quantity_end)^(0.5)/sum(price_start*(quanti
 #' {Bialek, J. (2014). \emph{Simulation Study of an Original Price Index Formula}. Communications in Statistics - Simulation and Computation, 43(2), 285-297}
 #' @examples 
 #' bialek(milk, start="2018-12", end="2020-01")
-#' bialek(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{bialek(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 bialek<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -1909,7 +1909,7 @@ bialek<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' banajree(milk, start="2018-12", end="2020-01")
-#' banajree(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{banajree(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 banajree<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -1974,7 +1974,7 @@ banajree<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' davies(milk, start="2018-12", end="2020-01")
-#' davies(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{davies(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 davies<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -2041,8 +2041,9 @@ davies<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' stuvel(milk, start="2018-12", end="2020-01")
-#' stuvel(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{stuvel(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 stuvel<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -2106,7 +2107,7 @@ stuvel<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' palgrave(milk, start="2018-12", end="2020-01")
-#' palgrave(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{palgrave(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 palgrave<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -2170,7 +2171,7 @@ palgrave<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' geary_khamis(milk, start="2018-12", end="2020-01")
-#' geary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{geary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 geary_khamis<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
@@ -2229,7 +2230,7 @@ geary_khamis<-function(data,start,end,interval=FALSE)  { if (start==end) return 
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' lehr(milk, start="2018-12", end="2020-01")
-#' lehr(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{lehr(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 lehr<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -2305,7 +2306,7 @@ LL<-function (x) {
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' vartia(milk, start="2018-12", end="2020-01")
-#' vartia(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 
@@ -2382,7 +2383,7 @@ vartia<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' sato_vartia(milk, start="2018-12", end="2020-01")
-#' sato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{sato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 sato_vartia<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -2459,7 +2460,7 @@ sato_vartia<-function(data,start,end,interval=FALSE)  { if (start==end) return (
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' lloyd_moulton(milk, start="2018-12", end="2020-01",sigma=0.9)
-#' lloyd_moulton(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{lloyd_moulton(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 lloyd_moulton<-function(data,start,end,sigma=0.7,interval=FALSE)  { if (start==end) return (1)
@@ -2521,7 +2522,7 @@ lloyd_moulton<-function(data,start,end,sigma=0.7,interval=FALSE)  { if (start==e
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' young(milk, start="2019-01", end="2020-01",base="2018-12")
-#' young(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{young(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 young<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) return (1)
@@ -2580,7 +2581,7 @@ young<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) ret
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' geoyoung(milk, start="2019-01", end="2020-01",base="2018-12")
-#' geoyoung(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{geoyoung(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 geoyoung<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) return (1)
@@ -2636,7 +2637,7 @@ geoyoung<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) 
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' lowe(milk, start="2019-01", end="2020-01",base="2018-12")
-#' lowe(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{lowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 lowe<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) return (1)
@@ -2695,7 +2696,7 @@ lowe<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) retu
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' geolowe(milk, start="2019-01", end="2020-01",base="2018-12")
-#' geolowe(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{geolowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 geolowe<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) return (1)
@@ -2755,7 +2756,7 @@ geolowe<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) r
 #' {Lent J., & Dorfman,A. H. (2009). \emph{Using a Weighted Average of Base Period Price Indexes to Approximate a Superlative Index.} Journal of Official Statistics, 25(1), 139-149.}
 #' @examples 
 #' agmean(milk, start="2019-01", end="2020-01",sigma=0.5)
-#' agmean(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{agmean(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 
@@ -2806,7 +2807,7 @@ agmean<-function(data,start,end,sigma=0.7,interval=FALSE)  { if (start==end) ret
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chjevons(milk, start="2018-12", end="2020-01")
-#' chjevons(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chjevons(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chjevons<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
@@ -2848,7 +2849,7 @@ chjevons<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chcarli(milk, start="2018-12", end="2020-01")
-#' chcarli(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chcarli(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chcarli<-function(data,start,end, interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -2889,7 +2890,7 @@ chcarli<-function(data,start,end, interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chdutot(milk, start="2018-12", end="2020-01")
-#' chdutot(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chdutot(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chdutot<-function(data,start,end, interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
@@ -2932,8 +2933,9 @@ chdutot<-function(data,start,end, interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chcswd(milk, start="2018-12", end="2020-01")
-#' chcswd(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chcswd(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chcswd<-function(data,start,end, interval=FALSE) { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -2973,7 +2975,7 @@ chcswd<-function(data,start,end, interval=FALSE) { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chharmonic(milk, start="2018-12", end="2020-01")
-#' chharmonic(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chharmonic(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chharmonic<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                   if (nrow(data)==0) stop("A data frame is empty") 
@@ -3015,7 +3017,7 @@ chharmonic<-function(data,start,end,interval=FALSE)  { if (start==end) return (1
 #' {(2018). \emph{Harmonised Index of Consumer Prices (HICP). Methodological Manual}. Publication Office of the European union, Luxembourg.}
 #' @examples 
 #' chbmw(milk, start="2018-12", end="2020-01")
-#' chbmw(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chbmw(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chbmw<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                   if (nrow(data)==0) stop("A data frame is empty") 
@@ -3057,7 +3059,7 @@ chbmw<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chlaspeyres(milk, start="2018-12", end="2020-01")
-#' chlaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chlaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chlaspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
@@ -3098,8 +3100,9 @@ chlaspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) return (
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chpaasche(milk, start="2018-12", end="2020-01")
-#' chpaasche(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chpaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chpaasche<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3138,9 +3141,10 @@ chpaasche<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chfisher(milk, start="2018-12", end="2020-01")
-#' chfisher(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chfisher(milk, start="2018-12", end="2020-01")}
+#' \donttest{chfisher(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chfisher<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3179,8 +3183,8 @@ chfisher<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chtornqvist(milk, start="2018-12", end="2020-01")
-#' chtornqvist(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chtornqvist(milk, start="2018-12", end="2020-01")}
+#' \donttest{chtornqvist(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 chtornqvist<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -3222,7 +3226,7 @@ chtornqvist<-function(data,start,end,interval=FALSE)  { if (start==end) return (
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chgeolaspeyres(milk, start="2018-12", end="2020-01")
-#' chgeolaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chgeolaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chgeolaspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
@@ -3263,8 +3267,9 @@ chgeolaspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) retur
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chgeopaasche(milk, start="2018-12", end="2020-01")
-#' chgeopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chgeopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chgeopaasche<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3350,9 +3355,10 @@ chdrobisch<-function(data,start,end,interval=FALSE)  { if (start==end) return (1
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chmarshall_edgeworth(milk, start="2018-12", end="2020-01")
-#' chmarshall_edgeworth(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chmarshall_edgeworth(milk, start="2018-12", end="2020-01")}
+#' \donttest{chmarshall_edgeworth(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export 
+
 chmarshall_edgeworth<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3392,9 +3398,10 @@ chmarshall_edgeworth<-function(data,start,end,interval=FALSE)  { if (start==end)
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chwalsh(milk, start="2018-12", end="2020-01")
-#' chwalsh(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chwalsh(milk, start="2018-12", end="2020-01")}
+#' \donttest{chwalsh(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chwalsh<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3435,9 +3442,10 @@ chwalsh<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #'
 #' {Bialek, J. (2014). \emph{Simulation Study of an Original Price Index Formula}. Communications in Statistics - Simulation and Computation, 43(2), 285-297}
 #' @examples 
-#' chbialek(milk, start="2018-12", end="2020-01")
-#' chbialek(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chbialek(milk, start="2018-12", end="2020-01")}
+#' \donttest{chbialek(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chbialek<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3478,9 +3486,10 @@ chbialek<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chbanajree(milk, start="2018-12", end="2020-01")
-#' chbanajree(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chbanajree(milk, start="2018-12", end="2020-01")}
+#' \donttest{chbanajree(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chbanajree<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3522,7 +3531,7 @@ chbanajree<-function(data,start,end,interval=FALSE)  { if (start==end) return (1
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' chdavies(milk, start="2018-12", end="2020-01")
-#' chdavies(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chdavies(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 chdavies<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -3565,9 +3574,10 @@ chdavies<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chstuvel(milk, start="2018-12", end="2020-01")
-#' chstuvel(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chstuvel(milk, start="2018-12", end="2020-01")}
+#' \donttest{chstuvel(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chstuvel<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3608,9 +3618,10 @@ chstuvel<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chpalgrave(milk, start="2018-12", end="2020-01")
-#' chpalgrave(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chpalgrave(milk, start="2018-12", end="2020-01")}
+#' \donttest{chpalgrave(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chpalgrave<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3653,9 +3664,10 @@ chpalgrave<-function(data,start,end,interval=FALSE)  { if (start==end) return (1
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chgeary_khamis(milk, start="2018-12", end="2020-01")
-#' chgeary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chgeary_khamis(milk, start="2018-12", end="2020-01")}
+#' \donttest{chgeary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chgeary_khamis<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3695,9 +3707,10 @@ chgeary_khamis<-function(data,start,end,interval=FALSE)  { if (start==end) retur
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chlehr(milk, start="2018-12", end="2020-01")
-#' chlehr(milk, start="2018-12", end="2020-01", TRUE)
+#' \donttest{chlehr(milk, start="2018-12", end="2020-01")}
+#' \donttest{chlehr(milk, start="2018-12", end="2020-01", TRUE)}
 #' @export
+
 chlehr<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                   if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3739,8 +3752,8 @@ chlehr<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chvartia(milk, start="2018-12", end="2020-01")
-#' chvartia(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chvartia(milk, start="2018-12", end="2020-01")}
+#' \donttest{chvartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 chvartia<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -3785,9 +3798,10 @@ chvartia<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chsato_vartia(milk, start="2018-12", end="2020-01")
-#' chsato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chsato_vartia(milk, start="2018-12", end="2020-01")}
+#' \donttest{chsato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chsato_vartia<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -3832,8 +3846,9 @@ chsato_vartia<-function(data,start,end,interval=FALSE)  { if (start==end) return
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
 #' chlloyd_moulton(milk, start="2018-12", end="2020-01",sigma=0.9)
-#' chlloyd_moulton(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chlloyd_moulton(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chlloyd_moulton<-function(data,start,end,sigma=0.7,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    if (sigma==1) stop("A specification of the parameter 'sigma' is wrong")
@@ -3875,6 +3890,7 @@ chlloyd_moulton<-function(data,start,end,sigma=0.7,interval=FALSE)  { if (start=
 #' \donttest{chagmean(milk, start="2019-01", end="2020-01",sigma=0.5)}
 #' \donttest{chagmean(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chagmean<-function(data,start,end,sigma=0.7,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    if (sigma==1) stop("A specification of the parameter 'sigma' is wrong")
@@ -3916,7 +3932,7 @@ chagmean<-function(data,start,end,sigma=0.7,interval=FALSE)  { if (start==end) r
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chyoung(milk, start="2019-01", end="2020-01",base="2018-12")
-#' chyoung(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chyoung(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 chyoung<-function(data,start,end, base=start,interval=FALSE)  { if (start==end) return (1)
@@ -3960,7 +3976,7 @@ chyoung<-function(data,start,end, base=start,interval=FALSE)  { if (start==end) 
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chgeoyoung(milk, start="2019-01", end="2020-01",base="2018-12")
-#' chgeoyoung(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chgeoyoung(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 chgeoyoung<-function(data,start,end, base=start,interval=FALSE)  { if (start==end) return (1)
@@ -4001,8 +4017,9 @@ chgeoyoung<-function(data,start,end, base=start,interval=FALSE)  { if (start==en
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chlowe(milk, start="2019-01", end="2020-01",base="2018-12")
-#' chlowe(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chlowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chlowe<-function(data,start,end, base=start,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -4041,7 +4058,7 @@ chlowe<-function(data,start,end, base=start,interval=FALSE)  { if (start==end) r
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' chgeolowe(milk, start="2019-01", end="2020-01",base="2018-12")
-#' chgeolowe(milk, start="2018-12", end="2020-01", interval=TRUE)
+#' \donttest{chgeolowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
 chgeolowe<-function(data,start,end, base=start,interval=FALSE)  { if (start==end) return (1)
@@ -4093,7 +4110,6 @@ chgeolowe<-function(data,start,end, base=start,interval=FALSE)  { if (start==end
 #' \donttest{geks(milk, start="2018-12", end="2019-12")}
 #' @export
 
-
 geks<-function(data,start,end, wstart=start,window=13)  { if (start==end) return (1)
       if (nrow(data)==0) stop("A data frame is empty") 
                                    start<-paste(start,"-01",sep="")
@@ -4143,8 +4159,9 @@ geks<-function(data,start,end, wstart=start,window=13)  { if (start==end) return
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #' @examples 
-#' geks_fbew(milk, start="2018-12", end="2019-08")
+#' \donttest{geks_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
+
 geks_fbew<-function(data,start,end)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
                                    start<-paste(start,"-01",sep="")
@@ -4185,7 +4202,7 @@ geks_fbew<-function(data,start,end)  { if (start==end) return (1)
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
 #' @examples 
-#' geks_fbmw(milk, start="2019-12", end="2020-04")
+#' \donttest{geks_fbmw(milk, start="2019-12", end="2020-04")}
 #' @export
 
 geks_fbmw<-function(data,start,end)  { if (start==end) return (1)
@@ -4650,7 +4667,7 @@ ccdi_fbew<-function(data,start,end)  { if (start==end) return (1)
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
 #' @examples 
-#' ccdi_fbmw(milk, start="2019-12", end="2020-04")
+#' \donttest{ccdi_fbmw(milk, start="2019-12", end="2020-04")}
 #' @export
 
 ccdi_fbmw<-function(data,start,end)  { if (start==end) return (1)

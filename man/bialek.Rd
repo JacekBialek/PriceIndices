@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Bialek pric
 }
 \examples{
 bialek(milk, start="2018-12", end="2020-01")
-bialek(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{bialek(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Von der Lippe, P. (2012). \emph{Some short notes on the price index of Jacek Bialek}. Econometrics (Ekonometria). 1(35), 76-83.}

@@ -23,7 +23,7 @@ This function returns a value (or vector of values) of the bilateral Banajree pr
 }
 \examples{
 banajree(milk, start="2018-12", end="2020-01")
-banajree(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{banajree(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Banajree, K. S. (1977). \emph{On the factorial approach providing the true index of cost of living.} Gottingen : Vandenhoeck und Ruprecht.}

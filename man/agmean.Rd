@@ -25,7 +25,7 @@ This function returns a value (or vector of values) of the bilateral AG Mean pri
 }
 \examples{
 agmean(milk, start="2019-01", end="2020-01",sigma=0.5)
-agmean(milk, start="2018-12", end="2020-01", interval=TRUE)
+\donttest{agmean(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
 {Lent J., & Dorfman,A. H. (2009). \emph{Using a Weighted Average of Base Period Price Indexes to Approximate a Superlative Index.} Journal of Official Statistics, 25(1), 139-149.}

@@ -1,4 +1,5 @@
 
+
 #' @title  Calculating the bilateral hybrid price index
 #'
 #' @description This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -13,8 +14,8 @@
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
 #' @examples 
-#' hybrid(milk, start="2019-12", end="2020-08", base="2018-12")
-#' hybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)
+#' \donttest{hybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
+#' \donttest{hybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
 hybrid<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -98,8 +99,8 @@ corr_end<-stats::cor(prices(data, period=end,set=id), quantities(data, period=ba
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
 #' @examples 
-#' geohybrid(milk, start="2019-12", end="2020-08", base="2018-12")
-#' geohybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)
+#' \donttest{geohybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
+#' \donttest{geohybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
 geohybrid<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -389,7 +390,7 @@ tindex<-function(pmi=c(),psigma=c(),start, ratio=TRUE)
 #'
 #' @examples 
 #' dissimilarity(milk, period1="2018-12",period2="2019-12",type="q")
-#' dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")
+#' \donttest{dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")}
 #' @export
 
 dissimilarity<-function (data, period1, period2, type="p")
@@ -590,8 +591,8 @@ else return (spq[length(spq)])
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' @examples 
-#' geksl(milk, start="2019-01", end="2019-08",window=10)
-#' geksl(milk, start="2018-12", end="2019-12")
+#' \donttest{geksl(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{geksl(milk, start="2018-12", end="2019-12")}
 #' @export
 
 geksl<-function(data,start,end, wstart=start,window=13)  { if (start==end) return (1)
@@ -703,8 +704,9 @@ wgeksl<-function(data,start,end, wstart=start,window=13)  { if (start==end) retu
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
 #' @examples 
-#' geksl_fbew(milk, start="2018-12", end="2019-08")
+#' \donttest{geksl_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
+
 geksl_fbew<-function(data,start,end)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
                                    start<-paste(start,"-01",sep="")
@@ -746,8 +748,9 @@ geksl_fbew<-function(data,start,end)  { if (start==end) return (1)
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
 #' @examples 
-#' wgeksl_fbew(milk, start="2018-12", end="2019-08")
+#' \donttest{wgeksl_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
+
 wgeksl_fbew<-function(data,start,end)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
                                    start<-paste(start,"-01",sep="")
@@ -789,7 +792,7 @@ wgeksl_fbew<-function(data,start,end)  { if (start==end) return (1)
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
 #'
 #' @examples 
-#' geksl_fbmw(milk, start="2019-12", end="2020-04")
+#' \donttest{geksl_fbmw(milk, start="2019-12", end="2020-04")}
 #' @export
 
 geksl_fbmw<-function(data,start,end)  { if (start==end) return (1)
@@ -832,7 +835,7 @@ geksl_fbmw<-function(data,start,end)  { if (start==end) return (1)
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
 #'
 #' @examples 
-#' wgeksl_fbmw(milk, start="2019-12", end="2020-04")
+#' \donttest{wgeksl_fbmw(milk, start="2019-12", end="2020-04")}
 #' @export
 
 wgeksl_fbmw<-function(data,start,end)  { if (start==end) return (1)
@@ -918,6 +921,7 @@ wgeksl_fbmw2<-function(data,start,end)  { if (start==end) return (1)
 #' \donttest{geksl_splice(milk, start="2018-12", end="2020-02",splice="half")}
 #' \donttest{geksl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
+
 geksl_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
 { asplice<-c("movement","window","half","mean","window_published","half_published","mean_published") #allowed values for 'splice' parameter
   if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
@@ -1010,6 +1014,7 @@ else return(set)
 #' \donttest{wgeksl_splice(milk, start="2018-12", end="2020-02",splice="half")}
 #' \donttest{wgeksl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
+
 wgeksl_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
 { asplice<-c("movement","window","half","mean","window_published","half_published","mean_published") #allowed values for 'splice' parameter
   if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
