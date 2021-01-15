@@ -48,8 +48,8 @@ This function returns an artificial scanner dataset where prices and quantities 
 This function provides artificial scanner datasets where prices and quantities are lognormally distributed.
 }
 \examples{
-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(3,4,4),
-qsigma=c(0.1,0.1,0.15),start="2020-01",days=TRUE)
-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(6,6,7),
-qsigma=c(0.1,0.1,0.15),start="2020-01",n=1000,n0=132578,r=10)
+\donttest{generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(3,4,4),
+qsigma=c(0.1,0.1,0.15),start="2020-01",days=TRUE)}
+\donttest{generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(6,6,7),
+qsigma=c(0.1,0.1,0.15),start="2020-01",n=1000,n0=132578,r=10)}
 }

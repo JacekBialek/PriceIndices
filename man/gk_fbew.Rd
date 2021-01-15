@@ -20,7 +20,7 @@ This function returns a value of the multilateral Geary-Khamis price index exten
 This function returns a value of the multilateral Geary-Khamis price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
 }
 \examples{
-gk_fbew(milk, start="2018-12", end="2019-08")
+\donttest{gk_fbew(milk, start="2018-12", end="2019-08")}
 }
 \references{
 {Geary, R. G. (1958). \emph{A Note on Comparisons of Exchange Rates and Purchasing Power between Countries.} Journal of the Royal Statistical Society, Series A, 121, 97-99.}

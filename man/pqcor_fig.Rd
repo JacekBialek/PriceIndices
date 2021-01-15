@@ -24,6 +24,6 @@ The function returns Pearson's correlation coefficients between price and quanti
 The function returns Pearson's correlation coefficients between price and quantity of sold products with given IDs.
 }
 \examples{
-pqcor_fig(milk, start="2018-12", end="2019-12", figure=FALSE)
-pqcor_fig(milk, start="2018-12", end="2019-12", figure=TRUE)
+\donttest{pqcor_fig(milk, start="2018-12", end="2019-12", figure=FALSE)}
+\donttest{pqcor_fig(milk, start="2018-12", end="2019-12", figure=TRUE)}
 }

@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the monthly chained Young 
 This function returns a value (or vector of values) of the monthly chained Young price index.
 }
 \examples{
-chyoung(milk, start="2019-01", end="2020-01",base="2018-12")
+\donttest{chyoung(milk, start="2019-01", end="2020-01",base="2018-12")}
 \donttest{chyoung(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

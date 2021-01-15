@@ -24,11 +24,11 @@ This function returns a value of the quality adjusted unit value index (QU index
 \examples{
 ## Creating a data frame with artificial adjustment factors 
 ## (random numbers from uniform distribution U[1,2])
-prodID<-unique(milk$prodID)
-values<-stats::runif(length(prodID),1,2)
-v<-data.frame(prodID,values)
+\donttest{prodID<-unique(milk$prodID)}
+\donttest{values<-stats::runif(length(prodID),1,2)}
+\donttest{v<-data.frame(prodID,values)}
 ## Calculating the QU index for the created data frame 'v'
-QU(milk, start="2018-12", end="2019-12", v)
+\donttest{QU(milk, start="2018-12", end="2019-12", v)}
 }
 \references{
 {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}

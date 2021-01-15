@@ -20,7 +20,7 @@ This function returns a value of the multilateral GEKS-W price index extended by
 This function returns a value of the multilateral GEKS-W price index (GEKS based on the Walsh formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
 }
 \examples{
-geksw_fbew(milk, start="2018-12", end="2019-08")
+\donttest{geksw_fbew(milk, start="2018-12", end="2019-08")}
 }
 \references{
 {Walsh, C. M. (1901). \emph{The Measurement of General Exchange Value}. The MacMillan Company, New York.}

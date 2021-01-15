@@ -22,7 +22,7 @@ This function returns a value of the relative price (dSP) and/or quantity (dSQ) 
 This function returns a value of the relative price and/or quantity dissimilarity measure.
 }
 \examples{
-dissimilarity(milk, period1="2018-12",period2="2019-12",type="q")
+\donttest{dissimilarity(milk, period1="2018-12",period2="2019-12",type="q")}
 \donttest{dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")}
 }
 \references{

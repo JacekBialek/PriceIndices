@@ -34,13 +34,13 @@ The function returns values of sales of products from one or more datasets or th
 }
 \examples{
 ## Creating 3 subgroups of milk:
-ctg<-unique(milk$description)
-categories<-c(ctg[1],ctg[2],ctg[3])
-milk1<-dplyr::filter(milk, milk$description==categories[1])
-milk2<-dplyr::filter(milk, milk$description==categories[2])
-milk3<-dplyr::filter(milk, milk$description==categories[3])
+\donttest{ctg<-unique(milk$description)}
+\donttest{categories<-c(ctg[1],ctg[2],ctg[3])}
+\donttest{milk1<-dplyr::filter(milk, milk$description==categories[1])}
+\donttest{milk2<-dplyr::filter(milk, milk$description==categories[2])}
+\donttest{milk3<-dplyr::filter(milk, milk$description==categories[3])}
 ## Sample use of this function:
-sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04",end="2019-04",shares=TRUE)
-sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04",end="2019-07", 
-barplot=TRUE, names=categories)
+\donttest{sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04",end="2019-04",shares=TRUE)}
+\donttest{sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04",end="2019-07", 
+barplot=TRUE, names=categories)}
 }

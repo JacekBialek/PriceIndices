@@ -1,5 +1,4 @@
 
-
 #' @title  Calculating the bilateral hybrid price index
 #'
 #' @description This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -274,10 +273,10 @@ chgeohybrid<-function(data,start,end, base=start,interval=FALSE)  { if (start==e
 #' @return This function returns an artificial scanner dataset where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by \code{pmi}, \code{sigma}, \code{qmi} and \code{qsigma} parameters. This function works for a fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.   
 #'
 #' @examples 
-#' generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(3,4,4),
-#' qsigma=c(0.1,0.1,0.15),start="2020-01",days=TRUE)
-#' generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(6,6,7),
-#' qsigma=c(0.1,0.1,0.15),start="2020-01",n=1000,n0=132578,r=10)
+#' \donttest{generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(3,4,4),
+#' qsigma=c(0.1,0.1,0.15),start="2020-01",days=TRUE)}
+#' \donttest{generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(6,6,7),
+#' qsigma=c(0.1,0.1,0.15),start="2020-01",n=1000,n0=132578,r=10)}
 
 #' @export
 generate<-function(pmi=c(),psigma=c(),qmi=c(),qsigma=c(),prec=c(2,0),n=100,n0=1,r=1,r0=1,start,days=FALSE)
@@ -332,7 +331,7 @@ generate<-function(pmi=c(),psigma=c(),qmi=c(),qsigma=c(),prec=c(2,0),n=100,n0=1,
 #'
 #' @examples 
 #' tindex(pmi=c(1,1.2,1.3),psigma=c(0.1,0.2,0.15),start="2020-01")
-#' tindex(pmi=c(1,1.2,1.3),psigma=c(0.1,0.2,0.15),start="2020-01",ratio=FALSE)
+#' \donttest{tindex(pmi=c(1,1.2,1.3),psigma=c(0.1,0.2,0.15),start="2020-01",ratio=FALSE)}
 #' @export
 
 tindex<-function(pmi=c(),psigma=c(),start, ratio=TRUE)
@@ -389,7 +388,7 @@ tindex<-function(pmi=c(),psigma=c(),start, ratio=TRUE)
 #' {Diewert, E. (2020). \emph{The Chain Drift Problem and Multilateral Indexes.} Chapter 6 in: Consumer Price Index Theory (draft)}
 #'
 #' @examples 
-#' dissimilarity(milk, period1="2018-12",period2="2019-12",type="q")
+#' \donttest{dissimilarity(milk, period1="2018-12",period2="2019-12",type="q")}
 #' \donttest{dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")}
 #' @export
 

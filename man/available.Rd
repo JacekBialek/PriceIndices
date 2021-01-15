@@ -25,5 +25,5 @@ The function returns all values from the indicated column (defined by the \code{
 }
 \examples{
 available(milk, period1="2018-12", period2="2019-12", interval=TRUE)
-available(milk, period1="2018-12", period2="2019-12", type="description")
+\donttest{available(milk, period1="2018-12", period2="2019-12", type="description")}
 }

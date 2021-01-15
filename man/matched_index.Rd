@@ -24,6 +24,6 @@ The function returns a ratio of number of values from the indicated column that 
 The function returns a ratio of number of values from the indicated column that occur simultaneously in the compared periods or in a given time interval to the number of all available values from the above-mentioned column (defined by the \code{type} parameter) at the same time.
 }
 \examples{
-matched_index(milk, period1="2018-12", period2="2019-12", interval=TRUE)
+\donttest{matched_index(milk, period1="2018-12", period2="2019-12", interval=TRUE)}
 matched_index(milk, period1="2018-12", period2="2019-12", type="retID")
 }

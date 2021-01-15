@@ -20,6 +20,6 @@ The function analyzes the user's data frame and returns quantities of products w
 The function returns quantities of sold products with given IDs.
 }
 \examples{
-quantities(milk, period="2019-06")
+\donttest{quantities(milk, period="2019-06")}
 quantities(milk, period="2019-12",set=c(400032, 71772, 82919))
 }

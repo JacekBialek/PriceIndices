@@ -25,5 +25,5 @@ The function returns all values from the indicated column (defined by the \code{
 }
 \examples{
 matched(milk, period1="2018-12", period2="2019-12", interval=TRUE)
-matched(milk, period1="2018-12", period2="2019-12", type="description")
+\donttest{matched(milk, period1="2018-12", period2="2019-12", type="description")}
 }

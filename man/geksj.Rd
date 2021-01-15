@@ -24,8 +24,8 @@ This function returns a value of the multilateral GEKS-J price index (to be more
 This function returns a value of the multilateral GEKS-J price index (to be more precise: the GEKS index based on the Jevons formula).
 }
 \examples{
-geksj(milk, start="2019-01", end="2019-08",window=10)
-geksj(milk, start="2018-12", end="2019-12")
+\donttest{geksj(milk, start="2019-01", end="2019-08",window=10)}
+\donttest{geksj(milk, start="2018-12", end="2019-12")}
 }
 \references{
 {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}

@@ -33,6 +33,6 @@ The function returns a subset of the user's data set obtained by selection based
 The function returns a subset of the user's data set obtained by selection based on keywords and phrases.
 }
 \examples{
-data_selecting(milk, include=c("milk"), must=c("UHT"))
-data_selecting(milk, must=c("milk"), exclude=c("paust"))
+\donttest{data_selecting(milk, include=c("milk"), must=c("UHT"))}
+\donttest{data_selecting(milk, must=c("milk"), exclude=c("paust"))}
 }

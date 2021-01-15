@@ -26,6 +26,6 @@ The function returns a data frame or a figure presenting the \code{\link{matched
 The function provides a data frame or a figure presenting the \code{\link{matched_index}} function calculated for the column defined by the \code{type} parameter and for each month from the considered time interval
 }
 \examples{
-matched_fig(milk, start="2018-12", end="2019-12")
-matched_fig(milk, start="2018-12", end="2019-12", figure=FALSE)
+\donttest{matched_fig(milk, start="2018-12", end="2019-12")}
+\donttest{matched_fig(milk, start="2018-12", end="2019-12", figure=FALSE)}
 }

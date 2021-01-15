@@ -20,6 +20,6 @@ The function analyzes the user's data frame and returns prices (unit value) of p
 The function returns prices (unit values) of sold products with given IDs.
 }
 \examples{
-prices(milk, period="2019-06")
+\donttest{prices(milk, period="2019-06")}
 prices(milk, period="2019-12",set=c(400032, 71772, 82919))
 }

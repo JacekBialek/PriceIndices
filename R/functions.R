@@ -407,8 +407,8 @@ data_filtering<-function(data, start, end, filters=c(), plimits=c(),pquantiles=c
 #' @rdname data_selecting
 #' @return The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: \code{include}, \code{must} and \code{exclude} (an additional column \code{coicop} is optional). Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters only when \code{sensitivity} is set to TRUE.
 #' @examples 
-#' data_selecting(milk, include=c("milk"), must=c("UHT"))
-#' data_selecting(milk, must=c("milk"), exclude=c("paust"))
+#' \donttest{data_selecting(milk, include=c("milk"), must=c("UHT"))}
+#' \donttest{data_selecting(milk, must=c("milk"), exclude=c("paust"))}
 #' @export
 
 data_selecting<-function(data, include=c(), must=c(), exclude=c(), sensitivity=TRUE,coicop=NULL)
@@ -452,7 +452,7 @@ data_selecting<-function(data, include=c(), must=c(), exclude=c(), sensitivity=T
 #' @return The function returns all values from the indicated column (defined by the \code{type} parameter) which occur simultaneously in the compared periods or in a given time interval. Possible values of the \code{type} parameter are: \code{retID}, \code{prodID}, \code{codeIN}, \code{codeOUT} or \code{description}. If the \code{interval} parameter is set to FALSE, then the function compares only periods defined by \code{period1} and \code{period2}. Otherwise the whole time period between \code{period1} and \code{period2} is considered.
 #' @examples 
 #' matched(milk, period1="2018-12", period2="2019-12", interval=TRUE)
-#' matched(milk, period1="2018-12", period2="2019-12", type="description")
+#' \donttest{matched(milk, period1="2018-12", period2="2019-12", type="description")}
 #' @export
 
 
@@ -561,7 +561,7 @@ return(set)
 #' @return The function returns all values from the indicated column (defined by the \code{type} parameter) which occur at least once in one of the compared periods or in a given time interval. Possible values of the \code{type} parameter are: \code{retID}, \code{prodID}, \code{codeIN}, \code{codeOUT} or \code{description}. If the \code{interval} parameter is set to FALSE, then the function compares only periods defined by \code{period1} and \code{period2}. Otherwise the whole time period between \code{period1} and \code{period2} is considered.
 #' @examples 
 #' available(milk, period1="2018-12", period2="2019-12", interval=TRUE)
-#' available(milk, period1="2018-12", period2="2019-12", type="description")
+#' \donttest{available(milk, period1="2018-12", period2="2019-12", type="description")}
 #' @export
 
 
@@ -668,7 +668,7 @@ return(set)
 #' @rdname matched_index
 #' @return The function returns a ratio of number of values from the indicated column that occur simultaneously in the compared periods or in a given time interval to the number of all available values from the above-mentioned column (defined by the \code{type} parameter) at the same time. Possible values of the \code{type} parameter are: \code{retID}, \code{prodID} or \code{description}. If the \code{interval} parameter is set to FALSE, then the function compares only periods defined by \code{period1} and \code{period2}. Otherwise the whole time period between \code{period1} and \code{period2} is considered. The returned value belongs to [0,1].
 #' @examples 
-#' matched_index(milk, period1="2018-12", period2="2019-12", interval=TRUE)
+#' \donttest{matched_index(milk, period1="2018-12", period2="2019-12", interval=TRUE)}
 #' matched_index(milk, period1="2018-12", period2="2019-12", type="retID")
 #' @export
 
@@ -693,8 +693,8 @@ matched_index<-function(data,period1,period2, type="prodID", interval=FALSE) {
 #' @rdname matched_fig
 #' @return The function returns a data frame or a figure presenting the \code{\link{matched_index}} function calculated for the column defined by the \code{type} parameter and for each month from the considered time interval. The interval is set by \code{start} and \code{end} parameters. The returned object (data frame or figure) depends on the value of \code{figure} parameter. The returned values belong to [0,1].
 #' @examples 
-#' matched_fig(milk, start="2018-12", end="2019-12")
-#' matched_fig(milk, start="2018-12", end="2019-12", figure=FALSE)
+#' \donttest{matched_fig(milk, start="2018-12", end="2019-12")}
+#' \donttest{matched_fig(milk, start="2018-12", end="2019-12", figure=FALSE)}
 #' @export
 
 matched_fig<-function (data, start, end, type="prodID", fixedbase=TRUE, figure=TRUE)
@@ -771,7 +771,7 @@ price<-function(data, period, ID)
 #' @rdname prices
 #' @return The function analyzes the user's data frame and returns prices (unit value) of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter.
 #' @examples 
-#' prices(milk, period="2019-06")
+#' \donttest{prices(milk, period="2019-06")}
 #' prices(milk, period="2019-12",set=c(400032, 71772, 82919))
 #' @export
 
@@ -806,7 +806,7 @@ prices<-function(data, period, set=c())
 #' @rdname quantities
 #' @return The function analyzes the user's data frame and returns quantities of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter.
 #' @examples 
-#' quantities(milk, period="2019-06")
+#' \donttest{quantities(milk, period="2019-06")}
 #' quantities(milk, period="2019-12",set=c(400032, 71772, 82919))
 #' @export
 
@@ -840,8 +840,8 @@ quantities<-function(data, period, set=c())
 #' @rdname pqcor
 #' @return The function returns Pearson's correlation coefficient between price and quantity of products with given IDs and sold in \code{period}.
 #' @examples 
-#' pqcor(milk, period="2019-03")
-#' pqcor(milk, period="2019-03",figure=TRUE)
+#' \donttest{pqcor(milk, period="2019-03")}
+#' \donttest{pqcor(milk, period="2019-03",figure=TRUE)}
 #' @export
 
 pqcor<-function(data,period,set=c(),figure=FALSE)
@@ -869,8 +869,8 @@ else return (coeff)
 #' @rdname pqcor_fig
 #' @return The function returns Pearson's correlation coefficients between price and quantity of products with given IDs and sold in the time interval: \code{<start, end>}. Correlation coefficients are calculated for each month separately. Results are presented in tabular or graphical form depending on the \code{figure} parameter.
 #' @examples 
-#' pqcor_fig(milk, start="2018-12", end="2019-12", figure=FALSE)
-#' pqcor_fig(milk, start="2018-12", end="2019-12", figure=TRUE)
+#' \donttest{pqcor_fig(milk, start="2018-12", end="2019-12", figure=FALSE)}
+#' \donttest{pqcor_fig(milk, start="2018-12", end="2019-12", figure=TRUE)}
 #' @export
 
 pqcor_fig<-function (data, start, end, figure=TRUE, set=c())
@@ -912,7 +912,7 @@ ggplot2::ggplot(tab, ggplot2::aes(x=date, y=correlation)) + ggplot2::geom_point(
 #' @rdname sales
 #' @return The function analyzes the user's data frame and returns values of sales of products with given IDs and being sold in time period indicated by the \code{period} parameter.
 #' @examples 
-#' sales(milk, period="2019-06", shares=TRUE, hist=TRUE)
+#' \donttest{sales(milk, period="2019-06", shares=TRUE, hist=TRUE)}
 #' sales(milk, period="2019-12",set=unique(milk$prodID)[1])
 #' @export
 
@@ -959,15 +959,15 @@ sales<-function(data, period, set=c(), shares=FALSE, hist=FALSE)
 #' @return The function returns values of sales of products from one or more datasets or the corresponding barplot for these sales (if \code{barplot} is TRUE). Alternatively, it calculates the sale shares (if \code{shares} is TRUE).
 #' @examples 
 #' ## Creating 3 subgroups of milk:
-#' ctg<-unique(milk$description)
-#' categories<-c(ctg[1],ctg[2],ctg[3])
-#' milk1<-dplyr::filter(milk, milk$description==categories[1])
-#' milk2<-dplyr::filter(milk, milk$description==categories[2])
-#' milk3<-dplyr::filter(milk, milk$description==categories[3])
+#' \donttest{ctg<-unique(milk$description)}
+#' \donttest{categories<-c(ctg[1],ctg[2],ctg[3])}
+#' \donttest{milk1<-dplyr::filter(milk, milk$description==categories[1])}
+#' \donttest{milk2<-dplyr::filter(milk, milk$description==categories[2])}
+#' \donttest{milk3<-dplyr::filter(milk, milk$description==categories[3])}
 #' ## Sample use of this function:
-#' sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04",end="2019-04",shares=TRUE)
-#' sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04",end="2019-07", 
-#' barplot=TRUE, names=categories)
+#' \donttest{sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04",end="2019-04",shares=TRUE)}
+#' \donttest{sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04",end="2019-07", 
+#' barplot=TRUE, names=categories)}
 #' @export
 
 sales_groups<-function(datasets=list(), start, end, shares=FALSE, barplot=FALSE, names=c())
@@ -2806,7 +2806,7 @@ agmean<-function(data,start,end,sigma=0.7,interval=FALSE)  { if (start==end) ret
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chjevons(milk, start="2018-12", end="2020-01")
+#' \donttest{chjevons(milk, start="2018-12", end="2020-01")}
 #' \donttest{chjevons(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chjevons<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -2848,7 +2848,7 @@ chjevons<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chcarli(milk, start="2018-12", end="2020-01")
+#' \donttest{chcarli(milk, start="2018-12", end="2020-01")}
 #' \donttest{chcarli(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chcarli<-function(data,start,end, interval=FALSE)  { if (start==end) return (1)
@@ -2889,7 +2889,7 @@ chcarli<-function(data,start,end, interval=FALSE)  { if (start==end) return (1)
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chdutot(milk, start="2018-12", end="2020-01")
+#' \donttest{chdutot(milk, start="2018-12", end="2020-01")}
 #' \donttest{chdutot(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chdutot<-function(data,start,end, interval=FALSE)  { if (start==end) return (1)
@@ -2932,7 +2932,7 @@ chdutot<-function(data,start,end, interval=FALSE)  { if (start==end) return (1)
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chcswd(milk, start="2018-12", end="2020-01")
+#' \donttest{chcswd(milk, start="2018-12", end="2020-01")}
 #' \donttest{chcswd(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -2974,7 +2974,7 @@ chcswd<-function(data,start,end, interval=FALSE) { if (start==end) return (1)
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chharmonic(milk, start="2018-12", end="2020-01")
+#' \donttest{chharmonic(milk, start="2018-12", end="2020-01")}
 #' \donttest{chharmonic(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chharmonic<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -3016,7 +3016,7 @@ chharmonic<-function(data,start,end,interval=FALSE)  { if (start==end) return (1
 #'
 #' {(2018). \emph{Harmonised Index of Consumer Prices (HICP). Methodological Manual}. Publication Office of the European union, Luxembourg.}
 #' @examples 
-#' chbmw(milk, start="2018-12", end="2020-01")
+#' \donttest{chbmw(milk, start="2018-12", end="2020-01")}
 #' \donttest{chbmw(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chbmw<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -3058,7 +3058,7 @@ chbmw<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chlaspeyres(milk, start="2018-12", end="2020-01")
+#' \donttest{chlaspeyres(milk, start="2018-12", end="2020-01")}
 #' \donttest{chlaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chlaspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -3099,7 +3099,7 @@ chlaspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) return (
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chpaasche(milk, start="2018-12", end="2020-01")
+#' \donttest{chpaasche(milk, start="2018-12", end="2020-01")}
 #' \donttest{chpaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -3225,7 +3225,7 @@ chtornqvist<-function(data,start,end,interval=FALSE)  { if (start==end) return (
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chgeolaspeyres(milk, start="2018-12", end="2020-01")
+#' \donttest{chgeolaspeyres(milk, start="2018-12", end="2020-01")}
 #' \donttest{chgeolaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 chgeolaspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) return (1)
@@ -3266,7 +3266,7 @@ chgeolaspeyres<-function(data,start,end,interval=FALSE)  { if (start==end) retur
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chgeopaasche(milk, start="2018-12", end="2020-01")
+#' \donttest{chgeopaasche(milk, start="2018-12", end="2020-01")}
 #' \donttest{chgeopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -3530,7 +3530,7 @@ chbanajree<-function(data,start,end,interval=FALSE)  { if (start==end) return (1
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chdavies(milk, start="2018-12", end="2020-01")
+#' \donttest{chdavies(milk, start="2018-12", end="2020-01")}
 #' \donttest{chdavies(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -3845,7 +3845,7 @@ chsato_vartia<-function(data,start,end,interval=FALSE)  { if (start==end) return
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chlloyd_moulton(milk, start="2018-12", end="2020-01",sigma=0.9)
+#' \donttest{chlloyd_moulton(milk, start="2018-12", end="2020-01",sigma=0.9)}
 #' \donttest{chlloyd_moulton(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -3931,7 +3931,7 @@ chagmean<-function(data,start,end,sigma=0.7,interval=FALSE)  { if (start==end) r
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chyoung(milk, start="2019-01", end="2020-01",base="2018-12")
+#' \donttest{chyoung(milk, start="2019-01", end="2020-01",base="2018-12")}
 #' \donttest{chyoung(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -3975,7 +3975,7 @@ chyoung<-function(data,start,end, base=start,interval=FALSE)  { if (start==end) 
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chgeoyoung(milk, start="2019-01", end="2020-01",base="2018-12")
+#' \donttest{chgeoyoung(milk, start="2019-01", end="2020-01",base="2018-12")}
 #' \donttest{chgeoyoung(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -4016,7 +4016,7 @@ chgeoyoung<-function(data,start,end, base=start,interval=FALSE)  { if (start==en
 #' @references
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chlowe(milk, start="2019-01", end="2020-01",base="2018-12")
+#' \donttest{chlowe(milk, start="2019-01", end="2020-01",base="2018-12")}
 #' \donttest{chlowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -4057,7 +4057,7 @@ chlowe<-function(data,start,end, base=start,interval=FALSE)  { if (start==end) r
 #' @references
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chgeolowe(milk, start="2019-01", end="2020-01",base="2018-12")
+#' \donttest{chgeolowe(milk, start="2019-01", end="2020-01",base="2018-12")}
 #' \donttest{chgeolowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -4320,7 +4320,7 @@ geksw<-function(data,start,end, wstart=start,window=13)  { if (start==end) retur
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #' @examples 
-#' geksw_fbew(milk, start="2018-12", end="2019-08")
+#' \donttest{geksw_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
 geksw_fbew<-function(data,start,end)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -4364,7 +4364,7 @@ geksw_fbew<-function(data,start,end)  { if (start==end) return (1)
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
 #' @examples 
-#' geksw_fbmw(milk, start="2019-12", end="2020-04")
+#' \donttest{geksw_fbmw(milk, start="2019-12", end="2020-04")}
 #' @export
 
 geksw_fbmw<-function(data,start,end)  { if (start==end) return (1)
@@ -4424,42 +4424,59 @@ geksw_fbmw2<-function(data,start,end)  { if (start==end) return (1)
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' @examples 
-#' geksj(milk, start="2019-01", end="2019-08",window=10)
-#' geksj(milk, start="2018-12", end="2019-12")
+#' \donttest{geksj(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{geksj(milk, start="2018-12", end="2019-12")}
 #' @export
 
 
-geksj<-function(data,start,end, wstart=start,window=13)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty") 
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   wstart<-paste(wstart,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   wstart<-as.Date(wstart)
-                                   #checking conditions
-                                   if (window<2)  stop("window must be at least 2 months")
-                                   if (start>end) stop("parameters must satisfy: start<=end")
-                                   if (wstart>start) stop("parameters must satisfy: wstat<=start")
-                                   wend<-wstart
-                                   lubridate::month(wend)<-lubridate::month(wend)+window-1
-                                   if (end>wend) stop("parameters must satisfy: end<wstart+window")
-                                   start<-substr(start,0,7)
-                                   end<-substr(end,0,7)
-                                   dates<-c()
-                                   while (wstart<=wend)
-                                       {
-                                   t<-substr(wstart,0,7)
-                                   dates<-c(dates,t)
-                                   lubridate::month(wstart)<-lubridate::month(wstart)+1
-                                       }
-                                   #main body
-                                   gks<-function (tt) return (c(jevons(data,tt,end),jevons(data,tt,start)))
-                                   vec<-sapply(dates, gks)
-                                   geksj<-prod(vec[1,]/vec[2,])
-                                   geksj<-geksj^(1/window)
-                                   return(geksj)    
-                                   }
+geksj <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gks <-
+  function (tt)
+  return (c(jevons(data, tt, end), jevons(data, tt, start)))
+  vec <- sapply(dates, gks)
+  geksj <- prod(vec[1, ] / vec[2, ])
+  geksj <- geksj ^ (1 / window)
+  return(geksj)
+  }
 
 #' @title  Extending the multilateral GEKS-J price index by using the FBEW method.
 #'
@@ -4478,7 +4495,7 @@ geksj<-function(data,start,end, wstart=start,window=13)  { if (start==end) retur
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #' @examples 
-#' geksj_fbew(milk, start="2018-12", end="2019-08")
+#' \donttest{geksj_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
 geksj_fbew<-function(data,start,end)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
@@ -4519,7 +4536,7 @@ geksj_fbew<-function(data,start,end)  { if (start==end) return (1)
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
 #' @examples 
-#' geksj_fbmw(milk, start="2019-12", end="2020-04")
+#' \donttest{geksj_fbmw(milk, start="2019-12", end="2020-04")}
 #' @export
 
 geksj_fbmw<-function(data,start,end)  { if (start==end) return (1)
@@ -4630,8 +4647,9 @@ ccdi<-function(data,start,end, wstart=start,window=13)  { if (start==end) return
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #' @examples 
-#' ccdi_fbew(milk, start="2018-12", end="2019-08")
+#' \donttest{ccdi_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
+
 ccdi_fbew<-function(data,start,end)  { if (start==end) return (1)
                                    if (nrow(data)==0) stop("A data frame is empty")
                                    start<-paste(start,"-01",sep="")
@@ -4725,11 +4743,11 @@ ccdi_fbmw2<-function(data,start,end)  { if (start==end) return (1)
 #' @examples 
 #' ## Creating a data frame with artificial adjustment factors 
 #' ## (random numbers from uniform distribution U[1,2])
-#' prodID<-unique(milk$prodID)
-#' values<-stats::runif(length(prodID),1,2)
-#' v<-data.frame(prodID,values)
+#' \donttest{prodID<-unique(milk$prodID)}
+#' \donttest{values<-stats::runif(length(prodID),1,2)}
+#' \donttest{v<-data.frame(prodID,values)}
 #' ## Calculating the QU index for the created data frame 'v'
-#' QU(milk, start="2018-12", end="2019-12", v)
+#' \donttest{QU(milk, start="2018-12", end="2019-12", v)}
 #' @export
 
 
@@ -4915,7 +4933,7 @@ gkreal<-function(data,start,end)  {if (start==end) return (1)
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #' @examples 
-#' gk_fbew(milk, start="2018-12", end="2019-08")
+#' \donttest{gk_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
 
 gk_fbew<-function(data,start,end)  { if (start==end) return (1)
