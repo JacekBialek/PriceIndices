@@ -1,10 +1,15 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 
 PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 ================================================================================
 
 **author: Jacek Białek, University of Lodz, Statistics Poland** <!-- badges: start --> <!-- badges: end -->
 
-Goals of PriceIndices are as follows: a) data processing before price index calculations; b) bilateral and multilateral price index calculations; c) extending multilateral price indices. You can download the package documentation from [here](https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_1.1.0.pdf).
+Goals of PriceIndices are as follows: a) data processing before price index calculations; b) bilateral and multilateral price index calculations; c) extending multilateral price indices. You can download the package documentation from [here](https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_manual.pdf).
 
 Installation
 ------------
@@ -91,12 +96,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   3.02         18      1     1
-#> 2 2020-01-01   2.65         23      2     1
-#> 3 2020-01-01   2.78         21      3     1
-#> 4 2020-01-01   2.82         21      4     1
-#> 5 2020-01-01   2.81         22      5     1
-#> 6 2020-01-01   2.80         24      6     1
+#> 1 2020-01-01   2.67         23      1     1
+#> 2 2020-01-01   2.67         22      2     1
+#> 3 2020-01-01   2.97         20      3     1
+#> 4 2020-01-01   2.56         18      4     1
+#> 5 2020-01-01   3.09         18      5     1
+#> 6 2020-01-01   2.86         19      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -229,7 +234,7 @@ head(data_predicted)
 #> 2 no information  11421            11421
 #> 3              g  11831            11831
 #> 4              g  11831            11831
-#> 5 no information  11811            11714
+#> 5 no information  11811            11421
 #> 6 no information  11421            11421
 ```
 
@@ -639,19 +644,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.359428
-#> 2 403249 1.277570
-#> 3 400033 1.724650
-#> 4 402609 1.300249
-#> 5 406223 1.757206
-#> 6 406224 1.879671
+#> 1 400032 1.593701
+#> 2 403249 1.604225
+#> 3 400033 1.912926
+#> 4 402609 1.352004
+#> 5 406223 1.897299
+#> 6 406224 1.570823
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.02521
+#> [1] 0.9923664
 ```
 
 <a id="ad8"> </a>

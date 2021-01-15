@@ -1,19 +1,23 @@
 ---
-output: github_document
+title: "PriceIndices"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PriceIndices}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
-
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%",
+  fig.width = 7, 
+  fig.height = 5,
   warning = FALSE,
-  message = FALSE
+  message = FALSE,
+  eval=FALSE
 )
 ```
-
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 **author: Jacek Białek, University of Lodz, Statistics Poland**
 <!-- badges: start -->
@@ -21,6 +25,8 @@ knitr::opts_chunk$set(
 
 Goals of PriceIndices are as follows: a) data processing before price index calculations; b) bilateral and multilateral price index calculations; c) extending multilateral price indices.
 You can download the package documentation from [here](https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_manual.pdf). 
+This vignette with all graphical results can be download from 
+[here](https://github.com/JacekBialek/important_documents/blob/main/README.pdf).
 
 ## Installation
 
@@ -157,17 +163,18 @@ or we can observe the importance of the used indicators:
 ML$figure_importance
 ```
 
-Now, let us save the model on the disk:
+We can save the model on the disk, load it and use it at any time:
 
-```{r}
+```{r,eval=FALSE}
 save_model(ML, dir="My_model")
-```
-
-After saving the model we can load it and use at any time:
-
-```{r}
 ML_fromPC<-load_model("My_model")
 data_predicted<-data_classifying(ML_fromPC, data_test)
+```
+
+We can use the model for COICOP predictions
+
+```{r}
+data_predicted<-data_classifying(ML, data_test)
 head(data_predicted)
 ```
 
@@ -664,5 +671,6 @@ The comparison of obtained results can be made as follows (it may be time-consum
 ``` {r}
 compare_final_indices(finalindices=list(case1, case2),names=c("TPD without aggregation","TPD with aggregation"))
 ```
+
 
 

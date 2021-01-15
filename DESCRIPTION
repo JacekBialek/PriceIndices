@@ -1,13 +1,13 @@
 Package: PriceIndices
 Title: Calculating Bilateral and Multilateral Price Indices
-Version: 1.1.0
+Version: 0.0.0.9000
 Authors@R: 
     person(given = "Jacek",
            family = "Białek",
            role = c("aut", "cre"),
            email = "jacek.bialek@uni.lodz.pl",
            comment = c(ORCID = "0000-0002-0952-5327"))
-Description: The package is used to prepare a set of scanner data for price dynamics calculations (data selecting, data classification, data matching, data filtering). The package is also used to compute bilateral and multilateral indices.
+Description: Preparing a scanner data set for price dynamics calculations (data selecting, data classification, data matching, data filtering). Computing bilateral and multilateral indices.
 Depends:
     R (>= 3.5.0)
 Imports: 
@@ -25,4 +25,7 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

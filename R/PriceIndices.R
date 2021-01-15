@@ -2,7 +2,7 @@
 #'
 #' The \strong{PriceIndices} package is a tool for Bilateral and Multilateral Price Index Calculations. 
 #' A demonstration of package functions is here: \href{ https://github.com/JacekBialek/important_documents/blob/main/README.pdf }{README}.
-#' The package documentation can be found \href{https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_1.1.0.pdf}{HERE}.
+#' The package documentation can be found \href{https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_manual.pdf}{HERE}.
 #' The list of package functions is as follows:
 #'
 #' @docType package
