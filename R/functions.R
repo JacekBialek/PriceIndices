@@ -6612,7 +6612,6 @@ geks_fbew <- function(data, start, end)  {
   lubridate::year(start) + 1
   }
   return (ind)
-  
 }
 
 #' @title  Extending the multilateral GEKS price index by using the FBMW method.
@@ -8026,6 +8025,7 @@ window = 13
 #' \donttest{tpd_splice(milk, start="2018-12", end="2020-02",splice="half")}
 #' \donttest{tpd_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
+
 tpd_splice <-
   function (data,
   start,
@@ -8137,8 +8137,6 @@ tpd_splice <-
   var <- var ^ (1 / (window - 1))
   set <- c(set, var)
   }
-  
-  
   }
   }
   if (interval == FALSE)
@@ -9215,7 +9213,6 @@ price_index <-
   set <- tpd_fbmw(data, start, end)
   return (set)
   }
-  
   else                 {
   set <- c(1)
   #unweighted formulas
@@ -9769,7 +9766,6 @@ price_indices <-
 #' \donttest{compare_indices(milk, start="2018-12", end="2019-05",
 #' fbmulti=c("tpd","geks"),fbwindow=c(10,12))}
 #' @export
-
 
 compare_indices <-
   function(data,
@@ -10758,8 +10754,7 @@ final_index <-
   }
   if (aggrsets == "fisher")     {
   index_setL <- 0
-  index_setP <-
-  0
+  index_setP <- 0
   for (i in 1:length(datasets))  {
   index_setL <- index_setL + index_set[i] * w_start_set[i]
   index_setP <-

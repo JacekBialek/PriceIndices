@@ -1,5 +1,3 @@
-
-
 #' @title  Calculating the bilateral hybrid price index
 #'
 #' @description This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -195,6 +193,7 @@ hybrid <-
 #' \donttest{geohybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
 #' \donttest{geohybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
+
 geohybrid <-
   function(data,
   start,
@@ -373,6 +372,7 @@ geohybrid <-
 #' \donttest{chhybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
 #' \donttest{chhybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
+
 chhybrid <-
   function(data,
   start,
@@ -466,7 +466,6 @@ chgeohybrid <-
   return(chained)
   }
   
-
 #' @title  Generating an artificial scanner dataset
 #'
 #' @description This function provides artificial scanner datasets where prices and quantities are lognormally distributed.
@@ -489,8 +488,8 @@ chgeohybrid <-
 #' qsigma=c(0.1,0.1,0.15),start="2020-01",days=TRUE)}
 #' \donttest{generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(6,6,7),
 #' qsigma=c(0.1,0.1,0.15),start="2020-01",n=1000,n0=132578,r=10)}
-
 #' @export
+
 generate <-
   function(pmi = c(),
   psigma = c(),
@@ -550,7 +549,6 @@ generate <-
   return (DT)
   }
   
-
 #' @title  Calculating theoretical (expected) values of the unweighted price index
 #'
 #' @description This function calculates the theoretical value of the unweighted price index for lognormally distributed prices.
@@ -606,7 +604,6 @@ tindex<-function(pmi=c(),psigma=c(),start, ratio=TRUE)
  return (DT)  
 }
 
-
 #' @title  Calculating the relative price and/or quantity dissimilarity measure between periods
 #'
 #' @description This function returns a value of the relative price and/or quantity dissimilarity measure.
@@ -635,7 +632,6 @@ r <- paste(period1, "-01", sep = "")
 t <- paste(period2, "-01", sep = "")
 r <- as.Date(r)
 t <- as.Date(t)
-
 data <-
 dplyr::filter(
 data,
@@ -659,7 +655,6 @@ sum_r <- sum(sales_r)
 sum_t <- sum(sales_t)
 prqt <- sum(price_r * quantity_t)
 ptqr <- sum(price_t * quantity_r)
-
 if (type == "p") {
 sum1 <-
 0.5 * sum(((sales_t / sum_t) + (sales_r / sum_r)) * ((sales_t / sum_t) -
@@ -694,7 +689,6 @@ sum4 <-
 price_r * quantity_t / prqt) ^ 2)
 return (min(sum1 + sum2, sum3 + sum4))
 }
-
 }
 
 #' @title  Presenting the relative price and/or quantity dissimilarity measure over time
@@ -740,7 +734,6 @@ dissimilarity_fig <-
   stop("parameters must satisfy: start<end")
   times <- c()
   values <- c()
-  
   if (benchmark == "end")
   {
   {
@@ -865,7 +858,6 @@ type = "pq",
 benchmark = "end",
 figure = FALSE
 )$dissimilarity[-i]
-
 #position of the minimal element
 pos_min <- max(which(sp == min(sp)))
 spq <-
@@ -876,7 +868,6 @@ return (spq)
 else
 return (spq[length(spq)])
 }
-
 
 #' @title  Calculating the multilateral GEKS-L price index
 #'
@@ -1027,7 +1018,6 @@ wgeksl <-
   return(wgeksl)
   }
   
-
 #' @title  Extending the multilateral GEKS-L price index by using the FBEW method.
 #'
 #' @description This function returns a value of the multilateral GEKS-L price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
@@ -1280,7 +1270,6 @@ geksl_fbmw2 <- function(data, start, end)  {
   ))
 }
 
-
 #an additional function used in wgeksl_fbmw
 wgeksl_fbmw2 <- function(data, start, end)  {
   if (start == end)
@@ -1310,7 +1299,6 @@ wgeksl_fbmw2 <- function(data, start, end)  {
   window = 13
   ))
 }
-
 
 #' @title  Extending the multilateral GEKS-L price index by using window splicing methods.
 #'
