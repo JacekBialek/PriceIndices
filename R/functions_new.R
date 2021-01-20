@@ -17,74 +17,167 @@
 #' \donttest{hybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
 #' \donttest{hybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
-hybrid<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty")
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   base<-paste(base,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   base<-as.Date(base)
-                                   #returning vector of values
-                                   if (interval==TRUE) { result<-c(1)
-                                   end2<-end
-                                   end<-start
-                                   lubridate::month(end)<-lubridate::month(end)+1
-                                   while (end<=end2)
-                                       {
-                                   t<-substr(end,0,7)
-                                   date<-c(date,t)
-                                   data2<-dplyr::filter(data,(lubridate::year(data$time)==lubridate::year(start) & lubridate::month(data$time)==lubridate::month(start)) | (lubridate::year(data$time)==lubridate::year(end) & lubridate::month(data$time)==lubridate::month(end)) | (lubridate::year(data$time)==lubridate::year(base) & lubridate::month(data$time)==lubridate::month(base)))        
-                                   id<-intersect(matched(data2,start,end),matched(data,base,end))
-                                   price_end<-prices(data2,period=end,set=id)
-                                   price_start<-prices(data2,period=start,set=id)
-                                   sale_base<-prices(data2,period=base,set=id)*quantities(data2,period=base,set=id)
-                                   sale_start<-prices(data2,period=start,set=id)*quantities(data2,period=base,set=id)
-                                   sale_end<-prices(data2,period=end,set=id)*quantities(data2,period=base,set=id)
-                                   vol_base<-sum(sale_base)
-                                   vol_start<-sum(sale_start)
-                                   vol_end<-sum(sale_end)
-  corr_base<-stats::cor(prices(data2, period=base,set=id), quantities(data2, period=base,set=id))
-  corr_start<-stats::cor(prices(data2, period=start,set=id), quantities(data2, period=base,set=id))
-  corr_end<-stats::cor(prices(data2, period=end,set=id), quantities(data2, period=base,set=id))
-                                   if ((abs(corr_base)+abs(corr_start)+abs(corr_end))==0)
-                                   {corr_base<-1/3
-                                    corr_start<-1/3
-                                    corr_end<-1/3
-                                   }
-                                   weight<-c()
-                                   for (i in 1:length(id)) weight<-c(weight, abs(corr_base)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_base[i]/vol_base+abs(corr_start)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_start[i]/vol_start+abs(corr_end)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_end[i]/vol_end)
-                                   result<-c(result,sum(weight*(price_end/price_start)))     
-                                   lubridate::month(end)<-lubridate::month(end)+1
-                                       }
-                                   return(result)      
-                                   }
-                                   #returning one value
-                                   else {
-                                   data<-dplyr::filter(data,(lubridate::year(data$time)==lubridate::year(start) & lubridate::month(data$time)==lubridate::month(start)) | (lubridate::year(data$time)==lubridate::year(end) & lubridate::month(data$time)==lubridate::month(end)) | (lubridate::year(data$time)==lubridate::year(base) & lubridate::month(data$time)==lubridate::month(base)))                                                               
-                                   id<-intersect(matched(data,start,end),matched(data,base,end))
-                                   price_end<-prices(data,period=end,set=id)
-                                   price_start<-prices(data,period=start,set=id)
-                                   sale_base<-prices(data,period=base,set=id)*quantities(data,period=base,set=id)
-                                   sale_start<-prices(data,period=start,set=id)*quantities(data,period=base,set=id)
-                                   sale_end<-prices(data,period=end,set=id)*quantities(data,period=base,set=id)
-                                   vol_base<-sum(sale_base)
-                                   vol_start<-sum(sale_start)
-                                   vol_end<-sum(sale_end)
-corr_base<-stats::cor(prices(data, period=base,set=id), quantities(data, period=base,set=id))
-corr_start<-stats::cor(prices(data, period=start,set=id), quantities(data, period=base,set=id))
-corr_end<-stats::cor(prices(data, period=end,set=id), quantities(data, period=base,set=id))
-                                   if ((abs(corr_base)+abs(corr_start)+abs(corr_end))==0)
-                                   {corr_base<-1/3
-                                    corr_start<-1/3
-                                    corr_end<-1/3
-                                   }
-                                   weight<-c()
-                                   for (i in 1:length(id)) weight<-c(weight, abs(corr_base)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_base[i]/vol_base+abs(corr_start)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_start[i]/vol_start+abs(corr_end)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_end[i]/vol_end)
-                                   return(sum(weight*(price_end/price_start)))
-                                   }
-                                  }
 
+hybrid <-
+  function(data,
+  start,
+  end,
+  base = start,
+  interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  base <- paste(base, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  base <- as.Date(base)
+  #returning vector of values
+  if (interval == TRUE) {
+  result <- c(1)
+  end2 <- end
+  end <- start
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  while (end <= end2)
+  {
+  t <- substr(end, 0, 7)
+  date <- c(date, t)
+  data2 <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(base) &
+  lubridate::month(data$time) == lubridate::month(base)
+  )
+  )
+  id <-
+  intersect(matched(data2, start, end), matched(data, base, end))
+  price_end <-
+  prices(data2, period = end, set = id)
+  price_start <-
+  prices(data2, period = start, set = id)
+  sale_base <-
+  prices(data2, period = base, set = id) * quantities(data2, period = base, set =
+  id)
+  sale_start <-
+  prices(data2, period = start, set = id) * quantities(data2, period = base, set =
+  id)
+  sale_end <-
+  prices(data2, period = end, set = id) * quantities(data2, period = base, set =
+  id)
+  vol_base <- sum(sale_base)
+  vol_start <- sum(sale_start)
+  vol_end <- sum(sale_end)
+  corr_base <-
+  stats::cor(prices(data2, period = base, set = id),
+  quantities(data2, period = base, set = id))
+  corr_start <-
+  stats::cor(prices(data2, period = start, set = id),
+  quantities(data2, period = base, set = id))
+  corr_end <-
+  stats::cor(prices(data2, period = end, set = id),
+  quantities(data2, period = base, set = id))
+  if ((abs(corr_base) + abs(corr_start) +
+  abs(corr_end)) == 0)
+  {
+  corr_base <- 1 / 3
+  corr_start <- 1 / 3
+  corr_end <- 1 / 3
+  }
+  weight <- c()
+  for (i in 1:length(id))
+  weight <-
+  c(
+  weight,
+  abs(corr_base) / (abs(corr_base) + abs(corr_start) + abs(corr_end)) * sale_base[i] /
+  vol_base + abs(corr_start) / (abs(corr_base) + abs(corr_start) + abs(corr_end)) *
+  sale_start[i] / vol_start + abs(corr_end) / (abs(corr_base) + abs(corr_start) +
+  abs(corr_end)) * sale_end[i] / vol_end
+  )
+  result <-
+  c(result, sum(weight * (price_end / price_start)))
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  }
+  return(result)
+  }
+  #returning one value
+  else {
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(base) &
+  lubridate::month(data$time) == lubridate::month(base)
+  )
+  )
+  id <-
+  intersect(matched(data, start, end), matched(data, base, end))
+  price_end <-
+  prices(data, period = end, set = id)
+  price_start <-
+  prices(data, period = start, set = id)
+  sale_base <-
+  prices(data, period = base, set = id) * quantities(data, period = base, set =
+  id)
+  sale_start <-
+  prices(data, period = start, set = id) * quantities(data, period = base, set =
+  id)
+  sale_end <-
+  prices(data, period = end, set = id) * quantities(data, period = base, set =
+  id)
+  vol_base <- sum(sale_base)
+  vol_start <- sum(sale_start)
+  vol_end <- sum(sale_end)
+  corr_base <-
+  stats::cor(prices(data, period = base, set = id),
+  quantities(data, period = base, set = id))
+  corr_start <-
+  stats::cor(prices(data, period = start, set = id),
+  quantities(data, period = base, set = id))
+  corr_end <-
+  stats::cor(prices(data, period = end, set = id),
+  quantities(data, period = base, set = id))
+  if ((abs(corr_base) + abs(corr_start) +
+  abs(corr_end)) == 0)
+  {
+  corr_base <- 1 / 3
+  corr_start <- 1 / 3
+  corr_end <- 1 / 3
+  }
+  weight <- c()
+  for (i in 1:length(id))
+  weight <-
+  c(
+  weight,
+  abs(corr_base) / (abs(corr_base) + abs(corr_start) + abs(corr_end)) * sale_base[i] /
+  vol_base + abs(corr_start) / (abs(corr_base) + abs(corr_start) + abs(corr_end)) *
+  sale_start[i] / vol_start + abs(corr_end) / (abs(corr_base) + abs(corr_start) +
+  abs(corr_end)) * sale_end[i] / vol_end
+  )
+  return(sum(weight * (price_end / price_start)))
+  }
+  }
+  
 #' @title  Calculating the bilateral geohybrid price index
 #'
 #' @description This function returns a value (or vector of values) of the bilateral geohybrid price index. The geohybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -102,75 +195,167 @@ corr_end<-stats::cor(prices(data, period=end,set=id), quantities(data, period=ba
 #' \donttest{geohybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
 #' \donttest{geohybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
-geohybrid<-function(data,start,end,base=start,interval=FALSE)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty")
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   base<-paste(base,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   base<-as.Date(base)
-                                   #returning vector of values
-                                   if (interval==TRUE) { result<-c(1)
-                                   end2<-end
-                                   end<-start
-                                   lubridate::month(end)<-lubridate::month(end)+1
-                                   while (end<=end2)
-                                       {
-                                   t<-substr(end,0,7)
-                                   date<-c(date,t)
-                                   data2<-dplyr::filter(data,(lubridate::year(data$time)==lubridate::year(start) & lubridate::month(data$time)==lubridate::month(start)) | (lubridate::year(data$time)==lubridate::year(end) & lubridate::month(data$time)==lubridate::month(end)) | (lubridate::year(data$time)==lubridate::year(base) & lubridate::month(data$time)==lubridate::month(base)))        
-                                   id<-intersect(matched(data2,start,end),matched(data,base,end))
-                                   price_end<-prices(data2,period=end,set=id)
-                                   price_start<-prices(data2,period=start,set=id)
-                                   sale_base<-prices(data2,period=base,set=id)*quantities(data2,period=base,set=id)
-                                   sale_start<-prices(data2,period=start,set=id)*quantities(data2,period=base,set=id)
-                                   sale_end<-prices(data2,period=end,set=id)*quantities(data2,period=base,set=id)
-                                   vol_base<-sum(sale_base)
-                                   vol_start<-sum(sale_start)
-                                   vol_end<-sum(sale_end)
-corr_base<-stats::cor(prices(data2, period=base,set=id), quantities(data2, period=base,set=id))
-corr_start<-stats::cor(prices(data2, period=start,set=id), quantities(data2, period=base,set=id))
-corr_end<-stats::cor(prices(data2, period=end,set=id), quantities(data2, period=base,set=id))
-                                    if ((abs(corr_base)+abs(corr_start)+abs(corr_end))==0)
-                                   {corr_base<-1/3
-                                    corr_start<-1/3
-                                    corr_end<-1/3
-                                   }
-                                   weight<-c()
-                                   for (i in 1:length(id)) weight<-c(weight, abs(corr_base)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_base[i]/vol_base+abs(corr_start)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_start[i]/vol_start+abs(corr_end)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_end[i]/vol_end)
-                                   result<-c(result,prod((price_end/price_start)^weight))     
-                                   lubridate::month(end)<-lubridate::month(end)+1
-                                       }
-                                   return(result)      
-                                   }
-                                   #returning one value
-                                   else {
-                                   data<-dplyr::filter(data,(lubridate::year(data$time)==lubridate::year(start) & lubridate::month(data$time)==lubridate::month(start)) | (lubridate::year(data$time)==lubridate::year(end) & lubridate::month(data$time)==lubridate::month(end)) | (lubridate::year(data$time)==lubridate::year(base) & lubridate::month(data$time)==lubridate::month(base)))                                                               
-                                   id<-intersect(matched(data,start,end),matched(data,base,end))
-                                   price_end<-prices(data,period=end,set=id)
-                                   price_start<-prices(data,period=start,set=id)
-                                   sale_base<-prices(data,period=base,set=id)*quantities(data,period=base,set=id)
-                                   sale_start<-prices(data,period=start,set=id)*quantities(data,period=base,set=id)
-                                   sale_end<-prices(data,period=end,set=id)*quantities(data,period=base,set=id)
-                                   vol_base<-sum(sale_base)
-                                   vol_start<-sum(sale_start)
-                                   vol_end<-sum(sale_end)
-corr_base<-stats::cor(prices(data, period=base,set=id), quantities(data, period=base,set=id))
-corr_start<-stats::cor(prices(data, period=start,set=id), quantities(data, period=base,set=id))
-corr_end<-stats::cor(prices(data, period=end,set=id), quantities(data, period=base,set=id))
-                                   if ((abs(corr_base)+abs(corr_start)+abs(corr_end))==0)
-                                   {corr_base<-1/3
-                                    corr_start<-1/3
-                                    corr_end<-1/3
-                                   }
-                                   weight<-c()
-                                   for (i in 1:length(id)) weight<-c(weight, abs(corr_base)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_base[i]/vol_base+abs(corr_start)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_start[i]/vol_start+abs(corr_end)/(abs(corr_base)+abs(corr_start)+abs(corr_end))*sale_end[i]/vol_end)
-                                   return(prod((price_end/price_start)^weight))
-                                   }
-                                  }
-
-
+geohybrid <-
+  function(data,
+  start,
+  end,
+  base = start,
+  interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  base <- paste(base, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  base <- as.Date(base)
+  #returning vector of values
+  if (interval == TRUE) {
+  result <- c(1)
+  end2 <- end
+  end <- start
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  while (end <= end2)
+  {
+  t <- substr(end, 0, 7)
+  date <- c(date, t)
+  data2 <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(base) &
+  lubridate::month(data$time) == lubridate::month(base)
+  )
+  )
+  id <-
+  intersect(matched(data2, start, end), matched(data, base, end))
+  price_end <-
+  prices(data2, period = end, set = id)
+  price_start <-
+  prices(data2, period = start, set = id)
+  sale_base <-
+  prices(data2, period = base, set = id) * quantities(data2, period = base, set =
+  id)
+  sale_start <-
+  prices(data2, period = start, set = id) * quantities(data2, period = base, set =
+  id)
+  sale_end <-
+  prices(data2, period = end, set = id) * quantities(data2, period = base, set =
+  id)
+  vol_base <- sum(sale_base)
+  vol_start <- sum(sale_start)
+  vol_end <- sum(sale_end)
+  corr_base <-
+  stats::cor(prices(data2, period = base, set = id),
+  quantities(data2, period = base, set = id))
+  corr_start <-
+  stats::cor(prices(data2, period = start, set = id),
+  quantities(data2, period = base, set = id))
+  corr_end <-
+  stats::cor(prices(data2, period = end, set = id),
+  quantities(data2, period = base, set = id))
+  if ((abs(corr_base) + abs(corr_start) +
+  abs(corr_end)) == 0)
+  {
+  corr_base <- 1 / 3
+  corr_start <- 1 / 3
+  corr_end <- 1 / 3
+  }
+  weight <- c()
+  for (i in 1:length(id))
+  weight <-
+  c(
+  weight,
+  abs(corr_base) / (abs(corr_base) + abs(corr_start) + abs(corr_end)) * sale_base[i] /
+  vol_base + abs(corr_start) / (abs(corr_base) + abs(corr_start) + abs(corr_end)) *
+  sale_start[i] / vol_start + abs(corr_end) / (abs(corr_base) + abs(corr_start) +
+  abs(corr_end)) * sale_end[i] / vol_end
+  )
+  result <-
+  c(result, prod((price_end / price_start) ^ weight))
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  }
+  return(result)
+  }
+  #returning one value
+  else {
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(base) &
+  lubridate::month(data$time) == lubridate::month(base)
+  )
+  )
+  id <-
+  intersect(matched(data, start, end), matched(data, base, end))
+  price_end <-
+  prices(data, period = end, set = id)
+  price_start <-
+  prices(data, period = start, set = id)
+  sale_base <-
+  prices(data, period = base, set = id) * quantities(data, period = base, set =
+  id)
+  sale_start <-
+  prices(data, period = start, set = id) * quantities(data, period = base, set =
+  id)
+  sale_end <-
+  prices(data, period = end, set = id) * quantities(data, period = base, set =
+  id)
+  vol_base <- sum(sale_base)
+  vol_start <- sum(sale_start)
+  vol_end <- sum(sale_end)
+  corr_base <-
+  stats::cor(prices(data, period = base, set = id),
+  quantities(data, period = base, set = id))
+  corr_start <-
+  stats::cor(prices(data, period = start, set = id),
+  quantities(data, period = base, set = id))
+  corr_end <-
+  stats::cor(prices(data, period = end, set = id),
+  quantities(data, period = base, set = id))
+  if ((abs(corr_base) + abs(corr_start) +
+  abs(corr_end)) == 0)
+  {
+  corr_base <- 1 / 3
+  corr_start <- 1 / 3
+  corr_end <- 1 / 3
+  }
+  weight <- c()
+  for (i in 1:length(id))
+  weight <-
+  c(
+  weight,
+  abs(corr_base) / (abs(corr_base) + abs(corr_start) + abs(corr_end)) * sale_base[i] /
+  vol_base + abs(corr_start) / (abs(corr_base) + abs(corr_start) + abs(corr_end)) *
+  sale_start[i] / vol_start + abs(corr_end) / (abs(corr_base) + abs(corr_start) +
+  abs(corr_end)) * sale_end[i] / vol_end
+  )
+  return(prod((price_end / price_start) ^
+  weight))
+  }
+  }
+  
 #' @title  Calculating the the monthly chained hybrid price index
 #'
 #' @description This function returns a value (or vector of values) of the monthly chained hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -188,31 +373,44 @@ corr_end<-stats::cor(prices(data, period=end,set=id), quantities(data, period=ba
 #' \donttest{chhybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
 #' \donttest{chhybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
-chhybrid<-function(data,start,end, base=start,interval=FALSE)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty") 
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   dates<-c()
-                                   while (start<=end)
-                                    
-                                       {
-                                   t<-substr(start,0,7)
-                                   dates<-c(dates,t)
-                                   lubridate::month(start)<-lubridate::month(start)+1
-                                       }
-                                   f<-function (i) return (hybrid(data, start=dates[i],end=dates[i+1],base))
-                                   ind<-seq(1:(length(dates)-1))
-                                   chained1<-sapply(ind, f)
-                                   chained<-prod(chained1)
-                                   if (interval==TRUE) {#optional returning all fixed base chain indices
-                                   chained<-c(1)
-                                   for (i in 1:length(chained1)) chained<-c(chained,prod(chained1[seq(1,i)]))
-                                                        }
-                                   return(chained)    
-                                  }
-
+chhybrid <-
+  function(data,
+  start,
+  end,
+  base = start,
+  interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  dates <- c()
+  while (start <= end)
+  
+  {
+  t <- substr(start, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(start) <-
+  lubridate::month(start) + 1
+  }
+  f <-
+  function (i)
+  return (hybrid(data, start = dates[i], end = dates[i + 1], base))
+  ind <- seq(1:(length(dates) - 1))
+  chained1 <- sapply(ind, f)
+  chained <- prod(chained1)
+  if (interval == TRUE) {
+  #optional returning all fixed base chain indices
+  chained <- c(1)
+  for (i in 1:length(chained1))
+  chained <- c(chained, prod(chained1[seq(1, i)]))
+  }
+  return(chained)
+  }
+  
 #' @title  Calculating the the monthly chained geohybrid price index
 #'
 #' @description This function returns a value (or vector of values) of the monthly chained geohybrid price index. The geohybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -230,31 +428,44 @@ chhybrid<-function(data,start,end, base=start,interval=FALSE)  { if (start==end)
 #' \donttest{chgeohybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
 #' \donttest{chgeohybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
-chgeohybrid<-function(data,start,end, base=start,interval=FALSE)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty") 
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   dates<-c()
-                                   while (start<=end)
-                                    
-                                       {
-                                   t<-substr(start,0,7)
-                                   dates<-c(dates,t)
-                                   lubridate::month(start)<-lubridate::month(start)+1
-                                       }
-                                   f<-function (i) return (geohybrid(data, start=dates[i],end=dates[i+1],base))
-                                   ind<-seq(1:(length(dates)-1))
-                                   chained1<-sapply(ind, f)
-                                   chained<-prod(chained1)
-                                   if (interval==TRUE) {#optional returning all fixed base chain indices
-                                   chained<-c(1)
-                                   for (i in 1:length(chained1)) chained<-c(chained,prod(chained1[seq(1,i)]))
-                                                        }
-                                   return(chained)    
-                                  }
-
+chgeohybrid <-
+  function(data,
+  start,
+  end,
+  base = start,
+  interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  dates <- c()
+  while (start <= end)
+  
+  {
+  t <- substr(start, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(start) <-
+  lubridate::month(start) + 1
+  }
+  f <-
+  function (i)
+  return (geohybrid(data, start = dates[i], end = dates[i + 1], base))
+  ind <- seq(1:(length(dates) - 1))
+  chained1 <- sapply(ind, f)
+  chained <- prod(chained1)
+  if (interval == TRUE) {
+  #optional returning all fixed base chain indices
+  chained <- c(1)
+  for (i in 1:length(chained1))
+  chained <- c(chained, prod(chained1[seq(1, i)]))
+  }
+  return(chained)
+  }
+  
 
 #' @title  Generating an artificial scanner dataset
 #'
@@ -280,44 +491,64 @@ chgeohybrid<-function(data,start,end, base=start,interval=FALSE)  { if (start==e
 #' qsigma=c(0.1,0.1,0.15),start="2020-01",n=1000,n0=132578,r=10)}
 
 #' @export
-generate<-function(pmi=c(),psigma=c(),qmi=c(),qsigma=c(),prec=c(2,0),n=100,n0=1,r=1,r0=1,start,days=FALSE)
-{
- if ((length(pmi)<=1)|(length(psigma)<=1)|(length(qmi)<=1)|(length(qsigma)<=1)) stop("Lengths of parameters: pmi, psigma, qmi and qsigma must be 2 or more!")
- if (!((length(pmi)==length(psigma)) & (length(pmi)==length(qmi)) & (length(qmi)==length(qsigma)))) stop("Lengths of parameters: pmi, psigma, qmi and qsigma must be identical!")
- if (!(length(prec)==2)) stop("A length of 'prec' parameter must be 2!")
- start<-paste(start,"-01",sep="")
- start<-as.Date(start)
- #rand data frames for all periods
- DT<-data.frame()
- for (k in 1:length(pmi))
- { 
- #time
- time<-c()
- for (i in 1:n) {
-                if (days==TRUE) {nd<-lubridate::days_in_month(start)
-                lubridate::day(start)<-sample(nd,1)
-                }
-                time<-c(time,as.character(start))
-                }
- time<-as.Date(time)
- #prodID
- prodID<-seq(n0,n0+n-1)
- ret<-r0+r-1
- for (i in r0:ret) {
- #retID
- retID<-replicate(n, i)
- #prices
- prices<-stats::rlnorm(n,pmi[k],psigma[k])
- #quantities
- quantities<-stats::rlnorm(n,qmi[k],qsigma[k]) 
- DT<-rbind(DT,data.frame(time, prices, quantities, prodID,retID))
- } 
- lubridate::month(start)<-lubridate::month(start)+1
- }
- DT$prices<-round(DT$prices, prec[1])
- DT$quantities<-round(DT$quantities, prec[2])
- return (DT)  
-}
+generate <-
+  function(pmi = c(),
+  psigma = c(),
+  qmi = c(),
+  qsigma = c(),
+  prec = c(2, 0),
+  n = 100,
+  n0 = 1,
+  r = 1,
+  r0 = 1,
+  start,
+  days = FALSE)
+  {
+  if ((length(pmi) <= 1) |
+  (length(psigma) <= 1) |
+  (length(qmi) <= 1) |
+  (length(qsigma) <= 1))
+  stop("Lengths of parameters: pmi, psigma, qmi and qsigma must be 2 or more!")
+  if (!((length(pmi) == length(psigma)) &
+  (length(pmi) == length(qmi)) &
+  (length(qmi) == length(qsigma))))
+  stop("Lengths of parameters: pmi, psigma, qmi and qsigma must be identical!")
+  if (!(length(prec) == 2))
+  stop("A length of 'prec' parameter must be 2!")
+  start <- paste(start, "-01", sep = "")
+  start <- as.Date(start)
+  #rand data frames for all periods
+  DT <- data.frame()
+  for (k in 1:length(pmi))
+  {
+  #time
+  time <- c()
+  for (i in 1:n) {
+  if (days == TRUE) {
+  nd <- lubridate::days_in_month(start)
+  lubridate::day(start) <- sample(nd, 1)
+  }
+  time <- c(time, as.character(start))
+  }
+  time <- as.Date(time)
+  #prodID
+  prodID <- seq(n0, n0 + n - 1)
+  ret <- r0 + r - 1
+  for (i in r0:ret) {
+  #retID
+  retID <- replicate(n, i)
+  #prices
+  prices <- stats::rlnorm(n, pmi[k], psigma[k])
+  #quantities
+  quantities <- stats::rlnorm(n, qmi[k], qsigma[k])
+  DT <- rbind(DT, data.frame(time, prices, quantities, prodID, retID))
+  }
+  lubridate::month(start) <- lubridate::month(start) + 1
+  }
+  DT$prices <- round(DT$prices, prec[1])
+  DT$quantities <- round(DT$quantities, prec[2])
+  return (DT)
+  }
   
 
 #' @title  Calculating theoretical (expected) values of the unweighted price index
@@ -393,47 +624,77 @@ tindex<-function(pmi=c(),psigma=c(),start, ratio=TRUE)
 #' \donttest{dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")}
 #' @export
 
-dissimilarity<-function (data, period1, period2, type="p")
-{if (nrow(data)==0) stop("A data frame is empty") 
-allowed<-c("p","q","pq")
-if (length(base::intersect(type,allowed))==0) stop("there are no such types of dissimilarity measures")
-r<-paste(period1,"-01",sep="")
-t<-paste(period2,"-01",sep="")
-r<-as.Date(r)
-t<-as.Date(t)
-  
-data<-dplyr::filter(data,(lubridate::year(data$time)==lubridate::year(r) & lubridate::month(data$time)==lubridate::month(r)) | (lubridate::year(data$time)==lubridate::year(t) & lubridate::month(data$time)==lubridate::month(t)))
-   id<-matched(data,r,t) 
-   price_r<-prices(data,period=r,set=id)
-   price_t<-prices(data,period=t,set=id)
-   quantity_r<-quantities(data,period=r,set=id)
-   quantity_t<-quantities(data,period=t,set=id)
-   sales_r<-sales(data,period=r,set=id)
-   sales_t<-sales(data,period=t,set=id)
-   sum_r<-sum(sales_r)
-   sum_t<-sum(sales_t)
-   prqt<-sum(price_r*quantity_t) 
-   ptqr<-sum(price_t*quantity_r)
-   
-   if (type=="p") {
-     sum1<-0.5*sum(((sales_t/sum_t)+(sales_r/sum_r))*((sales_t/sum_t)-price_r*quantity_t/prqt)^2)
-     sum2<-0.5*sum(((sales_t/sum_t)+(sales_r/sum_r))*((sales_r/sum_r)-price_t*quantity_r/ptqr)^2)
-     return (sum1+sum2)
-   }
-   if (type=="q") {
-     sum1<-0.5*sum(((sales_t/sum_t)+(sales_r/sum_r))*((sales_t/sum_t)-price_t*quantity_r/ptqr)^2)
-     sum2<-0.5*sum(((sales_t/sum_t)+(sales_r/sum_r))*((sales_r/sum_r)-price_r*quantity_t/prqt)^2)
-     return (sum1+sum2)
-     
-   }
-   if (type=="pq") {
-     sum1<-0.5*sum(((sales_t/sum_t)+(sales_r/sum_r))*((sales_t/sum_t)-price_r*quantity_t/prqt)^2)
-     sum2<-0.5*sum(((sales_t/sum_t)+(sales_r/sum_r))*((sales_r/sum_r)-price_t*quantity_r/ptqr)^2) 
-     sum3<-0.5*sum(((sales_t/sum_t)+(sales_r/sum_r))*((sales_t/sum_t)-price_t*quantity_r/ptqr)^2)
-     sum4<-0.5*sum(((sales_t/sum_t)+(sales_r/sum_r))*((sales_r/sum_r)-price_r*quantity_t/prqt)^2)
-     return (min(sum1+sum2,sum3+sum4))
-   } 
-  
+dissimilarity <- function (data, period1, period2, type = "p")
+{
+if (nrow(data) == 0)
+stop("A data frame is empty")
+allowed <- c("p", "q", "pq")
+if (length(base::intersect(type, allowed)) == 0)
+stop("there are no such types of dissimilarity measures")
+r <- paste(period1, "-01", sep = "")
+t <- paste(period2, "-01", sep = "")
+r <- as.Date(r)
+t <- as.Date(t)
+
+data <-
+dplyr::filter(
+data,
+(
+lubridate::year(data$time) == lubridate::year(r) &
+lubridate::month(data$time) == lubridate::month(r)
+) |
+(
+lubridate::year(data$time) == lubridate::year(t) &
+lubridate::month(data$time) == lubridate::month(t)
+)
+)
+id <- matched(data, r, t)
+price_r <- prices(data, period = r, set = id)
+price_t <- prices(data, period = t, set = id)
+quantity_r <- quantities(data, period = r, set = id)
+quantity_t <- quantities(data, period = t, set = id)
+sales_r <- sales(data, period = r, set = id)
+sales_t <- sales(data, period = t, set = id)
+sum_r <- sum(sales_r)
+sum_t <- sum(sales_t)
+prqt <- sum(price_r * quantity_t)
+ptqr <- sum(price_t * quantity_r)
+
+if (type == "p") {
+sum1 <-
+0.5 * sum(((sales_t / sum_t) + (sales_r / sum_r)) * ((sales_t / sum_t) -
+price_r * quantity_t / prqt) ^ 2)
+sum2 <-
+0.5 * sum(((sales_t / sum_t) + (sales_r / sum_r)) * ((sales_r / sum_r) -
+price_t * quantity_r / ptqr) ^ 2)
+return (sum1 + sum2)
+}
+if (type == "q") {
+sum1 <-
+0.5 * sum(((sales_t / sum_t) + (sales_r / sum_r)) * ((sales_t / sum_t) -
+price_t * quantity_r / ptqr) ^ 2)
+sum2 <-
+0.5 * sum(((sales_t / sum_t) + (sales_r / sum_r)) * ((sales_r / sum_r) -
+price_r * quantity_t / prqt) ^ 2)
+return (sum1 + sum2)
+
+}
+if (type == "pq") {
+sum1 <-
+0.5 * sum(((sales_t / sum_t) + (sales_r / sum_r)) * ((sales_t / sum_t) -
+price_r * quantity_t / prqt) ^ 2)
+sum2 <-
+0.5 * sum(((sales_t / sum_t) + (sales_r / sum_r)) * ((sales_r / sum_r) -
+price_t * quantity_r / ptqr) ^ 2)
+sum3 <-
+0.5 * sum(((sales_t / sum_t) + (sales_r / sum_r)) * ((sales_t / sum_t) -
+price_t * quantity_r / ptqr) ^ 2)
+sum4 <-
+0.5 * sum(((sales_t / sum_t) + (sales_r / sum_r)) * ((sales_r / sum_r) -
+price_r * quantity_t / prqt) ^ 2)
+return (min(sum1 + sum2, sum3 + sum4))
+}
+
 }
 
 #' @title  Presenting the relative price and/or quantity dissimilarity measure over time
@@ -455,70 +716,92 @@ data<-dplyr::filter(data,(lubridate::year(data$time)==lubridate::year(r) & lubri
 #' \donttest{dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start")}
 #' @export
 
-dissimilarity_fig<-function (data, start, end, type="p", benchmark="end", figure=TRUE)
-{
-if (nrow(data)==0) stop("A data frame is empty") 
-allowed_type<-c("p","q","pq")
-if (length(base::intersect(type,allowed_type))==0) stop("there are no such types of dissimilarity measures")
-allowed_benchmark<-c("start","end")
-if (length(base::intersect(benchmark,allowed_benchmark))==0) stop("bad specification of the 'benchmark' parameter")
-start<-paste(start,"-01",sep="")
-end<-paste(end,"-01",sep="")
-start<-as.Date(start)
-end<-as.Date(end)
-if (start>=end) stop("parameters must satisfy: start<end")
-times<-c()  
-values<-c()  
-
-if (benchmark=="end")
-{
+dissimilarity_fig <-
+  function (data,
+  start,
+  end,
+  type = "p",
+  benchmark = "end",
+  figure = TRUE)
   {
-t2<-substr(end,0,7)
-while (start<end)
-                                    
-              {  
-               t1<-substr(start,0,7)
-               times<-c(times,t1)
-               values<-c(values, dissimilarity(data, period1=t1,period2=t2,type))
-               lubridate::month(start)<-lubridate::month(start)+1 
-              }
-times<-c(times, t2)
-values<-c(values,0)
-tab<-data.frame(c(times), c(values))
-colnames(tab)<-c("date", "dissimilarity")
-if (figure==FALSE) return (tab)  
-#returning a figure 
-else
- {
-tab$date<-as.Date(paste(tab$date,"01",sep="-"))
-ggplot2::ggplot(tab, ggplot2::aes(x=date, y=dissimilarity)) + ggplot2::geom_point()+ggplot2::geom_line()+ggplot2::labs(x="date",y="dissimilarity")+ggplot2::scale_x_date(date_labels="%Y %m",date_breaks  ="1 month")+ggplot2::theme(axis.text.x = ggplot2::element_text(angle=45, hjust = 1))  
- }  
-}  
-}
-else
-{
-values<-c(values,0)
-t1<-substr(start,0,7)
-times<-c(times,t1)
-while (start<end)
-                                    
-              {  
-               lubridate::month(start)<-lubridate::month(start)+1 
-               t2<-substr(start,0,7)
-               times<-c(times,t2)
-               values<-c(values, dissimilarity(data, period1=t1,period2=t2,type))
-              }
-tab<-data.frame(c(times), c(values))
-colnames(tab)<-c("date", "dissimilarity")
-if (figure==FALSE) return (tab)  
-#returning a figure 
-else
- {
-tab$date<-as.Date(paste(tab$date,"01",sep="-"))
-ggplot2::ggplot(tab, ggplot2::aes(x=date, y=dissimilarity)) + ggplot2::geom_point()+ggplot2::geom_line()+ggplot2::labs(x="date",y="dissimilarity")+ggplot2::scale_x_date(date_labels="%Y %m",date_breaks  ="1 month")+ggplot2::theme(axis.text.x = ggplot2::element_text(angle=45, hjust = 1))  
- }  
-}
-}
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  allowed_type <- c("p", "q", "pq")
+  if (length(base::intersect(type, allowed_type)) == 0)
+  stop("there are no such types of dissimilarity measures")
+  allowed_benchmark <- c("start", "end")
+  if (length(base::intersect(benchmark, allowed_benchmark)) == 0)
+  stop("bad specification of the 'benchmark' parameter")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  if (start >= end)
+  stop("parameters must satisfy: start<end")
+  times <- c()
+  values <- c()
+  
+  if (benchmark == "end")
+  {
+  {
+  t2 <- substr(end, 0, 7)
+  while (start < end)
+  
+  {
+  t1 <- substr(start, 0, 7)
+  times <- c(times, t1)
+  values <-
+  c(values,
+  dissimilarity(data, period1 = t1, period2 = t2, type))
+  lubridate::month(start) <- lubridate::month(start) + 1
+  }
+  times <- c(times, t2)
+  values <- c(values, 0)
+  tab <- data.frame(c(times), c(values))
+  colnames(tab) <- c("date", "dissimilarity")
+  if (figure == FALSE)
+  return (tab)
+  #returning a figure
+  else
+  {
+  tab$date <- as.Date(paste(tab$date, "01", sep = "-"))
+  ggplot2::ggplot(tab, ggplot2::aes(x = date, y = dissimilarity)) + ggplot2::geom_point() +
+  ggplot2::geom_line() + ggplot2::labs(x = "date", y = "dissimilarity") +
+  ggplot2::scale_x_date(date_labels = "%Y %m", date_breaks  = "1 month") +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+  }
+  }
+  }
+  else
+  {
+  values <- c(values, 0)
+  t1 <- substr(start, 0, 7)
+  times <- c(times, t1)
+  while (start < end)
+  
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t2 <- substr(start, 0, 7)
+  times <- c(times, t2)
+  values <-
+  c(values,
+  dissimilarity(data, period1 = t1, period2 = t2, type))
+  }
+  tab <- data.frame(c(times), c(values))
+  colnames(tab) <- c("date", "dissimilarity")
+  if (figure == FALSE)
+  return (tab)
+  #returning a figure
+  else
+  {
+  tab$date <- as.Date(paste(tab$date, "01", sep = "-"))
+  ggplot2::ggplot(tab, ggplot2::aes(x = date, y = dissimilarity)) + ggplot2::geom_point() +
+  ggplot2::geom_line() + ggplot2::labs(x = "date", y = "dissimilarity") +
+  ggplot2::scale_x_date(date_labels = "%Y %m", date_breaks  = "1 month") +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+  }
+  }
+  }
 
 #' @title  Calculating the multilateral SPQ price index 
 #'
@@ -536,42 +819,64 @@ ggplot2::ggplot(tab, ggplot2::aes(x=date, y=dissimilarity)) + ggplot2::geom_poin
 #' \donttest{SPQ(milk, start="2018-12",end="2019-12")}
 #' \donttest{SPQ(milk, start="2018-12",end="2019-12",interval=TRUE)}
 #' @export
-SPQ<-function (data, start, end, interval=FALSE)
-{
-if (nrow(data)==0) stop("A data frame is empty")
-start<-paste(start,"-01",sep="")
-end<-paste(end,"-01",sep="")
-start<-as.Date(start)
-end<-as.Date(end)
-if (start>end) stop("parameters must satisfy: start<=end")
-if (start==end) return (1)
 
-times<-c()
-while (start<=end)
-                                    
-              {times<-c(times,substr(start,0,7)) 
-               lubridate::month(start)<-lubridate::month(start)+1 
-              }
-if (length(times)==2) 
-  {if (interval==FALSE) return (fisher(data,start=times[1],end=times[2]))
-  else return (c(1,fisher(data,start=times[1],end=times[2])))
-  }
-spq<-c(1)
-spq<-c(spq,fisher(data,start=times[1],end=times[2]))
+SPQ <- function (data, start, end, interval = FALSE)
+{
+if (nrow(data) == 0)
+stop("A data frame is empty")
+start <- paste(start, "-01", sep = "")
+end <- paste(end, "-01", sep = "")
+start <- as.Date(start)
+end <- as.Date(end)
+if (start > end)
+stop("parameters must satisfy: start<=end")
+if (start == end)
+return (1)
+
+times <- c()
+while (start <= end)
+
+{
+times <- c(times, substr(start, 0, 7))
+lubridate::month(start) <- lubridate::month(start) + 1
+}
+if (length(times) == 2)
+{
+if (interval == FALSE)
+return (fisher(data, start = times[1], end = times[2]))
+else
+return (c(1, fisher(
+data, start = times[1], end = times[2]
+)))
+}
+spq <- c(1)
+spq <- c(spq, fisher(data, start = times[1], end = times[2]))
 for (i in 3:length(times))
- {#main body
-  
-  #delta sp for r=1,2,...,i-1 (we drop the last element)
-  sp<-dissimilarity_fig(data, start=times[1], end=times[i], type="pq", benchmark="end", figure=FALSE)$dissimilarity[-i]
-  
-  #position of the minimal element
-  pos_min<-max(which(sp==min(sp)))
-  spq<-c(spq,fisher(data,start=times[pos_min],end=times[i])*spq[pos_min])
- }
-if (interval==TRUE) return (spq)
-else return (spq[length(spq)])
-}  
-  
+{
+#main body
+
+#delta sp for r=1,2,...,i-1 (we drop the last element)
+sp <-
+dissimilarity_fig(
+data,
+start = times[1],
+end = times[i],
+type = "pq",
+benchmark = "end",
+figure = FALSE
+)$dissimilarity[-i]
+
+#position of the minimal element
+pos_min <- max(which(sp == min(sp)))
+spq <-
+c(spq, fisher(data, start = times[pos_min], end = times[i]) * spq[pos_min])
+}
+if (interval == TRUE)
+return (spq)
+else
+return (spq[length(spq)])
+}
+
 
 #' @title  Calculating the multilateral GEKS-L price index
 #'
@@ -595,37 +900,54 @@ else return (spq[length(spq)])
 #' \donttest{geksl(milk, start="2018-12", end="2019-12")}
 #' @export
 
-geksl<-function(data,start,end, wstart=start,window=13)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty") 
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   wstart<-paste(wstart,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   wstart<-as.Date(wstart)
-                                   #checking conditions
-                                   if (window<2)  stop("window must be at least 2 months")
-                                   if (start>end) stop("parameters must satisfy: start<=end")
-                                   if (wstart>start) stop("parameters must satisfy: wstat<=start")
-                                   wend<-wstart
-                                   lubridate::month(wend)<-lubridate::month(wend)+window-1
-                                   if (end>wend) stop("parameters must satisfy: end<wstart+window")
-                                   start<-substr(start,0,7)
-                                   end<-substr(end,0,7)
-                                   dates<-c()
-                                   while (wstart<=wend)
-                                       {
-                                   t<-substr(wstart,0,7)
-                                   dates<-c(dates,t)
-                                   lubridate::month(wstart)<-lubridate::month(wstart)+1
-                                       }
-                                   #main body
-                                   gksl<-function (tt) return (c(laspeyres(data,tt,end),laspeyres(data,tt,start)))
-                                   vec<-sapply(dates, gksl)
-                                   geksl<-prod(vec[1,]/vec[2,])
-                                   geksl<-geksl^(1/window)
-                                   return(geksl)    
-                                   }
+geksl <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gksl <-
+  function (tt)
+  return (c(laspeyres(data, tt, end), laspeyres(data, tt, start)))
+  vec <- sapply(dates, gksl)
+  geksl <- prod(vec[1, ] / vec[2, ])
+  geksl <- geksl ^ (1 / window)
+  return(geksl)
+  }
 
 #' @title  Calculating the multilateral WGEKS-L price index
 #'
@@ -649,42 +971,62 @@ geksl<-function(data,start,end, wstart=start,window=13)  { if (start==end) retur
 #' \donttest{wgeksl(milk, start="2018-12", end="2019-12")}
 #' @export
 
-wgeksl<-function(data,start,end, wstart=start,window=13)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty") 
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   wstart<-paste(wstart,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   wstart<-as.Date(wstart)
-                                   #checking conditions
-                                   if (window<2)  stop("window must be at least 2 months")
-                                   if (start>end) stop("parameters must satisfy: start<=end")
-                                   if (wstart>start) stop("parameters must satisfy: wstat<=start")
-                                   wend<-wstart
-                                   lubridate::month(wend)<-lubridate::month(wend)+window-1
-                                   if (end>wend) stop("parameters must satisfy: end<wstart+window")
-                                   start<-substr(start,0,7)
-                                   end<-substr(end,0,7)
-                                   dates<-c()
-                                   while (wstart<=wend)
-                                       {
-                                   t<-substr(wstart,0,7)
-                                   dates<-c(dates,t)
-                                   lubridate::month(wstart)<-lubridate::month(wstart)+1
-                                       }
-                                   #main body
-                                   wgksl<-function (tt) return (c(laspeyres(data,tt,end),laspeyres(data,tt,start)))
-                                   vec<-sapply(dates, wgksl)
-                                   sales_in_time<-function (tt) return (sum(sales(data,tt)))
-                                   expenditures<-sapply(dates, sales_in_time)
-                                   expenditures<-expenditures/sum(expenditures)
-                                   wgeksl<-prod((vec[1,]/vec[2,])^expenditures)
-                                   return(wgeksl)    
-                                   }
-
-
-
+wgeksl <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  wgksl <-
+  function (tt)
+  return (c(laspeyres(data, tt, end), laspeyres(data, tt, start)))
+  vec <- sapply(dates, wgksl)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksl <-
+  prod((vec[1, ] / vec[2, ]) ^ expenditures)
+  return(wgeksl)
+  }
+  
 
 #' @title  Extending the multilateral GEKS-L price index by using the FBEW method.
 #'
@@ -707,28 +1049,41 @@ wgeksl<-function(data,start,end, wstart=start,window=13)  { if (start==end) retu
 #' \donttest{geksl_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
 
-geksl_fbew<-function(data,start,end)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty")
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   #checking conditions
-                                   if (start>end) stop("parameters must satisfy: start<=end")
-                                   if (lubridate::month(start)<12) stop("a month of the 'start' parameter must be December")
-                                   if (start==end) return (1)
-                                   ind<-1
-                                   last<-as.Date(start)
-                                   years<-lubridate::year(end)-lubridate::year(start)
-                                   #main body
-                                   for (i in 1:years) {lubridate::year(last)<-lubridate::year(last)+1
-                                                       new<-min(end,last)
-                                                       ind<-ind*geksl(data,substr(start,0,7),substr(new,0,7), window=dist(start, new)+1)
-                                                       lubridate::year(start)<-lubridate::year(start)+1
-                                                      }
-                                   return (ind)
-                                  
-                                   }
+geksl_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * geksl(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
 
 #' @title  Extending the multilateral weighted GEKS-L price index by using the FBEW method.
 #'
@@ -751,28 +1106,41 @@ geksl_fbew<-function(data,start,end)  { if (start==end) return (1)
 #' \donttest{wgeksl_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
 
-wgeksl_fbew<-function(data,start,end)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty")
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   #checking conditions
-                                   if (start>end) stop("parameters must satisfy: start<=end")
-                                   if (lubridate::month(start)<12) stop("a month of the 'start' parameter must be December")
-                                   if (start==end) return (1)
-                                   ind<-1
-                                   last<-as.Date(start)
-                                   years<-lubridate::year(end)-lubridate::year(start)
-                                   #main body
-                                   for (i in 1:years) {lubridate::year(last)<-lubridate::year(last)+1
-                                                       new<-min(end,last)
-                                                       ind<-ind*wgeksl(data,substr(start,0,7),substr(new,0,7), window=dist(start, new)+1)
-                                                       lubridate::year(start)<-lubridate::year(start)+1
-                                                      }
-                                   return (ind)
-                                  
-                                   }
+wgeksl_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeksl(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
 
 #' @title  Extending the multilateral GEKS-L price index by using the FBMW method.
 #'
@@ -795,27 +1163,38 @@ wgeksl_fbew<-function(data,start,end)  { if (start==end) return (1)
 #' \donttest{geksl_fbmw(milk, start="2019-12", end="2020-04")}
 #' @export
 
-geksl_fbmw<-function(data,start,end)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty")
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   #checking conditions
-                                   if (start>end) stop("parameters must satisfy: start<=end")
-                                   if (lubridate::month(start)<12) stop("a month of the 'start' parameter must be December")
-                                   if (start==end) return (1)
-                                   ind<-1
-                                   last<-as.Date(start)
-                                   years<-lubridate::year(end)-lubridate::year(start)
-                                   #main body
-                                   for (i in 1:years) {lubridate::year(last)<-lubridate::year(last)+1
-                                                       new<-min(end,last)
-                                                       ind<-ind*geksl_fbmw2(data,substr(start,0,7),substr(new,0,7))
-                                                       lubridate::year(start)<-lubridate::year(start)+1
-                                                      }
-                                   return (ind)
-                                   }
+geksl_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * geksl_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
 
 #' @title  Extending the multilateral weighted GEKS-L price index by using the FBMW method.
 #'
@@ -838,61 +1217,99 @@ geksl_fbmw<-function(data,start,end)  { if (start==end) return (1)
 #' \donttest{wgeksl_fbmw(milk, start="2019-12", end="2020-04")}
 #' @export
 
-wgeksl_fbmw<-function(data,start,end)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty")
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   #checking conditions
-                                   if (start>end) stop("parameters must satisfy: start<=end")
-                                   if (lubridate::month(start)<12) stop("a month of the 'start' parameter must be December")
-                                   if (start==end) return (1)
-                                   ind<-1
-                                   last<-as.Date(start)
-                                   years<-lubridate::year(end)-lubridate::year(start)
-                                   #main body
-                                   for (i in 1:years) {lubridate::year(last)<-lubridate::year(last)+1
-                                                       new<-min(end,last)
-                                                       ind<-ind*wgeksl_fbmw2(data,substr(start,0,7),substr(new,0,7))
-                                                       lubridate::year(start)<-lubridate::year(start)+1
-                                                      }
-                                   return (ind)
-                                   }
+wgeksl_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeksl_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
 
 #an additional function used in geksl_fbmw
-geksl_fbmw2<-function(data,start,end)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty")
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   wstart<-end
-                                   lubridate::year(wstart)<-lubridate::year(wstart)-1
-                                   #checking conditions
-                                   if (start>end) stop("parameters must satisfy: start<=end")
-                                   if (lubridate::month(start)<12) stop("a month of the 'start' parameter must be December")
-                                   if (start==end) return (1)
-                                   else return (geksl(data, substr(start,0,7), substr(end,0,7), substr(wstart,0,7),window=13))
-                                   }
+geksl_fbmw2 <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- end
+  lubridate::year(wstart) <-
+  lubridate::year(wstart) - 1
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  else
+  return (geksl(
+  data,
+  substr(start, 0, 7),
+  substr(end, 0, 7),
+  substr(wstart, 0, 7),
+  window = 13
+  ))
+}
 
 
 #an additional function used in wgeksl_fbmw
-wgeksl_fbmw2<-function(data,start,end)  { if (start==end) return (1)
-                                   if (nrow(data)==0) stop("A data frame is empty")
-                                   start<-paste(start,"-01",sep="")
-                                   end<-paste(end,"-01",sep="")
-                                   start<-as.Date(start)
-                                   end<-as.Date(end)
-                                   wstart<-end
-                                   lubridate::year(wstart)<-lubridate::year(wstart)-1
-                                   #checking conditions
-                                   if (start>end) stop("parameters must satisfy: start<=end")
-                                   if (lubridate::month(start)<12) stop("a month of the 'start' parameter must be December")
-                                   if (start==end) return (1)
-                                   else return (wgeksl(data, substr(start,0,7), substr(end,0,7), substr(wstart,0,7),window=13))
-                                   }
-
+wgeksl_fbmw2 <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- end
+  lubridate::year(wstart) <-
+  lubridate::year(wstart) - 1
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  else
+  return (wgeksl(
+  data,
+  substr(start, 0, 7),
+  substr(end, 0, 7),
+  substr(wstart, 0, 7),
+  window = 13
+  ))
+}
 
 
 #' @title  Extending the multilateral GEKS-L price index by using window splicing methods.
@@ -922,71 +1339,126 @@ wgeksl_fbmw2<-function(data,start,end)  { if (start==end) return (1)
 #' \donttest{geksl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
-geksl_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ asplice<-c("movement","window","half","mean","window_published","half_published","mean_published") #allowed values for 'splice' parameter
-  if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
-  if (start==end) return (1)
-  if (nrow(data)==0) stop("A data frame is empty")
-  t0<-start
-  start<-paste(start,"-01",sep="")
-  end<-paste(end,"-01",sep="")
-  start<-as.Date(start)
-  end<-as.Date(end)
-  wend<-start
-  lubridate::month(wend)<-lubridate::month(wend)+window-1
+geksl_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
   #checking conditions
-  if (window<2)  stop("window must be at least 2 months")
-  if (start>end) stop("parameters must satisfy: start<=end")
-  set<-c(1)
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
   #main body
-  while (start<end)
-                                       {lubridate::month(start)<-lubridate::month(start)+1
-                                       t<-substr(start,0,7)
-                                       if (start<=wend) set<-c(set,geksl(data,t0,t,wstart=t0,window))
-                                       else {
-                                       t1<-start
-                                       lubridate::month(t1)<-lubridate::month(t1)-1
-                                       tT<-start
-                                       lubridate::month(tT)<-lubridate::month(tT)-(window-1)
-                                       tT1<-start
-                                       lubridate::month(tT1)<-lubridate::month(tT1)-(window-1)-1
-                                       th<-start
-                                       lubridate::month(th)<-lubridate::month(th)-floor(window/2)
-                                       t1<-substr(t1,0,7)
-                                       tT<-substr(tT,0,7)
-                                       tT1<-substr(tT1,0,7)
-                                       th<-substr(th,0,7)
-                                       if (splice=="movement") set<-c(set, set[length(set)]*geksl(data,t1,t,wstart=tT,window))
-                                       if (splice=="window")   set<-c(set, set[length(set)]*geksl(data,tT,t,wstart=tT,window)/geksl(data,tT,t1,wstart=tT1,window))
-                                       if (splice=="half")   set<-c(set, set[length(set)]*geksl(data,th,t,wstart=tT,window)/geksl(data,th,t1,wstart=tT1,window))
-                                       if (splice=="mean") {var<-1
-                                       for (m in 1:(window-1)) {tm<-start
-                                       lubridate::month(tm)<-lubridate::month(tm)-m
-                                       tm<-substr(tm,0,7)
-var<-var*geksl(data,tm,t,wstart=tT,window)/geksl(data,tm,t1,wstart=tT1,window) 
-                                                                }
-                                       var<-var^(1/(window-1))
-                                       set<-c(set, set[length(set)]*var)
-                                                                }
-                                       if (splice=="window_published")
-                                       set<-c(set, set[length(set)+1-(window-1)]*geksl(data,tT,t,wstart=tT,window))
-                                       if (splice=="half_published")
-                                       set<-c(set, set[length(set)+1-floor(window/2)]*geksl(data,th,t,wstart=tT,window))  
-                                       if (splice=="mean_published") {var<-1
-                                       for (m in 1:(window-1)) {tm<-start
-                                       lubridate::month(tm)<-lubridate::month(tm)-m
-                                       tm<-substr(tm,0,7)
-var<-var*set[length(set)+1-m]*geksl(data,tm,t,wstart=tT,window) 
-                                       }
-                                       var<-var^(1/(window-1))
-                                       set<-c(set, var)
-                                                              }
-                                             } 
-                                       }
-if (interval==FALSE) return (set[length(set)])
-else return(set)  
-}
-
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, geksl(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * geksl(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * geksl(data, tT, t, wstart = tT, window) / geksl(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * geksl(data, th, t, wstart = tT, window) / geksl(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * geksl(data, tm, t, wstart = tT, window) / geksl(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * geksl(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * geksl(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * geksl(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
+  
 
 #' @title  Extending the multilateral weighted GEKS-L price index by using window splicing methods.
 #'
@@ -1015,70 +1487,125 @@ else return(set)
 #' \donttest{wgeksl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
-wgeksl_splice<-function (data,start,end, window=13, splice="movement",interval=FALSE)
-{ asplice<-c("movement","window","half","mean","window_published","half_published","mean_published") #allowed values for 'splice' parameter
-  if (!(splice %in% asplice)) stop ("The 'splice' parameter has a wrong value")
-  if (start==end) return (1)
-  if (nrow(data)==0) stop("A data frame is empty")
-  t0<-start
-  start<-paste(start,"-01",sep="")
-  end<-paste(end,"-01",sep="")
-  start<-as.Date(start)
-  end<-as.Date(end)
-  wend<-start
-  lubridate::month(wend)<-lubridate::month(wend)+window-1
+wgeksl_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
   #checking conditions
-  if (window<2)  stop("window must be at least 2 months")
-  if (start>end) stop("parameters must satisfy: start<=end")
-  set<-c(1)
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
   #main body
-  while (start<end)
-                                       {lubridate::month(start)<-lubridate::month(start)+1
-                                       t<-substr(start,0,7)
-                                       if (start<=wend) set<-c(set,wgeksl(data,t0,t,wstart=t0,window))
-                                       else {
-                                       t1<-start
-                                       lubridate::month(t1)<-lubridate::month(t1)-1
-                                       tT<-start
-                                       lubridate::month(tT)<-lubridate::month(tT)-(window-1)
-                                       tT1<-start
-                                       lubridate::month(tT1)<-lubridate::month(tT1)-(window-1)-1
-                                       th<-start
-                                       lubridate::month(th)<-lubridate::month(th)-floor(window/2)
-                                       t1<-substr(t1,0,7)
-                                       tT<-substr(tT,0,7)
-                                       tT1<-substr(tT1,0,7)
-                                       th<-substr(th,0,7)
-                                       if (splice=="movement") set<-c(set, set[length(set)]*wgeksl(data,t1,t,wstart=tT,window))
-                                       if (splice=="window")   set<-c(set, set[length(set)]*wgeksl(data,tT,t,wstart=tT,window)/wgeksl(data,tT,t1,wstart=tT1,window))
-                                       if (splice=="half")   set<-c(set, set[length(set)]*wgeksl(data,th,t,wstart=tT,window)/wgeksl(data,th,t1,wstart=tT1,window))
-                                       if (splice=="mean") {var<-1
-                                       for (m in 1:(window-1)) {tm<-start
-                                       lubridate::month(tm)<-lubridate::month(tm)-m
-                                       tm<-substr(tm,0,7)
-var<-var*wgeksl(data,tm,t,wstart=tT,window)/wgeksl(data,tm,t1,wstart=tT1,window) 
-                                                                }
-                                       var<-var^(1/(window-1))
-                                       set<-c(set, set[length(set)]*var)
-                                                                }
-                                       if (splice=="window_published")
-                                       set<-c(set, set[length(set)+1-(window-1)]*wgeksl(data,tT,t,wstart=tT,window))
-                                       if (splice=="half_published")
-                                       set<-c(set, set[length(set)+1-floor(window/2)]*wgeksl(data,th,t,wstart=tT,window))  
-                                       if (splice=="mean_published") {var<-1
-                                       for (m in 1:(window-1)) {tm<-start
-                                       lubridate::month(tm)<-lubridate::month(tm)-m
-                                       tm<-substr(tm,0,7)
-var<-var*set[length(set)+1-m]*wgeksl(data,tm,t,wstart=tT,window) 
-                                       }
-                                       var<-var^(1/(window-1))
-                                       set<-c(set, var)
-                                                              }
-                                             } 
-                                       }
-if (interval==FALSE) return (set[length(set)])
-else return(set)  
-}
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, wgeksl(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * wgeksl(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeksl(data, tT, t, wstart = tT, window) / wgeksl(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeksl(data, th, t, wstart = tT, window) / wgeksl(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * wgeksl(data, tm, t, wstart = tT, window) / wgeksl(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * wgeksl(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * wgeksl(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * wgeksl(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
 
 #' @title  The most general package function to compute the price dynamics
 #'
@@ -1106,46 +1633,143 @@ else return(set)
 #' formula="fisher",interval=TRUE,aggrsets="none",aggrret="none",figure=TRUE)}
 #' @export
 
-final_index2<-function(data=data.frame(), by, all=FALSE, start, end, formula="fisher", window=13, splice="movement", base=start, sigma=0.7, aggrret="tornqvist", aggrsets="tornqvist", interval=FALSE, figure=FALSE)
-{ if (nrow(data)==0) stop("A data set is empty!")
-  date<-group<-value<-NULL
-  names<-colnames(data)
-  if (!(by %in% names)) stop ("There is no column specified via 'by' parameter!")
-  group<-as.character(unique(data[,by]))
-  datasets<-list()
-  for (i in 1:length(group)) datasets[[i]]<-dplyr::filter(data, data[,by]==group[i])
-  if (all==FALSE) 
-  return(final_index(datasets,start,end,formula,window,splice,base,sigma,aggrret,aggrsets,interval))
+final_index2 <-
+  function(data = data.frame(),
+  by,
+  all = FALSE,
+  start,
+  end,
+  formula = "fisher",
+  window = 13,
+  splice = "movement",
+  base = start,
+  sigma = 0.7,
+  aggrret = "tornqvist",
+  aggrsets = "tornqvist",
+  interval = FALSE,
+  figure = FALSE)
+  {
+  if (nrow(data) == 0)
+  stop("A data set is empty!")
+  date <- group <- value <- NULL
+  names <- colnames(data)
+  if (!(by %in% names))
+  stop ("There is no column specified via 'by' parameter!")
+  group <- as.character(unique(data[, by]))
+  datasets <- list()
+  for (i in 1:length(group))
+  datasets[[i]] <- dplyr::filter(data, data[, by] == group[i])
+  if (all == FALSE)
+  return(
+  final_index(
+  datasets,
+  start,
+  end,
+  formula,
+  window,
+  splice,
+  base,
+  sigma,
+  aggrret,
+  aggrsets,
+  interval
+  )
+  )
   else {
-  if (interval==FALSE) {
-  index<-c()
-  for (i in 1:length(group)) index<-c(index,final_index(list(datasets[[i]]),start,end,formula,window,splice,base,sigma,aggrret,aggrsets="none",interval=FALSE))
-index<-c(index,final_index(datasets,start,end,formula,window,splice,base,sigma,aggrret,aggrsets,interval=FALSE)) 
-group<-c(group,"all groups: ")
-result<-data.frame(group, index)
-colnames(result)[2]<-formula
-return(result)
-                       }
-else                   {
-result<-final_index(datasets,start,end,formula,window,splice,base,sigma,aggrret,aggrsets,interval=TRUE)
-for (i in 1:length(group)) {index_subgroup<-final_index(list(datasets[[i]]),start,end,formula,window,splice,base,sigma,aggrret,aggrsets="none",interval=TRUE)
-result[,i+2]<-index_subgroup[,2]
-                       }  
-n<-2+length(group)
-colnames(result)[2]<-paste(formula,": all groups")
-colnames(result)[3:n]<-group
-if (figure==FALSE) return(result)   
-else
-{#drawing a plot
-result$date<-as.Date(paste(result$date,"-01",sep=""))
-result<-reshape::melt(result, id.var='date') 
-colnames(result)<-c("date","group","value")
-ggplot2::ggplot(result, ggplot2::aes(x=date, y=value, col=group)) + ggplot2::geom_point()+ggplot2::geom_line()+ggplot2::labs(x="date",y="price index value")+ggplot2::scale_x_date(date_labels="%Y %m",date_breaks  ="1 month")+ggplot2::theme(axis.text.x = ggplot2::element_text(angle=45, hjust = 1))  
-}
-                       }    
-      }
-}
-
+  if (interval == FALSE) {
+  index <- c()
+  for (i in 1:length(group))
+  index <-
+  c(
+  index,
+  final_index(
+  list(datasets[[i]]),
+  start,
+  end,
+  formula,
+  window,
+  splice,
+  base,
+  sigma,
+  aggrret,
+  aggrsets = "none",
+  interval = FALSE
+  )
+  )
+  index <-
+  c(
+  index,
+  final_index(
+  datasets,
+  start,
+  end,
+  formula,
+  window,
+  splice,
+  base,
+  sigma,
+  aggrret,
+  aggrsets,
+  interval = FALSE
+  )
+  )
+  group <- c(group, "all groups: ")
+  result <- data.frame(group, index)
+  colnames(result)[2] <- formula
+  return(result)
+  }
+  else                   {
+  result <-
+  final_index(
+  datasets,
+  start,
+  end,
+  formula,
+  window,
+  splice,
+  base,
+  sigma,
+  aggrret,
+  aggrsets,
+  interval = TRUE
+  )
+  for (i in 1:length(group)) {
+  index_subgroup <-
+  final_index(
+  list(datasets[[i]]),
+  start,
+  end,
+  formula,
+  window,
+  splice,
+  base,
+  sigma,
+  aggrret,
+  aggrsets = "none",
+  interval = TRUE
+  )
+  result[, i + 2] <- index_subgroup[, 2]
+  }
+  n <- 2 + length(group)
+  colnames(result)[2] <- paste(formula, ": all groups")
+  colnames(result)[3:n] <- group
+  if (figure == FALSE)
+  return(result)
+  else
+  {
+  #drawing a plot
+  result$date <- as.Date(paste(result$date, "-01", sep = ""))
+  result <- reshape::melt(result, id.var = 'date')
+  colnames(result) <- c("date", "group", "value")
+  ggplot2::ggplot(result, ggplot2::aes(x = date, y = value, col = group)) + ggplot2::geom_point() +
+  ggplot2::geom_line() + ggplot2::labs(x = "date", y = "price index value") +
+  ggplot2::scale_x_date(date_labels = "%Y %m", date_breaks  = "1 month") +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+  }
+  }
+  }
+  }
+  
 
 #' @title  Providing information about sales of products 
 #'
@@ -1165,17 +1789,27 @@ ggplot2::ggplot(result, ggplot2::aes(x=date, y=value, col=group)) + ggplot2::geo
 #' shares=TRUE,barplot=TRUE,names=outlets)}
 #' @export
 
-sales_groups2<-function(data=data.frame(),by, start, end, shares=FALSE, barplot=FALSE, names=c())
-                                  {
-  if (nrow(data)==0) stop("A data set is empty!")
-  ns<-colnames(data)
-  if (!(by %in% ns)) stop ("There is no column specified via 'by' parameter!")
-  group<-as.character(unique(data[,by]))
-  datasets<-list()
-  for (i in 1:length(group)) datasets[[i]]<-dplyr::filter(data, data[,by]==group[i])
+sales_groups2 <-
+  function(data = data.frame(),
+  by,
+  start,
+  end,
+  shares = FALSE,
+  barplot = FALSE,
+  names = c())
+  {
+  if (nrow(data) == 0)
+  stop("A data set is empty!")
+  ns <- colnames(data)
+  if (!(by %in% ns))
+  stop ("There is no column specified via 'by' parameter!")
+  group <- as.character(unique(data[, by]))
+  datasets <- list()
+  for (i in 1:length(group))
+  datasets[[i]] <- dplyr::filter(data, data[, by] == group[i])
   return (sales_groups(datasets, start, end, shares, barplot, names))
   }
-
+  
 
 
 
