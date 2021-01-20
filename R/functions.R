@@ -312,7 +312,7 @@ data_matching <-
   description == FALSE)
   stop("at least one of parameters: codeIN, codeOUT or description must be TRUE")
   
-  #pairs - new dataframe with reduced dataframe with matched products (additional column: prodID)
+  #pairs - new dataframe with reduced dataframe with matched products (additional column:   prodID)
   #now, let us back to the oryginal dataset, i.e. 'data_oryginal'
   
   #names of columns which are considered in matching process
@@ -327,213 +327,9 @@ data_matching <-
   }
   prodID <- sapply(seq(1, nrow(data_oryginal)), match)
   data_oryginal$prodID <- prodID
-  
   return (data_oryginal)
   }
 
-
-#filtering where only two months are compared
-filtering <-
-  function(data,
-  start,
-  end,
-  filters = c(),
-  plimits = c(),
-  pquantiles = c(),
-  dplimits = c(),
-  lambda = 1.25)
-  {
-  if (nrow(data) == 0)
-  stop("A data frame is empty")
-  
-  start <- paste(start, "-01", sep = "")
-  start <- as.Date(start)
-  start2 <- start
-  end <- paste(end, "-01", sep = "")
-  end <- as.Date(end)
-  end2 <- end
-  lubridate::day(start2) <- lubridate::days_in_month(start2)
-  lubridate::day(end2) <- lubridate::days_in_month(end2)
-  data <-
-  dplyr::filter(data,
-  (data$time >= start &
-  data$time <= start2) | (data$time >= end & data$time <= end2))
-  filter1 <- "extremeprices"
-  filter2 <- "lowsales"
-  filter3 <- "dumpprices"
-  afilters <- c(filter1, filter2, filter3)
-  if ((start == end) | length(filters) == 0)
-  return (data)
-  else if (length(base::intersect(filters, afilters)) == 0)
-  stop("there are no such filters")
-  if (length(base::setdiff(filters, base::intersect(filters, afilters))) >
-  0)
-  stop("At least one filter's name is wrong")
-  data1 <- data[0:0, ]
-  data2 <- data[0:0, ]
-  data3 <- data[0:0, ]
-  data4 <- data[0:0, ]
-  if (filter1 %in% filters) {
-  if ((length(pquantiles) + length(plimits)) == 0)
-  data1 <- data
-  else {
-  id <- matched(data, start, end)
-  priceshares <-
-  c()
-  for (i in 1:length(id))
-  priceshares <-
-  c(
-  priceshares,
-  price(data, period = end, ID = id[i]) / price(data, period = start, ID =
-  id[i])
-  )
-  }
-  if (length(pquantiles) >
-  0)
-  {
-  tresh <- c(0, 1)
-  if ((pquantiles[1] ==
-  tresh[1]) & (pquantiles[2] == tresh[2])) {
-  data1 <- data
-  }
-  else {
-  qq <- stats::quantile(priceshares, probs = pquantiles, names = FALSE)
-  #selecting the sample by checking condition
-  id1 <- c()
-  for (i in 1:length(id))
-  if ((priceshares[i] >=
-  qq[1]) & (priceshares[i] <= qq[2]))
-  id1 <- c(id1, id[i])
-  data1 <-
-  dplyr::filter(data, data$prodID %in% id1)
-  }
-  } else
-  data1 <- data
-  if (length(plimits) >
-  0)
-  {
-  #selecting the sample by chacking condition
-  id2 <- c()
-  for (i in 1:length(id))
-  if ((priceshares[i] >= plimits[1]) &
-  (priceshares[i] <= plimits[2]))
-  id2 <- c(id2, id[i])
-  data2 <-
-  dplyr::filter(data, data$prodID %in% id2)
-  } else
-  data2 <- data
-  } else
-  {
-  data1 <- data
-  data2 <- data
-  }
-  if (filter2 %in% filters) {
-  if (lambda <= 0)
-  data3 <- data
-  id <-
-  matched(data, start, end)
-  expenditures_start <-
-  sales(data, period = start, set = id)
-  expenditures_end <-
-  sales(data, period = end, set = id)
-  sum_start <-
-  sum(expenditures_start)
-  sum_end <-
-  sum(expenditures_end)
-  id3 <- c()
-  for (i in 1:length(id))
-  if (0.5 * ((expenditures_start[i] /
-  sum_start) + (expenditures_end[i] / sum_end)) > (1 / (length(id) * lambda)))
-  id3 <-
-  c(id3, id[i])
-  data3 <-
-  dplyr::filter(data, data$prodID %in% id3)
-  } else
-  data3 <- data
-  
-  if (filter3 %in% filters) {
-  if (!(length(dplimits) == 2))
-  data4 <- data
-  else {
-  id <- matched(data, start, end)
-  expenditures_start <-
-  sales(data, period = start, set = id)
-  expenditures_end <-
-  sales(data, period = end, set = id)
-  priceshares <-
-  c()
-  for (i in 1:length(id))
-  priceshares <-
-  c(
-  priceshares,
-  price(data, period = end, ID = id[i]) / price(data, period = start, ID =
-  id[i])
-  )
-  id4 <- c()
-  for (i in 1:length(id))
-  if ((priceshares[i] >=
-  dplimits[1]) |
-  ((expenditures_end[i] / expenditures_start[i]) >= dplimits[2]))
-  id4 <-
-  c(id4, id[i])
-  data4 <-
-  dplyr::filter(data, data$prodID %in% id4)
-  }
-  } else
-  data4 <- data
-  data_final <- dplyr::intersect(data1, data2)
-  data_final <- dplyr::intersect(data_final, data3)
-  data_final <- dplyr::intersect(data_final, data4)
-  return (data_final)
-  }
-  
-  #filtering where each subsequent months from the considered time interval are compared
-  filtering_interval <-
-  function(data,
-  start,
-  end,
-  filters = c(),
-  plimits = c(),
-  pquantiles = c(),
-  dplimits = c(),
-  lambda = 1.25)
-  {
-  if (nrow(data) == 0)
-  stop("A data frame is empty")
-  start <- paste(start, "-01", sep = "")
-  start <- as.Date(start)
-  end <- paste(end, "-01", sep = "")
-  end <- as.Date(end)
-  start2 <- as.Date(start)
-  if (start == end) {
-  data <-
-  dplyr::filter(
-  data,
-  (lubridate::year(data$time) == lubridate::year(start)) &
-  (lubridate::month(data$time) == lubridate::month(start))
-  )
-  return (data)
-  }
-  lubridate::month(start2) <- lubridate::month(start2) + 1
-  data_set <- data[0:0, ]
-  while (start < end)
-  {
-  d <-
-  filtering(data,
-  start,
-  start2,
-  filters,
-  plimits,
-  pquantiles,
-  dplimits,
-  lambda)
-  data_set <- dplyr::union(data_set, d)
-  lubridate::month(start) <- lubridate::month(start) + 1
-  lubridate::month(start2) <- lubridate::month(start2) + 1
-  }
-  return (data_set)
-  }
-  
 #' @title  Filtering a data set for further price index calculations
 #'
 #' @description This function returns a filtered data set, i.e. a reduced user's data frame with the same columns and rows limited by a criterion defined by \code{filters}.
@@ -1488,45 +1284,6 @@ filtering <-
     }
     }
     
-  quantity <- function(data, period, ID)
-  {
-  if (nrow(data) == 0)
-  stop("A data frame is empty")
-  period <- paste(period, "-01", sep = "")
-  period <- as.Date(period)
-  lubridate::day(period) <- 1
-  period2 <- period
-  lubridate::day(period2) <-
-  lubridate::days_in_month(period2)
-  data <- dplyr::filter(data, data$prodID == ID)
-  data <-
-  dplyr::filter(data, data$time >= period & data$time <= period2)
-  if (nrow(data) == 0)
-  stop("There are no data in selected period")
-  return(sum(data$quantities))
-  }
-  
-  price <- function(data, period, ID)
-  {
-  if (nrow(data) == 0)
-  stop("A data frame is empty")
-  period <- paste(period, "-01", sep = "")
-  period <- as.Date(period)
-  lubridate::day(period) <- 1
-  period2 <- period
-  lubridate::day(period2) <-
-  lubridate::days_in_month(period2)
-  data <- dplyr::filter(data, data$prodID == ID)
-  data <-
-  dplyr::filter(data, data$time >= period & data$time <= period2)
-  if (nrow(data) == 0)
-  stop("There are no data in selected period")
-  data$sales <- data$prices * data$quantities
-  return(sum(data$sales) / sum(data$quantities))
-  }
-  
-
-
 #' @title  Providing prices (unit values) of sold products
 #'
 #' @description The function returns prices (unit values) of sold products with given IDs. 
@@ -1570,7 +1327,6 @@ filtering <-
   return (vec)
   }
   
-
 #' @title  Providing quantities of sold products
 #'
 #' @description The function returns quantities of sold products with given IDs. 
@@ -1583,7 +1339,6 @@ filtering <-
 #' \donttest{quantities(milk, period="2019-06")}
 #' quantities(milk, period="2019-12",set=c(400032, 71772, 82919))
 #' @export
-
 
 quantities <- function(data, period, set = c())
   {
@@ -1701,7 +1456,6 @@ ggplot2::geom_line() + ggplot2::labs(x = "date", y = "correlation") + ggplot2::s
                        }
                        }
                        
-
 #' @title  Providing values of product sales
 #'
 #' @description The function returns values of sales of products with given IDs. 
@@ -1726,7 +1480,8 @@ sales <- function(data,
                   if (nrow(data) == 0)
                   stop("A data frame is empty")
                   if (length(set) == 0)
-                  set <- matched(data, period1 = period, period2 = period)
+                  set <-
+                  matched(data, period1 = period, period2 = period)
                   period <-
                   paste(period, "-01", sep = "")
                   period <- as.Date(period)
@@ -1735,7 +1490,8 @@ sales <- function(data,
                   lubridate::day(period2) <-
                   lubridate::days_in_month(period2)
                   data <-
-                  dplyr::filter(data, data$time >= period & data$time <= period2)
+                  dplyr::filter(data, data$time >= period &
+                  data$time <= period2)
                   if (nrow(data) == 0)
                   stop("There are no data in selected period")
                   vec <- numeric(length(set))
@@ -1948,6 +1704,7 @@ jevons <-
   return(jev ^ (1 / length(id)))
   }
   }
+
 #' @title  Calculating the unweighted Dutot price index
 #'
 #' @description This function returns a value (or vector of values) of the unweighted bilateral Dutot price index.
@@ -2579,6 +2336,7 @@ paasche <-
   sum(price_start * quantity_end))
   }
   }
+
 #' @title  Calculating the bilateral Fisher price index
 #'
 #' @description This function returns a value (or vector of values) of the bilateral Fisher price index.
@@ -4008,21 +3766,6 @@ lehr <-
   }
   }
  
-  #logarithmic means
-  L <- function (x, y) {
-  if (x == y)
-  return (x)
-  else
-  return ((y - x) / log(y / x))
-  }
-  
-  LL <- function (x) {
-  if (x[1] == x[2])
-  return (x[1])
-  else
-  return ((x[1] - x[2]) / log(x[1] / x[2]))
-  }
-
 #' @title  Calculating the bilateral Vartia-I price index
 #'
 #' @description This function returns a value (or vector of values) of the bilateral Vartia-I price index.
@@ -4958,6 +4701,7 @@ lehr <-
 #' \donttest{chcarli(milk, start="2018-12", end="2020-01")}
 #' \donttest{chcarli(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chcarli <-
   function(data, start, end, interval = FALSE)  {
   if (start == end)
@@ -5146,7 +4890,6 @@ chharmonic <-
   return(chained)
   }
 
-
 #' @title  Calculating the monthly chained BMW price index
 #'
 #' @description This function returns a value (or vector of values) of the monthly chained Balk-Mehrhoff-Walsh (BMW)  price index.
@@ -5198,7 +4941,6 @@ chbmw <-
   return(chained)
   }
 
-
 #' @title  Calculating the monthly chained Laspeyres price index
 #'
 #' @description This function returns a value (or vector of values) of the monthly chained Laspeyres price index.
@@ -5216,6 +4958,7 @@ chbmw <-
 #' \donttest{chlaspeyres(milk, start="2018-12", end="2020-01")}
 #' \donttest{chlaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
+
 chlaspeyres <-
   function(data, start, end, interval = FALSE)  {
   if (start == end)
@@ -6667,37 +6410,6 @@ geks_fbmw <- function(data, start, end)  {
   return (ind)
 }
 
-#an additional function used in geks_fbmw
-geks_fbmw2 <- function(data, start, end)  {
-if (start == end)
-return (1)
-if (nrow(data) == 0)
-stop("A data frame is empty")
-start <- paste(start, "-01", sep = "")
-end <- paste(end, "-01", sep = "")
-start <- as.Date(start)
-end <- as.Date(end)
-wstart <- end
-lubridate::year(wstart) <-
-lubridate::year(wstart) - 1
-#checking conditions
-if (start > end)
-stop("parameters must satisfy: start<=end")
-if (lubridate::month(start) < 12)
-stop("a month of the 'start' parameter must be December")
-if (start == end)
-return (1)
-else
-return (geks(
-data,
-substr(start, 0, 7),
-substr(end, 0, 7),
-substr(wstart, 0, 7),
-window = 13
-))
-}
-
-
 #' @title  Calculating the multilateral GEKS price index based on the Walsh formula (GEKS-W)
 #'
 #' @description This function returns a value of the multilateral GEKS-W price index, i.e. the GEKS price index based on the superlative Walsh index formula. 
@@ -6883,36 +6595,6 @@ geksw_fbmw <- function(data, start, end)  {
   return (ind)
 }
 
-#an additional function used in geks_fbmw
-geksw_fbmw2 <- function(data, start, end)  {
-if (start == end)
-return (1)
-if (nrow(data) == 0)
-stop("A data frame is empty")
-start <- paste(start, "-01", sep = "")
-end <- paste(end, "-01", sep = "")
-start <- as.Date(start)
-end <- as.Date(end)
-wstart <- end
-lubridate::year(wstart) <-
-lubridate::year(wstart) - 1
-#checking conditions
-if (start > end)
-stop("parameters must satisfy: start<=end")
-if (lubridate::month(start) < 12)
-stop("a month of the 'start' parameter must be December")
-if (start == end)
-return (1)
-else
-return (geksw(
-data,
-substr(start, 0, 7),
-substr(end, 0, 7),
-substr(wstart, 0, 7),
-window = 13
-))
-}
-
 #' @title  Calculating the multilateral GEKS price index based on the Jevons formula (typical notation: GEKS-J) 
 #'
 #' @description This function returns a value of the multilateral GEKS-J price index (to be more precise: the GEKS index based on the Jevons formula).
@@ -7094,38 +6776,6 @@ geksj_fbmw <- function(data, start, end)  {
   
 }
 
-#an additional function used in geksj_fbmw
-geksj_fbmw2 <- function(data, start, end)  {
-if (start == end)
-return (1)
-if (nrow(data) == 0)
-stop("A data frame is empty")
-start <- paste(start, "-01", sep = "")
-end <- paste(end, "-01", sep = "")
-start <- as.Date(start)
-end <- as.Date(end)
-wstart <- end
-lubridate::year(wstart) <-
-lubridate::year(wstart) - 1
-#checking conditions
-if (start > end)
-stop("parameters must satisfy: start<=end")
-if (lubridate::month(start) < 12)
-stop("a month of the 'start' parameter must be December")
-if (start == end)
-return (1)
-else
-return (geksj(
-data,
-substr(start, 0, 7),
-substr(end, 0, 7),
-substr(wstart, 0, 7),
-window = 13
-))
-}
-
-
-
 #' @title  Calculating the multilateral GEKS price index based on the Tornqvist formula (typical notation: GEKS-T or CCDI)
 #'
 #' @description This function returns a value of the multilateral CCDI price index, i.e. the GEKS price index based on the superlative Tornqvist index formula. 
@@ -7297,39 +6947,6 @@ ccdi_fbmw <- function(data, start, end)  {
   return (ind)
 }
 
-#an additional function used in ccdi_fbmw
-ccdi_fbmw2 <- function(data, start, end)  {
-  if (start == end)
-  return (1)
-  if (nrow(data) == 0)
-  stop("A data frame is empty")
-  start <- paste(start, "-01", sep = "")
-  end <- paste(end, "-01", sep = "")
-  start <- as.Date(start)
-  end <- as.Date(end)
-  wstart <- end
-  lubridate::year(wstart) <-
-  lubridate::year(wstart) - 1
-  #checking conditions
-  if (start > end)
-  stop("parameters must satisfy: start<=end")
-  if (lubridate::month(start) < 12)
-  stop("a month of the 'start' parameter must be December")
-  if (start == end)
-  return (1)
-  else
-  return (ccdi(
-  data,
-  substr(start, 0, 7),
-  substr(end, 0, 7),
-  substr(wstart, 0, 7),
-  window = 13
-  ))
-}
-
-
-#QU - index
-
 #' @title  Calculating the quality adjusted unit value index (QU index)
 #'
 #' @description This function returns a value of the quality adjusted unit value index (QU index) for a given set of adjustment factors.
@@ -7350,7 +6967,6 @@ ccdi_fbmw2 <- function(data, start, end)  {
 #' ## Calculating the QU index for the created data frame 'v'
 #' \donttest{QU(milk, start="2018-12", end="2019-12", v)}
 #' @export
-
 
 QU<-function(data, start, end, v)
 {
@@ -7400,6 +7016,7 @@ return ((a/b)/(c/d))
 #' \donttest{gk(milk, start="2019-01", end="2019-08",window=10)}
 #' \donttest{gk(milk, start="2018-12", end="2019-12")}
 #' @export
+
 gk <-
   function(data,
   start,
@@ -7492,81 +7109,6 @@ gk <-
   return (result)
   }
   
-#an additional function used in gk_fbew
-gkreal <- function(data, start, end)  {
-if (start == end)
-return (1)
-if (nrow(data) == 0)
-stop("A data frame is empty")
-start <- paste(start, "-01", sep = "")
-end <- paste(end, "-01", sep = "")
-start <- as.Date(start)
-end <- as.Date(end)
-#checking conditions
-if (start > end)
-stop("parameters must satisfy: start<=end")
-if (lubridate::month(start) < 12)
-stop("a month of the 'start' parameter must be December")
-#data filtration
-d <-
-dplyr::filter(data, data$time >= start & data$time <= end)
-prodID <- unique(d$prodID)
-#main body
-#initial values of indices
-index1 <- c()
-index2 <- c()
-#set of dates
-dates <- c()
-st <- start
-while (st <= end)
-{
-index1 <- c(index1, 1)
-index2 <- c(index2, 2)
-t <- substr(st, 0, 7)
-dates <- c(dates, t)
-lubridate::month(st) <-
-lubridate::month(st) + 1
-}
-s <-
-function(tt)
-return (sales(d, period = tt, set = prodID))
-q <-
-function(tt)
-return (quantities(d, period = tt, set = prodID))
-expenditure <- sapply(dates, s)
-quantity <- sapply(dates, q)
-#quantity weights - quality adjusted factors vi
-while (sqrt(sum((index1 - index2) ^ 2)) >
-0.01)
-{
-val <- function (i)  {
-xx <-
-function (tt)
-return (expenditure[i, tt] / index1[which(dates == tt)])
-yy <-
-function (tt)
-return (quantity[i, tt])
-x <- sum(sapply(dates, xx))
-y <- sum(sapply(dates, yy))
-return (x / y)
-}
-num_prod <- seq(1:length(prodID))
-values <- sapply(num_prod, val)
-v <- data.frame(prodID, values)
-#series  of indices
-indd <-
-function(tt)
-return (QU(d, substr(start, 0, 7), tt, v))
-ind <- sapply(dates, indd)
-index2 <- index1
-index1 <- ind
-}
-result <-
-index1[which(dates == substr(end, 0, 7))]
-result <- result[[1]]
-return (result)
-}
-
 #' @title  Extending the multilateral Geary-Khamis price index by using the FBEW method.
 #'
 #' @description This function returns a value of the multilateral Geary-Khamis price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
@@ -7667,49 +7209,6 @@ gk_fbmw <- function(data, start, end)  {
   return (ind)
 }
 
-#an additional function used in gk_fbmw
-gk_fbmw2 <- function(data, start, end) {
-if (start == end)
-return (1)
-if (nrow(data) == 0)
-stop("A data frame is empty")
-start <- paste(start, "-01", sep = "")
-end <- paste(end, "-01", sep = "")
-start <- as.Date(start)
-end <- as.Date(end)
-wstart <- end
-lubridate::year(wstart) <-
-lubridate::year(wstart) - 1
-#checking conditions
-if (start > end)
-stop("parameters must satisfy: start<=end")
-if (lubridate::month(start) < 12)
-stop("a month of the 'start' parameter must be December")
-if (start == end)
-return (1)
-else
-return (gk(
-data,
-substr(start, 0, 7),
-substr(end, 0, 7),
-substr(wstart, 0, 7),
-window = 13
-))
-}
-
-
-#distance between two dates (in months) - it is not exported
-dist <- function(data1, data2)
-{
-n <- 0
-while (data1 <= data2)
-{
-n <- n + 1
-lubridate::month(data1) <- lubridate::month(data1) + 1
-}
-return (n - 1)
-}
-
 #' @title  Calculating the multilateral TPD price index
 #'
 #' @description This function returns a value of the multilateral TPD (Time Product Dummy) price index.
@@ -7726,6 +7225,7 @@ return (n - 1)
 #' \donttest{tpd(milk, start="2019-01", end="2019-08",window=10)}
 #' \donttest{tpd(milk, start="2018-12", end="2019-12")}
 #' @export
+
 tpd <-
   function(data,
   start,
@@ -7966,37 +7466,6 @@ tpd_fbmw <- function(data, start, end)  {
   }
   return (ind)
 }
-
-#an additional function used in tpd_fbmw
-tpd_fbmw2 <- function(data, start, end)  {
-if (start == end)
-return (1)
-if (nrow(data) == 0)
-stop("A data frame is empty")
-start <- paste(start, "-01", sep = "")
-end <- paste(end, "-01", sep = "")
-start <- as.Date(start)
-end <- as.Date(end)
-wstart <- end
-lubridate::year(wstart) <-
-lubridate::year(wstart) - 1
-#checking conditions
-if (start > end)
-stop("parameters must satisfy: start<=end")
-if (lubridate::month(start) < 12)
-stop("A month of the 'start' parameter must be December")
-if (start == end)
-return (1)
-else
-return (tpd(
-data,
-substr(start, 0, 7),
-substr(end, 0, 7),
-substr(wstart, 0, 7),
-window = 13
-))
-}
-
 
 #' @title  Extending the multilateral TPD price index by using window splicing methods.
 #'
@@ -8437,7 +7906,6 @@ geksj_splice <-
   return(set)
   }
   
-
 #' @title  Extending the multilateral GEKS-W price index by using window splicing methods.
 #'
 #' @description This function returns a value (or values) of the multilateral GEKS-W price index (GEKS based on the Walsh formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
@@ -8583,7 +8051,6 @@ geksw_splice <-
   return(set)
   }
   
-
 #' @title  Extending the multilateral CCDI price index by using window splicing methods.
 #'
 #' @description This function returns a value (or values) of the multilateral CCDI price index (GEKS based on the Tornqvist formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).

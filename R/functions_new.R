@@ -1240,66 +1240,6 @@ wgeksl_fbmw <- function(data, start, end)  {
   return (ind)
 }
 
-#an additional function used in geksl_fbmw
-geksl_fbmw2 <- function(data, start, end)  {
-  if (start == end)
-  return (1)
-  if (nrow(data) == 0)
-  stop("A data frame is empty")
-  start <- paste(start, "-01", sep = "")
-  end <- paste(end, "-01", sep = "")
-  start <- as.Date(start)
-  end <- as.Date(end)
-  wstart <- end
-  lubridate::year(wstart) <-
-  lubridate::year(wstart) - 1
-  #checking conditions
-  if (start > end)
-  stop("parameters must satisfy: start<=end")
-  if (lubridate::month(start) < 12)
-  stop("a month of the 'start' parameter must be December")
-  if (start == end)
-  return (1)
-  else
-  return (geksl(
-  data,
-  substr(start, 0, 7),
-  substr(end, 0, 7),
-  substr(wstart, 0, 7),
-  window = 13
-  ))
-}
-
-#an additional function used in wgeksl_fbmw
-wgeksl_fbmw2 <- function(data, start, end)  {
-  if (start == end)
-  return (1)
-  if (nrow(data) == 0)
-  stop("A data frame is empty")
-  start <- paste(start, "-01", sep = "")
-  end <- paste(end, "-01", sep = "")
-  start <- as.Date(start)
-  end <- as.Date(end)
-  wstart <- end
-  lubridate::year(wstart) <-
-  lubridate::year(wstart) - 1
-  #checking conditions
-  if (start > end)
-  stop("parameters must satisfy: start<=end")
-  if (lubridate::month(start) < 12)
-  stop("a month of the 'start' parameter must be December")
-  if (start == end)
-  return (1)
-  else
-  return (wgeksl(
-  data,
-  substr(start, 0, 7),
-  substr(end, 0, 7),
-  substr(wstart, 0, 7),
-  window = 13
-  ))
-}
-
 #' @title  Extending the multilateral GEKS-L price index by using window splicing methods.
 #'
 #' @description This function returns a value (or values) of the multilateral GEKS-L price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
@@ -1758,7 +1698,6 @@ final_index2 <-
   }
   }
   
-
 #' @title  Providing information about sales of products 
 #'
 #' @description The function returns values of sales of products or the corresponding barplot for these sales. 

@@ -1,4 +1,3 @@
-
 #' @title  Building the machine learning model for product classification
 #'
 #' @description This function provides a trained machine learning model to classify products into coicop groups. In addition, the function returns the characteristics of the model and figures describing the learning process.
@@ -203,6 +202,7 @@ model_classification <-
   early_stopping_rounds = 50,
   watchlist = list(train = train.mat, test = test.mat)
   )
+  
   #best iteration
   train_error <-
   xgb.fit$evaluation_log[xgb.fit$best_iteration, ]$train_merror
@@ -272,7 +272,6 @@ model_classification <-
   )
   }
   
-
 #' @title  Predicting product COICOP levels via the machine learning model
 #'
 #' @description This function predicts product COICOP levels via the selected machine learning model.
@@ -339,11 +338,9 @@ no <- which(coicops$coicop_num == predictions[i])
 predictions_new <-
 c(predictions_new, as.vector(coicops$coicop_oryg)[no])
 }
-
 data$coicop_predicted <- as.factor(predictions_new)
 return (data)
 }
-
 
 #' @title  Saving the machine learning model on the disk
 #'
@@ -376,7 +373,6 @@ coicops <- model$coicops
 sensitivity <- model$sensitivity
 figure_training <- model$figure_training
 figure_importance <- model$figure_importance
-
 #saving
 dir.create(dir, showWarnings = FALSE)
 path = paste(dir, "/", sep = "")
