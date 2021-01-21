@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 
 PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 ================================================================================
@@ -49,7 +44,7 @@ The first one, **dataMATCH**, can be used to demonstrate the **data\_matching** 
 
 ***2) dataCOICOP***
 
-The second one, **dataCOICOP**, is a collection of artificial scanner data on the sale of tomatoes, fruit juices, low fat milk, full fat milk, sugar, chocolate, yoghurt, coffee, eggs and salt in the period from December 2018 to October 2020. It is a data frame with 8 columns and 96600 rows. The used variables are as follows: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (litres); *prodID* - unique product codes obtained after product matching (data set contains 331 different prodIDs); *retID* - unique codes identifying outlets/retailer sale points (data set contains 10 different retIDs); *description* - descriptions of sold products (data set contains 12 different product descriptions), *unit* - sales units, e.g. 'kg', 'ml', etc.; *coicop* - identifiers of COICOP groups (10 groups). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
+The second one, **dataCOICOP**, is a collection of artificial scanner data on the sale of tomatoes, fruit juices, low fat milk, full fat milk, sugar, chocolate, yoghurt, coffee, eggs and salt in the period from December 2018 to October 2020. It is a data frame with 8 columns and 96600 rows. The used variables are as follows: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (liters); *prodID* - unique product codes obtained after product matching (data set contains 331 different prodIDs); *retID* - unique codes identifying outlets/retailer sale points (data set contains 10 different retIDs); *description* - descriptions of sold products (data set contains 12 different product descriptions), *unit* - sales units, e.g. 'kg', 'ml', etc.; *coicop* - identifiers of COICOP groups (10 groups). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
 
 ***3) milk***
 
@@ -96,12 +91,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.67         23      1     1
-#> 2 2020-01-01   2.67         22      2     1
-#> 3 2020-01-01   2.97         20      3     1
-#> 4 2020-01-01   2.56         18      4     1
-#> 5 2020-01-01   3.09         18      5     1
-#> 6 2020-01-01   2.86         19      6     1
+#> 1 2020-01-01   2.80         19      1     1
+#> 2 2020-01-01   3.09         20      2     1
+#> 3 2020-01-01   2.76         19      3     1
+#> 4 2020-01-01   2.97         23      4     1
+#> 5 2020-01-01   2.79         21      5     1
+#> 6 2020-01-01   2.72         23      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -234,7 +229,7 @@ head(data_predicted)
 #> 2 no information  11421            11421
 #> 3              g  11831            11831
 #> 4              g  11831            11831
-#> 5 no information  11811            11421
+#> 5 no information  11811            11441
 #> 6 no information  11421            11421
 ```
 
@@ -644,19 +639,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.593701
-#> 2 403249 1.604225
-#> 3 400033 1.912926
-#> 4 402609 1.352004
-#> 5 406223 1.897299
-#> 6 406224 1.570823
+#> 1 400032 1.280352
+#> 2 403249 1.606537
+#> 3 400033 1.205759
+#> 4 402609 1.199313
+#> 5 406223 1.622079
+#> 6 406224 1.638684
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9923664
+#> [1] 0.9941538
 ```
 
 <a id="ad8"> </a>
