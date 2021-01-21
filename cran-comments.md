@@ -10,7 +10,7 @@
   
   New submission
   
-  Version contains large components (0.0.0.9000)
+  
   Maintainer: 'Jacek Bialek <jacek.bialek@uni.lodz.pl>'
 
 0 errors √ | 0 warnings √ | 1 note x
