@@ -1,6 +1,6 @@
 Package: PriceIndices
 Title: Calculating Bilateral and Multilateral Price Indexes
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person(given = "Jacek",
            family = "Białek",
@@ -23,7 +23,7 @@ Imports:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: 
     testthat,
     knitr,
