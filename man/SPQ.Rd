@@ -22,7 +22,7 @@ This function returns a value of the multilateral SPQ price index which is based
 This function returns a value of the multilateral SPQ price index which is based on the relative price and quantity dissimilarity measure.
 }
 \examples{
-\donttest{SPQ(milk, start="2018-12",end="2019-12")}
+SPQ(sugar, start="2018-12",end="2019-02")
 \donttest{SPQ(milk, start="2018-12",end="2019-12",interval=TRUE)}
 }
 \references{

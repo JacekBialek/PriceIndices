@@ -91,12 +91,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.80         19      1     1
-#> 2 2020-01-01   3.09         20      2     1
-#> 3 2020-01-01   2.76         19      3     1
-#> 4 2020-01-01   2.97         23      4     1
-#> 5 2020-01-01   2.79         21      5     1
-#> 6 2020-01-01   2.72         23      6     1
+#> 1 2020-01-01   2.73         22      1     1
+#> 2 2020-01-01   2.72         18      2     1
+#> 3 2020-01-01   2.89         25      3     1
+#> 4 2020-01-01   2.55         21      4     1
+#> 5 2020-01-01   2.67         17      5     1
+#> 6 2020-01-01   2.94         24      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -205,16 +205,16 @@ ML$figure_importance
 
 <img src="man/figures/README-unnamed-chunk-13-1.png" width="100%" />
 
-Now, let us save the model on the disk:
+Now, let us save the model on the disk. After saving the model we can load it and use at any time:
 
 ``` r
+#Setting a temporary directory as a working directory
+wd<-tempdir()
+setwd(wd)
+#Saving and loading the model
 save_model(ML, dir="My_model")
-```
-
-After saving the model we can load it and use at any time:
-
-``` r
 ML_fromPC<-load_model("My_model")
+#Prediction
 data_predicted<-data_classifying(ML_fromPC, data_test)
 head(data_predicted)
 #>         time prices quantities        prodID retID    description
@@ -229,7 +229,7 @@ head(data_predicted)
 #> 2 no information  11421            11421
 #> 3              g  11831            11831
 #> 4              g  11831            11831
-#> 5 no information  11811            11441
+#> 5 no information  11811            11714
 #> 6 no information  11421            11421
 ```
 
@@ -370,7 +370,7 @@ The function returns a **data frame** or a **figure** presenting the **matched\_
 matched_fig(milk, start="2018-12", end="2019-12", type="prodID")
 ```
 
-<img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-25-1.png" width="100%" />
 
 ``` r
 matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
@@ -437,7 +437,7 @@ sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07",
              barplot=TRUE, shares=TRUE, names=categories)
 ```
 
-<img src="man/figures/README-unnamed-chunk-32-1.png" width="100%" /> **pqcor**
+<img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" /> **pqcor**
 
 The function returns **Pearson's correlation coefficient** for price and quantity of products with given IDs (defined by the **set** parameter) and sold in the **period**. If the **set** is empty, the function works for all products being available in the **period**. The **figure** parameter indicates whether the function returns a figure with a correlation coefficient (TRUE) or just a correlation coefficient (FALSE). For instance:
 
@@ -447,7 +447,7 @@ pqcor(milk, period="2019-05")
 pqcor(milk, period="2019-05",figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" /> **pqcor\_fig**
+<img src="man/figures/README-unnamed-chunk-32-1.png" width="100%" /> **pqcor\_fig**
 
 The function returns **Pearson's correlation coefficients** between price and quantity of products with given IDs (defined by the **set** parameter) and sold in the time interval defined by the **start** and **end** parameters. If the **set** is empty the function works for all available products. Correlation coefficients are calculated for each month separately. Results are presented in tabular or graphical form depending on the **figure** parameter. Both cases are presented below:
 
@@ -464,7 +464,7 @@ pqcor_fig(milk, start="2018-12", end="2019-06", figure=FALSE)
 pqcor_fig(milk, start="2018-12", end="2019-06")
 ```
 
-<img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" /> **dissimilarity**
+<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" /> **dissimilarity**
 
 This function returns a value of the relative price (dSP) and/or quantity (dSQ) dissimilarity measure. In a special case, when the **type** parameter is set to **pq**, the function provides the value of dSPQ measure (relative price and quantity dissimilarity measure calculated as **min(dSP,dSQ)**. For instance:
 
@@ -481,7 +481,7 @@ This function presents values of the relative price and/or quantity dissimilarit
 dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start")
 ```
 
-<img src="man/figures/README-unnamed-chunk-36-1.png" width="100%" /> <a id="ad4"> </a>
+<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" /> <a id="ad4"> </a>
 
 ### Functions for bilateral unweighted price index calculation
 
@@ -639,19 +639,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.280352
-#> 2 403249 1.606537
-#> 3 400033 1.205759
-#> 4 402609 1.199313
-#> 5 406223 1.622079
-#> 6 406224 1.638684
+#> 1 400032 1.639317
+#> 2 403249 1.822745
+#> 3 400033 1.627843
+#> 4 402609 1.951756
+#> 5 406223 1.377297
+#> 6 406224 1.591288
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9941538
+#> [1] 1.000364
 ```
 
 <a id="ad8"> </a>
@@ -862,7 +862,7 @@ final_index2(data=coffee, by="description",all=TRUE,
              figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-51-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-50-1.png" width="100%" />
 
 Now, let us calculate and plot the same price index (with no aggregation) for each **retID**:
 
@@ -874,7 +874,7 @@ final_index2(data=coffee, by="retID",all=TRUE,
              figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-52-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-51-1.png" width="100%" />
 
 <a id="ad12"> </a>
 
@@ -892,7 +892,7 @@ compare_indices(milk, start="2018-12",end="2019-12",bilateral=c("chjevons"),
                 namebilateral=c("Chain Jevons"), namefbmulti=c("Full GEKS"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-53-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-52-1.png" width="100%" />
 
 **compare\_final\_indices**
 
@@ -914,4 +914,4 @@ The comparison of obtained results can be made as follows (it may be time-consum
 compare_final_indices(finalindices=list(case1, case2),names=c("TPD without aggregation","TPD with aggregation"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-55-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-54-1.png" width="100%" />

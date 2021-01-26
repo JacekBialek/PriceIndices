@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral geo-logarith
 This function returns a value (or vector of values) of the bilateral geo-logarithmic Laspeyres price index.
 }
 \examples{
-\donttest{geolaspeyres(milk, start="2018-12", end="2020-01")}
+geolaspeyres(sugar, start="2018-12", end="2019-12")
 \donttest{geolaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

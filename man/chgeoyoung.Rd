@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the monthly chained geomet
 This function returns a value (or vector of values) of the monthly chained geometric Young price index.
 }
 \examples{
-\donttest{chgeoyoung(milk, start="2019-01", end="2020-01",base="2018-12")}
+chgeoyoung(sugar, start="2019-01", end="2020-01",base="2018-12")
 \donttest{chgeoyoung(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

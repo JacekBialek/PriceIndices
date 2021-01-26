@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Tornqvist pr
 This function returns a value (or vector of values) of the bilateral Tornqvist price index.
 }
 \examples{
-\donttest{tornqvist(milk, start="2018-12", end="2020-01")}
+tornqvist(sugar, start="2018-12", end="2019-12")
 \donttest{tornqvist(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

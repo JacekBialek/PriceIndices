@@ -25,5 +25,5 @@ The function returns values of sales of products with given IDs.
 }
 \examples{
 \donttest{sales(milk, period="2019-06", shares=TRUE, hist=TRUE)}
-\donttest{sales(milk, period="2019-12",set=unique(milk$prodID)[1])}
+sales(milk, period="2019-12",set=unique(milk$prodID)[1])
 }

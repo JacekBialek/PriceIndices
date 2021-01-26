@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Bialek
 This function returns a value (or vector of values) of the monthly chained Bialek price index.
 }
 \examples{
-\donttest{chbialek(milk, start="2018-12", end="2020-01")}
+chbialek(sugar, start="2018-12", end="2020-01")
 \donttest{chbialek(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Fisher price
 This function returns a value (or vector of values) of the bilateral Fisher price index.
 }
 \examples{
-fisher(milk, start="2018-12", end="2020-01")
+fisher(sugar, start="2018-12", end="2019-12")
 \donttest{fisher(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

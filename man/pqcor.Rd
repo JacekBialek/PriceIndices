@@ -22,6 +22,6 @@ The function returns Pearson's correlation coefficient between price and quantit
 The function returns correlation between price and quantity of sold products with given IDs.
 }
 \examples{
-\donttest{pqcor(milk, period="2019-03")}
+pqcor(milk, period="2019-03")
 \donttest{pqcor(milk, period="2019-03",figure=TRUE)}
 }

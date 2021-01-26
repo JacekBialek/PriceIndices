@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Drobisch pri
 This function returns a value (or vector of values) of the bilateral Drobisch price index.
 }
 \examples{
-\donttest{drobisch(milk, start="2018-12", end="2020-01")}
+drobisch(sugar, start="2018-12", end="2019-12")
 \donttest{drobisch(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

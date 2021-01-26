@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Vartia
 This function returns a value (or vector of values) of the monthly chained Vartia-II (Sato-Vartia) price index.
 }
 \examples{
-\donttest{chsato_vartia(milk, start="2018-12", end="2020-01")}
+chsato_vartia(sugar, start="2018-12", end="2020-01")
 \donttest{chsato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

@@ -12,7 +12,7 @@
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
 #' @examples 
-#' \donttest{hybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
+#' hybrid(sugar, start="2019-12", end="2020-08", base="2018-12")
 #' \donttest{hybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
 
@@ -190,7 +190,7 @@ hybrid <-
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
 #' @examples 
-#' \donttest{geohybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
+#' geohybrid(sugar, start="2019-12", end="2020-08", base="2018-12")
 #' \donttest{geohybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
 
@@ -369,7 +369,7 @@ geohybrid <-
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
 #' @examples 
-#' \donttest{chhybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
+#' chhybrid(sugar, start="2019-12", end="2020-05", base="2018-12")
 #' \donttest{chhybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
 
@@ -425,7 +425,7 @@ chhybrid <-
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
 #' @examples 
-#' \donttest{chgeohybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
+#' chgeohybrid(sugar, start="2019-12", end="2020-05", base="2018-12")
 #' \donttest{chgeohybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
 chgeohybrid <-
@@ -484,8 +484,8 @@ chgeohybrid <-
 #' @return This function returns an artificial scanner dataset where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by \code{pmi}, \code{sigma}, \code{qmi} and \code{qsigma} parameters. This function works for a fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.   
 #'
 #' @examples 
-#' \donttest{generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(3,4,4),
-#' qsigma=c(0.1,0.1,0.15),start="2020-01",days=TRUE)}
+#' generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(3,4,4),
+#' qsigma=c(0.1,0.1,0.15),start="2020-01",days=TRUE)
 #' \donttest{generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(6,6,7),
 #' qsigma=c(0.1,0.1,0.15),start="2020-01",n=1000,n0=132578,r=10)}
 #' @export
@@ -617,7 +617,7 @@ tindex<-function(pmi=c(),psigma=c(),start, ratio=TRUE)
 #' {Diewert, E. (2020). \emph{The Chain Drift Problem and Multilateral Indexes.} Chapter 6 in: Consumer Price Index Theory (draft)}
 #'
 #' @examples 
-#' \donttest{dissimilarity(milk, period1="2018-12",period2="2019-12",type="q")}
+#' dissimilarity(milk, period1="2018-12",period2="2019-12",type="q")
 #' \donttest{dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")}
 #' @export
 
@@ -809,7 +809,7 @@ dissimilarity_fig <-
 #' {Diewert, E. (2020). \emph{The Chain Drift Problem and Multilateral Indexes.} Chapter 6 in: Consumer Price Index Theory (draft)}
 #'
 #' @examples 
-#' \donttest{SPQ(milk, start="2018-12",end="2019-12")}
+#' SPQ(sugar, start="2018-12",end="2019-02")
 #' \donttest{SPQ(milk, start="2018-12",end="2019-12",interval=TRUE)}
 #' @export
 
@@ -1698,6 +1698,7 @@ final_index2 <-
   }
   }
   
+
 #' @title  Providing information about sales of products 
 #'
 #' @description The function returns values of sales of products or the corresponding barplot for these sales. 

@@ -24,7 +24,7 @@ The function returns a value (or a vector of values) of the bilateral hybrid pri
 This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
 }
 \examples{
-\donttest{hybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
+hybrid(sugar, start="2019-12", end="2020-08", base="2018-12")
 \donttest{hybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 }
 \references{

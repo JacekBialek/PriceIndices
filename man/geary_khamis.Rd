@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Geary-Khamis
 This function returns a value (or vector of values) of the bilateral Geary-Khamis price index.
 }
 \examples{
-\donttest{geary_khamis(milk, start="2018-12", end="2020-01")}
+geary_khamis(sugar, start="2018-12", end="2019-12")
 \donttest{geary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

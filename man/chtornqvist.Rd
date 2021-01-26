@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Tornqv
 This function returns a value (or vector of values) of the monthly chained Tornqvist price index.
 }
 \examples{
-\donttest{chtornqvist(milk, start="2018-12", end="2020-01")}
+chtornqvist(sugar, start="2018-12", end="2020-01")
 \donttest{chtornqvist(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

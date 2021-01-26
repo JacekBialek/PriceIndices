@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Paasche pric
 This function returns a value (or vector of values) of the bilateral Paasche price index.
 }
 \examples{
-\donttest{paasche(milk, start="2018-12", end="2020-01")}
+paasche(sugar, start="2018-12", end="2019-12")
 \donttest{paasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

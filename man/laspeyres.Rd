@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Laspeyres pr
 This function returns a value (or vector of values) of the bilateral Laspeyres price index.
 }
 \examples{
-\donttest{laspeyres(milk, start="2018-12", end="2020-01")}
+laspeyres(sugar, start="2018-12", end="2019-12")
 \donttest{laspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

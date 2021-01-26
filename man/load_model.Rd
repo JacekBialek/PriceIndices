@@ -16,6 +16,9 @@ This function loads a list of ML model elements from the disk, i.e. the needed 8
 This function loads a list of machine learning model elements from the disk, i.e. the needed 8 files are read.
 }
 \examples{
+#Setting a temporal working directory
+\donttest{wd<-tempdir()}
+\donttest{setwd(wd)}
 #Building the model
 \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
 \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}

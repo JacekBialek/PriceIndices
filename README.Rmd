@@ -157,16 +157,16 @@ or we can observe the importance of the used indicators:
 ML$figure_importance
 ```
 
-Now, let us save the model on the disk:
+Now, let us save the model on the disk. After saving the model we can load it and use at any time:
 
 ```{r}
+#Setting a temporary directory as a working directory
+wd<-tempdir()
+setwd(wd)
+#Saving and loading the model
 save_model(ML, dir="My_model")
-```
-
-After saving the model we can load it and use at any time:
-
-```{r}
 ML_fromPC<-load_model("My_model")
+#Prediction
 data_predicted<-data_classifying(ML_fromPC, data_test)
 head(data_predicted)
 ```

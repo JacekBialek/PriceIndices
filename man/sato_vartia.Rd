@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Vartia-II (S
 This function returns a value (or vector of values) of the bilateral Vartia-II (Sato-Vartia) price index.
 }
 \examples{
-\donttest{sato_vartia(milk, start="2018-12", end="2020-01")}
+sato_vartia(sugar, start="2018-12", end="2019-12")
 \donttest{sato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Lehr price i
 This function returns a value (or vector of values) of the bilateral Lehr price index.
 }
 \examples{
-\donttest{lehr(milk, start="2018-12", end="2020-01")}
+lehr(sugar, start="2018-12", end="2019-12")
 \donttest{lehr(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

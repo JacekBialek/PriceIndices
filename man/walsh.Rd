@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Walsh price 
 This function returns a value (or vector of values) of the bilateral Walsh price index.
 }
 \examples{
-\donttest{walsh(milk, start="2018-12", end="2020-01")}
+walsh(sugar, start="2018-12", end="2019-12")
 \donttest{walsh(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

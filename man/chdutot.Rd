@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Dutot 
 This function returns a value (or vector of values) of the monthly chained Dutot price index.
 }
 \examples{
-\donttest{chdutot(milk, start="2018-12", end="2020-01")}
+chdutot(sugar, start="2018-12", end="2020-01")
 \donttest{chdutot(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

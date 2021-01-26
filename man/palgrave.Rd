@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Palgrave pri
 This function returns a value (or vector of values) of the bilateral Palgrave price index.
 }
 \examples{
-\donttest{palgrave(milk, start="2018-12", end="2020-01")}
+palgrave(sugar, start="2018-12", end="2019-12")
 \donttest{palgrave(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

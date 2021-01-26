@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Walsh 
 This function returns a value (or vector of values) of the monthly chained Walsh price index.
 }
 \examples{
-\donttest{chwalsh(milk, start="2018-12", end="2020-01")}
+chwalsh(sugar, start="2018-12", end="2020-01")
 \donttest{chwalsh(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

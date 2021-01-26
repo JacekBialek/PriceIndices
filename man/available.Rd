@@ -24,6 +24,6 @@ The function returns all values from the indicated column (defined by the \code{
 The function returns all values from the indicated column (defined by the \code{type} parameter) which occur at least once in one of the compared periods or in a given time interval.
 }
 \examples{
-\donttest{available(milk, period1="2018-12", period2="2019-12", interval=TRUE)}
-\donttest{available(milk, period1="2018-12", period2="2019-12", type="description")}
+available(milk, period1="2018-12", period2="2019-12", interval=TRUE)
+available(milk, period1="2018-12", period2="2019-12", type="description")
 }

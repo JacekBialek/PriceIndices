@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Davies price
 This function returns a value (or vector of values) of the bilateral Davies price index.
 }
 \examples{
-\donttest{davies(milk, start="2018-12", end="2020-01")}
+davies(sugar, start="2018-12", end="2019-12")
 \donttest{davies(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

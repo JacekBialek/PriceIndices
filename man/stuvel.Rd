@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Stuvel price
 This function returns a value (or vector of values) of the bilateral Stuvel price index.
 }
 \examples{
-\donttest{stuvel(milk, start="2018-12", end="2020-01")}
+stuvel(sugar, start="2018-12", end="2019-12")
 \donttest{stuvel(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

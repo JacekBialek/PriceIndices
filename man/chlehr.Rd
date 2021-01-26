@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Lehr p
 This function returns a value (or vector of values) of the monthly chained Lehr price index.
 }
 \examples{
-\donttest{chlehr(milk, start="2018-12", end="2020-01")}
+chlehr(sugar, start="2018-12", end="2020-01")
 \donttest{chlehr(milk, start="2018-12", end="2020-01", TRUE)}
 }
 \references{

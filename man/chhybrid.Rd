@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the monthly chained hybrid
 This function returns a value (or vector of values) of the monthly chained hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
 }
 \examples{
-\donttest{chhybrid(milk, start="2019-12", end="2020-08", base="2018-12")}
+chhybrid(sugar, start="2019-12", end="2020-05", base="2018-12")
 \donttest{chhybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 }
 \references{

@@ -395,6 +395,9 @@ paste(path, "figure_importance.RDS", sep = ""))
 #' @rdname load_model
 #' @return This function loads a list of ML model elements from the disk, i.e. the needed 8 files are read from the directory selected by \code{dir}. After loading the model it can be used for product classification by using \code{data_classifying} function.  
 #' @examples 
+#' #Setting a temporal working directory
+#' \donttest{wd<-tempdir()}
+#' \donttest{setwd(wd)}
 #' #Building the model
 #' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
 #' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}

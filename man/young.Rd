@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the bilateral Young price 
 This function returns a value (or vector of values) of the bilateral Young price index.
 }
 \examples{
-\donttest{young(milk, start="2019-01", end="2020-01",base="2018-12")}
+young(sugar, start="2019-01", end="2020-01",base="2018-12")
 \donttest{young(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

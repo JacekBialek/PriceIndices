@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the bilateral Vartia-I pri
 This function returns a value (or vector of values) of the bilateral Vartia-I price index.
 }
 \examples{
-\donttest{vartia(milk, start="2018-12", end="2020-01")}
+vartia(sugar, start="2018-12", end="2019-12")
 \donttest{vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
