@@ -18,16 +18,16 @@ This is a resubmission. In this version, according to CRAN Team suggestions,  I 
    New submission
    Maintainer: 'Jacek Bialek <jacek.bialek@uni.lodz.pl>'
   
-    Possibly mis-spelled words in DESCRIPTION:
-    
-    Haan (10:283)
-    Krsinich (10:292)
-    de (10:280)
-    Diewert (10:337)
+   Possibly mis-spelled words in DESCRIPTION:
+   
+   Diewert (10:282)
+   Haan (10:228)
+   Krsinich (10:237)
+   de (10:225)
     
 0 errors √ | 0 warnings √ | 1 note x
 
-* This is a new release. The misspelled words are actually names, which I have checked. 
+* This is a new release. The misspelled words in DESCRIPTION are actually names, which I have checked. 
 
 ## Downstream dependencies
 
@@ -41,6 +41,13 @@ All packages that I could install passed.
 
 * check_win_devel()
 
+Your package PriceIndices_0.0.1.tar.gz has been built (if working) and checked for Windows.
+Please check the log files and (if working) the binary package at:
+https://win-builder.r-project.org/2U5VLWqzPer4
+The files will be removed after roughly 72 hours.
+Installation time in seconds: 33
+Check time in seconds: 247
+Status: 1 NOTE
 
 
 * devtools::spell_check() -> All notes were verified.
