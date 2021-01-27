@@ -17,18 +17,18 @@ This function loads a list of machine learning model elements from the disk, i.e
 }
 \examples{
 #Setting a temporal directory as a working directory
-\donttest{wd<-tempdir()}
-\donttest{setwd(wd)}
+\dontrun{wd<-tempdir()}
+\dontrun{setwd(wd)}
 #Building the model
-\donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
-\donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
-\donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
-\donttest{ML<-model_classification(data_train,data_test,grid=my.grid,
+\dontrun{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
+\dontrun{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
+\dontrun{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
+\dontrun{ML<-model_classification(data_train,data_test,grid=my.grid,
 indicators=c("prodID","unit","description"),key_words=c("milk"),rounds=50)}
 #Saving the model
-\donttest{save_model(ML, dir="My_model")}
+\dontrun{save_model(ML, dir="My_model")}
 #Loading the model
-\donttest{ML_fromPC<-load_model("My_model")}
+\dontrun{ML_fromPC<-load_model("My_model")}
 #COICOP predicting
-\donttest{data_classifying(ML_fromPC, data_test)}
+\dontrun{data_classifying(ML_fromPC, data_test)}
 }

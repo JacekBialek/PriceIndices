@@ -351,14 +351,18 @@ return (data)
 #' @rdname save_model
 #' @return This function saves a list of ML model elements on the disk, i.e. the resulting 8 files are written into the new directory specified by \code{dir}. The list should be obtained previously using the \code{model_classification} function. After saving the model, it can be loaded at any time by using the \code{load_model} function.  
 #' @examples 
+#' #Setting a temporal directory as a working director
+#' \dontrun{wd<-tempdir()}
+#' \dontrun{setwd(wd)}
 #' #Building the model
-#' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
-#' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
-#' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
-#' \donttest{ML<-model_classification(data_train,data_test,grid=my.grid,
+#' #Building the model
+#' \dontrun{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
+#' \dontrun{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
+#' \dontrun{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
+#' \dontrun{ML<-model_classification(data_train,data_test,grid=my.grid,
 #' indicators=c("prodID","unit","description"),key_words=c("milk"),rounds=50)}
 #' #Saving the model
-#' \donttest{save_model(ML, dir="My_model")}
+#' \dontrun{save_model(ML, dir="My_model")}
 #' @export
 
 save_model <- function (model = list(), dir = "ML_model")
@@ -396,20 +400,20 @@ paste(path, "figure_importance.RDS", sep = ""))
 #' @return This function loads a list of ML model elements from the disk, i.e. the needed 8 files are read from the directory selected by \code{dir}. After loading the model it can be used for product classification by using \code{data_classifying} function.  
 #' @examples 
 #' #Setting a temporal directory as a working directory
-#' \donttest{wd<-tempdir()}
-#' \donttest{setwd(wd)}
+#' \dontrun{wd<-tempdir()}
+#' \dontrun{setwd(wd)}
 #' #Building the model
-#' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
-#' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
-#' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
-#' \donttest{ML<-model_classification(data_train,data_test,grid=my.grid,
+#' \dontrun{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
+#' \dontrun{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
+#' \dontrun{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
+#' \dontrun{ML<-model_classification(data_train,data_test,grid=my.grid,
 #' indicators=c("prodID","unit","description"),key_words=c("milk"),rounds=50)}
 #' #Saving the model
-#' \donttest{save_model(ML, dir="My_model")}
+#' \dontrun{save_model(ML, dir="My_model")}
 #' #Loading the model
-#' \donttest{ML_fromPC<-load_model("My_model")}
+#' \dontrun{ML_fromPC<-load_model("My_model")}
 #' #COICOP predicting
-#' \donttest{data_classifying(ML_fromPC, data_test)}
+#' \dontrun{data_classifying(ML_fromPC, data_test)}
 #' @export
 
 #' @export
