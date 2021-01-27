@@ -1,3 +1,10 @@
+## Resubmission
+This is a resubmission. In this version, according to CRAN Team suggestions,  I have:
+
+* added some references describing the used methods in the DESCRIPTION;
+* unwraped most of examples and created new examples (based on smaller dataset) to allow wider automatic testing (I have added 66 examples for automatic testing)
+* ensured that no file is written in the user's home filespace (I used tempdir() in README and 'dontrun{}' in the case of two examples). 
+
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3
 * Ubuntu Linux 16.04 LTS, R-release, GCC
@@ -8,14 +15,19 @@
 > On windows-x86_64-devel (r-devel), ubuntu-gcc-release (r-release), fedora-clang-devel (r-devel)
   checking CRAN incoming feasibility ... NOTE
   
-  New submission
+   New submission
+   Maintainer: 'Jacek Bialek <jacek.bialek@uni.lodz.pl>'
   
-  
-  Maintainer: 'Jacek Bialek <jacek.bialek@uni.lodz.pl>'
-
+    Possibly mis-spelled words in DESCRIPTION:
+    
+    Haan (10:283)
+    Krsinich (10:292)
+    de (10:280)
+    Diewert (10:337)
+    
 0 errors √ | 0 warnings √ | 1 note x
 
-* This is a new release.
+* This is a new release. The misspelled words are actually names, which I have checked. 
 
 ## Downstream dependencies
 
@@ -29,13 +41,6 @@ All packages that I could install passed.
 
 * check_win_devel()
 
-Your package PriceIndices_0.0.0.9000.tar.gz has been built (if working) and checked for Windows.
-Please check the log files and (if working) the binary package at:
-https://win-builder.r-project.org/n58tBx2h3KvO
-The files will be removed after roughly 72 hours.
-Installation time in seconds: 17
-Check time in seconds: 113
-Status: 1 NOTE ("New submission")
 
 
 * devtools::spell_check() -> All notes were verified.
