@@ -395,7 +395,7 @@ paste(path, "figure_importance.RDS", sep = ""))
 #' @rdname load_model
 #' @return This function loads a list of ML model elements from the disk, i.e. the needed 8 files are read from the directory selected by \code{dir}. After loading the model it can be used for product classification by using \code{data_classifying} function.  
 #' @examples 
-#' #Setting a temporal working directory
+#' #Setting a temporal directory as a working directory
 #' \donttest{wd<-tempdir()}
 #' \donttest{setwd(wd)}
 #' #Building the model

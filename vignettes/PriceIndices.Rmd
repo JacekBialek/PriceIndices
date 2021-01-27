@@ -166,7 +166,7 @@ ML$figure_importance
 We can save the model on the disk, load it and use it at any time:
 
 ```{r,eval=FALSE}
-#Set a temporal working directory
+#Set a temporal directory as a working directory
 wd<-tempdir()
 setwd(wd)
 #Saving and loading the model

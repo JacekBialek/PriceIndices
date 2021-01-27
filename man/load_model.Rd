@@ -16,7 +16,7 @@ This function loads a list of ML model elements from the disk, i.e. the needed 8
 This function loads a list of machine learning model elements from the disk, i.e. the needed 8 files are read.
 }
 \examples{
-#Setting a temporal working directory
+#Setting a temporal directory as a working directory
 \donttest{wd<-tempdir()}
 \donttest{setwd(wd)}
 #Building the model
