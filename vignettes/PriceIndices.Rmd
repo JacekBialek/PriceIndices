@@ -30,7 +30,13 @@ This vignette with all graphical results can be download from
 
 ## Installation
 
-You can install the released version of **PriceIndices** from [GitHub](https://github.com/) with:
+You can install the released version of **PriceIndices** from CRAN with:
+
+``` r
+install.packages("PriceIndices")
+```
+
+You can install the development version of **PriceIndices** from [GitHub](https://github.com/) with:
 
 ``` r
 library("remotes")
