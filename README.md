@@ -9,7 +9,13 @@ Goals of PriceIndices are as follows: a) data processing before price index calc
 Installation
 ------------
 
-You can install the released version of **PriceIndices** from [GitHub](https://github.com/) with:
+You can install the released version of **PriceIndices** from CRAN with:
+
+``` r
+install.packages("PriceIndices")
+```
+
+You can install the development version of **PriceIndices** from [GitHub](https://github.com/) with:
 
 ``` r
 library("remotes")
@@ -91,12 +97,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.77         22      1     1
-#> 2 2020-01-01   2.86         22      2     1
-#> 3 2020-01-01   2.60         18      3     1
-#> 4 2020-01-01   2.81         18      4     1
-#> 5 2020-01-01   3.01         18      5     1
-#> 6 2020-01-01   2.82         22      6     1
+#> 1 2020-01-01   2.87         19      1     1
+#> 2 2020-01-01   2.89         21      2     1
+#> 3 2020-01-01   2.64         23      3     1
+#> 4 2020-01-01   2.68         21      4     1
+#> 5 2020-01-01   2.82         23      5     1
+#> 6 2020-01-01   2.90         16      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -639,19 +645,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.413812
-#> 2 403249 1.612302
-#> 3 400033 1.508383
-#> 4 402609 1.267596
-#> 5 406223 1.319886
-#> 6 406224 1.588045
+#> 1 400032 1.198731
+#> 2 403249 1.821852
+#> 3 400033 1.855997
+#> 4 402609 1.485499
+#> 5 406223 1.503422
+#> 6 406224 1.972944
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9849902
+#> [1] 0.9850896
 ```
 
 <a id="ad8"> </a>
