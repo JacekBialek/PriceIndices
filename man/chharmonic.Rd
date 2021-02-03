@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained harmon
 This function returns a value (or vector of values) of the monthly chained "unnamed" harmonic price index.
 }
 \examples{
-chharmonic(sugar, start="2018-12", end="2020-01")
+chharmonic(sugar, start="2018-12", end="2019-04")
 \donttest{chharmonic(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Marsha
 This function returns a value (or vector of values) of the monthly chained Marshall-Edgeworth price index.
 }
 \examples{
-chmarshall_edgeworth(sugar, start="2018-12", end="2020-01")
+chmarshall_edgeworth(sugar, start="2018-12", end="2019-04")
 \donttest{chmarshall_edgeworth(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

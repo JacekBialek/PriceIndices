@@ -1,3 +1,4 @@
+
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -204,7 +205,7 @@ data_matching <-
   
   data <- dplyr::select(data, columns)
   data <- dplyr::distinct(data)
-  
+
   #main body
   if (codeIN == TRUE & codeOUT == TRUE & description == TRUE)
   {
@@ -310,22 +311,23 @@ data_matching <-
   codeOUT == FALSE &
   description == FALSE)
   stop("at least one of parameters: codeIN, codeOUT or description must be TRUE")
-  
+
   #pairs - new dataframe with reduced dataframe with matched products (additional column:   prodID)
   #now, let us back to the oryginal dataset, i.e. 'data_oryginal'
-  
   #names of columns which are considered in matching process
   columns <- colnames(dplyr::select(pairs,-prodID))
   
-  match <- function (i) {
-  df <- data_oryginal[i, ]
-  df2 <- pairs
-  for (k in 1:length(columns))
-  df2 <- dplyr::filter(df2, df2[, columns[k]] == df[, columns[k]])
-  return (df2$prodID)
-  }
-  prodID <- sapply(seq(1, nrow(data_oryginal)), match)
-  data_oryginal$prodID <- prodID
+  #setting a pattern
+  value_pattern<-pairs[,"prodID"]
+  vector_pattern<-as.character(pairs[,columns[1]])
+  if (length(columns)>1) for (i in 1:length(columns)) vector_pattern<-paste(vector_pattern,  as.character(pairs[,columns[i]]),sep="")
+  
+  #matching
+  vector_test<-as.character(data_oryginal[,columns[1]])
+  if (length(columns)>1) for (i in 1:length(columns)) vector_test<-paste(vector_test,as.character(data_oryginal[,columns[i]]),sep="")
+  f<-function (word) value_pattern[which(vector_pattern==word)]
+  data_oryginal$prodID<-sapply(vector_test,f)
+  
   return (data_oryginal)
   }
 
@@ -469,18 +471,18 @@ data_matching <-
     include = c(),
     must = c(),
     exclude = c(),
-    sensitivity = TRUE,
+    sensitivity = FALSE,
     coicop = NULL)
     {
     if (nrow(data) == 0)
     stop("A data frame is empty")
-    if (sensitivity == TRUE)
+    if (sensitivity == FALSE)
     data$description <- tolower(data$description)
     if (length(must) == 0)
     set3 <- data
     else
     {
-    if (sensitivity == TRUE)
+    if (sensitivity == FALSE)
     must <- tolower(must)
     set3 <-
     dplyr::filter(data, stringr::str_detect(data$description, must[1]))
@@ -493,7 +495,7 @@ data_matching <-
     set1 <- data
     else
     {
-    if (sensitivity == TRUE)
+    if (sensitivity == FALSE)
     include <- tolower(include)
     set1 <-
     dplyr::filter(data, stringr::str_detect(data$description, include[1]))
@@ -506,7 +508,7 @@ data_matching <-
     set <- set1
     else
     {
-    if (sensitivity == TRUE)
+    if (sensitivity == FALSE)
     exclude <- tolower(exclude)
     set2 <-
     dplyr::filter(data, stringr::str_detect(data$description, exclude[1]))
@@ -4643,7 +4645,7 @@ lehr <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chjevons(sugar, start="2018-12", end="2020-01")
+#' chjevons(sugar, start="2018-12", end="2019-04")
 #' \donttest{chjevons(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -4695,7 +4697,7 @@ lehr <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chcarli(sugar, start="2018-12", end="2020-01")
+#' chcarli(sugar, start="2018-12", end="2019-04")
 #' \donttest{chcarli(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -4746,7 +4748,7 @@ chcarli <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chdutot(sugar, start="2018-12", end="2020-01")
+#' chdutot(sugar, start="2018-12", end="2019-04")
 #' \donttest{chdutot(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -4799,7 +4801,7 @@ chdutot <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chcswd(sugar, start="2018-12", end="2020-01")
+#' chcswd(sugar, start="2018-12", end="2019-04")
 #' \donttest{chcswd(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -4850,7 +4852,7 @@ chcswd <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chharmonic(sugar, start="2018-12", end="2020-01")
+#' chharmonic(sugar, start="2018-12", end="2019-04")
 #' \donttest{chharmonic(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -4901,7 +4903,7 @@ chharmonic <-
 #'
 #' {(2018). \emph{Harmonised Index of Consumer Prices (HICP). Methodological Manual}. Publication Office of the European union, Luxembourg.}
 #' @examples 
-#' chbmw(sugar, start="2018-12", end="2020-01")
+#' chbmw(sugar, start="2018-12", end="2019-04")
 #' \donttest{chbmw(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -4952,7 +4954,7 @@ chbmw <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chlaspeyres(sugar, start="2018-12", end="2020-01")
+#' chlaspeyres(sugar, start="2018-12", end="2019-04")
 #' \donttest{chlaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5003,7 +5005,7 @@ chlaspeyres <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chpaasche(sugar, start="2018-12", end="2020-01")
+#' chpaasche(sugar, start="2018-12", end="2019-04")
 #' \donttest{chpaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5054,7 +5056,7 @@ chpaasche <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chfisher(sugar, start="2018-12", end="2020-01")
+#' chfisher(sugar, start="2018-12", end="2019-04")
 #' \donttest{chfisher(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5105,7 +5107,7 @@ chfisher <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chtornqvist(sugar, start="2018-12", end="2020-01")
+#' chtornqvist(sugar, start="2018-12", end="2019-04")
 #' \donttest{chtornqvist(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5156,7 +5158,7 @@ chtornqvist <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chgeolaspeyres(sugar, start="2018-12", end="2020-01")
+#' chgeolaspeyres(sugar, start="2018-12", end="2019-04")
 #' \donttest{chgeolaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5207,7 +5209,7 @@ chgeolaspeyres <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chgeopaasche(sugar, start="2018-12", end="2020-01")
+#' chgeopaasche(sugar, start="2018-12", end="2019-04")
 #' \donttest{chgeopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5260,7 +5262,7 @@ chgeopaasche <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chdrobisch(sugar, start="2018-12", end="2020-01")
+#' chdrobisch(sugar, start="2018-12", end="2019-04")
 #' \donttest{chdrobisch(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5315,7 +5317,7 @@ chdrobisch <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chmarshall_edgeworth(sugar, start="2018-12", end="2020-01")
+#' chmarshall_edgeworth(sugar, start="2018-12", end="2019-04")
 #' \donttest{chmarshall_edgeworth(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export 
 
@@ -5368,7 +5370,7 @@ chmarshall_edgeworth <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chwalsh(sugar, start="2018-12", end="2020-01")
+#' chwalsh(sugar, start="2018-12", end="2019-04")
 #' \donttest{chwalsh(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5421,7 +5423,7 @@ chwalsh <-
 #'
 #' {Bialek, J. (2014). \emph{Simulation Study of an Original Price Index Formula}. Communications in Statistics - Simulation and Computation, 43(2), 285-297}
 #' @examples 
-#' chbialek(sugar, start="2018-12", end="2020-01")
+#' chbialek(sugar, start="2018-12", end="2019-04")
 #' \donttest{chbialek(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5474,7 +5476,7 @@ chbialek <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chbanajree(sugar, start="2018-12", end="2020-01")
+#' chbanajree(sugar, start="2018-12", end="2019-04")
 #' \donttest{chbanajree(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5527,7 +5529,7 @@ chbanajree <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chdavies(sugar, start="2018-12", end="2020-01")
+#' chdavies(sugar, start="2018-12", end="2019-04")
 #' \donttest{chdavies(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5580,7 +5582,7 @@ chdavies <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chstuvel(sugar, start="2018-12", end="2020-01")
+#' chstuvel(sugar, start="2018-12", end="2019-04")
 #' \donttest{chstuvel(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5633,7 +5635,7 @@ chstuvel <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chpalgrave(sugar, start="2018-12", end="2020-01")
+#' chpalgrave(sugar, start="2018-12", end="2019-04")
 #' \donttest{chpalgrave(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5688,7 +5690,7 @@ chpalgrave <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chgeary_khamis(sugar, start="2018-12", end="2020-01")
+#' chgeary_khamis(sugar, start="2018-12", end="2019-04")
 #' \donttest{chgeary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5739,7 +5741,7 @@ chgeary_khamis <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chlehr(sugar, start="2018-12", end="2020-01")
+#' chlehr(sugar, start="2018-12", end="2019-04")
 #' \donttest{chlehr(milk, start="2018-12", end="2020-01", TRUE)}
 #' @export
 
@@ -5793,7 +5795,7 @@ chlehr <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chvartia(sugar, start="2018-12", end="2020-01")
+#' chvartia(sugar, start="2018-12", end="2019-04")
 #' \donttest{chvartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5848,7 +5850,7 @@ chvartia <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chsato_vartia(sugar, start="2018-12", end="2020-01")
+#' chsato_vartia(sugar, start="2018-12", end="2019-04")
 #' \donttest{chsato_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5904,7 +5906,7 @@ chsato_vartia <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chlloyd_moulton(sugar, start="2018-12", end="2020-01",sigma=0.9)
+#' chlloyd_moulton(sugar, start="2018-12", end="2019-04",sigma=0.9)
 #' \donttest{chlloyd_moulton(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -5960,7 +5962,7 @@ chlloyd_moulton <-
 #' @references
 #' {Lent J., & Dorfman,A. H. (2009). \emph{Using a Weighted Average of Base Period Price Indexes to Approximate a Superlative Index.} Journal of Official Statistics, 25(1), 139-149.}
 #' @examples 
-#' chagmean(sugar, start="2019-01", end="2020-01",sigma=0.5)
+#' chagmean(sugar, start="2019-01", end="2019-04",sigma=0.5)
 #' \donttest{chagmean(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -6018,7 +6020,7 @@ chagmean <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chyoung(sugar, start="2019-01", end="2020-01",base="2018-12")
+#' chyoung(sugar, start="2019-01", end="2019-04",base="2018-12")
 #' \donttest{chyoung(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -6075,7 +6077,7 @@ chyoung <-
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chgeoyoung(sugar, start="2019-01", end="2020-01",base="2018-12")
+#' chgeoyoung(sugar, start="2019-01", end="2019-04",base="2018-12")
 #' \donttest{chgeoyoung(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -6129,7 +6131,7 @@ chgeoyoung <-
 #' @references
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chlowe(sugar, start="2019-01", end="2020-01",base="2018-12")
+#' chlowe(sugar, start="2019-01", end="2019-04",base="2018-12")
 #' \donttest{chlowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -6183,7 +6185,7 @@ chlowe <-
 #' @references
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chgeolowe(sugar, start="2019-01", end="2020-01",base="2018-12")
+#' chgeolowe(sugar, start="2019-01", end="2019-04",base="2018-12")
 #' \donttest{chgeolowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 

@@ -33,7 +33,7 @@ model_classification <-
   data_test = data.frame(),
   indicators = c(),
   key_words = c(),
-  sensitivity = TRUE,
+  sensitivity = FALSE,
   p = 0.9,
   w = 0.2,
   rounds = 200,
@@ -94,7 +94,7 @@ model_classification <-
   }
   }
   #lower/uppar cases
-  if (sensitivity == TRUE) {
+  if (sensitivity == FALSE) {
   if (("description" %in% indicators) | (length(key_words) >= 1))
   {
   data_train$description <- tolower(data_train$description)
@@ -309,7 +309,7 @@ sensitivity <- model$sensitivity
 data_new <- dplyr::select(data, indicators, description)
 #lower/uppar cases
 
-if (sensitivity == TRUE) {
+if (sensitivity == FALSE) {
 if (("description" %in% indicators) | (length(key_words) >= 1))
 data_new$description <- tolower(data_new$description)
 

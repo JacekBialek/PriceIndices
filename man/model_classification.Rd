@@ -9,7 +9,7 @@ model_classification(
   data_test = data.frame(),
   indicators = c(),
   key_words = c(),
-  sensitivity = TRUE,
+  sensitivity = FALSE,
   p = 0.9,
   w = 0.2,
   rounds = 200,

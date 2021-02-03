@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Jevons
 This function returns a value (or vector of values) of the monthly chained Jevons price index
 }
 \examples{
-chjevons(sugar, start="2018-12", end="2020-01")
+chjevons(sugar, start="2018-12", end="2019-04")
 \donttest{chjevons(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

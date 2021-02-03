@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the monthly chained AG Mea
 This function returns a value (or vector of values) of the monthly chained AG Mean price index.
 }
 \examples{
-chagmean(sugar, start="2019-01", end="2020-01",sigma=0.5)
+chagmean(sugar, start="2019-01", end="2019-04",sigma=0.5)
 \donttest{chagmean(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

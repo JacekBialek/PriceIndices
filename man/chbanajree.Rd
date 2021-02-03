@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Banajr
 This function returns a value (or vector of values) of the monthly chained Banajree price index.
 }
 \examples{
-chbanajree(sugar, start="2018-12", end="2020-01")
+chbanajree(sugar, start="2018-12", end="2019-04")
 \donttest{chbanajree(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

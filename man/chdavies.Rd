@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Davies
 This function returns a value (or vector of values) of the monthly chained Davies price index.
 }
 \examples{
-chdavies(sugar, start="2018-12", end="2020-01")
+chdavies(sugar, start="2018-12", end="2019-04")
 \donttest{chdavies(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

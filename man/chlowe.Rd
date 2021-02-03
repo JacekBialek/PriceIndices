@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the monthly chained Lowe p
 This function returns a value (or vector of values) of the monthly chained Lowe price index.
 }
 \examples{
-chlowe(sugar, start="2019-01", end="2020-01",base="2018-12")
+chlowe(sugar, start="2019-01", end="2019-04",base="2018-12")
 \donttest{chlowe(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

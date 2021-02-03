@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Paasch
 This function returns a value (or vector of values) of the monthly chained Paasche price index.
 }
 \examples{
-chpaasche(sugar, start="2018-12", end="2020-01")
+chpaasche(sugar, start="2018-12", end="2019-04")
 \donttest{chpaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

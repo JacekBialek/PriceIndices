@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained geo-lo
 This function returns a value (or vector of values) of the monthly chained geo-logarithmic Laspeyres price index.
 }
 \examples{
-chgeolaspeyres(sugar, start="2018-12", end="2020-01")
+chgeolaspeyres(sugar, start="2018-12", end="2019-04")
 \donttest{chgeolaspeyres(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

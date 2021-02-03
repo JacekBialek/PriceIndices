@@ -9,7 +9,7 @@ data_selecting(
   include = c(),
   must = c(),
   exclude = c(),
-  sensitivity = TRUE,
+  sensitivity = FALSE,
   coicop = NULL
 )
 }

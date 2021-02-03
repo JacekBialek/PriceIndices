@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Geary-
 This function returns a value (or vector of values) of the monthly chained Geary-Khamis price index.
 }
 \examples{
-chgeary_khamis(sugar, start="2018-12", end="2020-01")
+chgeary_khamis(sugar, start="2018-12", end="2019-04")
 \donttest{chgeary_khamis(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

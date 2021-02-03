@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained CSWD p
 This function returns a value (or vector of values) of the monthly chained Carruthers-Sellwood-Ward-Dalen (CSWD) price index.
 }
 \examples{
-chcswd(sugar, start="2018-12", end="2020-01")
+chcswd(sugar, start="2018-12", end="2019-04")
 \donttest{chcswd(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

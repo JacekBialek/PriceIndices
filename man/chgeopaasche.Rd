@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained geo-lo
 This function returns a value (or vector of values) of the monthly chained geo-logarithmic Paasche price index.
 }
 \examples{
-chgeopaasche(sugar, start="2018-12", end="2020-01")
+chgeopaasche(sugar, start="2018-12", end="2019-04")
 \donttest{chgeopaasche(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
