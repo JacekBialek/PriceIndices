@@ -160,7 +160,7 @@ data_matching <-
   (precision > 1))
   stop("parametr 'precision' must belong to [0,1]")
   
-  
+  prodID<-NULL
   #preparing data set
   columns <- c()
   start <- paste(start, "-01", sep = "")
