@@ -8366,7 +8366,7 @@ price_index <-
   interval = FALSE)
   {
   asplice <-
-  c("movement", "window", "half", "mean") #allowed values for 'splice' parameter
+  c("movement", "window", "half", "mean","window_published", "half_published","mean_published") #allowed values for 'splice' parameter
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
   aformula <-
