@@ -18,12 +18,18 @@
 #'
 #' \code{\link{coffee}}
 #'
+#' \code{\link{dataU}}
+#'
 #' \code{\link{generate}}
 #'
 #' \code{\link{tindex}}
 #'
 #' @section Functions for data processing:
 #' \code{\link{data_preparing}} 
+#'
+#' \code{\link{data_unit}} 
+#'
+#' \code{\link{data_norm}} 
 #'
 #' \code{\link{data_selecting}}
 #'
