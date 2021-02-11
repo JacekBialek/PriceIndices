@@ -101,12 +101,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.97         20      1     1
-#> 2 2020-01-01   2.77         19      2     1
-#> 3 2020-01-01   3.01         20      3     1
-#> 4 2020-01-01   2.94         21      4     1
-#> 5 2020-01-01   2.73         21      5     1
-#> 6 2020-01-01   2.81         18      6     1
+#> 1 2020-01-01   2.83         22      1     1
+#> 2 2020-01-01   3.08         19      2     1
+#> 3 2020-01-01   2.72         22      3     1
+#> 4 2020-01-01   3.06         23      4     1
+#> 5 2020-01-01   2.79         19      5     1
+#> 6 2020-01-01   2.75         21      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -272,7 +272,7 @@ head(data_predicted)
 #> 2 no information  11421            11421
 #> 3              g  11831            11831
 #> 4              g  11831            11831
-#> 5 no information  11811            11441
+#> 5 no information  11811            11714
 #> 6 no information  11421            11421
 ```
 
@@ -682,19 +682,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.684704
-#> 2 403249 1.035607
-#> 3 400033 1.504150
-#> 4 402609 1.760282
-#> 5 406223 1.667974
-#> 6 406224 1.022979
+#> 1 400032 1.589618
+#> 2 403249 1.048436
+#> 3 400033 1.561148
+#> 4 402609 1.954618
+#> 5 406223 1.341442
+#> 6 406224 1.183118
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.012354
+#> [1] 1.004655
 ```
 
 <a id="ad8"> </a>
