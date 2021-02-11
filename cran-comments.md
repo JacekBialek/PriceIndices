@@ -1,5 +1,5 @@
 ## Package update 
-* 2 Improvements
+* 4 Improvements (including 2 new functions)
 * 2 Bug fixes
 
 ## Test environments
@@ -9,22 +9,8 @@
 * Fedora Linux, R-devel, clang, gfortra
 
 ## R CMD check results
-> On windows-x86_64-devel (r-devel), ubuntu-gcc-release (r-release), fedora-clang-devel (r-devel)
-  checking CRAN incoming feasibility ... NOTE
-  
-   New submission
-   Maintainer: 'Jacek Bialek <jacek.bialek@uni.lodz.pl>'
-  
-   Possibly mis-spelled words in DESCRIPTION:
-   
-   Diewert (10:282)
-   Haan (10:228)
-   Krsinich (10:237)
-   de (10:225)
-    
-0 errors √ | 0 warnings √ | 1 note x
 
-* This is a new release. The misspelled words in DESCRIPTION are actually names, which I have checked. 
+0 errors √ | 0 warnings √ | 0 notes √ 
 
 ## Downstream dependencies
 
@@ -36,18 +22,17 @@ All packages that I could install passed.
 
 * devtools::check() -> 0 errors √ | 0 warnings √ | 0 notes √
 
-* check_win_devel()
+* check_win_devel() -> -> 0 errors √ | 0 warnings √ | 0 notes √
 
 Your package PriceIndices_0.0.2.tar.gz has been built (if working) and checked for Windows.
 Please check the log files and (if working) the binary package at:
-https://win-builder.r-project.org/0PL6nmTTa16c
+https://win-builder.r-project.org/vV2nqLa9N1M2
 The files will be removed after roughly 72 hours.
-Installation time in seconds: 15
-Check time in seconds: 137
-Status: 1 NOTE
+Installation time in seconds: 30
+Check time in seconds: 240
+Status: OK
 
-
-* devtools::spell_check() -> All notes were verified.
+* devtools::spell_check() -> Ok, done.
 
 ## Thank you very much! 
 
