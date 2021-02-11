@@ -1,9 +1,6 @@
-## Resubmission
-This is a resubmission. In this version, according to CRAN Team suggestions,  I have:
-
-* added some references describing the used methods in the DESCRIPTION;
-* unwraped most of examples and created new examples (based on smaller dataset) to allow wider automatic testing (I have added 66 examples for automatic testing)
-* ensured that no file is written in the user's home filespace (I used tempdir() in README and 'dontrun{}' in the case of two examples). 
+## Package update 
+* 2 Improvements
+* 2 Bug fixes
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3
@@ -41,12 +38,12 @@ All packages that I could install passed.
 
 * check_win_devel()
 
-Your package PriceIndices_0.0.1.tar.gz has been built (if working) and checked for Windows.
+Your package PriceIndices_0.0.2.tar.gz has been built (if working) and checked for Windows.
 Please check the log files and (if working) the binary package at:
-https://win-builder.r-project.org/2U5VLWqzPer4
+https://win-builder.r-project.org/0PL6nmTTa16c
 The files will be removed after roughly 72 hours.
-Installation time in seconds: 33
-Check time in seconds: 247
+Installation time in seconds: 15
+Check time in seconds: 137
 Status: 1 NOTE
 
 

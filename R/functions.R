@@ -3,7 +3,7 @@
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
 #'
-#' @param data The user's data frame to be prepared. The user must indicate columns: \code{time} (as Date or character type, allowed formats are, eg.: `2020-03` or `2020-12-28`), \code{prices} and \code{quantities} (as numeric). Optionally, the user may also indicate columns: \code{prodID}, \code{codeIN}, \code{codeOUT}, \code{retID} (as numeric, factor or character), \code{description} (as character) and other columns specified by the \code{additional} parameter.
+#' @param data The user's data frame to be prepared. The user must indicate columns: \code{time} (as Date or character type, allowed formats are, eg.: `2020-03` or `2020-12-28`), \code{prices} and \code{quantities} (as numeric). Optionally, the user may also indicate columns: \code{prodID}, \code{codeIN}, \code{codeOUT}, \code{retID} (as numeric, factor or character), \code{description},  \code{grammage} (as numeric or character), \code{unit} (as character) and other columns specified by the \code{additional} parameter.
 #' @param time A character name of the column which provides transaction dates.
 #' @param prices A character name of the column which provides product prices. 
 #' @param quantities A character name of the column which provides product quantities.
@@ -12,6 +12,8 @@
 #' @param description A character name of the column which provides product descriptions. It is not obligatory to consider this column while data preparing but it is required while product selecting (please see the \code{\link{data_selecting}} function).
 #' @param codeIN A character name of the column which provides internal product codes (from the retailer). It is not obligatory to consider this column while data preparing but it may be required while product matching (please see the \code{\link{data_matching}} function).
 #' @param codeOUT A character name of the column which provides external product codes (e.g. GTIN or SKU). It is not obligatory to consider this column while data preparing but it may be required while product matching (please see the \code{\link{data_matching}} function).
+#' @param grammage A character name of the numeric column which provides the grammage of products
+#' @param unit A character name of the column which provides the unit of the grammage of products
 #' @param additional A character vector of names of additional columns to be considered while data preparing (records with missing values are deleted).
 #' @rdname data_preparing
 #' @return The resulting data frame is free from missing values, zero or negative prices and quantities. As a result, column \code{time} is set to be Date type (in format: `Year-Month-01`), columns \code{prices} and \code{quantities} are set to be numeric. If the column \code{description} is selected, then it is set to be character type. If columns: \code{prodID}, \code{retID}, \code{codeIN} or  \code{codeOUT} are selected, then they are set to be factor type.
@@ -32,13 +34,14 @@ data_preparing <-
   description = NULL,
   codeIN = NULL,
   codeOUT = NULL,
+  grammage = NULL,
+  unit = NULL,
   additional = c())
   {
   if (nrow(data) == 0)
   stop("A data frame is empty")
   variables <- c()
   cn <- colnames(data)
-  
   #checking obligatory columns
   if ((length(time) == 0) |
   (length(prices) == 0) |
@@ -110,9 +113,24 @@ data_preparing <-
   data$codeOUT <- as.factor(data$codeOUT)
   variables <- c(variables, "codeOUT")
   }
+  if (length(grammage) > 0) {
+  if (!(grammage %in% cn))
+  stop ("Bad specification of the 'grammage' column!")
+  colnames(data)[which(names(data) == grammage)] <- "grammage"
+  if (!(is.character(data$grammage)))
+  data$grammage <- as.character(data$grammage)
+  variables <- c(variables, "grammage")
+  }
+  if (length(unit) > 0) {
+  if (!(unit %in% cn))
+  stop ("Bad specification of the 'unit' column!")
+  colnames(data)[which(names(data) == unit)] <- "unit"
+  if (!(is.character(data$unit)))
+  data$unit <- as.character(data$unit)
+  variables <- c(variables, "unit")
+  }
   variables <- c(variables, additional)
   data <- dplyr::select(data, variables)
-  
   #filtering
   data <- stats::na.omit(data)
   data <- dplyr::filter(data, data$prices > 0 & data$quantities > 0)
@@ -1317,7 +1335,7 @@ data_matching <-
   vec <- numeric(length(set))
   for (i in 1:length(set)) {
   d <- dplyr::filter(data, data$prodID == set[i])
-  if (nrow(data) == 0)
+  if (nrow(d) == 0)
   vec[i] <- 0
   #returning the unit value
   else
@@ -1359,7 +1377,7 @@ quantities <- function(data, period, set = c())
   vec <- numeric(length(set))
   for (i in 1:length(set)) {
   d <- dplyr::filter(data, data$prodID == set[i])
-  if (nrow(data) == 0)
+  if (nrow(d) == 0)
   vec[i] <- 0
   else
   vec[i] <- sum(d$quantities)
@@ -1496,7 +1514,7 @@ sales <- function(data,
                   vec <- numeric(length(set))
                   for (i in 1:length(set)) {
                   d <- dplyr::filter(data, data$prodID == set[i])
-                  if (nrow(data) == 0)
+                  if (nrow(d) == 0)
                   vec[i] <- 0
                   
                   else

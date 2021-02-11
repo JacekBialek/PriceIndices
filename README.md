@@ -64,6 +64,10 @@ This data set, **coffee**, is a collection of scanner data on the sale of coffee
 
 This data set, **sugar**, is a collection of scanner data on the sale of coffee in one of Polish supermarkets in the period from December 2017 to October 2020. It is a data frame with 6 columns and 7666 rows. The used variables are as follows: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (kg); *prodID* - unique product codes obtained after product matching (data set contains 11 different prodIDs); *retID* - unique codes identifying outlets/retailer sale points (data set contains 20 different retIDs); *description* - descriptions of sold sugar products (data set contains 3 different product descriptions corresponding to *subgroups* of the sugar group).
 
+***6) dataU***
+
+This data set, **dataU**, is a collection of artificial scanner data on 6 products sold in Dec, 2018. Product descriptions contain the information about their grammage and unit. It is a data frame with 5 columns and 6 rows. The used variables are as follows: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (item); *prodID* - unique product codes; *description* - descriptions of sold products (data set contains 6 different product descriptions).
+
 The set **milk** represents a typical data frame used in the package for most calculations and is organized as follows:
 
 ``` r
@@ -97,12 +101,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.87         19      1     1
-#> 2 2020-01-01   2.89         21      2     1
-#> 3 2020-01-01   2.64         23      3     1
-#> 4 2020-01-01   2.68         21      4     1
-#> 5 2020-01-01   2.82         23      5     1
-#> 6 2020-01-01   2.90         16      6     1
+#> 1 2020-01-01   2.97         20      1     1
+#> 2 2020-01-01   2.77         19      2     1
+#> 3 2020-01-01   3.01         20      3     1
+#> 4 2020-01-01   2.94         21      4     1
+#> 5 2020-01-01   2.73         21      5     1
+#> 6 2020-01-01   2.81         18      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -132,6 +136,39 @@ head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
 #> 4 2018-12-01   7.98       15.5
 #> 5 2018-12-01   7.98       43.0
 #> 6 2019-01-01   7.98        4.5
+```
+
+**data\_unit**
+
+The function returns the user's data frame with two additional columns: **grammage** and **unit** (both are character type). The values of these columns are extracted from product descriptions on the basis of provided **units**. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '20x50 g', we will obtain: **grammage: 100** and **unit: g** for that product (for **multiplication** set to 'x'). For example:
+
+``` r
+data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
+#>         time prices quantities prodID          description grammage unit
+#> 1 2018-12-01   8.00        200  40033 drink 0,75l 3% corma     0.75    l
+#> 2 2018-12-01   5.20        300  12333          sugar 0.5kg      0.5   kg
+#> 3 2018-12-01  10.34        100  20345         milk 4x500ml     2000   ml
+#> 4 2018-12-01   2.60        500  15700 xyz 3 4.34 xyz 200 g      200    g
+#> 5 2018-12-01  12.00       1000  13022                  abc        1 item
+#> 6 2019-01-01   3.87        250  10011     ABC 2A/350 g mnk      350    g
+```
+
+**data\_norm**
+
+The function returns the user's data frame with two transformed columns: **grammage** and **unit**, and two rescaled columns: **prices** and **quantities**. The above-mentioned transformation and rescaling take into consideration the user **rules**. Recalculated prices and quantities concern grammage units defined as the second parameter in the given rule. For instance:
+
+``` r
+# Preparing a data set
+data<-data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
+# Normalization of grammage units
+data_norm(data, rules=list(c("ml","l",1000),c("g","kg",1000)))
+#>         time   prices quantities prodID          description grammage unit
+#> 1 2018-12-01  5.17000      200.0  20345         milk 4x500ml        2    l
+#> 2 2018-12-01 10.66667      150.0  40033 drink 0,75l 3% corma     0.75    l
+#> 3 2018-12-01 13.00000      100.0  15700 xyz 3 4.34 xyz 200 g      0.2   kg
+#> 4 2019-01-01 11.05714       87.5  10011     ABC 2A/350 g mnk     0.35   kg
+#> 5 2018-12-01 10.40000      150.0  12333          sugar 0.5kg      0.5   kg
+#> 6 2018-12-01 12.00000     1000.0  13022                  abc        1 item
 ```
 
 **data\_selecting**
@@ -201,7 +238,7 @@ We can watch the results of the whole training process:
 ML$figure_training
 ```
 
-<img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
 
 or we can observe the importance of the used indicators:
 
@@ -209,7 +246,7 @@ or we can observe the importance of the used indicators:
 ML$figure_importance
 ```
 
-<img src="man/figures/README-unnamed-chunk-13-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-15-1.png" width="100%" />
 
 Now, let us save the model on the disk. After saving the model we can load it and use at any time:
 
@@ -235,7 +272,7 @@ head(data_predicted)
 #> 2 no information  11421            11421
 #> 3              g  11831            11831
 #> 4              g  11831            11831
-#> 5 no information  11811            11411
+#> 5 no information  11811            11441
 #> 6 no information  11421            11421
 ```
 
@@ -376,7 +413,7 @@ The function returns a **data frame** or a **figure** presenting the **matched\_
 matched_fig(milk, start="2018-12", end="2019-12", type="prodID")
 ```
 
-<img src="man/figures/README-unnamed-chunk-25-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-27-1.png" width="100%" />
 
 ``` r
 matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
@@ -443,7 +480,7 @@ sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07",
              barplot=TRUE, shares=TRUE, names=categories)
 ```
 
-<img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" /> **pqcor**
+<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" /> **pqcor**
 
 The function returns **Pearson's correlation coefficient** for price and quantity of products with given IDs (defined by the **set** parameter) and sold in the **period**. If the **set** is empty, the function works for all products being available in the **period**. The **figure** parameter indicates whether the function returns a figure with a correlation coefficient (TRUE) or just a correlation coefficient (FALSE). For instance:
 
@@ -453,7 +490,7 @@ pqcor(milk, period="2019-05")
 pqcor(milk, period="2019-05",figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-32-1.png" width="100%" /> **pqcor\_fig**
+<img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" /> **pqcor\_fig**
 
 The function returns **Pearson's correlation coefficients** between price and quantity of products with given IDs (defined by the **set** parameter) and sold in the time interval defined by the **start** and **end** parameters. If the **set** is empty the function works for all available products. Correlation coefficients are calculated for each month separately. Results are presented in tabular or graphical form depending on the **figure** parameter. Both cases are presented below:
 
@@ -470,13 +507,13 @@ pqcor_fig(milk, start="2018-12", end="2019-06", figure=FALSE)
 pqcor_fig(milk, start="2018-12", end="2019-06")
 ```
 
-<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" /> **dissimilarity**
+<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" /> **dissimilarity**
 
 This function returns a value of the relative price (dSP) and/or quantity (dSQ) dissimilarity measure. In a special case, when the **type** parameter is set to **pq**, the function provides the value of dSPQ measure (relative price and quantity dissimilarity measure calculated as **min(dSP,dSQ)**. For instance:
 
 ``` r
 dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")
-#> [1] 4.258112e-05
+#> [1] 0.00004258112
 ```
 
 **dissimilarity\_fig**
@@ -487,7 +524,7 @@ This function presents values of the relative price and/or quantity dissimilarit
 dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start")
 ```
 
-<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" /> <a id="ad4"> </a>
+<img src="man/figures/README-unnamed-chunk-37-1.png" width="100%" /> <a id="ad4"> </a>
 
 ### Functions for bilateral unweighted price index calculation
 
@@ -645,19 +682,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.198731
-#> 2 403249 1.821852
-#> 3 400033 1.855997
-#> 4 402609 1.485499
-#> 5 406223 1.503422
-#> 6 406224 1.972944
+#> 1 400032 1.684704
+#> 2 403249 1.035607
+#> 3 400033 1.504150
+#> 4 402609 1.760282
+#> 5 406223 1.667974
+#> 6 406224 1.022979
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9850896
+#> [1] 1.012354
 ```
 
 <a id="ad8"> </a>
@@ -868,7 +905,7 @@ final_index2(data=coffee, by="description",all=TRUE,
              figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-50-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-52-1.png" width="100%" />
 
 Now, let us calculate and plot the same price index (with no aggregation) for each **retID**:
 
@@ -880,7 +917,7 @@ final_index2(data=coffee, by="retID",all=TRUE,
              figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-51-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-53-1.png" width="100%" />
 
 <a id="ad12"> </a>
 
@@ -898,7 +935,7 @@ compare_indices(milk, start="2018-12",end="2019-12",bilateral=c("chjevons"),
                 namebilateral=c("Chain Jevons"), namefbmulti=c("Full GEKS"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-52-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-54-1.png" width="100%" />
 
 **compare\_final\_indices**
 
@@ -920,4 +957,4 @@ The comparison of obtained results can be made as follows (it may be time-consum
 compare_final_indices(finalindices=list(case1, case2),names=c("TPD without aggregation","TPD with aggregation"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-54-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-56-1.png" width="100%" />

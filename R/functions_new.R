@@ -1,3 +1,4 @@
+
 #' @title  Calculating the bilateral hybrid price index
 #'
 #' @description This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -1698,7 +1699,6 @@ final_index2 <-
   }
   }
   
-
 #' @title  Providing information about sales of products 
 #'
 #' @description The function returns values of sales of products or the corresponding barplot for these sales. 
@@ -1738,8 +1738,115 @@ sales_groups2 <-
   return (sales_groups(datasets, start, end, shares, barplot, names))
   }
   
+#' @title  Providing information about the grammage and unit of products
+#'
+#' @description The function returns the grammage and unit of products as two additional columns. 
+#' @param data The user's data frame. The data frame must contain the \code{description} column (as character). 
+#' @param units Units of products which are to be detected
+#' @param multiplication A sign of the multiplication used in product descriptions
+#' @param space A maximum space between the product grammage and its unit
+#' @rdname data_unit
+#' @return The function returns the user's data frame with two additional columns: \code{grammage} and \code{unit} (both are character type). The values of these columns are extracted from product descriptions on the basis of provided \code{units}. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '20x50 g', we obtain: \code{grammage: 100} and \code{unit: g} for that product (for \code{multiplication} set to 'x'). 
+#' @examples 
+#' data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
+#' @export
 
+data_unit <-
+  function (data = data.frame(),
+  units = c("g", "ml", "kg", "l"),
+  multiplication = "x",
+  space = 1)
+  {
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  columns <- colnames(data)
+  if (!("description" %in% columns))
+  stop("Your data frame must contain a 'description' column!")
+  if (length(units) == 0)
+  stop("You must set at least one unit")
+  descriptions <- data$description
+  grammage <- c()
+  unit <- c()
+  for (i in 1:length(descriptions)) {
+  result <- unit(descriptions[i], units, multiplication, space)
+  grammage <- c(grammage, result[[1]])
+  unit <- c(unit, result[[2]])
+  }
+  data$grammage <- grammage
+  data$unit <- unit
+  return (data)
+  }
 
+#' @title  Normalization of grammage units and recalculation of prices and quantities with respect to these units
+#'
+#' @description The function normalizes grammage units of products and recalculates product prices and quantities with respect to these normalized grammage units. 
+#' @param data The user's data frame. The data frame must contain the following columns: \code{prices} (as numeric), \code{quantities} (as numeric), \code{grammage} (as character) and \code{unit} (as character). 
+#' @param rules User rules for transforming \code{grammage}, \code{unit}, \code{prices} and \code{quantities} of products. For instance, a rule \code{("ml","l",1000)} changes the 'old' grammage unit: \code{ml} into the new one: \code{l} on the basis of the provided relation: \code{1000ml=1l}. As a consequence, for each product which is sold in liters \code{l} , the unit price and quantity are calculated. 
+#' @param all A logical value indicating whether the resulting data frame is to be limited to products with detected  grammage. Its default value is \code{TRUE} which means that not transformed rows (products) are also returned.
+#' @rdname data_norm
+#' @return The function returns the user's data frame with two transformed columns: \code{grammage} and \code{unit}, and two rescaled columns: \code{prices} and \code{quantities}. The above-mentioned transformation and rescaling take into consideration the user \code{rules}. Recalculated prices and quantities concern grammage units defined as the second parameter in the given rule.   
+#' @examples 
+#' # Preparing a data set
+#' data<-data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
+#' # Normalization of grammage units
+#' data_norm(data, rules=list(c("ml","l",1000),c("g","kg",1000)))
+#' @export
+
+data_norm <-
+  function(data = data.frame(),
+  rules = list(c("ml", "l", 1000), c("g", "kg", 1000)),
+  all = TRUE)
+  {
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  if (length(rules) == 0)
+  stop("Bad specification of 'rules'")
+  for (i in 1:length(rules))
+  if (!(length(rules[[i]]) == 3))
+  stop("Bad specification of 'rules'")
+  columns <- colnames(data)
+  if (!("prices" %in% columns))
+  stop("Your data frame must contain a 'prices' column!")
+  if (!("quantities" %in% columns))
+  stop("Your data frame must contain a 'quantities' column!")
+  if (!("grammage" %in% columns))
+  stop("Your data frame must contain a 'grammage' column!")
+  if (!("unit" %in% columns))
+  stop("Your data frame must contain a 'unit' column!")
+  #checking rules
+  data_return <- data.frame()
+  #corrections
+  options(scipen = 999)
+  for (i in 1:length(rules))
+  {
+  data_rules1 <- dplyr::filter(data, data$unit == rules[[i]][1])
+  data_rules2 <- dplyr::filter(data, data$unit == rules[[i]][2])
+  if (nrow(data_rules2) > 0)
+  data_rules2$grammage <- as.numeric(data_rules2$grammage)
+  if (nrow(data_rules1) > 0) {
+  data_rules1$grammage <- as.numeric(data_rules1$grammage)
+  data_rules1$grammage <- data_rules1$grammage / as.numeric(rules[[i]][3])
+  data_rules1$unit <- rules[[i]][2]
+  #unit price
+  data_rules <- rbind(data_rules1, data_rules2)
+  data_rules$prices <- data_rules$prices / data_rules$grammage
+  data_rules$quantities <- data_rules$quantities * data_rules$grammage
+  data_return <- rbind(data_return, data_rules)
+  }
+  }
+  #should we take the rest of products? 'all=TRUE' means: 'Yes'
+  if (all == TRUE) {
+  units_all <- c()
+  for (i in 1:length(rules))
+  units_all <- c(units_all, rules[[i]][1])
+  for (i in 1:length(rules))
+  units_all <- c(units_all, rules[[i]][2])
+  data <- dplyr::filter(data, (!(data$unit %in% units_all)))
+  data_return <- rbind(data_return, data)
+  }
+  data_return$grammage <- as.character(data_return$grammage)
+  return (data_return)
+  }
 
 
 

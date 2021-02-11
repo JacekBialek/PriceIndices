@@ -668,10 +668,80 @@ wgeksl_fbmw2 <- function(data, start, end)  {
   ))
 }
 
+#' An additional function used in the 'unit' function
+#' @param string A string which contains the grammage of the product and its unit
+#' @noRd
 
+numextract <- function(string) {
+  unlist(regmatches(string, gregexpr(
+  "[[:digit:]]+\\.*[[:digit:]]*", string
+  )))
+} 
 
+#' An additional function used in the 'data_unit' function
+#' @param string A string which contains the grammage of the product and its unit
+#' @param units Units of products which are to be detected
+#' @param multiplication A sign of the multiplication used in product descriptions
+#' @param space A maximum space between the product grammage and its unit 
+#' @noRd
 
-
-
-
-
+unit <-
+  function (string,
+  units = c("g", "ml", "kg", "l"),
+  multiplication = "x",
+  space = 1)
+  {
+  detect <- FALSE
+  string <- tolower(stringr::str_replace_all(string, ',', '.'))
+  units <- tolower(units)
+  numbers <- n <- pattern <- text <- sizes <- unit <- grammage <- NULL
+  numbers <- as.numeric(numextract(string))
+  if (length(numbers) == 0)
+  return (list("1", "item"))
+  #recalculating expressions with a sign of the product
+  n <- length(numbers)
+  if (stringr::str_detect(string, multiplication) &
+  length(numbers) > 1)
+  {
+  nn <- n - 1
+  for (i in 1:nn)  {
+  patt <-
+  paste(as.character(numbers[i]),
+  multiplication,
+  as.character(numbers[i + 1]),
+  sep = "")
+  if (stringr::str_detect(string, patt)) {
+  string <-
+  stringr::str_replace(string, patt,  as.character(numbers[i] * numbers[i +
+  1]))
+  detect <- TRUE
+  }
+  if (detect == TRUE) {
+  numbers <- numextract(string)
+  n <- length(numbers)
+  }
+  }
+  }
+  #main body
+  #initial values (no unit detected)
+  unit <- "item"
+  grammage <- 1
+  #checking for units
+  unit_list <- c()
+  for (i in 1:n) {
+  text <-
+  strex::str_after_first(string, pattern = as.character(numbers[i]))
+  for (k in 1:length(units)) {
+  sizes <- nchar(units[k]) + space
+  text2 <- substr(text, 0, sizes)
+  if (stringr::str_detect(text2, units[k])) {
+  unit_list <- c(unit_list, units[k])
+  grammage <- numbers[i]
+  }
+  }
+  }
+  if (length(unit_list) > 0)
+  unit <-
+  unit_list[max(which(nchar(unit_list) == max(nchar(unit_list))))]
+  return (list(grammage, unit))
+  }

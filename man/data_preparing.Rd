@@ -14,11 +14,13 @@ data_preparing(
   description = NULL,
   codeIN = NULL,
   codeOUT = NULL,
+  grammage = NULL,
+  unit = NULL,
   additional = c()
 )
 }
 \arguments{
-\item{data}{The user's data frame to be prepared. The user must indicate columns: \code{time} (as Date or character type, allowed formats are, eg.: `2020-03` or `2020-12-28`), \code{prices} and \code{quantities} (as numeric). Optionally, the user may also indicate columns: \code{prodID}, \code{codeIN}, \code{codeOUT}, \code{retID} (as numeric, factor or character), \code{description} (as character) and other columns specified by the \code{additional} parameter.}
+\item{data}{The user's data frame to be prepared. The user must indicate columns: \code{time} (as Date or character type, allowed formats are, eg.: `2020-03` or `2020-12-28`), \code{prices} and \code{quantities} (as numeric). Optionally, the user may also indicate columns: \code{prodID}, \code{codeIN}, \code{codeOUT}, \code{retID} (as numeric, factor or character), \code{description},  \code{grammage} (as numeric or character), \code{unit} (as character) and other columns specified by the \code{additional} parameter.}
 
 \item{time}{A character name of the column which provides transaction dates.}
 
@@ -35,6 +37,10 @@ data_preparing(
 \item{codeIN}{A character name of the column which provides internal product codes (from the retailer). It is not obligatory to consider this column while data preparing but it may be required while product matching (please see the \code{\link{data_matching}} function).}
 
 \item{codeOUT}{A character name of the column which provides external product codes (e.g. GTIN or SKU). It is not obligatory to consider this column while data preparing but it may be required while product matching (please see the \code{\link{data_matching}} function).}
+
+\item{grammage}{A character name of the numeric column which provides the grammage of products}
+
+\item{unit}{A character name of the column which provides the unit of the grammage of products}
 
 \item{additional}{A character vector of names of additional columns to be considered while data preparing (records with missing values are deleted).}
 }

@@ -78,6 +78,11 @@ This data set, **coffee**, is a collection of scanner data on the sale of coffee
 
 This data set, **sugar**, is a collection of scanner data on the sale of coffee in one of Polish supermarkets in the period from December 2017 to October 2020. It is a data frame with 6 columns and 7666 rows. The used variables are as follows:  *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (kg); *prodID* - unique product codes obtained after product matching (data set contains 11 different prodIDs); *retID* - unique codes identifying outlets/retailer sale points (data set contains 20 different retIDs); *description* - descriptions of sold sugar products (data set contains 3 different product descriptions corresponding to *subgroups* of the sugar group). 
 
+***6) dataU***
+
+This data set, **dataU**, is a collection of artificial scanner data on 6 products sold in Dec, 2018. Product descriptions contain the information about their grammage and unit. It is a data frame with 5 columns and 6 rows. The used variables are as follows: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (item); *prodID* - unique product codes; *description* - descriptions of sold products (data set contains 6 different product descriptions).
+
+
 The set **milk** represents a typical data frame used in the package for most calculations and is organized as follows:
 
 ```{r}
@@ -112,6 +117,25 @@ This function returns a prepared data frame based on the user's data set. The re
 
 ```{r}
 head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
+```
+
+**data_unit**
+
+The function returns the user's data frame with two additional columns: **grammage** and **unit** (both are character type). The values of these columns are extracted from product descriptions on the basis of provided **units**. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '20x50 g', we will obtain: **grammage: 100** and **unit: g** for that product (for **multiplication** set to 'x'). For example:
+
+```{r}
+data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
+```
+
+**data_norm**
+
+The function returns the user's data frame with two transformed columns: **grammage** and **unit**, and two rescaled columns: **prices** and **quantities**. The above-mentioned transformation and rescaling take into consideration the user **rules**. Recalculated prices and quantities concern grammage units defined as the second parameter in the given rule. For instance:
+
+```{r}
+# Preparing a data set
+data<-data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
+# Normalization of grammage units
+data_norm(data, rules=list(c("ml","l",1000),c("g","kg",1000)))
 ```
 
 **data_selecting**
