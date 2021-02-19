@@ -1,3 +1,11 @@
+# Package update 0.0.2 -> 0.0.3
+
+## Bug fixes
+
+* Function **data_norm** (which is crucial for product unit standarization) has beed corrected 
+(the previous version of that function duplicated rows in data frame)
+
+
 # Package update 0.0.1 -> 0.0.2
 
 

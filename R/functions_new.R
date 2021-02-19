@@ -1827,12 +1827,12 @@ data_norm <-
   data_rules1$grammage <- as.numeric(data_rules1$grammage)
   data_rules1$grammage <- data_rules1$grammage / as.numeric(rules[[i]][3])
   data_rules1$unit <- rules[[i]][2]
+  }
   #unit price
   data_rules <- rbind(data_rules1, data_rules2)
   data_rules$prices <- data_rules$prices / data_rules$grammage
   data_rules$quantities <- data_rules$quantities * data_rules$grammage
   data_return <- rbind(data_return, data_rules)
-  }
   }
   #should we take the rest of products? 'all=TRUE' means: 'Yes'
   if (all == TRUE) {
@@ -1847,6 +1847,7 @@ data_norm <-
   data_return$grammage <- as.character(data_return$grammage)
   return (data_return)
   }
+
 
 
 
