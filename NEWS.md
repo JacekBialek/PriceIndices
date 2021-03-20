@@ -6,7 +6,7 @@
 
 ## Bug fixes
 
-* 2 bugs fixed (they concern **data_norm** and **unit** function)
+* 2 bugs fixed (they concern **data_norm** and **unit** functions)
 * corrected descriptions (e.g. **model_classification** function)
 
 
