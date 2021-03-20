@@ -18,7 +18,7 @@ data_matching(
 )
 }
 \arguments{
-\item{data}{The user's data frame with information about products to be matched. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01') and at least one of the following columns: \code{codeIN} (as numeric or character), \code{codeOUT} (as numeric or character) and \code{description} (as character).}
+\item{data}{The user's data frame with information about products to be matched. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01') and at least one of the following columns: \code{codeIN} (as numeric, factor or character), \code{codeOUT} (as numeric, factor or character) and \code{description} (as character).}
 
 \item{start}{The base period (as character) limited to the year and month, e.g. "2020-03".}
 

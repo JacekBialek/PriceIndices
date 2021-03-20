@@ -29,7 +29,7 @@ model_classification(
 
 \item{p}{A parameter related to creating the testing set, if it has not been specified by the user. The test set is then created on the basis of a coicop-balanced subsample of the training set. The size of this subsample is 100p percents of the training set size.}
 
-\item{w}{A parameter for determining the measure of choosing the optimal machine learning model. For each combination of parameters specified in the \code{grid} list, the error rate of the trained model is calculated on the basis of the error on the training set (error_L=1-accuracy_L) and the error on the testing set (error_T=1-accuracy_T). Final error rate is estimated as: \code{w accuracy_L + (1-w) accuracy_T}.}
+\item{w}{A parameter for determining the measure of choosing the optimal machine learning model. For each combination of parameters specified in the \code{grid} list, the error rate of the trained model is calculated on the basis of the error on the training set (error_L=1-accuracy_L) and the error on the testing set (error_T=1-accuracy_T). Final accuracy of the model is estimated as: \code{w accuracy_L + (1-w) accuracy_T}.}
 
 \item{rounds}{The maximum number of iterations during the training stage.}
 

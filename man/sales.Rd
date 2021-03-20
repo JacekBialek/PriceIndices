@@ -7,7 +7,7 @@
 sales(data, period, set = c(), shares = FALSE, hist = FALSE)
 }
 \arguments{
-\item{data}{The user's data frame. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric or character) with unique product IDs.}
+\item{data}{The user's data frame. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character) with unique product IDs.}
 
 \item{period}{The time period (as character) limited to the year and month, e.g. "2019-03".}
 

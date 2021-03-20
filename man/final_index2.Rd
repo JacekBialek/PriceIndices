@@ -22,7 +22,7 @@ final_index2(
 )
 }
 \arguments{
-\item{data}{The user's data frame with subgroups of sold products (see \code{by} parameter). Each data frame must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric), \code{prodID} (as numeric or character) and \code{retID} (as numeric or character). An additional column indicated via \code{by} parameter is also needed.}
+\item{data}{The user's data frame with subgroups of sold products (see \code{by} parameter). Each data frame must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric), \code{prodID} (as numeric, factor or character) and \code{retID} (as numeric, factor or character). An additional column indicated via \code{by} parameter is also needed.}
 
 \item{by}{The column name indicating grouping variable, i.e. this column is used for creating subgroups of products.}
 

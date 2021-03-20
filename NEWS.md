@@ -1,3 +1,15 @@
+# Package update 0.0.3 -> 0.0.4
+
+## New function
+
+* 1 new function (**data_check**) has beed added. This function checks if the user's data frame is suitable for further price index calculation.
+
+## Bug fixes
+
+* 2 bugs fixed (they concern **data_norm** and **unit** function)
+* corrected descriptions (e.g. **model_classification** function)
+
+
 # Package update 0.0.2 -> 0.0.3
 
 ## Bug fixes
@@ -7,7 +19,6 @@
 
 
 # Package update 0.0.1 -> 0.0.2
-
 
 ## Improvements
 

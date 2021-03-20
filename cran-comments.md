@@ -1,5 +1,7 @@
 ## Package update 
-* 1 (serious) bug fixed (it concerns 'data_norm' function)
+* 1 new function (**data_check**)
+* 2 (serious) bugs fixed (they concern **data_norm** and **unit** function)
+* corrected descriptions (e.g. **model_classification** function)
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

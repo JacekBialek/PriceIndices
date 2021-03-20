@@ -31,6 +31,8 @@ The list of package functions is as follows:
 
 \section{Functions for data processing}{
 
+\code{\link{data_check}} 
+
 \code{\link{data_preparing}} 
 
 \code{\link{data_unit}} 
@@ -75,6 +77,8 @@ The list of package functions is as follows:
 \code{\link{pqcor}}
 
 \code{\link{pqcor_fig}}
+
+\code{\link{dissimilarity_fig}}
 }
 
 \section{Functions for bilateral unweighted price index calculation}{

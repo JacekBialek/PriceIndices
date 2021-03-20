@@ -101,12 +101,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.83         22      1     1
-#> 2 2020-01-01   3.08         19      2     1
-#> 3 2020-01-01   2.72         22      3     1
-#> 4 2020-01-01   3.06         23      4     1
-#> 5 2020-01-01   2.79         19      5     1
-#> 6 2020-01-01   2.75         21      6     1
+#> 1 2020-01-01   2.90         20      1     1
+#> 2 2020-01-01   2.77         23      2     1
+#> 3 2020-01-01   2.69         18      3     1
+#> 4 2020-01-01   2.70         20      4     1
+#> 5 2020-01-01   2.64         19      5     1
+#> 6 2020-01-01   2.79         23      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -125,7 +125,7 @@ tindex(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),start="2020-01",ratio=FALS
 
 **data\_preparing**
 
-This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains the required columns). The resulting data frame is free from missing values, zero or negative prices and quantities. As a result, the column **time** is set to be **Date** type (in format: 'Year-Month-01'), while the columns **prices** and **quantities** are set to be *numeric*. If the *description* parameter is set to *TRUE* then the column **description** is set to be *character* type (otherwise it is deleted). Please note that the **milk** set is an already prepared dataset but let us assume for a moment that we want to make sure that it does not contain missing values and we do not need the column **description** for further calculations. For this purpose, we use the **data\_preparing** function as follows:
+This function returns a prepared data frame based on the user's data set (you can check if your data set it is suitable for further price index calculation by using **data\_check** function). The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains the required columns). The resulting data frame is free from missing values, zero or negative prices and quantities. As a result, the column **time** is set to be **Date** type (in format: 'Year-Month-01'), while the columns **prices** and **quantities** are set to be *numeric*. If the *description* parameter is set to *TRUE* then the column **description** is set to be *character* type (otherwise it is deleted). Please note that the **milk** set is an already prepared dataset but let us assume for a moment that we want to make sure that it does not contain missing values and we do not need the column **description** for further calculations. For this purpose, we use the **data\_preparing** function as follows:
 
 ``` r
 head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
@@ -272,7 +272,7 @@ head(data_predicted)
 #> 2 no information  11421            11421
 #> 3              g  11831            11831
 #> 4              g  11831            11831
-#> 5 no information  11811            11714
+#> 5 no information  11811            11811
 #> 6 no information  11421            11421
 ```
 
@@ -682,19 +682,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.589618
-#> 2 403249 1.048436
-#> 3 400033 1.561148
-#> 4 402609 1.954618
-#> 5 406223 1.341442
-#> 6 406224 1.183118
+#> 1 400032 1.155978
+#> 2 403249 1.602146
+#> 3 400033 1.707259
+#> 4 402609 1.351800
+#> 5 406223 1.006627
+#> 6 406224 1.130237
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.004655
+#> [1] 1.015023
 ```
 
 <a id="ad8"> </a>

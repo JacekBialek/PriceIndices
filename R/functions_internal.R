@@ -712,8 +712,8 @@ unit <-
   sep = "")
   if (stringr::str_detect(string, patt)) {
   string <-
-  stringr::str_replace(string, patt,  as.character(numbers[i] * numbers[i +
-  1]))
+  stringr::str_replace(string, patt,  as.character(as.numeric(numbers[i]) * as.numeric(numbers[i +
+  1])))
   detect <- TRUE
   }
   if (detect == TRUE) {
@@ -728,13 +728,16 @@ unit <-
   grammage <- 1
   #checking for units
   unit_list <- c()
+  
   for (i in 1:n) {
   text <-
   strex::str_after_first(string, pattern = as.character(numbers[i]))
+  string<-text
   for (k in 1:length(units)) {
   sizes <- nchar(units[k]) + space
   text2 <- substr(text, 0, sizes)
-  if (stringr::str_detect(text2, units[k])) {
+  if (!(is.na(stringr::str_detect(text2, units[k])))) 
+    if (stringr::str_detect(text2, units[k])) {
   unit_list <- c(unit_list, units[k])
   grammage <- numbers[i]
   }
@@ -745,3 +748,10 @@ unit <-
   unit_list[max(which(nchar(unit_list) == max(nchar(unit_list))))]
   return (list(grammage, unit))
   }
+
+
+
+
+
+
+

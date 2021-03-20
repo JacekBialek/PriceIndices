@@ -2,7 +2,7 @@
 #' @title  Calculating the bilateral hybrid price index
 #'
 #' @description This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. '2020-03'.
 #' @param end The research period (as character) limited to the year and month, e.g. '2020-04'.
 #' @param base The prior period used in the hybrid price index formula (as character) limited to the year and month, e.g. '2020-01'.
@@ -180,7 +180,7 @@ hybrid <-
 #' @title  Calculating the bilateral geohybrid price index
 #'
 #' @description This function returns a value (or vector of values) of the bilateral geohybrid price index. The geohybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param base The prior period used in the geohybrid price index formula (as character) limited to the year and month, e.g. "2020-01"
@@ -359,7 +359,7 @@ geohybrid <-
 #' @title  Calculating the the monthly chained hybrid price index
 #'
 #' @description This function returns a value (or vector of values) of the monthly chained hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param base The prior period used in the hybrid price index formula (as character) limited to the year and month, e.g. "2020-01"
@@ -415,7 +415,7 @@ chhybrid <-
 #' @title  Calculating the the monthly chained geohybrid price index
 #'
 #' @description This function returns a value (or vector of values) of the monthly chained geohybrid price index. The geohybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param base The prior period used in the geohybrid price index formula (as character) limited to the year and month, e.g. "2020-01"
@@ -608,7 +608,7 @@ tindex<-function(pmi=c(),psigma=c(),start, ratio=TRUE)
 #' @title  Calculating the relative price and/or quantity dissimilarity measure between periods
 #'
 #' @description This function returns a value of the relative price and/or quantity dissimilarity measure.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param period1 The first period (as character) limited to the year and month, e.g. '2019-03'.
 #' @param period2 The second period (as character) limited to the year and month, e.g. '2019-04'.
 #' @param type The parameter indicates what type of dissimilarity measure is to be calculated. Possible values of the \code{type} parameter are: \code{p} (for the price dissimilarity measure calculation), \code{q} (for the quantity dissimilarity measure calculation) or \code{pq} (for the dSPQ measure calculation, i.e. the measure of relative price and quantity dissimilarity - see \code{References}).
@@ -695,7 +695,7 @@ return (min(sum1 + sum2, sum3 + sum4))
 #' @title  Presenting the relative price and/or quantity dissimilarity measure over time
 #'
 #' @description This function presents values of the relative price and/or quantity dissimilarity measure over time.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. '2019-03'.
 #' @param end The research period (as character) limited to the year and month, e.g. '2019-07'.
 #' @param type The parameter indicates what type of dissimilarity measure is to be calculated. Possible values of the \code{type} parameter are: \code{p} (for the price dissimilarity measure calculation), \code{q} (for the quantity dissimilarity measure calculation) or \code{pq} (for the dSPQ measure calculation, i.e. the measure of relative price and quantity dissimilarity - see \code{References}).
@@ -800,7 +800,7 @@ dissimilarity_fig <-
 #' @title  Calculating the multilateral SPQ price index 
 #'
 #' @description This function returns a value of the multilateral SPQ price index which is based on the relative price and quantity dissimilarity measure.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. '2019-03'.
 #' @param end The research period (as character) limited to the year and month, e.g. '2019-07'.
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE). 
@@ -873,7 +873,7 @@ return (spq[length(spq)])
 #' @title  Calculating the multilateral GEKS-L price index
 #'
 #' @description This function returns a value of the multilateral GEKS-L price index (to be more precise: the GEKS index based on the Laspeyres formula).
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
@@ -944,7 +944,7 @@ geksl <-
 #' @title  Calculating the multilateral WGEKS-L price index
 #'
 #' @description This function returns a value of the multilateral weighted WGEKS-L price index (to be more precise: the weighted GEKS index based on the Laspeyres formula).
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
@@ -1022,7 +1022,7 @@ wgeksl <-
 #' @title  Extending the multilateral GEKS-L price index by using the FBEW method.
 #'
 #' @description This function returns a value of the multilateral GEKS-L price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @rdname geksl_fbew
@@ -1079,7 +1079,7 @@ geksl_fbew <- function(data, start, end)  {
 #' @title  Extending the multilateral weighted GEKS-L price index by using the FBEW method.
 #'
 #' @description This function returns a value of the multilateral weighted GEKS-L price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @rdname wgeksl_fbew
@@ -1136,7 +1136,7 @@ wgeksl_fbew <- function(data, start, end)  {
 #' @title  Extending the multilateral GEKS-L price index by using the FBMW method.
 #'
 #' @description This function returns a value of the multilateral GEKS-L price index extended by using the FBMW (Fixed Base Moving Window) method.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @rdname geksl_fbmw
@@ -1190,7 +1190,7 @@ geksl_fbmw <- function(data, start, end)  {
 #' @title  Extending the multilateral weighted GEKS-L price index by using the FBMW method.
 #'
 #' @description This function returns a value of the multilateral weighted GEKS-L price index extended by using the FBMW (Fixed Base Moving Window) method.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @rdname wgeksl_fbmw
@@ -1244,7 +1244,7 @@ wgeksl_fbmw <- function(data, start, end)  {
 #' @title  Extending the multilateral GEKS-L price index by using window splicing methods.
 #'
 #' @description This function returns a value (or values) of the multilateral GEKS-L price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
@@ -1392,7 +1392,7 @@ geksl_splice <-
 #' @title  Extending the multilateral weighted GEKS-L price index by using window splicing methods.
 #'
 #' @description This function returns a value (or values) of the multilateral weighted GEKS-L price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
@@ -1539,7 +1539,7 @@ wgeksl_splice <-
 #' @title  The most general package function to compute the price dynamics
 #'
 #' @description This function returns a value or values of the selected (final) price index taking into consideration aggregation over product subgroups and/or over outlets. Optionally, the function returns a data frame or a figure presenting calculated indices, i.e. the price index for the whole data set and price indices for product subgroups.
-#' @param data The user's data frame with subgroups of sold products (see \code{by} parameter). Each data frame must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric), \code{prodID} (as numeric or character) and \code{retID} (as numeric or character). An additional column indicated via \code{by} parameter is also needed.
+#' @param data The user's data frame with subgroups of sold products (see \code{by} parameter). Each data frame must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric), \code{prodID} (as numeric, factor or character) and \code{retID} (as numeric, factor or character). An additional column indicated via \code{by} parameter is also needed.
 #' @param by The column name indicating grouping variable, i.e. this column is used for creating subgroups of products.
 #' @param all A logical value indicating whether the the selected price index is to be calculated only for the whole set of products or also for created subgroups of products (then \code{all} is set to TRUE).
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
@@ -1780,7 +1780,7 @@ data_unit <-
 #' @title  Normalization of grammage units and recalculation of prices and quantities with respect to these units
 #'
 #' @description The function normalizes grammage units of products and recalculates product prices and quantities with respect to these normalized grammage units. 
-#' @param data The user's data frame. The data frame must contain the following columns: \code{prices} (as numeric), \code{quantities} (as numeric), \code{grammage} (as character) and \code{unit} (as character). 
+#' @param data The user's data frame. The data frame must contain the following columns: \code{prices} (as positive numeric), \code{quantities} (as positive numeric), \code{grammage} (as character) and \code{unit} (as character). 
 #' @param rules User rules for transforming \code{grammage}, \code{unit}, \code{prices} and \code{quantities} of products. For instance, a rule \code{("ml","l",1000)} changes the 'old' grammage unit: \code{ml} into the new one: \code{l} on the basis of the provided relation: \code{1000ml=1l}. As a consequence, for each product which is sold in liters \code{l} , the unit price and quantity are calculated. 
 #' @param all A logical value indicating whether the resulting data frame is to be limited to products with detected  grammage. Its default value is \code{TRUE} which means that not transformed rows (products) are also returned.
 #' @rdname data_norm
@@ -1830,8 +1830,11 @@ data_norm <-
   }
   #unit price
   data_rules <- rbind(data_rules1, data_rules2)
+  if ((nrow(data_rules1) + nrow(data_rules2) > 0)) 
+  {
   data_rules$prices <- data_rules$prices / data_rules$grammage
   data_rules$quantities <- data_rules$quantities * data_rules$grammage
+  }
   data_return <- rbind(data_return, data_rules)
   }
   #should we take the rest of products? 'all=TRUE' means: 'Yes'
@@ -1847,6 +1850,54 @@ data_norm <-
   data_return$grammage <- as.character(data_return$grammage)
   return (data_return)
   }
+
+#' @title  Checking the user's data frame
+#'
+#' @description The function checks if the argument \code{data} points to a data frame which is suitable for further price index calculation. In particular, the function checks whether the indicated data frame contains the required columns and whether they are of the appropriate type (if not, the function returns FALSE and an appropriate comment).
+#' @param data Any R object but ultimately it is a data frame.
+#' @rdname data_check
+#' @return The function returns TRUE if the data frame indicated by the \code{data} parameter is suitable for the calculation of price indices and returns FALSE otherwise.
+#' @examples 
+#' data_check(milk)
+#' data_check(iris)
+#' @export
+
+data_check <- function (data)
+{
+if (!(is.data.frame(data))) {
+message("Argument 'data' is not a data frame!")
+return (FALSE)
+}
+if (nrow(data) == 0) {
+message("A data frame is empty")
+return (FALSE)
+}
+mustbe <- c("time", "prices", "quantities", "prodID")
+col_names <- colnames(data)
+if (prod(as.numeric(mustbe %in% col_names)) == 0) {
+message("Columns: 'time', 'prices', 'quantities' and 'prodID' are obligatory!")
+return (FALSE)
+}
+if (!lubridate::is.instant(data$time)) {
+message("The 'time' column must be as Date type!")
+return (FALSE)
+}
+if (!is.numeric(data$prices)) {
+message("The 'prices' column must be numeric!")
+return (FALSE)
+}
+if (!is.numeric(data$quantities)) {
+message("The 'quantities' column must be numeric!")
+return (FALSE)
+}
+if ((!(is.numeric(data$prodID))) &
+(!(is.factor(data$prodID))) &
+(!(is.character(data$prodID)))) {
+message("The 'prodID' columns must be as numeric, factor or character type!")
+return (FALSE)
+}
+return (TRUE)
+}
 
 
 

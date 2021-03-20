@@ -20,7 +20,7 @@ data_preparing(
 )
 }
 \arguments{
-\item{data}{The user's data frame to be prepared. The user must indicate columns: \code{time} (as Date or character type, allowed formats are, eg.: `2020-03` or `2020-12-28`), \code{prices} and \code{quantities} (as numeric). Optionally, the user may also indicate columns: \code{prodID}, \code{codeIN}, \code{codeOUT}, \code{retID} (as numeric, factor or character), \code{description},  \code{grammage} (as numeric or character), \code{unit} (as character) and other columns specified by the \code{additional} parameter.}
+\item{data}{The user's data frame to be prepared. The user must indicate columns: \code{time} (as Date or character type, allowed formats are, eg.: `2020-03` or `2020-12-28`), \code{prices} and \code{quantities} (as numeric). Optionally, the user may also indicate columns: \code{prodID}, \code{codeIN}, \code{codeOUT}, \code{retID} (as numeric, factor or character), \code{description} (as character), \code{grammage} (as numeric or character), \code{unit} (as character) and other columns specified by the \code{additional} parameter.}
 
 \item{time}{A character name of the column which provides transaction dates.}
 

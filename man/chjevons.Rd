@@ -7,7 +7,7 @@
 chjevons(data, start, end, interval = FALSE)
 }
 \arguments{
-\item{data}{The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric or character). A column \code{quantities} is also needed because this  function uses unit values as monthly prices.}
+\item{data}{The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this  function uses unit values as monthly prices.}
 
 \item{start}{The base period (as character) limited to the year and month, e.g. "2020-03".}
 
