@@ -3,7 +3,7 @@
 \docType{data}
 \name{dataU}
 \alias{dataU}
-\title{Artificial, small scanner data set}
+\title{An artificial, small scanner data set}
 \format{
 A data frame with 5 columns and 6 rows. The used variables are as follows:
 

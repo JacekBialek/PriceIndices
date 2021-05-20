@@ -12,6 +12,8 @@ The list of package functions is as follows:
 }
 \section{Data sets in the package and generating artificial scanner data sets}{
 
+\code{\link{dataAGGR}}
+
 \code{\link{dataMATCH}}
 
 \code{\link{dataCOICOP}}
@@ -34,6 +36,8 @@ The list of package functions is as follows:
 \code{\link{data_check}} 
 
 \code{\link{data_preparing}} 
+
+\code{\link{data_aggregating}} 
 
 \code{\link{data_unit}} 
 

@@ -3,7 +3,7 @@
 \docType{data}
 \name{dataCOICOP}
 \alias{dataCOICOP}
-\title{An artificial scanner data set containing 10 elementary product groups}
+\title{An artificial scanner data set for the product classification}
 \format{
 A data frame with 8 columns and 96600 rows (some rows are not complete). The used variables are as follows:
 

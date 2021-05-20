@@ -1,0 +1,20 @@
+#' A small artificial scanner data set for a demonstration of data aggregation
+#'
+#' A collection of artificial scanner data on milk products sold in three different months 
+#' @format A data frame with 6 columns and 9 rows. The used variables are as follows:
+#'
+#' \code{time} - Dates of transactions (Year-Month-Day: 4 different dates)
+#'
+#' \code{prices} - Prices of sold products [PLN]
+#'
+#' \code{quantities} - Quantities of sold products [l]
+#'
+#' \code{prodID} - Retailer product codes (3 prodIDs)
+#'
+#' \code{retID} - Unique codes identifying outlets/retailer sale points (4 retIDs)
+#'
+#' \code{description} Descriptions of sold products (two subgroups: goat milk, powdered milk)
+#'
+#' @docType data
+#'
+"dataAGGR"

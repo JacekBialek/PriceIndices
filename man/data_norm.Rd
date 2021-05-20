@@ -11,7 +11,7 @@ data_norm(
 )
 }
 \arguments{
-\item{data}{The user's data frame. The data frame must contain the following columns: \code{prices} (as positive numeric), \code{quantities} (as positive numeric), \code{grammage} (as character) and \code{unit} (as character).}
+\item{data}{The user's data frame. The data frame must contain the following columns: \code{prices} (as positive numeric), \code{quantities} (as positive numeric), \code{grammage} (as numeric or character) and \code{unit} (as character).}
 
 \item{rules}{User rules for transforming \code{grammage}, \code{unit}, \code{prices} and \code{quantities} of products. For instance, a rule \code{("ml","l",1000)} changes the 'old' grammage unit: \code{ml} into the new one: \code{l} on the basis of the provided relation: \code{1000ml=1l}. As a consequence, for each product which is sold in liters \code{l} , the unit price and quantity are calculated.}
 

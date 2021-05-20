@@ -1,4 +1,4 @@
-#' Real data set on sold coffee
+#' A real data set on sold coffee
 #'
 #' A collection of scanner data on the sale of coffee in one of Polish supermarkets in the period from December 2017 to October 2020
 #' @format A data frame with 6 columns and 42561 rows. The used variables are as follows:

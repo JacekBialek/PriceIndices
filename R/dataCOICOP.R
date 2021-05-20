@@ -1,4 +1,4 @@
-#' An artificial scanner data set containing 10 elementary product groups
+#' An artificial scanner data set for the product classification 
 #'
 #' A collection of artificial scanner data on the sale of tomatoes, fruit juices, low fat milk, full fat milk, sugar, chocolate, yoghurt, coffee, eggs and salt in the period from December 2018 to October 2020
 #' @format A data frame with 8 columns and 96600 rows (some rows are not complete). The used variables are as follows:

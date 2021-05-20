@@ -1,4 +1,4 @@
-#' Real data set on sold milk
+#' A real data set on sold milk
 #'
 #' A collection of scanner data on the sale of milk in one of Polish supermarkets in the period from December 2018 to August 2020
 #' @format A data frame with 6 columns and 4281 rows. The used variables are as follows:

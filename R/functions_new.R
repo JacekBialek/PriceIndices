@@ -1,4 +1,5 @@
 
+
 #' @title  Calculating the bilateral hybrid price index
 #'
 #' @description This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -1746,7 +1747,7 @@ sales_groups2 <-
 #' @param multiplication A sign of the multiplication used in product descriptions
 #' @param space A maximum space between the product grammage and its unit
 #' @rdname data_unit
-#' @return The function returns the user's data frame with two additional columns: \code{grammage} and \code{unit} (both are character type). The values of these columns are extracted from product descriptions on the basis of provided \code{units}. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '20x50 g', we obtain: \code{grammage: 100} and \code{unit: g} for that product (for \code{multiplication} set to 'x'). 
+#' @return The function returns the user's data frame with two additional columns: \code{grammage} and \code{unit} (both are character type). The values of these columns are extracted from product descriptions on the basis of provided \code{units}. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '2x50 g', we obtain: \code{grammage: 100} and \code{unit: g} for that product (for \code{multiplication} set to 'x'). 
 #' @examples 
 #' data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
 #' @export
@@ -1780,7 +1781,7 @@ data_unit <-
 #' @title  Normalization of grammage units and recalculation of prices and quantities with respect to these units
 #'
 #' @description The function normalizes grammage units of products and recalculates product prices and quantities with respect to these normalized grammage units. 
-#' @param data The user's data frame. The data frame must contain the following columns: \code{prices} (as positive numeric), \code{quantities} (as positive numeric), \code{grammage} (as character) and \code{unit} (as character). 
+#' @param data The user's data frame. The data frame must contain the following columns: \code{prices} (as positive numeric), \code{quantities} (as positive numeric), \code{grammage} (as numeric or character) and \code{unit} (as character). 
 #' @param rules User rules for transforming \code{grammage}, \code{unit}, \code{prices} and \code{quantities} of products. For instance, a rule \code{("ml","l",1000)} changes the 'old' grammage unit: \code{ml} into the new one: \code{l} on the basis of the provided relation: \code{1000ml=1l}. As a consequence, for each product which is sold in liters \code{l} , the unit price and quantity are calculated. 
 #' @param all A logical value indicating whether the resulting data frame is to be limited to products with detected  grammage. Its default value is \code{TRUE} which means that not transformed rows (products) are also returned.
 #' @rdname data_norm
@@ -1898,6 +1899,67 @@ return (FALSE)
 }
 return (TRUE)
 }
+
+#' @title  Aggregating the user's data frame
+#'
+#' @description The function aggregates the user's data frame over time and optionally over outlets.
+#' @param data The user's data frame.
+#' @param join_outlets A logical value indicating whether the data aggregation over outlets should be also done.
+#' @rdname data_aggregating
+#' @return The function aggregates the user's data frame over time and/or over outlets. Consequently, we obtain monthly data, where the unit value is calculated instead of a price for each \code{prodID} observed in each month (the \code{time} column gets the Date format: "Year-Month-01"). If the parameter \code{join_outlets} is TRUE, then the function also performs aggregation over outlets (retIDs) and the \code{retID} column is removed from the data frame. The main advantage of using this function is the ability to reduce the size of the data frame and the time needed to calculate the price index.
+#' @examples 
+#' #Example 1
+#' data_aggregating(dataAGGR,join_outlets = FALSE)
+#' data_aggregating(dataAGGR,join_outlets = FALSE)
+#' #Example 2 (data frame reduction)
+#' nrow(milk)
+#' nrow(data_aggregating(milk))
+#' @export
+
+data_aggregating<-function (data, join_outlets = TRUE)
+{
+#checking columns
+cols<-colnames(data)
+if (!("time" %in% cols) | !("prodID" %in% cols)) stop("A data frame must contain columns: time, prodID")
+if ((join_outlets==FALSE) & !("retID" %in% cols)) stop("A date frame must contain the 'retID' column")
+if ((join_outlets==FALSE) & ("retID" %in% cols)) data$retID<-as.numeric(data$retID)
+#main body
+lubridate::day(data$time)<-1
+data_time<-split(data, data$time)
+rows<-function (group)
+{
+result<-data.frame()
+data_prodID<-split(group, group$prodID)
+for (i in 1:length(data_prodID)) {
+d<-data_prodID[[i]]
+price<-sum(d$prices*d$quantities)/sum(d$quantities)
+quantity<-sum(d$quantities)  
+row<-d[1,]
+row$prices<-price
+row$quantities<-quantity
+result<-rbind(result, row)
+}
+return (result)
+}
+if (join_outlets==TRUE) {
+s<-dplyr::bind_rows(lapply(data_time, rows))
+if ("retID" %in% cols) s$retID<-NULL
+}
+else
+{
+rows_ret<-function(outlets)
+{
+data_outlets<-split(outlets,outlets$retID)
+return (dplyr::bind_rows(lapply(data_outlets, rows)))
+}
+s<-dplyr::bind_rows(lapply(data_time, rows_ret))  
+}
+return (s)  
+}
+
+
+
+
 
 
 

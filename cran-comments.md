@@ -1,7 +1,7 @@
 ## Package update 
-* 1 new function (**data_check**)
-* 2 (serious) bugs fixed (they concern **data_norm** and **unit** function)
-* corrected descriptions (e.g. **model_classification** function)
+* 1 new function (**data_aggregating**)
+* 1 new data set (**dataAGGR**)
+* 2 small bugs fixed (they concern **final_index** and **final_index2** functions)
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

@@ -1,4 +1,4 @@
-#' Artificial, small scanner data set  
+#' An artificial, small scanner data set   
 #'
 #' A collection of artificial scanner data on 6 products sold in Dec, 2018. Product descriptions contain the information about their grammage and unit.
 #' @format A data frame with 5 columns and 6 rows. The used variables are as follows:

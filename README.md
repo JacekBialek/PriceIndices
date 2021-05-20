@@ -1,13 +1,16 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 
-PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
-================================================================================
+# PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
 **author: Jacek Białek, University of Lodz, Statistics Poland** <!-- badges: start --> <!-- badges: end -->
 
 Goals of PriceIndices are as follows: a) data processing before price index calculations; b) bilateral and multilateral price index calculations; c) extending multilateral price indices. You can download the package documentation from [here](https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_manual.pdf).
 
-Installation
-------------
+## Installation
 
 You can install the released version of **PriceIndices** from CRAN with:
 
@@ -22,8 +25,7 @@ library("remotes")
 remotes::install_github("JacekBialek/PriceIndices")
 ```
 
-The functionality of this package can be categorized as follows:
-----------------------------------------------------------------
+## The functionality of this package can be categorized as follows:
 
 1.  <a href="#ad1">Data sets included in the package and generating artificial scanner data sets</a>
 2.  <a href="#ad2">Functions for data processing</a>
@@ -42,31 +44,35 @@ The functionality of this package can be categorized as follows:
 
 ### Data sets included in the package and generating artificial scanner data sets
 
-**This package includes five data sets: artificial and real.**
+**This package includes seven data sets: artificial and real.**
 
-***1) dataMATCH***
+***1) dataAGGR***
 
-The first one, **dataMATCH**, can be used to demonstrate the **data\_matching** function and it will be described in the next part of the guidelines. Generally, this artificial data set contains the following columns: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products; *quantities* - quantities of sold products; *codeIN* - internal product codes from the retailer; *codeOUT* - external product codes, e.g. GTIN or SKU in the real case; *description* - descriptions of sold products, eg. 'product A', 'product B', etc.
+The first one, **dataAGGR**, can be used to demonstrate the **data\_aggregating** function. This is a collection of artificial scanner data on milk products sold in three different months and it contains the following columns: **time** - dates of transactions (Year-Month-Day: 4 different dates); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (liters); *prodID* - unique product codes (3 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (4 different retIDs); **description** - descriptions of sold products (two subgroups: goat milk, powdered milk).
 
-***2) dataCOICOP***
+***2) dataMATCH***
 
-The second one, **dataCOICOP**, is a collection of artificial scanner data on the sale of tomatoes, fruit juices, low fat milk, full fat milk, sugar, chocolate, yoghurt, coffee, eggs and salt in the period from December 2018 to October 2020. It is a data frame with 8 columns and 96600 rows. The used variables are as follows: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (liters); *prodID* - unique product codes obtained after product matching (data set contains 331 different prodIDs); *retID* - unique codes identifying outlets/retailer sale points (data set contains 10 different retIDs); *description* - descriptions of sold products (data set contains 12 different product descriptions), *unit* - sales units, e.g. 'kg', 'ml', etc.; *coicop* - identifiers of COICOP groups (10 groups). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
+The second one, **dataMATCH**, can be used to demonstrate the **data\_matching** function and it will be described in the next part of the guidelines. Generally, this artificial data set contains the following columns: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products; **quantities** - quantities of sold products; **codeIN** - internal product codes from the retailer; **codeOUT** - external product codes, e.g. GTIN or SKU in the real case; **description** - descriptions of sold products, eg. 'product A', 'product B', etc.
 
-***3) milk***
+***3) dataCOICOP***
 
-This data set, **milk**, is a collection of scaner data on the sale of milk in one of Polish supermarkets in the period from December 2018 to August 2020. It is a data frame with 6 columns and 4281 rows. The used variables are as follows: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (liters); *prodID* - unique product codes obtained after product matching (data set contains 67 different prodIDs); *retID* - unique codes identifying outlets/retailer sale points (data set contains 5 different retIDs); *description* - descriptions of sold milk products (data set contains 6 different product descriptions corresponding to *subgroups* of the milk group).
+The third one, **dataCOICOP**, is a collection of artificial scanner data on the sale of tomatoes, fruit juices, low fat milk, full fat milk, sugar, chocolate, yoghurt, coffee, eggs and salt in the period from December 2018 to October 2020. It is a data frame with 8 columns and 96600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (liters); **prodID** - unique product codes obtained after product matching (data set contains 331 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (data set contains 10 different retIDs); **description** - descriptions of sold products (data set contains 12 different product descriptions), **unit** - sales units, e.g. 'kg', 'ml', etc.; **coicop** - identifiers of COICOP groups (10 groups). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
 
-***4) coffee***
+***4) milk***
 
-This data set, **coffee**, is a collection of scanner data on the sale of coffee in one of Polish supermarkets in the period from December 2017 to October 2020. It is a data frame with 6 columns and 42561 rows. The used variables are as follows: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (kg); *prodID* - unique product codes obtained after product matching (data set contains 79 different prodIDs); *retID* - unique codes identifying outlets/retailer sale points (data set contains 20 different retIDs); *description* - descriptions of sold coffee products (data set contains 3 different product descriptions corresponding to *subgroups* of the coffee group).
+This data set, **milk**, is a collection of scaner data on the sale of milk in one of Polish supermarkets in the period from December 2018 to August 2020. It is a data frame with 6 columns and 4281 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (liters); **prodID** - unique product codes obtained after product matching (data set contains 67 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (data set contains 5 different retIDs); **description** - descriptions of sold milk products (data set contains 6 different product descriptions corresponding to *subgroups* of the milk group).
 
-***5) sugar***
+***5) coffee***
 
-This data set, **sugar**, is a collection of scanner data on the sale of coffee in one of Polish supermarkets in the period from December 2017 to October 2020. It is a data frame with 6 columns and 7666 rows. The used variables are as follows: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (kg); *prodID* - unique product codes obtained after product matching (data set contains 11 different prodIDs); *retID* - unique codes identifying outlets/retailer sale points (data set contains 20 different retIDs); *description* - descriptions of sold sugar products (data set contains 3 different product descriptions corresponding to *subgroups* of the sugar group).
+This data set, **coffee**, is a collection of scanner data on the sale of coffee in one of Polish supermarkets in the period from December 2017 to October 2020. It is a data frame with 6 columns and 42561 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (kg); **prodID** - unique product codes obtained after product matching (data set contains 79 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (data set contains 20 different retIDs); **description** - descriptions of sold coffee products (data set contains 3 different product descriptions corresponding to *subgroups* of the coffee group).
 
-***6) dataU***
+***6) sugar***
 
-This data set, **dataU**, is a collection of artificial scanner data on 6 products sold in Dec, 2018. Product descriptions contain the information about their grammage and unit. It is a data frame with 5 columns and 6 rows. The used variables are as follows: *time* - dates of transactions (Year-Month-Day); *prices* - prices of sold products (PLN); *quantities* - quantities of sold products (item); *prodID* - unique product codes; *description* - descriptions of sold products (data set contains 6 different product descriptions).
+This data set, **sugar**, is a collection of scanner data on the sale of coffee in one of Polish supermarkets in the period from December 2017 to October 2020. It is a data frame with 6 columns and 7666 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (kg); **prodID** - unique product codes obtained after product matching (data set contains 11 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (data set contains 20 different retIDs); **description** - descriptions of sold sugar products (data set contains 3 different product descriptions corresponding to *subgroups* of the sugar group).
+
+***7) dataU***
+
+This data set, **dataU**, is a collection of artificial scanner data on 6 products sold in Dec, 2018. Product descriptions contain the information about their grammage and unit. It is a data frame with 5 columns and 6 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (item); **prodID** - unique product codes; **description** - descriptions of sold products (data set contains 6 different product descriptions).
 
 The set **milk** represents a typical data frame used in the package for most calculations and is organized as follows:
 
@@ -101,12 +107,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.90         20      1     1
-#> 2 2020-01-01   2.77         23      2     1
-#> 3 2020-01-01   2.69         18      3     1
-#> 4 2020-01-01   2.70         20      4     1
-#> 5 2020-01-01   2.64         19      5     1
-#> 6 2020-01-01   2.79         23      6     1
+#> 1 2020-01-01   3.03         20      1     1
+#> 2 2020-01-01   2.68         23      2     1
+#> 3 2020-01-01   2.78         19      3     1
+#> 4 2020-01-01   2.71         19      4     1
+#> 5 2020-01-01   2.88         23      5     1
+#> 6 2020-01-01   2.77         20      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -125,7 +131,7 @@ tindex(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),start="2020-01",ratio=FALS
 
 **data\_preparing**
 
-This function returns a prepared data frame based on the user's data set (you can check if your data set it is suitable for further price index calculation by using **data\_check** function). The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains the required columns). The resulting data frame is free from missing values, zero or negative prices and quantities. As a result, the column **time** is set to be **Date** type (in format: 'Year-Month-01'), while the columns **prices** and **quantities** are set to be *numeric*. If the *description* parameter is set to *TRUE* then the column **description** is set to be *character* type (otherwise it is deleted). Please note that the **milk** set is an already prepared dataset but let us assume for a moment that we want to make sure that it does not contain missing values and we do not need the column **description** for further calculations. For this purpose, we use the **data\_preparing** function as follows:
+This function returns a prepared data frame based on the user's data set (you can check if your data set it is suitable for further price index calculation by using **data\_check** function). The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains the required columns). The resulting data frame is free from missing values, zero or negative prices and quantities. As a result, the column **time** is set to be **Date** type (in format: 'Year-Month-01'), while the columns **prices** and **quantities** are set to be **numeric**. If the **description** parameter is set to *TRUE* then the column **description** is set to be **character** type (otherwise it is deleted). Please note that the **milk** set is an already prepared dataset but let us assume for a moment that we want to make sure that it does not contain missing values and we do not need the column **description** for further calculations. For this purpose, we use the **data\_preparing** function as follows:
 
 ``` r
 head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
@@ -138,9 +144,38 @@ head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
 #> 6 2019-01-01   7.98        4.5
 ```
 
+**data\_aggregating**
+
+The function aggregates the user's data frame over time and/or over outlets. Consequently, we obtain monthly data, where the unit value is calculated instead of a price for each **prodID** observed in each month (the time column gets the Date format: "Year-Month-01"). If paramter **join\_outlets** is *TRUE*, then the function also performs aggregation over outlets (*retIDs*) and the **retID** column is removed from the data frame. The main advantage of using this function is the ability to reduce the size of the data frame and the time needed to calculate the price index. For instance, let us consider the following data set:
+
+``` r
+dataAGGR
+#>         time prices quantities prodID retID   description
+#> 1 2018-12-01     10        100 400032  4313     goat milk
+#> 2 2018-12-01     15        100 400032  1311     goat milk
+#> 3 2018-12-01     20        100 400032  1311     goat milk
+#> 4 2020-07-01     20        100 400050  1311     goat milk
+#> 5 2020-08-01     30         50 400050  1311     goat milk
+#> 6 2020-08-01     40         50 400050  2210     goat milk
+#> 7 2018-12-01     15        200 403249  2210 powdered milk
+#> 8 2018-12-01     15        200 403249  2210 powdered milk
+#> 9 2018-12-01     15        300 403249  2210 powdered milk
+```
+
+After aggregating this data set over time and outlets we obtain:
+
+``` r
+data_aggregating(dataAGGR)
+#>         time prices quantities prodID   description
+#> 1 2018-12-01     15        300 400032     goat milk
+#> 2 2018-12-01     15        700 403249 powdered milk
+#> 3 2020-07-01     20        100 400050     goat milk
+#> 4 2020-08-01     35        100 400050     goat milk
+```
+
 **data\_unit**
 
-The function returns the user's data frame with two additional columns: **grammage** and **unit** (both are character type). The values of these columns are extracted from product descriptions on the basis of provided **units**. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '20x50 g', we will obtain: **grammage: 100** and **unit: g** for that product (for **multiplication** set to 'x'). For example:
+The function returns the user's data frame with two additional columns: **grammage** and **unit** (both are character type). The values of these columns are extracted from product descriptions on the basis of provided **units**. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '2x50 g', we will obtain: **grammage: 100** and **unit: g** for that product (for **multiplication** set to 'x'). For example:
 
 ``` r
 data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
@@ -173,7 +208,7 @@ data_norm(data, rules=list(c("ml","l",1000),c("g","kg",1000)))
 
 **data\_selecting**
 
-The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: **include**, **must** and **exclude** (an additional column **coicop** is optional). Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters only when **sensitivity** is set to TRUE.
+The function returns a subset of the user's data set obtained by selection based on keywords and phrases defined by parameters: **include**, **must** and **exclude** (an additional column **coicop** is optional). Providing values of these parameters, please remember that the procedure distinguishes between uppercase and lowercase letters only when **sensitivity** is set to *TRUE*.
 
 For instance, please use
 
@@ -238,7 +273,7 @@ We can watch the results of the whole training process:
 ML$figure_training
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
 
 or we can observe the importance of the used indicators:
 
@@ -246,7 +281,7 @@ or we can observe the importance of the used indicators:
 ML$figure_importance
 ```
 
-<img src="man/figures/README-unnamed-chunk-15-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-17-1.png" width="100%" />
 
 Now, let us save the model on the disk. After saving the model we can load it and use at any time:
 
@@ -272,7 +307,7 @@ head(data_predicted)
 #> 2 no information  11421            11421
 #> 3              g  11831            11831
 #> 4              g  11831            11831
-#> 5 no information  11811            11811
+#> 5 no information  11811            11714
 #> 6 no information  11421            11421
 ```
 
@@ -413,7 +448,7 @@ The function returns a **data frame** or a **figure** presenting the **matched\_
 matched_fig(milk, start="2018-12", end="2019-12", type="prodID")
 ```
 
-<img src="man/figures/README-unnamed-chunk-27-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-29-1.png" width="100%" />
 
 ``` r
 matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
@@ -480,7 +515,7 @@ sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07",
              barplot=TRUE, shares=TRUE, names=categories)
 ```
 
-<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" /> **pqcor**
+<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" /> **pqcor**
 
 The function returns **Pearson's correlation coefficient** for price and quantity of products with given IDs (defined by the **set** parameter) and sold in the **period**. If the **set** is empty, the function works for all products being available in the **period**. The **figure** parameter indicates whether the function returns a figure with a correlation coefficient (TRUE) or just a correlation coefficient (FALSE). For instance:
 
@@ -490,7 +525,7 @@ pqcor(milk, period="2019-05")
 pqcor(milk, period="2019-05",figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" /> **pqcor\_fig**
+<img src="man/figures/README-unnamed-chunk-36-1.png" width="100%" /> **pqcor\_fig**
 
 The function returns **Pearson's correlation coefficients** between price and quantity of products with given IDs (defined by the **set** parameter) and sold in the time interval defined by the **start** and **end** parameters. If the **set** is empty the function works for all available products. Correlation coefficients are calculated for each month separately. Results are presented in tabular or graphical form depending on the **figure** parameter. Both cases are presented below:
 
@@ -507,7 +542,7 @@ pqcor_fig(milk, start="2018-12", end="2019-06", figure=FALSE)
 pqcor_fig(milk, start="2018-12", end="2019-06")
 ```
 
-<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" /> **dissimilarity**
+<img src="man/figures/README-unnamed-chunk-37-1.png" width="100%" /> **dissimilarity**
 
 This function returns a value of the relative price (dSP) and/or quantity (dSQ) dissimilarity measure. In a special case, when the **type** parameter is set to **pq**, the function provides the value of dSPQ measure (relative price and quantity dissimilarity measure calculated as **min(dSP,dSQ)**. For instance:
 
@@ -524,7 +559,7 @@ This function presents values of the relative price and/or quantity dissimilarit
 dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start")
 ```
 
-<img src="man/figures/README-unnamed-chunk-37-1.png" width="100%" /> <a id="ad4"> </a>
+<img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" /> <a id="ad4"> </a>
 
 ### Functions for bilateral unweighted price index calculation
 
@@ -682,19 +717,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.155978
-#> 2 403249 1.602146
-#> 3 400033 1.707259
-#> 4 402609 1.351800
-#> 5 406223 1.006627
-#> 6 406224 1.130237
+#> 1 400032 1.201807
+#> 2 403249 1.475185
+#> 3 400033 1.080868
+#> 4 402609 1.714419
+#> 5 406223 1.461992
+#> 6 406224 1.619595
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.015023
+#> [1] 1.003398
 ```
 
 <a id="ad8"> </a>
@@ -905,7 +940,7 @@ final_index2(data=coffee, by="description",all=TRUE,
              figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-52-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-54-1.png" width="100%" />
 
 Now, let us calculate and plot the same price index (with no aggregation) for each **retID**:
 
@@ -917,7 +952,7 @@ final_index2(data=coffee, by="retID",all=TRUE,
              figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-53-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-55-1.png" width="100%" />
 
 <a id="ad12"> </a>
 
@@ -935,7 +970,7 @@ compare_indices(milk, start="2018-12",end="2019-12",bilateral=c("chjevons"),
                 namebilateral=c("Chain Jevons"), namefbmulti=c("Full GEKS"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-54-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-56-1.png" width="100%" />
 
 **compare\_final\_indices**
 
@@ -957,4 +992,4 @@ The comparison of obtained results can be made as follows (it may be time-consum
 compare_final_indices(finalindices=list(case1, case2),names=c("TPD without aggregation","TPD with aggregation"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-56-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-58-1.png" width="100%" />

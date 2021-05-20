@@ -3,7 +3,7 @@
 \docType{data}
 \name{dataMATCH}
 \alias{dataMATCH}
-\title{Artificial data set on product sales}
+\title{An artificial scanner data set for product matching}
 \format{
 A data frame with 7 columns and 30 rows. The used variables are as follows:
 

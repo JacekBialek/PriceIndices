@@ -9355,6 +9355,7 @@ final_index <-
   aggrsets = "tornqvist",
   interval = FALSE)
   {
+  sign<-time1<-time2<-NULL
   aaggrret <-
   c(
   "none",
@@ -9509,6 +9510,7 @@ final_index <-
   TRUE
   )
   }
+  
   else
   id <-
   matched(
@@ -9518,11 +9520,14 @@ final_index <-
   type = "retID",
   TRUE
   )
+  
+  
   retindex <- c()
   w_start_ret <- c()
   w_end_ret <- c()
-  ##limiting to those IDs that have at least one matched product from set
+  ##limiting to those retIDs that have at least one matched product from set
   id_ok <- c()
+  idp<-c()
   for (k in 1:length(id)) {
   subset <- dplyr::filter(set, set$retID == id[k])
   if ((formula == "jevons") |
@@ -9627,15 +9632,32 @@ final_index <-
   TRUE
   )
   }
+  
   else
+  #chain indices case
+  {
+  period1 = substr(start, 0, 7)
+  period2 = substr(end, 0, 7)
+  time1<-start
+  time2<-start
+  lubridate::month(time2)<-lubridate::month(time2)+1
+  sign<-1
+  while (time2<=end) {
   idp <-
   matched(
   subset,
-  period1 = substr(start, 0, 7),
-  period2 = substr(end, 0, 7),
+  period1 = substr(time1, 0, 7),
+  period2 = substr(time2, 0, 7),
   type = "prodID",
-  TRUE
+  FALSE
   )
+  if (length(idp)==0) sign<-sign-1
+  lubridate::month(time1)<-lubridate::month(time1)+1
+  lubridate::month(time2)<-lubridate::month(time2)+1
+  }  
+  idp<-sign
+  }
+    
   if (length(idp) > 0)
   id_ok <- c(id_ok, id[k])
   }
@@ -9675,6 +9697,7 @@ final_index <-
   w_start_ret <- c(w_start_ret, sum(d_start$prices * d_start$quantities))
   w_end_ret <- c(w_end_ret, sum(d_end$prices * d_end$quantities))
   }
+  
   #aggregating over outlets
   if (aggrret == "none")
   index_ret <- retindex[1]
@@ -10094,14 +10117,29 @@ final_index <-
   )
   }
   else
+  #chain indices case
+  {
+  period1 = substr(start, 0, 7)
+  period2 = substr(end, 0, 7)
+  time1<-start
+  time2<-start
+  lubridate::month(time2)<-lubridate::month(time2)+1
+  sign<-1
+  while (time2<=end) {
   idp <-
   matched(
   subset,
-  period1 = substr(start, 0, 7),
-  period2 = substr(end, 0, 7),
+  period1 = substr(time1, 0, 7),
+  period2 = substr(time2, 0, 7),
   type = "prodID",
-  TRUE
+  FALSE
   )
+  if (length(idp)==0) sign<-sign-1
+  lubridate::month(time1)<-lubridate::month(time1)+1
+  lubridate::month(time2)<-lubridate::month(time2)+1
+  }  
+  idp<-sign
+  }  
   
   if (length(idp) > 0)
   id_ok <- c(id_ok, id[k])

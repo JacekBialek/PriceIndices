@@ -3,7 +3,7 @@
 \docType{data}
 \name{milk}
 \alias{milk}
-\title{Real data set on sold milk}
+\title{A real data set on sold milk}
 \format{
 A data frame with 6 columns and 4281 rows. The used variables are as follows:
 

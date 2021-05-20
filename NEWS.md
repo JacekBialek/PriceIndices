@@ -1,3 +1,18 @@
+# Package update 0.0.4 -> 0.0.5
+
+## New function
+
+* 1 new function (**data_aggregating**) has beed added. This function aggregates the user's data frame over time and/or over outlets (retIDs)
+
+## New data set
+
+* 1 new artificial data set has been added (*dataAGGR*) to demonstrate the utility of the **data_aggregation** function.
+
+## Bug fixes
+
+* 2 bugs fixed (they concern **final_index** and **final_index2** functions)
+
+
 # Package update 0.0.3 -> 0.0.4
 
 ## New function
