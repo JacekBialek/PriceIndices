@@ -1,4 +1,3 @@
-
 #' @title  Preparing a data set for further data processing or price index calculations
 #'
 #' @description This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).
@@ -9655,10 +9654,9 @@ final_index <-
   lubridate::month(time1)<-lubridate::month(time1)+1
   lubridate::month(time2)<-lubridate::month(time2)+1
   }  
-  idp<-sign
+  idp<-ifelse(sign>0,sign,NA)
   }
-    
-  if (length(idp) > 0)
+  if (length(idp) > 0 && !(is.na(idp)))
   id_ok <- c(id_ok, id[k])
   }
   id <- id_ok
@@ -10138,10 +10136,9 @@ final_index <-
   lubridate::month(time1)<-lubridate::month(time1)+1
   lubridate::month(time2)<-lubridate::month(time2)+1
   }  
-  idp<-sign
+  idp<-ifelse(sign>0,sign,NA)
   }  
-  
-  if (length(idp) > 0)
+  if (length(idp) > 0 && !(is.na(idp)))
   id_ok <- c(id_ok, id[k])
   }
   id <- id_ok
