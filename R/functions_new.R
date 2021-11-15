@@ -5047,7 +5047,7 @@ return (dplyr::bind_rows(lapply(data_outlets, rows)))
 }
 s<-dplyr::bind_rows(lapply(data_time, rows_ret))  
 }
-s<-na.omit(s)
+s<-stats::na.omit(s)
 return (s)  
 }
 
@@ -5063,7 +5063,9 @@ return (s)
 #' @return The function calculates average distances between price indices and it returns a data frame with these values for each pair of price indices.
 #' @examples 
 #' #Creating a data frame with unweighted bilateral index values
-#' df<-price_indices(milk, bilateral=c("jevons","dutot","carli"),start="2018-12",end="2019-12",interval=TRUE)
+#' df<-price_indices(milk, 
+#' bilateral=c("jevons","dutot","carli"),
+#' start="2018-12",end="2019-12",interval=TRUE)
 #' #Calculating average distances between indices (in p.p)
 #' compare_distances(df)
 #' @export
@@ -5090,7 +5092,7 @@ compare_distances<-function (data=data.frame(),measure="MAD", pp=TRUE, first=TRU
   #diagonal operations
   for (i in 1:ncol(data2)) data2[i,i]<-0
   #the rest of a matrix
-  pairs<-combn(colnames(data),2)
+  pairs<-utils::combn(colnames(data),2)
   #main body
   for (i in 1:ncol(pairs)) {
     x<-data[,pairs[1,i]]
