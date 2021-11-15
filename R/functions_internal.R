@@ -327,6 +327,41 @@ window = 13
 ))
 }
 
+#' An additional function used in the 'wgeks_fbmw' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+  
+wgeks_fbmw2 <- function(data, start, end)  {
+if (start == end)
+return (1)
+if (nrow(data) == 0)
+stop("A data frame is empty")
+start <- paste(start, "-01", sep = "")
+end <- paste(end, "-01", sep = "")
+start <- as.Date(start)
+end <- as.Date(end)
+wstart <- end
+lubridate::year(wstart) <-
+lubridate::year(wstart) - 1
+#checking conditions
+if (start > end)
+stop("parameters must satisfy: start<=end")
+if (lubridate::month(start) < 12)
+stop("a month of the 'start' parameter must be December")
+if (start == end)
+return (1)
+else
+return (wgeks(
+data,
+substr(start, 0, 7),
+substr(end, 0, 7),
+substr(wstart, 0, 7),
+window = 13
+))
+}
+
 #' An additional function used in the 'geksw_fbmw' function
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
@@ -447,6 +482,7 @@ start <- paste(start, "-01", sep = "")
 end <- paste(end, "-01", sep = "")
 start <- as.Date(start)
 end <- as.Date(end)
+lubridate::day(end)<-lubridate::days_in_month(end)
 #checking conditions
 if (start > end)
 stop("parameters must satisfy: start<=end")
@@ -462,16 +498,10 @@ index1 <- c()
 index2 <- c()
 #set of dates
 dates <- c()
-st <- start
-while (st <= end)
-{
-index1 <- c(index1, 1)
-index2 <- c(index2, 2)
-t <- substr(st, 0, 7)
-dates <- c(dates, t)
-lubridate::month(st) <-
-lubridate::month(st) + 1
-}
+dates <- seq.Date(from = start, to = end, by = "month")
+dates <- format(dates, format = "%Y-%m")
+index1<-replicate(length(dates),1)
+index2<-replicate(length(dates),2)
 s <-
 function(tt)
 return (sales(d, period = tt, set = prodID))
@@ -546,6 +576,42 @@ geksl_fbmw2 <- function(data, start, end)  {
   window = 13
   ))
 }
+
+#' An additional function used in the 'geksgl_fbmw' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksgl_fbmw2 <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- end
+  lubridate::year(wstart) <-
+  lubridate::year(wstart) - 1
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  else
+  return (geksgl(
+  data,
+  substr(start, 0, 7),
+  substr(end, 0, 7),
+  substr(wstart, 0, 7),
+  window = 13
+  ))
+}
+
 
 #' An additional function used in the 'gk_fbmw' function
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
@@ -668,6 +734,42 @@ wgeksl_fbmw2 <- function(data, start, end)  {
   ))
 }
 
+#' An additional function used in the 'wgeksgl_fbmw' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksgl_fbmw2 <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- end
+  lubridate::year(wstart) <-
+  lubridate::year(wstart) - 1
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  else
+  return (wgeksgl(
+  data,
+  substr(start, 0, 7),
+  substr(end, 0, 7),
+  substr(wstart, 0, 7),
+  window = 13
+  ))
+}
+
+
 #' An additional function used in the 'unit' function
 #' @param string A string which contains the grammage of the product and its unit
 #' @noRd
@@ -749,7 +851,373 @@ unit <-
   return (list(grammage, unit))
   }
 
+#' An additional function used in the 'geksl' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
 
+nl <-
+  function(data, start, end)  {
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <-
+  matched(data, start, end, type = "prodID", interval = FALSE)
+  price_start <-
+  prices(data, period = start, set = id)
+  price_end <-
+  prices(data, period = end, set = id)
+  quantity_start <-
+  quantities(data, period = start, set = id)
+  return(sum(quantity_start * price_end)/sum(quantity_start * price_start))
+  }
+
+#' An additional function used in the 'geksaqu' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param v The data frame which contains quality adjusted factors.
+#' @noRd
+
+aqu <-
+  function(data, start, end, v=data.frame())  {
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <-
+  matched(data, start, end, type = "prodID", interval = FALSE)
+  price_end <-
+  prices(data, period = end, set = id)
+  quantity_start <-
+  quantities(data, period = start, set = id)
+  factors<-c()
+  for (ID in id) factors<-c(factors,v[v$prodID==ID,]$value)
+  return(sum(quantity_start * price_end) / sum(factors*quantity_start))
+  }
+
+#' An additional function used in the 'geksaqu_fbmw' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksaqu_fbmw2 <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- end
+  lubridate::year(wstart) <-
+  lubridate::year(wstart) - 1
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  else
+  return (geksaqu(
+  data,
+  substr(start, 0, 7),
+  substr(end, 0, 7),
+  substr(wstart, 0, 7),
+  window = 13
+  ))
+}
+
+#' An additional function used in the 'wgeksaqu_fbmw' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksaqu_fbmw2 <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- end
+  lubridate::year(wstart) <-
+  lubridate::year(wstart) - 1
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  else
+  return (wgeksaqu(
+  data,
+  substr(start, 0, 7),
+  substr(end, 0, 7),
+  substr(wstart, 0, 7),
+  window = 13
+  ))
+}
+
+#' An additional function used in the 'geksaqi' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param v The data frame which contains quality adjusted factors.
+#' @noRd
+
+aqi <-
+  function(data, start, end, v=data.frame())  {
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <-
+  matched(data, start, end, type = "prodID", interval = FALSE)
+  price_start <-
+  prices(data, period = start, set = id)
+  price_end <-
+  prices(data, period = end, set = id)
+  quantity_start <-
+  quantities(data, period = start, set = id)
+  factors<-c()
+  for (ID in id) factors<-c(factors,v[v$prodID==ID,]$value)
+  return(sum(factors*quantity_start * price_end/price_start) / sum(factors*quantity_start))
+  }
+
+#' An additional function used in the 'geksaqi_fbmw' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksaqi_fbmw2 <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- end
+  lubridate::year(wstart) <-
+  lubridate::year(wstart) - 1
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  else
+  return (geksaqi(
+  data,
+  substr(start, 0, 7),
+  substr(end, 0, 7),
+  substr(wstart, 0, 7),
+  window = 13
+  ))
+}
+
+#' An additional function used in the 'wgeksaqi_fbmw' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksaqi_fbmw2 <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- end
+  lubridate::year(wstart) <-
+  lubridate::year(wstart) - 1
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  else
+  return (wgeksaqi(
+  data,
+  substr(start, 0, 7),
+  substr(end, 0, 7),
+  substr(wstart, 0, 7),
+  window = 13
+  ))
+}
+
+
+#' An additional function used in the 'geksgaqi' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param v The data frame which contains quality adjusted factors.
+#' @noRd
+
+gaqi <-
+  function(data, start, end, v=data.frame())  {
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <-
+  matched(data, start, end, type = "prodID", interval = FALSE)
+  price_start <-
+  prices(data, period = start, set = id)
+  price_end <-
+  prices(data, period = end, set = id)
+  quantity_start <-
+  quantities(data, period = start, set = id)
+  factors<-c()
+  for (ID in id) factors<-c(factors,v[v$prodID==ID,]$value)
+  coef<-c()
+  coef<-factors*quantity_start/sum(factors*quantity_start)
+  return(prod((price_end/price_start)^coef))
+  }
+
+#' An additional function used in the 'geksgaqi_fbmw' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksgaqi_fbmw2 <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- end
+  lubridate::year(wstart) <-
+  lubridate::year(wstart) - 1
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  else
+  return (geksgaqi(
+  data,
+  substr(start, 0, 7),
+  substr(end, 0, 7),
+  substr(wstart, 0, 7),
+  window = 13
+  ))
+}
+
+#' An additional function used in the 'wgeksgaqi_fbmw' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksgaqi_fbmw2 <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- end
+  lubridate::year(wstart) <-
+  lubridate::year(wstart) - 1
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  else
+  return (wgeksgaqi(
+  data,
+  substr(start, 0, 7),
+  substr(end, 0, 7),
+  substr(wstart, 0, 7),
+  window = 13
+  ))
+}
 
 
 

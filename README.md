@@ -33,7 +33,7 @@ remotes::install_github("JacekBialek/PriceIndices")
 9.  <a href="#ad9">Functions for extending multilateral price indices by using the FBEW method</a>
 10. <a href="#ad10">Functions for extending multilateral price indices by using the FBMW method</a>
 11. <a href="#ad11">General functions for price index calculations</a>
-12. <a href="#ad12">Functions for graphical comparison of price indices</a>
+12. <a href="#ad12">Functions for comparisons of price indices</a>
 
 <a id="ad1"> </a>
 
@@ -55,7 +55,7 @@ The third one, **dataCOICOP**, is a collection of artificial scanner data on the
 
 ***4) milk***
 
-This data set, **milk**, is a collection of scaner data on the sale of milk in one of Polish supermarkets in the period from December 2018 to August 2020. It is a data frame with 6 columns and 4281 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (liters); **prodID** - unique product codes obtained after product matching (data set contains 67 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (data set contains 5 different retIDs); **description** - descriptions of sold milk products (data set contains 6 different product descriptions corresponding to *subgroups* of the milk group).
+This data set, **milk**, is a collection of scaner data on the sale of milk in one of Polish supermarkets in the period from December 2018 to August 2020. It is a data frame with 6 columns and 4386 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (liters); **prodID** - unique product codes obtained after product matching (data set contains 68 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (data set contains 5 different retIDs); **description** - descriptions of sold milk products (data set contains 6 different product descriptions corresponding to *subgroups* of the milk group).
 
 ***5) coffee***
 
@@ -74,22 +74,22 @@ The set **milk** represents a typical data frame used in the package for most ca
 ``` r
 library(PriceIndices)
 head(milk)
-#>         time prices quantities prodID retID description
-#> 1 2018-12-01   7.98        6.5 400032  1311   goat milk
-#> 2 2018-12-01   7.98       91.5 400032  2210   goat milk
-#> 3 2018-12-01   7.98       19.5 400032  6610   goat milk
-#> 4 2018-12-01   7.98       15.5 400032  7611   goat milk
-#> 5 2018-12-01   7.98       43.0 400032  8910   goat milk
-#> 6 2019-01-01   7.98        4.5 400032  1311   goat milk
+#>         time prices quantities prodID retID   description
+#> 1 2018-12-01   8.78        9.0  14215  2210 powdered milk
+#> 2 2019-01-01   8.78       13.5  14215  2210 powdered milk
+#> 3 2019-02-01   8.78        0.5  14215  1311 powdered milk
+#> 4 2019-02-01   8.78        8.0  14215  2210 powdered milk
+#> 5 2019-03-01   8.78        0.5  14215  1311 powdered milk
+#> 6 2019-03-01   8.78        1.5  14215  2210 powdered milk
 ```
 
 Available subgroups of sold milk are
 
 ``` r
 unique(milk$description)
-#> [1] "goat milk"                 "powdered milk"            
-#> [3] "full-fat milk UHT"         "full-fat milk pasteurized"
-#> [5] "low-fat milk UHT"          "low-fat milk pasteurized"
+#> [1] "powdered milk"             "low-fat milk pasteurized" 
+#> [3] "low-fat milk UHT"          "full-fat milk pasteurized"
+#> [5] "full-fat milk UHT"         "goat milk"
 ```
 
 **Generating artificial scanner data sets in the package**
@@ -102,12 +102,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.75         23      1     1
-#> 2 2020-01-01   2.77         20      2     1
-#> 3 2020-01-01   2.64         16      3     1
-#> 4 2020-01-01   2.78         18      4     1
-#> 5 2020-01-01   2.92         20      5     1
-#> 6 2020-01-01   2.83         20      6     1
+#> 1 2020-01-01   2.55         22      1     1
+#> 2 2020-01-01   2.85         19      2     1
+#> 3 2020-01-01   2.61         17      3     1
+#> 4 2020-01-01   2.79         19      4     1
+#> 5 2020-01-01   2.54         20      5     1
+#> 6 2020-01-01   2.46         21      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -131,12 +131,12 @@ This function returns a prepared data frame based on the user's data set (you ca
 ``` r
 head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
 #>         time prices quantities
-#> 1 2018-12-01   7.98        6.5
-#> 2 2018-12-01   7.98       91.5
-#> 3 2018-12-01   7.98       19.5
-#> 4 2018-12-01   7.98       15.5
-#> 5 2018-12-01   7.98       43.0
-#> 6 2019-01-01   7.98        4.5
+#> 1 2018-12-01   8.78        9.0
+#> 2 2019-01-01   8.78       13.5
+#> 3 2019-02-01   8.78        0.5
+#> 4 2019-02-01   8.78        8.0
+#> 5 2019-03-01   8.78        0.5
+#> 6 2019-03-01   8.78        1.5
 ```
 
 **data\_aggregating**
@@ -210,20 +210,20 @@ For instance, please use
 ``` r
 subgroup1<-data_selecting(milk, include=c("milk"), must=c("UHT"))
 head(subgroup1)
-#>         time prices quantities prodID retID       description
-#> 1 2018-12-01   2.99        113  60010  1311 full-fat milk uht
-#> 2 2018-12-01   2.29        650 401350  1311 full-fat milk uht
-#> 3 2018-12-01   2.68        304 402570  1311 full-fat milk uht
-#> 4 2018-12-01   2.65        137 405419  1311 full-fat milk uht
-#> 5 2018-12-01   2.99        560  60010  2210 full-fat milk uht
-#> 6 2018-12-01   2.50       1914 401350  2210 full-fat milk uht
+#>         time prices quantities prodID retID      description
+#> 1 2018-12-01   2.97         78  17034  1311 low-fat milk uht
+#> 2 2018-12-01   2.97        167  17034  2210 low-fat milk uht
+#> 3 2018-12-01   2.97        119  17034  6610 low-fat milk uht
+#> 4 2018-12-01   2.97         32  17034  7611 low-fat milk uht
+#> 5 2018-12-01   2.97         54  17034  8910 low-fat milk uht
+#> 6 2019-01-01   2.95         71  17034  1311 low-fat milk uht
 ```
 
 to obtain the subset of **milk** limited to *UHT* category:
 
 ``` r
 unique(subgroup1$description)
-#> [1] "full-fat milk uht" "low-fat milk uht"
+#> [1] "low-fat milk uht"  "full-fat milk uht"
 ```
 
 You can use
@@ -232,19 +232,19 @@ You can use
 subgroup2<-data_selecting(milk, must=c("milk"), exclude=c("past","goat"))
 head(subgroup2)
 #>         time prices quantities prodID retID   description
-#> 1 2018-12-01  19.58       10.5 403249  1311 powdered milk
-#> 2 2018-12-01  19.58      154.5 403249  2210 powdered milk
-#> 3 2018-12-01  19.58       88.5 403249  6610 powdered milk
-#> 4 2018-12-01  19.58       75.0 403249  7611 powdered milk
-#> 5 2018-12-01  19.58       18.0 403249  8910 powdered milk
-#> 6 2018-12-01  69.95        1.0 400033  2210 powdered milk
+#> 1 2018-12-01   8.78        9.0  14215  2210 powdered milk
+#> 2 2019-01-01   8.78       13.5  14215  2210 powdered milk
+#> 3 2019-02-01   8.78        0.5  14215  1311 powdered milk
+#> 4 2019-02-01   8.78        8.0  14215  2210 powdered milk
+#> 5 2019-03-01   8.78        0.5  14215  1311 powdered milk
+#> 6 2019-03-01   8.78        1.5  14215  2210 powdered milk
 ```
 
 to obtain the subset of **milk** with products which are not *pasteurized* and which are not **goat**:
 
 ``` r
 unique(subgroup2$description)
-#> [1] "powdered milk"     "full-fat milk uht" "low-fat milk uht"
+#> [1] "powdered milk"     "low-fat milk uht"  "full-fat milk uht"
 ```
 
 **data\_classifying**
@@ -302,7 +302,7 @@ head(data_predicted)
 #> 2 no information  11421            11421
 #> 3              g  11831            11831
 #> 4              g  11831            11831
-#> 5 no information  11811            11441
+#> 5 no information  11811            11714
 #> 6 no information  11421            11421
 ```
 
@@ -379,13 +379,13 @@ These three filters differ from each other with regard to the data reduction lev
 ``` r
 data_without_filters<-data_filtering(milk,start="2018-12",end="2019-03",filters=c())
 nrow(data_without_filters)
-#> [1] 403
+#> [1] 413
 nrow(filter1)
 #> [1] 378
 nrow(filter2)
 #> [1] 381
 nrow(filter3)
-#> [1] 180
+#> [1] 170
 nrow(filter4)
 #> [1] 374
 ```
@@ -410,7 +410,7 @@ The function returns all values from the indicated column (defined by the **type
 
 ``` r
 available(milk, period1="2018-12", period2="2019-12", type="retID",interval=TRUE)
-#> [1] 1311 2210 6610 7611 8910
+#> [1] 2210 1311 6610 7611 8910
 ```
 
 **matched**
@@ -419,11 +419,11 @@ The function returns all values from the indicated column (defined by the **type
 
 ``` r
 matched(milk, period1="2018-12", period2="2019-12", type="prodID",interval=TRUE)
-#>  [1] 400032 403249 400033 402609 406223 406224  14216 400189 400194 400195
-#> [11] 400196 402601 402602  60010 401350 402570 405419 406245  74431  34540
-#> [21] 402263 404005 407670 407860 407220  82830  15404 406247  17034 406246
-#> [31] 401347 402569 405420  70397  82919  94256 402264 404004 407669 407859
-#> [41] 407219  82827 402293 407709
+#>  [1]  14216  15404  17034  34540  60010  70397  74431  82827  82830  82919
+#> [11]  94256 400032 400033 400189 400194 400195 400196 401347 401350 402263
+#> [21] 402264 402293 402569 402570 402601 402602 402609 403249 404004 404005
+#> [31] 405419 405420 406223 406224 406245 406246 406247 407219 407220 407669
+#> [41] 407670 407709 407859 407860 400099
 ```
 
 **matched\_index**
@@ -432,7 +432,7 @@ The function returns a ratio of values from the indicated column that occur simu
 
 ``` r
 matched_index(milk, period1="2018-12", period2="2019-12", type="prodID",interval=TRUE)
-#> [1] 0.7213115
+#> [1] 0.7258065
 ```
 
 **matched\_fig**
@@ -448,10 +448,10 @@ matched_fig(milk, start="2018-12", end="2019-12", type="prodID")
 ``` r
 matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
 #>      date  fraction
-#> 1 2019-01 0.9622642
-#> 2 2019-02 0.9433962
-#> 3 2019-03 0.9056604
-#> 4 2019-04 0.8703704
+#> 1 2019-01 0.9629630
+#> 2 2019-02 0.9444444
+#> 3 2019-03 0.9074074
+#> 4 2019-04 0.8727273
 ```
 
 **prices**
@@ -460,13 +460,13 @@ The function returns prices (unit value) of products with a given ID (**prodID**
 
 ``` r
 prices(milk, period="2019-06")
-#>  [1]  7.980000 19.502286 64.057143 15.266667  6.029412  6.441176  8.700000
-#>  [8]  8.669455 18.972121 12.622225  9.914052  7.102823  7.970131  9.901111
-#> [15]  2.990000  2.527874  2.590000  2.371819  2.090000  2.236250  1.990000
-#> [22]  1.810000  2.674401  2.683688  2.813238  2.680000  2.860000  4.702051
-#> [29]  1.890000  1.890000  2.950000  2.163273  1.990000  3.180000  2.490000
-#> [36]  2.490000  2.834464  2.400000  2.588644  3.790911  1.650548  2.231947
-#> [43]  2.584184  1.450000  3.266000  2.810000  2.790000  2.390000
+#>  [1]  8.700000  8.669455  1.890000  2.950000  1.990000  2.990000  2.834464
+#>  [8]  4.702051  2.163273  2.236250  2.810000  2.860000  2.400000  2.588644
+#> [15]  3.790911  7.980000 64.057143 18.972121 12.622225  9.914052  7.102823
+#> [22]  3.180000  2.527874  1.810000  1.650548  2.790000  2.490000  2.590000
+#> [29]  7.970131  9.901111 15.266667 19.502286  2.231947  2.674401  2.371819
+#> [36]  2.490000  6.029412  6.441176  2.090000  1.990000  1.890000  1.450000
+#> [43]  2.680000  2.584184  2.683688  2.390000  3.266000  2.813238  7.966336
 ```
 
 **quantities**
@@ -498,9 +498,9 @@ milk1<-dplyr::filter(milk, milk$description==categories[1])
 milk2<-dplyr::filter(milk, milk$description==categories[2])
 milk3<-dplyr::filter(milk, milk$description==categories[3])
 sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07")
-#> [1]   3954.09  44400.76 168247.46
+#> [1]  44400.76 152474.55 101470.76
 sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07", shares=TRUE)
-#> [1] 0.01825507 0.20498747 0.77675746
+#> [1] 0.1488230 0.5110661 0.3401109
 ```
 
 or a barplot presenting these results:
@@ -516,7 +516,7 @@ The function returns **Pearson's correlation coefficient** for price and quantit
 
 ``` r
 pqcor(milk, period="2019-05")
-#> [1] -0.2035
+#> [1] -0.2047
 pqcor(milk, period="2019-05",figure=TRUE)
 ```
 
@@ -527,13 +527,13 @@ The function returns **Pearson's correlation coefficients** between price and qu
 ``` r
 pqcor_fig(milk, start="2018-12", end="2019-06", figure=FALSE)
 #>      date correlation
-#> 1 2018-12     -0.1819
-#> 2 2019-01     -0.1772
-#> 3 2019-02     -0.1792
-#> 4 2019-03     -0.1944
-#> 5 2019-04     -0.1960
-#> 6 2019-05     -0.2035
-#> 7 2019-06     -0.2022
+#> 1 2018-12     -0.1835
+#> 2 2019-01     -0.1786
+#> 3 2019-02     -0.1805
+#> 4 2019-03     -0.1956
+#> 5 2019-04     -0.1972
+#> 6 2019-05     -0.2047
+#> 7 2019-06     -0.2037
 pqcor_fig(milk, start="2018-12", end="2019-06")
 ```
 
@@ -543,7 +543,7 @@ This function returns a value of the relative price (dSP) and/or quantity (dSQ) 
 
 ``` r
 dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")
-#> [1] 0.00004258112
+#> [1] 0.00004175192
 ```
 
 **dissimilarity\_fig**
@@ -573,10 +573,10 @@ Each of these functions returns a value (or vector of values) of the choosen unw
 
 ``` r
 jevons(milk, start="2018-12", end="2020-01")
-#> [1] 1.028862
+#> [1] 1.028223
 jevons(milk, start="2018-12", end="2020-01", interval=TRUE)
-#>  [1] 1.0000000 1.0227271 1.0306252 1.0361275 1.0076198 1.0403077 0.9850525
-#>  [8] 1.0053768 1.0034188 1.0181678 1.0248130 1.0088363 1.0255585 1.0288617
+#>  [1] 1.0000000 1.0222661 1.0300191 1.0353857 1.0075504 1.0395393 0.9853148
+#>  [8] 1.0053100 1.0033727 1.0177604 1.0243906 1.0086291 1.0249373 1.0282234
 ```
 
 <a id="ad5"> </a>
@@ -618,11 +618,11 @@ Each of these functions returns a value (or vector of values) of the choosen wei
 
 ``` r
 fisher(milk, start="2018-12", end="2020-01")
-#> [1] 0.9613153
+#> [1] 0.9615501
 lloyd_moulton(milk, start="2018-12", end="2020-01", sigma=0.9)
-#> [1] 0.9833808
+#> [1] 0.9835069
 lowe(milk, start="2019-12", end="2020-02", base="2018-12", interval=TRUE)
-#> [1] 1.0000000 0.9879382 1.0024140
+#> [1] 1.0000000 0.9880546 1.0024443
 ```
 
 <a id="ad6"> </a>
@@ -670,38 +670,47 @@ Each time, the **interval** parameter has a logical value indicating whether the
 
 ``` r
 chfisher(milk, start="2018-12", end="2020-01")
-#> [1] 0.9615496
+#> [1] 0.9618094
 chfisher(milk, start="2018-12", end="2020-01", interval=TRUE)
-#>  [1] 1.0000000 1.0021874 1.0004589 0.9861511 0.9943142 0.9914703 0.9897306
-#>  [8] 0.9875189 0.9981165 0.9968423 0.9784270 0.9770267 0.9873297 0.9615496
+#>  [1] 1.0000000 1.0021692 1.0004617 0.9862756 0.9944042 0.9915704 0.9898026
+#>  [8] 0.9876325 0.9981591 0.9968851 0.9786428 0.9771951 0.9874251 0.9618094
 ```
 
 <a id="ad7"> </a>
 
 ### Functions for multilateral price index calculation
 
-This package includes 9 functions for calculating multilateral price indices and one additional and general function (**QU**) which calculates the quality adjusted unit value index, i.e.:
+This package includes 18 functions for calculating multilateral price indices and one additional and general function (**QU**) which calculates the quality adjusted unit value index, i.e.:
 
-| Price Index                 | Function |
-|-----------------------------|----------|
-| CCDI                        | ccdi     |
-| GEKS                        | geks     |
-| GEKS-J                      | geksj    |
-| GEKS-W                      | geksw    |
-| GEKS-L                      | geksl    |
-| WGEKS-L                     | wgeksl   |
-| Geary-Khamis                | gk       |
-| Quality Adjusted Unit Value | QU       |
-| Time Product Dummy          | tpd      |
-| SPQ                         | SPQ      |
+| Price Index                 | Function  |
+|-----------------------------|-----------|
+| CCDI                        | ccdi      |
+| GEKS                        | geks      |
+| WGEKS                       | wgeks     |
+| GEKS-J                      | geksj     |
+| GEKS-W                      | geksw     |
+| GEKS-L                      | geksl     |
+| WGEKS-L                     | wgeksl    |
+| GEKS-GL                     | geksgl    |
+| WGEKS-GL                    | wgeksgl   |
+| GEKS-AQU                    | geksaqu   |
+| WGEKS-AQU                   | wgeksaqu  |
+| GEKS-AQI                    | geksaqi   |
+| WGEKS-AQI                   | wgeksaqi  |
+| GEKS-GAQI                   | geksgaqi  |
+| WGEKS-GAQI                  | wgeksgaqi |
+| Geary-Khamis                | gk        |
+| Quality Adjusted Unit Value | QU        |
+| Time Product Dummy          | tpd       |
+| SPQ                         | SPQ       |
 
-The above-mentioned 8 multilateral formulas (the **SPQ** index is an exception) consider the time window defined by the **wstart** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). It measures the price dynamics by comparing the **end** period to the **start** period (both **start** and **end** must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: **price\_index**, **price\_indices** or **final\_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating please use functions: **final\_index** or **final\_index2**). Here are examples for the GEKS formula (see documentation):
+The above-mentioned 18 multilateral formulas (the **SPQ** index is an exception) consider the time window defined by the **wstart** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). It measures the price dynamics by comparing the **end** period to the **start** period (both **start** and **end** must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: **price\_index**, **price\_indices** or **final\_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating please use functions: **final\_index** or **final\_index2**). Here are examples for the GEKS formula (see documentation):
 
 ``` r
 geks(milk, start="2019-01", end="2019-04",window=10)
-#> [1] 0.9911205
+#> [1] 0.9912305
 geksl(milk, wstart="2018-12", start="2019-03", end="2019-05")
-#> [1] 1.002247
+#> [1] 1.002251
 ```
 
 The **QU** function returns a value of the *quality adjusted unit value index* (QU index) for the given set of adjustment factors. An additional **v** parameter is a data frame with adjustment factors for at least all matched **prodIDs**. It must contain two columns: **prodID** with unique product IDs and **value** with corresponding adjustment factors (see documentation). The following example starts from creating a data frame which includes sample adjusted factors:
@@ -712,99 +721,126 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1 400032 1.287785
-#> 2 403249 1.837677
-#> 3 400033 1.529563
-#> 4 402609 1.362896
-#> 5 406223 1.346118
-#> 6 406224 1.671687
+#> 1  14215 1.044959
+#> 2  14216 1.488534
+#> 3  15404 1.615743
+#> 4  17034 1.913652
+#> 5  34540 1.242277
+#> 6  51583 1.258648
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9907554
+#> [1] 0.9861937
 ```
 
 <a id="ad8"> </a>
 
 ### Functions for extending multilateral price indices by using splicing methods
 
-This package includes 8 functions for calculating splice indices:
+This package includes 17 functions for calculating splice indices:
 
-| Price Index               | Function       |
-|---------------------------|----------------|
-| Splice CCDI               | ccdi\_splcie   |
-| Splice GEKS               | geks\_splice   |
-| Splice GEKS-J             | geksj\_splice  |
-| Splice GEKS-W             | geksw\_splice  |
-| Splice GEKS-L             | geksl\_splice  |
-| Splice weighted GEKS-L    | wgeksl\_splice |
-| Splice Geary-Khamis       | gk\_splice     |
-| Splice Time Product Dummy | tpd\_splice    |
+| Price Index               | Function          |
+|---------------------------|-------------------|
+| Splice CCDI               | ccdi\_splcie      |
+| Splice GEKS               | geks\_splice      |
+| Splice weighted GEKS      | wgeks\_splice     |
+| Splice GEKS-J             | geksj\_splice     |
+| Splice GEKS-W             | geksw\_splice     |
+| Splice GEKS-L             | geksl\_splice     |
+| Splice weighted GEKS-L    | wgeksl\_splice    |
+| Splice GEKS-GL            | geksgl\_splice    |
+| Splice weighted GEKS-GL   | wgeksgl\_splice   |
+| Splice GEKS-AQU           | geksaqu\_splice   |
+| Splice weighted GEKS-AQU  | wgeksaqu\_splice  |
+| Splice GEKS-AQI           | geksaqi\_splice   |
+| Splice weighted GEKS-AQI  | wgeksaqi\_splice  |
+| Splice GEKS-GAQI          | geksgaqi\_splice  |
+| Splice weighted GEKS-GAQI | wgeksgaqi\_splice |
+| Splice Geary-Khamis       | gk\_splice        |
+| Splice Time Product Dummy | tpd\_splice       |
 
 These functions return a value (or values) of the selected multilateral price index extended by using window splicing methods (defined by the **splice** parameter). Available splicing methods are: **movement splice**, **window splice**, **half splice**, **mean splice** and their additional variants: **window splice on published indices (WISP)**, **half splice on published indices (HASP)** and **mean splice on published indices** (see documentation). The first considered time window is defined by the **start** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). Functions measure the price dynamics by comparing the **end** period to the **start** period, i.e. if the time interval **<start, end>** exceeds the defined time window then splicing methods are used. If the **interval** parameter is set to TRUE, then all fixed base multilateral indices are presented (the fixed base month is defined by **start**). To get information about both price index values and corresponding dates, please see functions: **price\_index**, **price\_indices** or **final\_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the **final\_index** function). For instance, let us calculate the **extended Time Product Dummy** index by using the **half splice method** with a 10-month time window:
 
 ``` r
 tpd_splice(milk, start="2018-12", end="2020-02",window=10,splice="half",interval=TRUE)
-#>  [1] 1.0000000 1.0034052 0.9997846 0.9830298 0.9949289 0.9921140 0.9907993
-#>  [8] 0.9860539 0.9994174 0.9944681 0.9803287 0.9812484 0.9888518 0.9626117
-#> [15] 1.0020928
+#>  [1] 1.0000000 1.0033636 0.9997753 0.9831710 0.9950045 0.9921984 0.9908530
+#>  [8] 0.9861655 0.9994412 0.9945041 0.9805130 0.9813733 0.9889166 0.9628495
+#> [15] 1.0021059
 ```
 
 <a id="ad9"> </a>
 
 ### Functions for extending multilateral price indices by using the FBEW method
 
-This package includes 8 functions for calculating extensions of multilateral indices by using the Fixed Base Monthly Expanding Window (FBEW) method:
+This package includes 17 functions for calculating extensions of multilateral indices by using the Fixed Base Monthly Expanding Window (FBEW) method:
 
-| Price Index             | Function     |
-|-------------------------|--------------|
-| FBEW CCDI               | ccdi\_fbew   |
-| FBEW GEKS               | geks\_fbew   |
-| FBEW GEKS-J             | geksj\_fbew  |
-| FBEW GEKS-W             | geksw\_fbew  |
-| FBEW GEKS-L             | geksl\_fbew  |
-| FBEW WGEKS-L            | wgeksl\_fbew |
-| FBEW Geary-Khamis       | gk\_fbew     |
-| FBEW Time Product Dummy | tpd\_fbew    |
+| Price Index             | Function        |
+|-------------------------|-----------------|
+| FBEW CCDI               | ccdi\_fbew      |
+| FBEW GEKS               | geks\_fbew      |
+| FBEW WGEKS              | wgeks\_fbew     |
+| FBEW GEKS-J             | geksj\_fbew     |
+| FBEW GEKS-W             | geksw\_fbew     |
+| FBEW GEKS-L             | geksl\_fbew     |
+| FBEW WGEKS-L            | wgeksl\_fbew    |
+| FBEW GEKS-GL            | geksgl\_fbew    |
+| FBEW WGEKS-GL           | wgeksgl\_fbew   |
+| FBEW GEKS-AQU           | geksaqu\_fbew   |
+| FBEW WGEKS-AQU          | wgeksaqu\_fbew  |
+| FBEW GEKS-AQI           | geksaqi\_fbew   |
+| FBEW WGEKS-AQI          | wgeksaqi\_fbew  |
+| FBEW GEKS-GAQI          | geksgaqi\_fbew  |
+| FBEW WGEKS-GAQI         | wgeksgaqi\_fbew |
+| FBEW Geary-Khamis       | gk\_fbew        |
+| FBEW Time Product Dummy | tpd\_fbew       |
 
 These functions return a value (or values) of the selected multilateral price index extended by using the FBEW method. The FBEW method uses a time window with a fixed base month every year (December). The window is enlarged every month with one month in order to include information from a new month. The full window length (13 months) is reached in December of each year. These functions measure the price dynamics between the **end** and **start** periods. A month of the **start** parameter must be December (see documentation). If the distance between **end** and **start** exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates please see functions: **price\_index**, **price\_indices** or **final\_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the **final\_index** function). For instance, let us calculate the **extended GEKS** index by using the FBEW method. Please note that December 2019 is the chain-linking month, i.e.:
 
 ``` r
 geks_fbew(milk, start="2018-12", end="2020-03")
-#> [1] 0.9890676
+#> [1] 0.9891602
   geks_fbew(milk, start="2018-12", end="2019-12")*
   geks_fbew(milk, start="2019-12", end="2020-03")
-#> [1] 0.9890676
+#> [1] 0.9891602
 ```
 
 <a id="ad10"> </a>
 
 ### Functions for extending multilateral price indices by using the FBMW method
 
-This package includes 8 functions for calculating extensions of multilateral indices by using the Fixed Base Moving Window (FBMW) method:
+This package includes 17 functions for calculating extensions of multilateral indices by using the Fixed Base Moving Window (FBMW) method:
 
-| Price Index             | Function     |
-|-------------------------|--------------|
-| FBMW CCDI               | ccdi\_fbmw   |
-| FBMW GEKS               | geks\_fbmw   |
-| FBMW GEKS-J             | geksj\_fbmw  |
-| FBMW GEKS-W             | geksw\_fbmw  |
-| FBMW GEKS-L             | geksl\_fbmw  |
-| FBMW WGEKS-L            | wgeksl\_fbmw |
-| FBMW Geary-Khamis       | gk\_fbmw     |
-| FBMW Time Product Dummy | tpd\_fbmw    |
+| Price Index             | Function        |
+|-------------------------|-----------------|
+| FBMW CCDI               | ccdi\_fbmw      |
+| FBMW GEKS               | geks\_fbmw      |
+| FBMW WGEKS              | wgeks\_fbmw     |
+| FBMW GEKS-J             | geksj\_fbmw     |
+| FBMW GEKS-W             | geksw\_fbmw     |
+| FBMW GEKS-L             | geksl\_fbmw     |
+| FBMW WGEKS-L            | wgeksl\_fbmw    |
+| FBMW GEKS-GL            | geksgl\_fbmw    |
+| FBMW WGEKS-GL           | wgeksgl\_fbmw   |
+| FBMW GEKS-AQU           | geksaqu\_fbmw   |
+| FBMW WGEKS-AQU          | wgeksaqu\_fbmw  |
+| FBMW GEKS-AQI           | geksaqi\_fbmw   |
+| FBMW WGEKS-AQI          | wgeksaqi\_fbmw  |
+| FBMW GEKS-GAQI          | geksgaqi\_fbmw  |
+| FBMW WGEKS-GAQI         | wgeksgaqi\_fbmw |
+| FBMW Geary-Khamis       | gk\_fbmw        |
+| FBMW Time Product Dummy | tpd\_fbmw       |
 
 These functions return a value (or values) of the selected multilateral price index extended by using the FBMW method. They measure the price dynamics between the **end** and **start** periods and it uses a 13-month time window with a fixed base month taken as **year(end)-1**. If the distance between **end** and **start** exceeds 13 months, then internal Decembers play a role of chain-linking months. A month of the **start** parameter must be December (see documentation). To get information about both price index values and corresponding dates, please see functions: **price\_index**, **price\_indices** or **final\_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the **final\_index** function). For instance, let us calculate the **extended CCDI** index by using the FBMW method. Please note that December 2019 is the chain-linking month, i.e.:
 
 ``` r
 ccdi_fbmw(milk, start="2018-12", end="2020-03")
-#> [1] 0.9873102
+#> [1] 0.9874252
     ccdi_fbmw(milk, start="2018-12", end="2019-12")*
     ccdi_fbmw(milk, start="2019-12", end="2020-03")
-#> [1] 0.9873102
+#> [1] 0.9874252
 ```
 
 <a id="ad11"> </a>
@@ -819,25 +855,25 @@ This function returns a value or values of the selected price index. The **formu
 
 ``` r
 price_index(milk, start="2019-05", end="2019-06", formula="fisher")
-#> [1] 0.9982454
+#> [1] 0.9982172
 price_index(milk, start="2018-12", end="2020-02",
             formula="tpd_splice",splice="movement",interval=TRUE)
 #>       date tpd_splice
 #> 1  2018-12  1.0000000
-#> 2  2019-01  1.0058919
-#> 3  2019-02  1.0009019
-#> 4  2019-03  0.9832469
-#> 5  2019-04  0.9950177
-#> 6  2019-05  0.9914660
-#> 7  2019-06  0.9919629
-#> 8  2019-07  0.9885075
-#> 9  2019-08  0.9997805
-#> 10 2019-09  0.9946831
-#> 11 2019-10  0.9794113
-#> 12 2019-11  0.9783548
-#> 13 2019-12  0.9895292
-#> 14 2020-01  0.9623072
-#> 15 2020-02  1.0031225
+#> 2  2019-01  1.0058281
+#> 3  2019-02  1.0008801
+#> 4  2019-03  0.9833854
+#> 5  2019-04  0.9950913
+#> 6  2019-05  0.9915562
+#> 7  2019-06  0.9920122
+#> 8  2019-07  0.9886072
+#> 9  2019-08  0.9998138
+#> 10 2019-09  0.9947203
+#> 11 2019-10  0.9796047
+#> 12 2019-11  0.9784985
+#> 13 2019-12  0.9895882
+#> 14 2020-01  0.9625456
+#> 15 2020-02  1.0031290
 ```
 
 **price\_indices**
@@ -855,14 +891,14 @@ price_indices(milk, start="2019-12", end="2020-08", bilateral=c("fisher"),
               splice=c("movement"), interval=TRUE)
 #>      date    fisher     young    agmean      geks        gk tpd_splice
 #> 1 2019-12 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000  1.0000000
-#> 2 2020-01 0.9738891 0.9891646 0.9939640 0.9750266 0.9693130  0.9732830
-#> 3 2020-02 1.0123415 1.0039094 1.0140796 1.0087883 1.0106985  1.0101760
-#> 4 2020-03 1.0024037 0.9996002 1.0039339 0.9992815 1.0004526  0.9998948
-#> 5 2020-04 0.9777865 0.9895585 0.9972551 0.9750276 0.9708036  0.9769588
-#> 6 2020-05 1.0140321 1.0138042 1.0202523 1.0147363 1.0163318  1.0154608
-#> 7 2020-06 0.9946660 1.0000850 1.0071414 0.9991348 1.0032779  1.0053921
-#> 8 2020-07 1.0033760 1.0041679 1.0090685 1.0063868 1.0077830  1.0098781
-#> 9 2020-08 1.0112388 1.0096740 1.0148145 1.0113609 1.0151099  1.0154043
+#> 2 2020-01 0.9740581 0.9892721 0.9940157 0.9751969 0.9695107  0.9734589
+#> 3 2020-02 1.0123062 1.0039283 1.0140363 1.0087731 1.0106597  1.0101372
+#> 4 2020-03 1.0024357 0.9996556 1.0039500 0.9993375 1.0004861  0.9999263
+#> 5 2020-04 0.9779487 0.9896677 0.9972912 0.9752104 0.9710071  0.9771235
+#> 6 2020-05 1.0139845 1.0137411 1.0201698 1.0146765 1.0162489  1.0153823
+#> 7 2020-06 0.9947352 1.0001336 1.0071368 0.9991796 1.0032921  1.0053941
+#> 8 2020-07 1.0033918 1.0041741 1.0090451 1.0063783 1.0077500  1.0098352
+#> 9 2020-08 1.0112077 1.0096444 1.0147635 1.0113239 1.0150360  1.0153327
 ```
 
 **final\_index**
@@ -951,9 +987,9 @@ final_index2(data=coffee, by="retID",all=TRUE,
 
 <a id="ad12"> </a>
 
-### Functions for graphical comparison of price indices
+### Functions for comparisons of price indices
 
-This package includes 2 functions for a simple graphical comparison of price indices. The first one, i.e. **compare\_indices** is based on the syntax of the **price\_indices** function and thus it allows us to compare price indices calculated on the same data set. The second function, i.e. **compare\_final\_indices** has a general character since its first argument is a list of data frames which contain results obtained by using the **price\_index**, **final\_index** or **final\_index2** functions.
+This package includes two functions for a simple graphical comparison of price indices and one function for calculating distances between indices. The first one, i.e. **compare\_indices**, is based on the syntax of the **price\_indices** function and thus it allows us to compare price indices calculated on the same data set. The second function, i.e. **compare\_final\_indices**, has a general character since its first argument is a list of data frames which contain results obtained by using the **price\_index**, **final\_index** or **final\_index2** functions. The third one, i.e. **compare\_distances**, calculates (average) distances between price indices, i.e. the mean absolute distance or root mean square distance is calculated.
 
 **compare\_indices**
 
@@ -988,3 +1024,24 @@ compare_final_indices(finalindices=list(case1, case2),names=c("TPD without aggre
 ```
 
 <img src="man/figures/README-unnamed-chunk-58-1.png" width="100%" />
+
+**compare\_distances**
+
+The function calculates average distances between price indices and it returns a data frame with these values for each pair of price indices. The main **data** parameter is a data frame containing values of indices which are to be compared. The **measure** parameter specifies what measure should be used to compare the indexes. Possible parameter values are: "MAD" (Mean Absolute Distance) or "RMSD" (Root Mean Square Distance). The results may be presented in percentage points (see the **pp** parameter) and we can control how many decimal places are to be used in the presentation of results (see the **prec** parameter).
+
+For instance, let us compare the Jevons, Dutot and Carli indices calculated for the **milk** data set and for the time interval: December 2018 - December 2019. Let us use the MAD measure for these comparisons:
+
+``` r
+#Creating a data frame with unweighted bilateral index values
+df<-price_indices(milk, 
+                  bilateral=c("jevons","dutot","carli"), 
+                  start="2018-12",
+                  end="2019-12",
+                  interval=TRUE)
+#Calculating average distances between indices (in p.p)
+compare_distances(df)
+#>        jevons dutot carli
+#> jevons  0.000 2.482 2.093
+#> dutot   2.482 0.000 4.420
+#> carli   2.093 4.420 0.000
+```

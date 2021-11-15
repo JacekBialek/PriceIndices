@@ -1,3 +1,18 @@
+# Package update 0.0.5 -> 0.0.6
+
+## New function
+* 37 new functions (concerning the **WGEKS**, **GEKSL**, **WGEKSL**, **GEKS-AQU**, **WGEKS-AQU**, **GEKS-AQI**, **WGEKS-AQI**, **GEKS-GAQI**, **WGEKS-GAQI** indices and its extensions, a new function **compare_distances**)
+
+## Bug fixes
+* 6 small bugs fixed (they concern **chlowe**, **chgeolowe**, **chyoung**, **chgeoyoung**, **chhybrid** and **chgeohybrid** functions)
+* data set on **milk** was corrected and modified
+
+## Data set modification
+* A data set on milk has beed modified (one new product has beed added) *
+
+## Function modification
+* A function **matched_fig** has been extended by adding a new parameter
+
 # Package update 0.0.4 -> 0.0.5
 
 ## New function

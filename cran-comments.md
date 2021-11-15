@@ -1,7 +1,8 @@
 ## Package update 
-* 1 new function (**data_aggregating**)
-* 1 new data set (**dataAGGR**)
-* 2 small bugs fixed (they concern **final_index** and **final_index2** functions)
+* 37 new functions (concerning the WGEKS, GEKSL, WGEKSL, GEKS-AQU, WGEKS-AQU, GEKS-AQI, WGEKS-AQI, GEKS-GAQI, WGEKS-GAQI indices and its extensions, a new function: compare_distances)
+* 6 small bugs fixed (they concern **chlowe**, **chgeolowe**, **chyoung**, **chgeoyoung**, **chhybrid** and **chgeohybrid** functions)
+* a data set on **milk** has beed modified
+* a function **matched_fig** has been extended by adding a new parameter
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

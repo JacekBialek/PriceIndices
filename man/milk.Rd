@@ -5,7 +5,7 @@
 \alias{milk}
 \title{A real data set on sold milk}
 \format{
-A data frame with 6 columns and 4281 rows. The used variables are as follows:
+A data frame with 6 columns and 4386 rows. The used variables are as follows:
 
 \code{time} - Dates of transactions (Year-Month-Day)
 
@@ -13,7 +13,7 @@ A data frame with 6 columns and 4281 rows. The used variables are as follows:
 
 \code{quantities} - Quantities of sold products [liters]
 
-\code{prodID} - Unique product codes (data set contains 67 different prodIDs)
+\code{prodID} - Unique product codes (data set contains 68 different prodIDs)
 
 \code{retID} - Unique codes identifying outlets/retailer sale points (data set contains 5 different retIDs)
 

@@ -1,5 +1,3 @@
-
-
 #' @title  Calculating the bilateral hybrid price index
 #'
 #' @description This function returns a value (or a vector of values) of the bilateral hybrid price index. The hybrid index was proposed by Bialek (2020) and it uses correlation coefficients between prices and quantities.
@@ -390,14 +388,8 @@ chhybrid <-
   start <- as.Date(start)
   end <- as.Date(end)
   dates <- c()
-  while (start <= end)
-  
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from = start, to = end, by = "month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (hybrid(data, start = dates[i], end = dates[i + 1], base))
@@ -445,14 +437,8 @@ chgeohybrid <-
   start <- as.Date(start)
   end <- as.Date(end)
   dates <- c()
-  while (start <= end)
-  
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from = start, to = end, by = "month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (geohybrid(data, start = dates[i], end = dates[i + 1], base))
@@ -871,6 +857,346 @@ else
 return (spq[length(spq)])
 }
 
+
+#' @title  Calculating the multilateral WGEKS price index
+#'
+#' @description This function returns a value of the multilateral weighted WGEKS price index (to be more precise: the weighted GEKS index based on the Fisher formula).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @rdname wgeks
+#' @return This function returns a value of the multilateral weighted WGEKS price index (to be more precise: the weighted GEKS index based on the Fisher formula) which considers the time window defined by \code{wstart} and \code{window} parameters. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' @examples 
+#' \donttest{wgeks(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{wgeks(milk, start="2018-12", end="2019-12")}
+#' @export
+
+wgeks <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  wgks <-
+  function (tt)
+  return (c(fisher(data, start=tt, end=end), fisher(data, start=tt, end=start)))
+  vec <- sapply(dates, wgks)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeks <-
+  prod((vec[1, ] / vec[2, ]) ^ expenditures)
+  return(wgeks)
+  }
+  
+
+#' @title  Extending the multilateral weighted GEKS price index by using the FBEW method.
+#'
+#' @description This function returns a value of the multilateral weighted GEKS price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname wgeks_fbew
+#' @return This function returns a value of the multilateral weighted GEKS price index (the weighted GEKS index based on the Fisher formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+#'
+#' @examples 
+#' \donttest{wgeks_fbew(milk, start="2018-12", end="2019-08")}
+#' @export
+
+wgeks_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeks(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral weighted GEKS price index by using the FBMW method.
+#'
+#' @description This function returns a value of the multilateral weighted GEKS price index extended by using the FBMW (Fixed Base Moving Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname wgeks_fbmw
+#' @return This function returns a value of the multilateral weighted GEKS price index (the weighted GEKS index based on the Fisher formula) extended by using the FBMW (Fixed Base Moving Window) method. It measures the price dynamics between periods \code{end} and \code{start} and it uses a 13-month time window with a fixed base month taken as \code{year(end)-1}. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. The month of the \code{start} parameter must be December. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' @examples 
+#' \donttest{wgeks_fbmw(milk, start="2019-12", end="2020-04")}
+#' @export
+
+wgeks_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeks_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+
+#' @title  Extending the multilateral weighted GEKS price index by using window splicing methods.
+#'
+#' @description This function returns a value (or values) of the multilateral weighted GEKS price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
+#' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
+#' @rdname wgeks_splice
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral weighted GEKS price index (the weighted GEKS index based on the Fisher formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
+#' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
+#'
+#' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
+#'
+#' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
+#'
+#' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' @examples 
+#' \donttest{wgeks_splice(milk, start="2018-12", end="2020-02",splice="half")}
+#' \donttest{wgeks_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+#' @export
+
+wgeks_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
+  #main body
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, wgeks(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * wgeks(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeks(data, tT, t, wstart = tT, window) / wgeks(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeks(data, th, t, wstart = tT, window) / wgeks(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * wgeks(data, tm, t, wstart = tT, window) / wgeks(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * wgeks(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * wgeks(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * wgeks(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
+
+
 #' @title  Calculating the multilateral GEKS-L price index
 #'
 #' @description This function returns a value of the multilateral GEKS-L price index (to be more precise: the GEKS index based on the Laspeyres formula).
@@ -935,7 +1261,7 @@ geksl <-
   #main body
   gksl <-
   function (tt)
-  return (c(laspeyres(data, tt, end), laspeyres(data, tt, start)))
+  return (c(nl(data, start=tt, end=end), nl(data, start=tt, end=start)))
   vec <- sapply(dates, gksl)
   geksl <- prod(vec[1, ] / vec[2, ])
   geksl <- geksl ^ (1 / window)
@@ -1006,7 +1332,7 @@ wgeksl <-
   #main body
   wgksl <-
   function (tt)
-  return (c(laspeyres(data, tt, end), laspeyres(data, tt, start)))
+  return (c(nl(data, start=tt, end=end), nl(data, start=tt, end=start)))
   vec <- sapply(dates, wgksl)
   sales_in_time <-
   function (tt)
@@ -1027,7 +1353,7 @@ wgeksl <-
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @rdname geksl_fbew
-#' @return This function returns a value of the multilateral GEKS-L price index (the GEKS index based on the Laspeyres formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating,please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return This function returns a value of the multilateral GEKS-L price index (the GEKS index based on the Laspeyres formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
 #' @references
 #' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
 #'
@@ -1537,6 +1863,2773 @@ wgeksl_splice <-
   return(set)
   }
 
+#' @title  Calculating the multilateral GEKS-GL price index
+#'
+#' @description This function returns a value of the multilateral GEKS-GL price index (to be more precise: the GEKS index based on the geometric Laspeyres formula).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @rdname geksgl
+#' @return This function returns a value of the multilateral GEKS-GL price index (to be more precise: the GEKS index based on the geometric Laspeyres formula) which considers the time window defined by \code{wstart} and \code{window} parameters. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function). 
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' @examples 
+#' \donttest{geksgl(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{geksgl(milk, start="2018-12", end="2019-12")}
+#' @export
+
+geksgl <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gksgl <-
+  function (tt)
+  return (c(geolaspeyres(data, start=tt, end=end), geolaspeyres(data, start=tt, end=start)))
+  vec <- sapply(dates, gksgl)
+  geksgl <- prod(vec[1, ] / vec[2, ])
+  geksgl <- geksgl ^ (1 / window)
+  return(geksgl)
+  }
+
+#' @title  Calculating the multilateral WGEKS-GL price index
+#'
+#' @description This function returns a value of the multilateral weighted WGEKS-GL price index (to be more precise: the weighted GEKS index based on the geometric Laspeyres formula).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @rdname wgeksgl
+#' @return This function returns a value of the multilateral weighted WGEKS-GL price index (to be more precise: the weighted GEKS index based on the geometric Laspeyres formula) which considers the time window defined by \code{wstart} and \code{window} parameters. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' @examples 
+#' \donttest{wgeksgl(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{wgeksgl(milk, start="2018-12", end="2019-12")}
+#' @export
+
+wgeksgl <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  wgksgl <-
+  function (tt)
+  return (c(geolaspeyres(data, start=tt, end=end), geolaspeyres(data, start=tt, end=start)))
+  vec <- sapply(dates, wgksgl)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksgl <-
+  prod((vec[1, ] / vec[2, ]) ^ expenditures)
+  return(wgeksgl)
+  }
+  
+#' @title  Extending the multilateral GEKS-GL price index by using the FBEW method.
+#'
+#' @description This function returns a value of the multilateral GEKS-GL price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname geksgl_fbew
+#' @return This function returns a value of the multilateral GEKS-GL price index (the GEKS index based on the geometric Laspeyres formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+#'
+#' @examples 
+#' \donttest{geksgl_fbew(milk, start="2018-12", end="2019-08")}
+#' @export
+
+geksgl_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * geksgl(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral weighted GEKS-GL price index by using the FBEW method.
+#'
+#' @description This function returns a value of the multilateral weighted GEKS-GL price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname wgeksgl_fbew
+#' @return This function returns a value of the multilateral weighted GEKS-GL price index (the weighted GEKS index based on the geometric Laspeyres formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+#'
+#' @examples 
+#' \donttest{wgeksgl_fbew(milk, start="2018-12", end="2019-08")}
+#' @export
+
+wgeksgl_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeksgl(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral GEKS-GL price index by using the FBMW method.
+#'
+#' @description This function returns a value of the multilateral GEKS-GL price index extended by using the FBMW (Fixed Base Moving Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname geksgl_fbmw
+#' @return This function returns a value of the multilateral GEKS-GL price index (the GEKS index based on the geometric Laspeyres formula) extended by using the FBMW (Fixed Base Moving Window) method. It measures the price dynamics between periods \code{end} and \code{start} and it uses a 13-month time window with a fixed base month taken as \code{year(end)-1}. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. The month of the \code{start} parameter must be December. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' @examples 
+#' \donttest{geksgl_fbmw(milk, start="2019-12", end="2020-04")}
+#' @export
+
+geksgl_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * geksgl_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral weighted GEKS-GL price index by using the FBMW method.
+#'
+#' @description This function returns a value of the multilateral weighted GEKS-GL price index extended by using the FBMW (Fixed Base Moving Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname wgeksgl_fbmw
+#' @return This function returns a value of the multilateral weighted GEKS-GL price index (the GEKS index based on the geometric Laspeyres formula) extended by using the FBMW (Fixed Base Moving Window) method. It measures the price dynamics between periods \code{end} and \code{start} and it uses a 13-month time window with a fixed base month taken as \code{year(end)-1}. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. The month of the \code{start} parameter must be December. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' @examples 
+#' \donttest{wgeksgl_fbmw(milk, start="2019-12", end="2020-04")}
+#' @export
+
+wgeksgl_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeksgl_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral GEKS-GL price index by using window splicing methods.
+#'
+#' @description This function returns a value (or values) of the multilateral GEKS-GL price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
+#' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
+#' @rdname geksgl_splice
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral GEKS-GL price index (the GEKS index based on the geometric Laspeyres formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
+#' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
+#'
+#' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
+#'
+#' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
+#'
+#' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' @examples 
+#' \donttest{geksgl_splice(milk, start="2018-12", end="2020-02",splice="half")}
+#' \donttest{geksgl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+#' @export
+
+geksgl_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
+  #main body
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, geksgl(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * geksgl(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * geksgl(data, tT, t, wstart = tT, window) / geksgl(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * geksgl(data, th, t, wstart = tT, window) / geksgl(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * geksgl(data, tm, t, wstart = tT, window) / geksgl(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * geksgl(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * geksgl(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * geksgl(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
+  
+
+#' @title  Extending the multilateral weighted GEKS-GL price index by using window splicing methods.
+#'
+#' @description This function returns a value (or values) of the multilateral weighted GEKS-GL price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
+#' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
+#' @rdname wgeksgl_splice
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral weighted GEKS-GL price index (the weighted GEKS index based on the geometric Laspeyres formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
+#' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
+#'
+#' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
+#'
+#' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
+#'
+#' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' @examples 
+#' \donttest{wgeksgl_splice(milk, start="2018-12", end="2020-02",splice="half")}
+#' \donttest{wgeksgl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+#' @export
+
+wgeksgl_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
+  #main body
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, wgeksgl(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * wgeksgl(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeksgl(data, tT, t, wstart = tT, window) / wgeksgl(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeksgl(data, th, t, wstart = tT, window) / wgeksgl(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * wgeksgl(data, tm, t, wstart = tT, window) / wgeksgl(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * wgeksgl(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * wgeksgl(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * wgeksgl(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
+
+#' @title  Calculating the multilateral GEKS-AQU price index
+#'
+#' @description This function returns a value of the multilateral GEKS-AQU price index (to be more precise: the GEKS index based on the asynchronous quality adjusted unit value formula).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @rdname geksaqu
+#' @return This function returns a value of the multilateral GEKS-AQU price index (to be more precise: the GEKS index based on the asynchronous quality adjusted unit value formula) which considers the time window defined by \code{wstart} and \code{window} parameters. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function). 
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' @examples 
+#' \donttest{geksaqu(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{geksaqu(milk, start="2018-12", end="2019-12")}
+#' @export
+
+geksaqu <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  gksaqu <-
+  function (tt)
+  return (c(aqu(data, start=tt, end=end,v), aqu(data, start=tt, end=start,v)))
+  vec <- sapply(dates, gksaqu)
+  geksaqu <- prod(vec[1, ] / vec[2, ])
+  geksaqu <- geksaqu ^ (1 / window)
+  return(geksaqu)
+  }
+
+
+#' @title  Calculating the multilateral WGEKS-AQU price index
+#'
+#' @description This function returns a value of the multilateral weighted WGEKS-AQU price index (to be more precise: the weighted GEKS index based on the asynchronous quality adjusted unit value formula).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @rdname wgeksaqu
+#' @return This function returns a value of the multilateral weighted WGEKS-AQU price index (to be more precise: the weighted GEKS index based on the asynchronous quality adjusted unit value formula) which considers the time window defined by \code{wstart} and \code{window} parameters. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' @examples 
+#' \donttest{wgeksaqu(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{wgeksaqu(milk, start="2018-12", end="2019-12")}
+#' @export
+
+wgeksaqu <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  wgksaqu <-
+  function (tt)
+  return (c(aqu(data, start=tt, end=end,v), aqu(data, start=tt, end=start,v)))
+  vec <- sapply(dates, wgksaqu)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksaqu <- prod((vec[1, ] / vec[2, ])^expenditures)
+  return(wgeksaqu)
+  }
+
+#' @title  Extending the multilateral GEKS-AQU price index by using the FBEW method.
+#'
+#' @description This function returns a value of the multilateral GEKS-AQU price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname geksaqu_fbew
+#' @return This function returns a value of the multilateral GEKS-AQU price index (the GEKS index based on the asynchronous quality adjusted unit value formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating,please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+#'
+#' @examples 
+#' \donttest{geksaqu_fbew(milk, start="2018-12", end="2019-08")}
+#' @export
+
+geksaqu_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * geksaqu(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+
+#' @title  Extending the multilateral weighted GEKS-AQU price index by using the FBEW method.
+#'
+#' @description This function returns a value of the multilateral weighted GEKS-AQU price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname wgeksaqu_fbew
+#' @return This function returns a value of the multilateral weighted GEKS-AQU price index (the weighted GEKS index based on the asynchronous quality adjusted unit value formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+#'
+#' @examples 
+#' \donttest{wgeksaqu_fbew(milk, start="2018-12", end="2019-08")}
+#' @export
+
+wgeksaqu_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeksaqu(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral GEKS-AQU price index by using the FBMW method.
+#'
+#' @description This function returns a value of the multilateral GEKS-AQU price index extended by using the FBMW (Fixed Base Moving Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname geksaqu_fbmw
+#' @return This function returns a value of the multilateral GEKS-AQU price index (the GEKS index based on the asynchronous quality adjusted unit value formula) extended by using the FBMW (Fixed Base Moving Window) method. It measures the price dynamics between periods \code{end} and \code{start} and it uses a 13-month time window with a fixed base month taken as \code{year(end)-1}. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. The month of the \code{start} parameter must be December. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' @examples 
+#' \donttest{geksaqu_fbmw(milk, start="2019-12", end="2020-04")}
+#' @export
+
+geksaqu_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * geksaqu_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+
+#' @title  Extending the multilateral weighted GEKS-AQU price index by using the FBMW method.
+#'
+#' @description This function returns a value of the multilateral weighted GEKS-AQU price index extended by using the FBMW (Fixed Base Moving Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname wgeksaqu_fbmw
+#' @return This function returns a value of the multilateral weighted GEKS-AQU price index (the GEKS index based on the asynchronous quality adjusted unit value formula) extended by using the FBMW (Fixed Base Moving Window) method. It measures the price dynamics between periods \code{end} and \code{start} and it uses a 13-month time window with a fixed base month taken as \code{year(end)-1}. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. The month of the \code{start} parameter must be December. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' @examples 
+#' \donttest{wgeksaqu_fbmw(milk, start="2019-12", end="2020-04")}
+#' @export
+
+wgeksaqu_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeksaqu_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral GEKS-AQU price index by using window splicing methods.
+#'
+#' @description This function returns a value (or values) of the multilateral GEKS-AQU price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean","window_published","half_published","mean_published".
+#' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
+#' @rdname geksaqu_splice
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral GEKS-AQU price index (the GEKS index based on the asynchronous quality adjusted unit value formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
+#' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
+#'
+#' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
+#'
+#' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
+#'
+#' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' @examples 
+#' \donttest{geksaqu_splice(milk, start="2018-12", end="2020-02",splice="half")}
+#' \donttest{geksaqu_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+#' @export
+
+geksaqu_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
+  #main body
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, geksaqu(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * geksaqu(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * geksaqu(data, tT, t, wstart = tT, window) / geksaqu(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * geksaqu(data, th, t, wstart = tT, window) / geksaqu(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * geksaqu(data, tm, t, wstart = tT, window) / geksaqu(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * geksaqu(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * geksaqu(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * geksaqu(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
+  
+#' @title  Extending the multilateral weighted GEKS-AQU price index by using window splicing methods.
+#'
+#' @description This function returns a value (or values) of the multilateral weighted GEKS-AQU price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
+#' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
+#' @rdname wgeksaqu_splice
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral weighted GEKS-AQU price index (the weighted GEKS index based on the asynchronous quality adjusted unit value formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
+#' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
+#'
+#' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
+#'
+#' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
+#'
+#' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' @examples 
+#' \donttest{wgeksaqu_splice(milk, start="2018-12", end="2020-02",splice="half")}
+#' \donttest{wgeksaqu_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+#' @export
+
+wgeksaqu_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
+  #main body
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, wgeksaqu(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * wgeksaqu(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeksaqu(data, tT, t, wstart = tT, window) / wgeksaqu(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeksaqu(data, th, t, wstart = tT, window) / wgeksaqu(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * wgeksaqu(data, tm, t, wstart = tT, window) / wgeksaqu(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * wgeksaqu(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * wgeksaqu(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * wgeksaqu(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
+
+#' @title  Calculating the multilateral GEKS-AQI price index
+#'
+#' @description This function returns a value of the multilateral GEKS-AQI price index (to be more precise: the GEKS index based on the asynchronous quality adjusted price index formula).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @rdname geksaqi
+#' @return This function returns a value of the multilateral GEKS-AQI price index (to be more precise: the GEKS index based on the asynchronous quality adjusted price index formula) which considers the time window defined by \code{wstart} and \code{window} parameters. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function). 
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' @examples 
+#' \donttest{geksaqi(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{geksaqi(milk, start="2018-12", end="2019-12")}
+#' @export
+
+geksaqi <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  gksaqi <-
+  function (tt)
+  return (c(aqi(data, start=tt, end=end,v), aqi(data, start=tt, end=start,v)))
+  vec <- sapply(dates, gksaqi)
+  geksaqi <- prod(vec[1, ] / vec[2, ])
+  geksaqi <- geksaqi ^ (1 / window)
+  return(geksaqi)
+  }
+
+
+#' @title  Calculating the multilateral WGEKS-AQI price index
+#'
+#' @description This function returns a value of the multilateral weighted WGEKS-AQI price index (to be more precise: the weighted GEKS index based on the asynchronous quality adjusted price index formula).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @rdname wgeksaqi
+#' @return This function returns a value of the multilateral weighted WGEKS-AQI price index (to be more precise: the weighted GEKS index based on the asynchronous quality adjusted price index formula) which considers the time window defined by \code{wstart} and \code{window} parameters. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' @examples 
+#' \donttest{wgeksaqi(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{wgeksaqi(milk, start="2018-12", end="2019-12")}
+#' @export
+
+wgeksaqi <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  wgksaqi <-
+  function (tt)
+  return (c(aqi(data, start=tt, end=end,v), aqi(data, start=tt, end=start,v)))
+  vec <- sapply(dates, wgksaqi)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksaqi <- prod((vec[1, ] / vec[2, ])^expenditures)
+  return(wgeksaqi)
+  }
+
+#' @title  Extending the multilateral GEKS-AQI price index by using the FBEW method.
+#'
+#' @description This function returns a value of the multilateral GEKS-AQI price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname geksaqi_fbew
+#' @return This function returns a value of the multilateral GEKS-AQI price index (the GEKS index based on the asynchronous quality adjusted price index formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+#'
+#' @examples 
+#' \donttest{geksaqi_fbew(milk, start="2018-12", end="2019-08")}
+#' @export
+
+geksaqi_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * geksaqi(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+
+#' @title  Extending the multilateral weighted GEKS-AQI price index by using the FBEW method.
+#'
+#' @description This function returns a value of the multilateral weighted GEKS-AQI price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname wgeksaqi_fbew
+#' @return This function returns a value of the multilateral weighted GEKS-AQI price index (the weighted GEKS index based on the asynchronous quality adjusted price index formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+#'
+#' @examples 
+#' \donttest{wgeksaqi_fbew(milk, start="2018-12", end="2019-08")}
+#' @export
+
+wgeksaqi_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeksaqi(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral GEKS-AQI price index by using the FBMW method.
+#'
+#' @description This function returns a value of the multilateral GEKS-AQI price index extended by using the FBMW (Fixed Base Moving Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname geksaqi_fbmw
+#' @return This function returns a value of the multilateral GEKS-AQI price index (the GEKS index based on the asynchronous quality adjusted price index formula) extended by using the FBMW (Fixed Base Moving Window) method. It measures the price dynamics between periods \code{end} and \code{start} and it uses a 13-month time window with a fixed base month taken as \code{year(end)-1}. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. The month of the \code{start} parameter must be December. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' @examples 
+#' \donttest{geksaqi_fbmw(milk, start="2019-12", end="2020-04")}
+#' @export
+
+geksaqi_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * geksaqi_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+
+#' @title  Extending the multilateral weighted GEKS-AQI price index by using the FBMW method.
+#'
+#' @description This function returns a value of the multilateral weighted GEKS-AQI price index extended by using the FBMW (Fixed Base Moving Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname wgeksaqi_fbmw
+#' @return This function returns a value of the multilateral weighted GEKS-AQI price index (the GEKS index based on the asynchronous quality adjusted price index formula) extended by using the FBMW (Fixed Base Moving Window) method. It measures the price dynamics between periods \code{end} and \code{start} and it uses a 13-month time window with a fixed base month taken as \code{year(end)-1}. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. The month of the \code{start} parameter must be December. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' @examples 
+#' \donttest{wgeksaqi_fbmw(milk, start="2019-12", end="2020-04")}
+#' @export
+
+wgeksaqi_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeksaqi_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral GEKS-AQI price index by using window splicing methods.
+#'
+#' @description This function returns a value (or values) of the multilateral GEKS-AQI price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean","window_published","half_published","mean_published".
+#' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
+#' @rdname geksaqi_splice
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral GEKS-AQI price index (the GEKS index based on the asynchronous quality adjusted price index formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
+#' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
+#'
+#' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
+#'
+#' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
+#'
+#' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' @examples 
+#' \donttest{geksaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
+#' \donttest{geksaqi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+#' @export
+
+geksaqi_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
+  #main body
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, geksaqi(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * geksaqi(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * geksaqi(data, tT, t, wstart = tT, window) / geksaqi(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * geksaqi(data, th, t, wstart = tT, window) / geksaqi(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * geksaqi(data, tm, t, wstart = tT, window) / geksaqi(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * geksaqi(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * geksaqi(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * geksaqi(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
+  
+#' @title  Extending the multilateral weighted GEKS-AQI price index by using window splicing methods.
+#'
+#' @description This function returns a value (or values) of the multilateral weighted GEKS-AQI price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
+#' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
+#' @rdname wgeksaqi_splice
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral weighted GEKS-AQI price index (the weighted GEKS index based on the asynchronous quality adjusted price index formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
+#' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
+#'
+#' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
+#'
+#' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
+#'
+#' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' @examples 
+#' \donttest{wgeksaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
+#' \donttest{wgeksaqi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+#' @export
+
+wgeksaqi_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
+  #main body
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, wgeksaqi(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * wgeksaqi(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeksaqi(data, tT, t, wstart = tT, window) / wgeksaqi(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeksaqi(data, th, t, wstart = tT, window) / wgeksaqi(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * wgeksaqi(data, tm, t, wstart = tT, window) / wgeksaqi(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * wgeksaqi(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * wgeksaqi(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * wgeksaqi(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
+
+#' @title  Calculating the multilateral GEKS-GAQI price index
+#'
+#' @description This function returns a value of the multilateral GEKS-GAQI price index (to be more precise: the GEKS index based on the geometric asynchronous quality adjusted price index formula).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @rdname geksgaqi
+#' @return This function returns a value of the multilateral GEKS-GAQI price index (to be more precise: the GEKS index based on the geometric asynchronous quality adjusted price index formula) which considers the time window defined by \code{wstart} and \code{window} parameters. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function). 
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' @examples 
+#' \donttest{geksgaqi(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{geksgaqi(milk, start="2018-12", end="2019-12")}
+#' @export
+
+geksgaqi <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  gksgaqi <-
+  function (tt)
+  return (c(gaqi(data, start=tt, end=end,v), gaqi(data, start=tt, end=start,v)))
+  vec <- sapply(dates, gksgaqi)
+  geksgaqi <- prod(vec[1, ] / vec[2, ])
+  geksgaqi <- geksgaqi ^ (1 / window)
+  return(geksgaqi)
+  }
+
+
+#' @title  Calculating the multilateral WGEKS-GAQI price index
+#'
+#' @description This function returns a value of the multilateral weighted WGEKS-GAQI price index (to be more precise: the weighted GEKS index based on the geometric asynchronous quality adjusted price index formula).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @rdname wgeksgaqi
+#' @return This function returns a value of the multilateral weighted WGEKS-GAQI price index (to be more precise: the weighted GEKS index based on the geometric asynchronous quality adjusted price index formula) which considers the time window defined by \code{wstart} and \code{window} parameters. It measures the price dynamics by comparing period \code{end} to period \code{start} (both \code{start} and \code{end} must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' @examples 
+#' \donttest{wgeksgaqi(milk, start="2019-01", end="2019-08",window=10)}
+#' \donttest{wgeksgaqi(milk, start="2018-12", end="2019-12")}
+#' @export
+
+wgeksgaqi <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  wgksgaqi <-
+  function (tt)
+  return (c(gaqi(data, start=tt, end=end,v), gaqi(data, start=tt, end=start,v)))
+  vec <- sapply(dates, wgksgaqi)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksgaqi <- prod((vec[1, ] / vec[2, ])^expenditures)
+  return(wgeksgaqi)
+  }
+
+#' @title  Extending the multilateral GEKS-GAQI price index by using the FBEW method.
+#'
+#' @description This function returns a value of the multilateral GEKS-GAQI price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname geksgaqi_fbew
+#' @return This function returns a value of the multilateral GEKS-GAQI price index (the GEKS index based on the geometric asynchronous quality adjusted price index formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+#'
+#' @examples 
+#' \donttest{geksgaqi_fbew(milk, start="2018-12", end="2019-08")}
+#' @export
+
+geksgaqi_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * geksgaqi(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+
+#' @title  Extending the multilateral weighted GEKS-GAQI price index by using the FBEW method.
+#'
+#' @description This function returns a value of the multilateral weighted GEKS-GAQI price index extended by using the FBEW (Fixed Base Monthly Expanding Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname wgeksgaqi_fbew
+#' @return This function returns a value of the multilateral weighted GEKS-GAQI price index (the weighted GEKS index based on the geometric asynchronous quality adjusted price index formula) extended by using the FBEW (Fixed Base Monthly Expanding Window) method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. The function measures the price dynamics between periods \code{end} and \code{start}. The month of the \code{start} parameter must be December. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+#'
+#' @examples 
+#' \donttest{wgeksgaqi_fbew(milk, start="2018-12", end="2019-08")}
+#' @export
+
+wgeksgaqi_fbew <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeksgaqi(data,
+  substr(start, 0, 7),
+  substr(new, 0, 7),
+  window = dist(start, new) + 1)
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral GEKS-GAQI price index by using the FBMW method.
+#'
+#' @description This function returns a value of the multilateral GEKS-GAQI price index extended by using the FBMW (Fixed Base Moving Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname geksgaqi_fbmw
+#' @return This function returns a value of the multilateral GEKS-GAQI price index (the GEKS index based on the geometric asynchronous quality adjusted price index formula) extended by using the FBMW (Fixed Base Moving Window) method. It measures the price dynamics between periods \code{end} and \code{start} and it uses a 13-month time window with a fixed base month taken as \code{year(end)-1}. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. The month of the \code{start} parameter must be December. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' @examples 
+#' \donttest{geksgaqi_fbmw(milk, start="2019-12", end="2020-04")}
+#' @export
+
+geksgaqi_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * geksgaqi_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+
+#' @title  Extending the multilateral weighted GEKS-GAQI price index by using the FBMW method.
+#'
+#' @description This function returns a value of the multilateral weighted GEKS-GAQI price index extended by using the FBMW (Fixed Base Moving Window) method.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname wgeksgaqi_fbmw
+#' @return This function returns a value of the multilateral weighted GEKS-GAQI price index (the GEKS index based on the geometric asynchronous quality adjusted price index formula) extended by using the FBMW (Fixed Base Moving Window) method. It measures the price dynamics between periods \code{end} and \code{start} and it uses a 13-month time window with a fixed base month taken as \code{year(end)-1}. If the distance between \code{end} and \code{start} exceeds 13 months, then internal Decembers play a role of chain-linking months. The month of the \code{start} parameter must be December. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Gini, C. (1931). \emph{On the Circular Test of Index Numbers.} Metron 9:9, 3-24.}
+#'
+#' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
+#'
+#' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' @examples 
+#' \donttest{wgeksgaqi_fbmw(milk, start="2019-12", end="2020-04")}
+#' @export
+
+wgeksgaqi_fbmw <- function(data, start, end)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #checking conditions
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (lubridate::month(start) < 12)
+  stop("a month of the 'start' parameter must be December")
+  if (start == end)
+  return (1)
+  ind <- 1
+  last <- as.Date(start)
+  years <-
+  lubridate::year(end) - lubridate::year(start)
+  #main body
+  for (i in 1:years) {
+  lubridate::year(last) <- lubridate::year(last) + 1
+  new <-
+  min(end, last)
+  ind <-
+  ind * wgeksgaqi_fbmw2(data, substr(start, 0, 7), substr(new, 0, 7))
+  lubridate::year(start) <-
+  lubridate::year(start) + 1
+  }
+  return (ind)
+}
+
+#' @title  Extending the multilateral GEKS-GAQI price index by using window splicing methods.
+#'
+#' @description This function returns a value (or values) of the multilateral GEKS-GAQI price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean","window_published","half_published","mean_published".
+#' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
+#' @rdname geksgaqi_splice
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral GEKS-GAQI price index (the GEKS index based on the geometric asynchronous quality adjusted price index formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
+#' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
+#'
+#' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
+#'
+#' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
+#'
+#' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' @examples 
+#' \donttest{geksgaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
+#' \donttest{geksgaqi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+#' @export
+
+geksgaqi_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
+  #main body
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, geksgaqi(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * geksgaqi(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * geksgaqi(data, tT, t, wstart = tT, window) / geksgaqi(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * geksgaqi(data, th, t, wstart = tT, window) / geksgaqi(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * geksgaqi(data, tm, t, wstart = tT, window) / geksgaqi(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * geksgaqi(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * geksgaqi(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * geksgaqi(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
+  
+#' @title  Extending the multilateral weighted GEKS-GAQI price index by using window splicing methods.
+#'
+#' @description This function returns a value (or values) of the multilateral weighted GEKS-GAQI price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param splice A character string indicating the splicing method. Available options are: "movement", "window","half","mean", "window_published","half_published","mean_published".
+#' @param interval A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base multilateral indices are to be presented (the fixed base month is defined by \code{start}).
+#' @rdname wgeksgaqi_splice
+#' @return This function returns a value or values (depending on \code{interval} parameter) of the multilateral weighted GEKS-GAQI price index (the weighted GEKS index based on the geometric asynchronous quality adjusted price index formula) extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}). The time window starts in \code{start} and should consist of at least two months. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @references
+#' {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}
+#'
+#' {de Haan, J., van der Grient, H.A. (2011). \emph{Eliminating chain drift in price indexes based on scanner data.} Journal of Econometrics, 161, 36-46.}
+#'
+#' {Krsinich, F. (2014). \emph{The FEWS Index: Fixed Effects with a Window Splice? Non-Revisable Quality-Adjusted Price Indices with No Characteristic Information.} Paper presented at the UNECE-ILO Meeting of the Group of Experts on Consumer Price Indices, 2-4 May 2016, Geneva, Switzerland.}
+#'
+#' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
+#'
+#' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' @examples 
+#' \donttest{wgeksgaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
+#' \donttest{wgeksgaqi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+#' @export
+
+wgeksgaqi_splice <-
+  function (data,
+  start,
+  end,
+  window = 13,
+  splice = "movement",
+  interval = FALSE)
+  {
+  asplice <-
+  c(
+  "movement",
+  "window",
+  "half",
+  "mean",
+  "window_published",
+  "half_published",
+  "mean_published"
+  ) #allowed values for 'splice' parameter
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  t0 <- start
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wend <- start
+  lubridate::month(wend) <- lubridate::month(wend) + window - 1
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  set <- c(1)
+  #main body
+  while (start < end)
+  {
+  lubridate::month(start) <- lubridate::month(start) + 1
+  t <- substr(start, 0, 7)
+  if (start <= wend)
+  set <- c(set, wgeksgaqi(data, t0, t, wstart = t0, window))
+  else {
+  t1 <- start
+  lubridate::month(t1) <-
+  lubridate::month(t1) - 1
+  tT <- start
+  lubridate::month(tT) <-
+  lubridate::month(tT) - (window - 1)
+  tT1 <- start
+  lubridate::month(tT1) <-
+  lubridate::month(tT1) - (window - 1) - 1
+  th <- start
+  lubridate::month(th) <-
+  lubridate::month(th) - floor(window / 2)
+  t1 <- substr(t1, 0, 7)
+  tT <- substr(tT, 0, 7)
+  tT1 <- substr(tT1, 0, 7)
+  th <- substr(th, 0, 7)
+  if (splice == "movement")
+  set <- c(set, set[length(set)] * wgeksgaqi(data, t1, t, wstart = tT, window))
+  if (splice == "window")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeksgaqi(data, tT, t, wstart = tT, window) / wgeksgaqi(data, tT, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "half")
+  set <-
+  c(
+  set,
+  set[length(set)] * wgeksgaqi(data, th, t, wstart = tT, window) / wgeksgaqi(data, th, t1, wstart =
+  tT1, window)
+  )
+  if (splice == "mean") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <-
+  var * wgeksgaqi(data, tm, t, wstart = tT, window) / wgeksgaqi(data, tm, t1, wstart =
+  tT1, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <-
+  c(set, set[length(set)] * var)
+  }
+  if (splice == "window_published")
+  set <-
+  c(set, set[length(set) + 1 - (window - 1)] * wgeksgaqi(data, tT, t, wstart =
+  tT, window))
+  if (splice == "half_published")
+  set <-
+  c(set, set[length(set) + 1 - floor(window / 2)] * wgeksgaqi(data, th, t, wstart =
+  tT, window))
+  if (splice == "mean_published") {
+  var <- 1
+  for (m in 1:(window - 1)) {
+  tm <- start
+  lubridate::month(tm) <-
+  lubridate::month(tm) - m
+  tm <- substr(tm, 0, 7)
+  var <- var * set[length(set) + 1 - m] * wgeksgaqi(data, tm, t, wstart = tT, window)
+  }
+  var <- var ^ (1 / (window - 1))
+  set <- c(set, var)
+  }
+  }
+  }
+  if (interval == FALSE)
+  return (set[length(set)])
+  else
+  return(set)
+  }
+
+
 #' @title  The most general package function to compute the price dynamics
 #'
 #' @description This function returns a value or values of the selected (final) price index taking into consideration aggregation over product subgroups and/or over outlets. Optionally, the function returns a data frame or a figure presenting calculated indices, i.e. the price index for the whole data set and price indices for product subgroups.
@@ -1954,10 +5047,63 @@ return (dplyr::bind_rows(lapply(data_outlets, rows)))
 }
 s<-dplyr::bind_rows(lapply(data_time, rows_ret))  
 }
+s<-na.omit(s)
 return (s)  
 }
 
+#' @title  Calculating distances between price indices
+#'
+#' @description The function calculates distances between price indices
+#' @param data The data frame containg values of indices which are to be compared
+#' @param measure A parameter specifying what measure should be used to compare the indexes. Possible parameter values are: "MAD" (Mean Absolute Distance) or "RMSD" (Root Mean Square Distance).
+#' @param pp Logical parameter indicating whether the results are to be presented in percentage points (then \code{pp} = TRUE).
+#' @param first A logical parameter that determines whether the first row of the data frame is to be taken into account when calculating the distance between the indices (then \code{first} = TRUE). Usually, the first row concerns the index values for the base period - all indexes are then set to one.
+#' @param prec Parameter that determines how many decimal places are to be used in the presentation of results.
+#' @rdname compare_distances
+#' @return The function calculates average distances between price indices and it returns a data frame with these values for each pair of price indices.
+#' @examples 
+#' #Creating a data frame with unweighted bilateral index values
+#' df<-price_indices(milk, bilateral=c("jevons","dutot","carli"),start="2018-12",end="2019-12",interval=TRUE)
+#' #Calculating average distances between indices (in p.p)
+#' compare_distances(df)
+#' @export
 
+compare_distances<-function (data=data.frame(),measure="MAD", pp=TRUE, first=TRUE, prec=3)
+{
+  if (!(is.data.frame(data))) stop("The parameter 'data' must indicate a data frame.")
+  #checking values of parameters
+  good_measure<-c("MAD","RMSD") #Mean absolute distance vs Root mean square distance
+  if (!(measure %in% good_measure)) stop ("The 'measure' parameter takes values: 'MAD' or 'MSD'")
+  if (prec<=0) stop("The parameter 'prec' takes natural values and it must equal at least one!")
+  columns<-c()
+  for (i in 1:ncol(data)) if (is.numeric(data[,i])) columns<-c(columns,i)
+  if (length(columns)<=1) stop("Data frame must contain at least two numerical columns")
+  data<-data[,columns] #taking only numeric columns
+  if (first==TRUE) data<-data[-1,]
+  #distances of two indices
+  MAD<-function (v1, v2) return (mean(abs(v1-v2)))
+  MSD<-function (v1, v2) return (sqrt(mean((v1-v2)^2)))
+  #data manipulation
+  data2<-data
+  data2<-data2[1:ncol(data),]
+  rownames(data2)<-colnames(data)
+  #diagonal operations
+  for (i in 1:ncol(data2)) data2[i,i]<-0
+  #the rest of a matrix
+  pairs<-combn(colnames(data),2)
+  #main body
+  for (i in 1:ncol(pairs)) {
+    x<-data[,pairs[1,i]]
+    y<-data[,pairs[2,i]]
+    if (measure=="MAD") distance<-MAD(x,y)
+    else distance<-MSD(x,y)
+    if (pp==TRUE) distance<-distance*100
+    distance<-round(distance, digits=prec)
+    data2[pairs[1,i],pairs[2,i]]<-distance
+    data2[pairs[2,i],pairs[1,i]]<-distance
+  }
+  return (data2)
+}
 
 
 

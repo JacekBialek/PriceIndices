@@ -1,7 +1,7 @@
 #' A real data set on sold milk
 #'
 #' A collection of scanner data on the sale of milk in one of Polish supermarkets in the period from December 2018 to August 2020
-#' @format A data frame with 6 columns and 4281 rows. The used variables are as follows:
+#' @format A data frame with 6 columns and 4386 rows. The used variables are as follows:
 #'
 #' \code{time} - Dates of transactions (Year-Month-Day)
 #'
@@ -9,7 +9,7 @@
 #'
 #' \code{quantities} - Quantities of sold products [liters]
 #'
-#' \code{prodID} - Unique product codes (data set contains 67 different prodIDs)
+#' \code{prodID} - Unique product codes (data set contains 68 different prodIDs)
 #'
 #' \code{retID} - Unique codes identifying outlets/retailer sale points (data set contains 5 different retIDs)
 #'

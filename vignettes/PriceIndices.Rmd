@@ -56,7 +56,7 @@ remotes::install_github("JacekBialek/PriceIndices")
 9.  <a href="#ad9">Functions for extending multilateral price indices by using the FBEW method</a>
 10.  <a href="#ad10">Functions for extending multilateral price indices by using the FBMW method</a>
 11. <a href="#ad11">General functions for price index calculations</a>
-12. <a href="#ad12">Functions for graphical comparison of price indices</a> 
+12. <a href="#ad12">Functions for comparisons of price indices</a> 
 
 <a id="ad1">   </a>
 
@@ -78,7 +78,7 @@ The third one, **dataCOICOP**, is a collection of artificial scanner data on the
 
 ***4) milk***
 
-This data set, **milk**, is a collection of scaner data on the sale of milk in one of Polish supermarkets in the period from December 2018 to August 2020. It is a data frame with 6 columns and 4281 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (liters); **prodID** - unique product codes obtained after product matching (data set contains 67 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (data set contains 5 different retIDs); **description** - descriptions of sold milk products (data set contains 6 different product descriptions corresponding to *subgroups* of the milk group). 
+This data set, **milk**, is a collection of scaner data on the sale of milk in one of Polish supermarkets in the period from December 2018 to August 2020. It is a data frame with 6 columns and 4386 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (liters); **prodID** - unique product codes obtained after product matching (data set contains 68 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (data set contains 5 different retIDs); **description** - descriptions of sold milk products (data set contains 6 different product descriptions corresponding to *subgroups* of the milk group). 
 
 ***5) coffee***
 
@@ -480,22 +480,31 @@ chfisher(milk, start="2018-12", end="2020-01", interval=TRUE)
 
 ### Functions for multilateral price index calculation
 
-This package includes 9 functions for calculating multilateral price indices and one additional and general function (**QU**) which calculates the quality adjusted unit value index, i.e.:
+This package includes 18 functions for calculating multilateral price indices and one additional and general function (**QU**) which calculates the quality adjusted unit value index, i.e.:
 
 | Price Index | Function | 
 |----------------|---------------|
 | CCDI  | ccdi |
 | GEKS | geks |
+| WGEKS | wgeks |
 | GEKS-J | geksj |
 | GEKS-W  | geksw |
 | GEKS-L  | geksl |
 | WGEKS-L  | wgeksl |
+| GEKS-GL  | geksgl |
+| WGEKS-GL  | wgeksgl |
+| GEKS-AQU  | geksaqu |
+| WGEKS-AQU  | wgeksaqu |
+| GEKS-AQI  | geksaqi |
+| WGEKS-AQI  | wgeksaqi |
+| GEKS-GAQI  | geksgaqi |
+| WGEKS-GAQI  | wgeksgaqi |
 | Geary-Khamis  | gk |
 | Quality Adjusted Unit Value  | QU|
 | Time Product Dummy | tpd |
 | SPQ  | SPQ |
 
-The above-mentioned 8 multilateral formulas (the **SPQ** index is an exception) consider the time window defined by the **wstart** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). It measures the price dynamics by comparing the **end** period to the **start** period (both **start** and **end** must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: **price_index**, **price_indices** or **final_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating please use functions: **final_index** or **final_index2**). Here are examples for the GEKS formula (see documentation):
+The above-mentioned 18 multilateral formulas (the **SPQ** index is an exception) consider the time window defined by the **wstart** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). It measures the price dynamics by comparing the **end** period to the **start** period (both **start** and **end** must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: **price_index**, **price_indices** or **final_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating please use functions: **final_index** or **final_index2**). Here are examples for the GEKS formula (see documentation):
 
 ```{r}
 geks(milk, start="2019-01", end="2019-04",window=10)
@@ -521,16 +530,25 @@ QU(milk, start="2018-12", end="2019-12", v)
 
 ### Functions for extending multilateral price indices by using splicing methods
 
-This package includes 8 functions for calculating splice indices:
+This package includes 17 functions for calculating splice indices:
 
 | Price Index | Function | 
 |----------------|---------------|
 | Splice CCDI  | ccdi_splcie |
 | Splice GEKS | geks_splice |
+| Splice weighted GEKS | wgeks_splice |
 | Splice GEKS-J | geksj_splice |
 | Splice GEKS-W  | geksw_splice |
 | Splice GEKS-L  | geksl_splice |
 | Splice weighted GEKS-L  | wgeksl_splice |
+| Splice GEKS-GL  | geksgl_splice |
+| Splice weighted GEKS-GL  | wgeksgl_splice |
+| Splice GEKS-AQU  | geksaqu_splice |
+| Splice weighted GEKS-AQU  | wgeksaqu_splice |
+| Splice GEKS-AQI  | geksaqi_splice |
+| Splice weighted GEKS-AQI  | wgeksaqi_splice |
+| Splice GEKS-GAQI  | geksgaqi_splice |
+| Splice weighted GEKS-GAQI  | wgeksgaqi_splice |
 | Splice Geary-Khamis  | gk_splice |
 | Splice Time Product Dummy | tpd_splice |
 
@@ -543,16 +561,25 @@ tpd_splice(milk, start="2018-12", end="2020-02",window=10,splice="half",interval
 
 ### Functions for extending multilateral price indices by using the FBEW method
 
-This package includes 8 functions for calculating extensions of multilateral indices by using the Fixed Base Monthly Expanding Window (FBEW) method:
+This package includes 17 functions for calculating extensions of multilateral indices by using the Fixed Base Monthly Expanding Window (FBEW) method:
 
 | Price Index | Function | 
 |----------------|---------------|
 | FBEW  CCDI  | ccdi_fbew |
 | FBEW  GEKS | geks_fbew |
+| FBEW  WGEKS | wgeks_fbew |
 | FBEW  GEKS-J | geksj_fbew |
 | FBEW  GEKS-W  | geksw_fbew |
 | FBEW  GEKS-L  | geksl_fbew | 
 | FBEW  WGEKS-L  | wgeksl_fbew | 
+| FBEW  GEKS-GL  | geksgl_fbew | 
+| FBEW  WGEKS-GL  | wgeksgl_fbew |
+| FBEW  GEKS-AQU  | geksaqu_fbew | 
+| FBEW  WGEKS-AQU  | wgeksaqu_fbew | 
+| FBEW  GEKS-AQI  | geksaqi_fbew | 
+| FBEW  WGEKS-AQI  | wgeksaqi_fbew |
+| FBEW  GEKS-GAQI  | geksgaqi_fbew | 
+| FBEW  WGEKS-GAQI  | wgeksgaqi_fbew |
 | FBEW  Geary-Khamis  | gk_fbew |
 | FBEW  Time Product Dummy | tpd_fbew |
 
@@ -567,16 +594,25 @@ geks_fbew(milk, start="2018-12", end="2020-03")
 
 ### Functions for extending multilateral price indices by using the FBMW method
 
-This package includes 8 functions for calculating extensions of multilateral indices by using the Fixed Base Moving Window (FBMW) method:
+This package includes 17 functions for calculating extensions of multilateral indices by using the Fixed Base Moving Window (FBMW) method:
 
 | Price Index | Function | 
 |----------------|---------------|
-| FBMW CCDI  | ccdi_fbmw |
+| FBMW  CCDI  | ccdi_fbmw |
 | FBMW  GEKS | geks_fbmw |
+| FBMW  WGEKS | wgeks_fbmw |
 | FBMW  GEKS-J | geksj_fbmw |
 | FBMW  GEKS-W  | geksw_fbmw |
 | FBMW  GEKS-L  | geksl_fbmw |
 | FBMW  WGEKS-L  | wgeksl_fbmw |
+| FBMW  GEKS-GL  | geksgl_fbmw |
+| FBMW  WGEKS-GL  | wgeksgl_fbmw |
+| FBMW  GEKS-AQU  | geksaqu_fbmw |
+| FBMW  WGEKS-AQU  | wgeksaqu_fbmw |
+| FBMW  GEKS-AQI  | geksaqi_fbmw |
+| FBMW  WGEKS-AQI  | wgeksaqi_fbmw |
+| FBMW  GEKS-GAQI  | geksgaqi_fbmw |
+| FBMW  WGEKS-GAQI  | wgeksgaqi_fbmw |
 | FBMW  Geary-Khamis  | gk_fbmw |
 | FBMW  Time Product Dummy | tpd_fbmw |
 
@@ -584,8 +620,9 @@ These functions return a value (or values) of the selected multilateral  price i
 
 ```{r}
 ccdi_fbmw(milk, start="2018-12", end="2020-03")
-    ccdi_fbmw(milk, start="2018-12", end="2019-12")*
-    ccdi_fbmw(milk, start="2019-12", end="2020-03")
+
+ccdi_fbmw(milk, start="2018-12", end="2019-12")*
+ccdi_fbmw(milk, start="2019-12", end="2020-03")
 ```
 <a id="ad11"> </a>
 
@@ -678,9 +715,9 @@ final_index2(data=coffee, by="retID",all=TRUE,
 
 <a id="ad12"> </a>
 
-### Functions for graphical comparison of price indices
+### Functions for comparisons of price indices
 
-This package includes 2 functions for a simple graphical comparison of price indices. The first one, i.e. **compare_indices** is based on the syntax of the **price_indices** function and thus it allows us to compare price indices calculated on the same data set. The second function, i.e. **compare_final_indices** has a general character since its first argument is a list of data frames which contain results obtained by using the **price_index**, **final_index** or **final_index2** functions.
+This package includes two functions for a simple graphical comparison of price indices and one function for calculating distances between indices. The first one, i.e. **compare_indices**, is based on the syntax of the **price_indices** function and thus it allows us to compare price indices calculated on the same data set. The second function, i.e. **compare_final_indices**, has a general character since its first argument is a list of data frames which contain results obtained by using the **price_index**, **final_index** or **final_index2** functions. The third one, i.e. **compare_distances**, calculates (average) distances between price indices, i.e. the mean absolute distance or root mean square distance is calculated.
 
 **compare_indices**
 
@@ -712,5 +749,17 @@ The comparison of obtained results can be made as follows (it may be time-consum
 compare_final_indices(finalindices=list(case1, case2),names=c("TPD without aggregation","TPD with aggregation"))
 ```
 
+**compare_distances**
+
+The function calculates average distances between price indices and it returns a data frame with these values for each pair of price indices. The main **data** parameter is a data frame containing values of indices which are to be compared. The **measure** parameter specifies what measure should be used to compare the indexes. Possible parameter values are: "MAD" (Mean Absolute Distance) or "RMSD" (Root Mean Square Distance). The results may be presented in percentage points (see the **pp** parameter) and we can control how many decimal places are to be used in the presentation of results (see the **prec** parameter).
+
+For instance, let us compare the Jevons, Dutot and Carli indices calculated for the **milk** data set and for the time interval: December 2018 - December 2019. Let us use the MAD measure for these comparisons:
+
+```{r}
+#Creating a data frame with unweighted bilateral index values
+df<-price_indices(milk, bilateral=c("jevons","dutot","carli"), start="2018-12",end="2019-12",interval=TRUE)
+#Calculating average distances between indices (in p.p)
+compare_distances(df)
+```
 
 

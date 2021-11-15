@@ -2,20 +2,30 @@
 % Please edit documentation in R/functions.R
 \name{matched_fig}
 \alias{matched_fig}
-\title{Providing a matched_index() function dependant on time}
+\title{Providing a time dependent matched_index() function}
 \usage{
-matched_fig(data, start, end, type = "prodID", fixedbase = TRUE, figure = TRUE)
+matched_fig(
+  data,
+  start,
+  end,
+  base = "start",
+  type = "prodID",
+  fixedbase = TRUE,
+  figure = TRUE
+)
 }
 \arguments{
 \item{data}{The user's data frame. It must contain a column \code{time} (as Date in format: year-month-day,e.g. '2020-12-01') and also a column indicated by the \code{type} parameter.}
 
-\item{start}{The base period (as character) limited to the year and month, e.g. "2019-03".}
+\item{start}{The beginning of a time interval (as character) limited to the year and month, e.g. "2019-03".}
 
-\item{end}{The research period (as character) limited to the year and month, e.g. "2019-04".}
+\item{end}{The end of a time interval (as character) limited to the year and month, e.g. "2019-04".}
+
+\item{base}{The base period (as character) for product comparisons. Its possible values are: "start" and "end".}
 
 \item{type}{This parameter defines the column which is used in the procedure. Possible values of the \code{type} parameter are: \code{retID}, \code{prodID}, \code{codeIN}, \code{codeOUT} or \code{description}.}
 
-\item{fixedbase}{A logical parameter indicating whether the procedure is to work for subsequent months from the considered time interval (\code{fixedbase}=FALSE). Otherwise the month defined by \code{start} plays a role of fixed base month (\code{fixedbase}=TRUE)}
+\item{fixedbase}{A logical parameter indicating whether the procedure is to work for subsequent months from the considered time interval (\code{fixedbase}=FALSE). Otherwise the period defined by \code{base} plays a role of fixed base month (\code{fixedbase}=TRUE)}
 
 \item{figure}{A logical parameter indicating whether the function returns a figure (TRUE) or a data frame (FALSE) with \code{\link{matched_index}} values.}
 }

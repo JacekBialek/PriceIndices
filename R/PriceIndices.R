@@ -212,13 +212,31 @@
 #'
 #' \code{\link{geks}}
 #'
-#' \code{\link{geksj}}
-#'
-#' \code{\link{geksw}}
+#' \code{\link{wgeks}}
 #'
 #' \code{\link{geksl}}
 #'
 #' \code{\link{wgeksl}}
+#'
+#' \code{\link{geksgl}}
+#'
+#' \code{\link{wgeksgl}}
+#'
+#' \code{\link{geksaqu}}
+#'
+#' \code{\link{wgeksaqu}}
+#'
+#' \code{\link{geksaqi}}
+#'
+#' \code{\link{wgeksaqi}}
+#'
+#' \code{\link{geksgaqi}}
+#'
+#' \code{\link{wgeksgaqi}}
+#'
+#' \code{\link{geksj}}
+#'
+#' \code{\link{geksw}}
 #'
 #' \code{\link{gk}}
 #'
@@ -233,6 +251,8 @@
 #'
 #' \code{\link{geks_splice}}
 #'
+#' \code{\link{wgeks_splice}}
+#'
 #' \code{\link{geksj_splice}}
 #'
 #' \code{\link{geksw_splice}}
@@ -240,6 +260,22 @@
 #' \code{\link{geksl_splice}}
 #'
 #' \code{\link{wgeksl_splice}}
+#'
+#' \code{\link{geksgl_splice}}
+#'
+#' \code{\link{wgeksgl_splice}}
+#'
+#' \code{\link{geksaqu_splice}}
+#'
+#' \code{\link{wgeksaqu_splice}}
+#'
+#' \code{\link{geksaqi_splice}}
+#'
+#' \code{\link{wgeksaqi_splice}}
+#'
+#' \code{\link{geksgaqi_splice}}
+#'
+#' \code{\link{wgeksgaqi_splice}}
 #'
 #' \code{\link{gk_splice}}
 #'
@@ -250,6 +286,8 @@
 #'
 #' \code{\link{geks_fbew}}
 #'
+#' \code{\link{wgeks_fbew}}
+#'
 #' \code{\link{geksj_fbew}}
 #'
 #' \code{\link{geksw_fbew}}
@@ -257,6 +295,22 @@
 #' \code{\link{geksl_fbew}}
 #'
 #' \code{\link{wgeksl_fbew}}
+#'
+#' \code{\link{geksgl_fbew}}
+#'
+#' \code{\link{wgeksgl_fbew}}
+#'
+#' \code{\link{geksaqu_fbew}}
+#'
+#' \code{\link{wgeksaqu_fbew}}
+#'
+#' \code{\link{geksaqi_fbew}}
+#'
+#' \code{\link{wgeksaqi_fbew}}
+#'
+#' \code{\link{geksgaqi_fbew}}
+#'
+#' \code{\link{wgeksgaqi_fbew}}
 #'
 #' \code{\link{gk_fbew}}
 #'
@@ -267,6 +321,8 @@
 #'
 #' \code{\link{geks_fbmw}}
 #'
+#' \code{\link{wgeks_fbmw}}
+#'
 #' \code{\link{geksj_fbmw}}
 #'
 #' \code{\link{geksw_fbmw}}
@@ -274,6 +330,22 @@
 #' \code{\link{geksl_fbmw}}
 #'
 #' \code{\link{wgeksl_fbmw}}
+#'
+#' \code{\link{geksgl_fbmw}}
+#'
+#' \code{\link{wgeksgl_fbmw}}
+#'
+#' \code{\link{geksaqu_fbmw}}
+#'
+#' \code{\link{wgeksaqu_fbmw}}
+#'
+#' \code{\link{geksaqi_fbmw}}
+#'
+#' \code{\link{wgeksaqi_fbmw}}
+#'
+#' \code{\link{geksgaqi_fbmw}}
+#'
+#' \code{\link{wgeksgaqi_fbmw}}
 #'
 #' \code{\link{gk_fbmw}}
 #'
@@ -288,8 +360,10 @@
 #'
 #' \code{\link{final_index2}}
 #'
-#' @section Functions for graphical comparison of price indices:
+#' @section Functions for comparisons of price indices:
 #' \code{\link{compare_indices}} 
 #'
 #' \code{\link{compare_final_indices}}
+#'
+#' \code{\link{compare_distances}}
 NULL

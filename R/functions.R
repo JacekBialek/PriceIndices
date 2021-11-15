@@ -208,8 +208,6 @@ data_matching <-
   data$descriptionID <- data$description
   columns <- c(columns, "descriptionID")
   }
-  if (length(columns) == 0)
-  stop("At least one column for matching must be selected!")
   #reducing a dataset
   if (codeIN == TRUE)
   columns <- c(columns, "codeIN")
@@ -219,10 +217,10 @@ data_matching <-
   columns <- c(columns, "description")
   if (length(variables) > 0)
   columns <- c(columns, variables)
-  
+  if (length(columns) == 0)
+  stop("At least one column for matching must be selected!")
   data <- dplyr::select(data, columns)
   data <- dplyr::distinct(data)
-
   #main body
   if (codeIN == TRUE & codeOUT == TRUE & description == TRUE)
   {
@@ -1218,14 +1216,15 @@ data_matching <-
     return (a / b)
     }
 
-#' @title Providing a matched_index() function dependant on time
+#' @title Providing a time dependent matched_index() function 
 #' 
 #' @description The function provides a data frame or a figure presenting the \code{\link{matched_index}} function calculated for the column defined by the \code{type} parameter and for each month from the considered time interval
 #' @param data The user's data frame. It must contain a column \code{time} (as Date in format: year-month-day,e.g. '2020-12-01') and also a column indicated by the \code{type} parameter.  
-#' @param start The base period (as character) limited to the year and month, e.g. "2019-03".
-#' @param end The research period (as character) limited to the year and month, e.g. "2019-04".
+#' @param start The beginning of a time interval (as character) limited to the year and month, e.g. "2019-03".
+#' @param end The end of a time interval (as character) limited to the year and month, e.g. "2019-04".
+#' @param base The base period (as character) for product comparisons. Its possible values are: "start" and "end".
 #' @param type This parameter defines the column which is used in the procedure. Possible values of the \code{type} parameter are: \code{retID}, \code{prodID}, \code{codeIN}, \code{codeOUT} or \code{description}.
-#' @param fixedbase A logical parameter indicating whether the procedure is to work for subsequent months from the considered time interval (\code{fixedbase}=FALSE). Otherwise the month defined by \code{start} plays a role of fixed base month (\code{fixedbase}=TRUE)
+#' @param fixedbase A logical parameter indicating whether the procedure is to work for subsequent months from the considered time interval (\code{fixedbase}=FALSE). Otherwise the period defined by \code{base} plays a role of fixed base month (\code{fixedbase}=TRUE)
 #' @param figure A logical parameter indicating whether the function returns a figure (TRUE) or a data frame (FALSE) with \code{\link{matched_index}} values.
 #' @rdname matched_fig
 #' @return The function returns a data frame or a figure presenting the \code{\link{matched_index}} function calculated for the column defined by the \code{type} parameter and for each month from the considered time interval. The interval is set by \code{start} and \code{end} parameters. The returned object (data frame or figure) depends on the value of \code{figure} parameter. The returned values belong to [0,1].
@@ -1238,6 +1237,7 @@ data_matching <-
     function (data,
     start,
     end,
+    base="start",
     type = "prodID",
     fixedbase = TRUE,
     figure = TRUE)
@@ -1247,6 +1247,9 @@ data_matching <-
     c("retID", "prodID", "codeIN", "codeOUT", "description") #allowed values for 'type' parameter
     if (!(type %in% atype))
     stop ("The 'type' parameter has a wrong value")
+    abase<-c("start","end")
+    if (!(base %in% abase))
+    stop ("The 'base' parameter has a wrong value")
     if (nrow(data) == 0)
     stop("A data frame is empty")
     start <- paste(start, "-01", sep = "")
@@ -1254,11 +1257,26 @@ data_matching <-
     start <- as.Date(start)
     end <- as.Date(end)
     times <- c()
-    t0 <- substr(start, 0, 7)
-    times <- c()
-    values <- c()
+    if (base=="start") t0 <- substr(start, 0, 7)
+    else t0 <- substr(end, 0, 7)
+    if (fixedbase == TRUE) 
+    {
+    times <- c(substr(start, 0, 7))
+    if (base=="start") values <- c(1)
+    else values<-values<-c(matched_index(
+    data,
+    period1 = substr(start, 0, 7),
+    period2 = substr(end, 0, 7),
+    type,
+    interval = TRUE
+    ))
+    }
+    else
+    {
+    times<-c()
+    values<-c()
+    }
     while (start < end)
-    
     {
     t1 <- substr(start, 0, 7)
     lubridate::month(start) <- lubridate::month(start) + 1
@@ -1299,7 +1317,7 @@ data_matching <-
     45, hjust = 1))
     }
     }
-    
+
 #' @title  Providing prices (unit values) of sold products
 #'
 #' @description The function returns prices (unit values) of sold products with given IDs. 
@@ -1317,9 +1335,6 @@ data_matching <-
   {
   if (nrow(data) == 0)
   stop("A data frame is empty")
-  if (length(set) == 0)
-  set <-
-  matched(data, period1 = period, period2 = period)
   period <-
   paste(period, "-01", sep = "")
   period <- as.Date(period)
@@ -1331,6 +1346,7 @@ data_matching <-
   dplyr::filter(data, data$time >= period & data$time <= period2)
   if (nrow(data) == 0)
   stop("There are no data in selected period")
+  if (length(set) == 0) set<-unique(data$prodID)
   vec <- numeric(length(set))
   for (i in 1:length(set)) {
   d <- dplyr::filter(data, data$prodID == set[i])
@@ -1360,8 +1376,6 @@ quantities <- function(data, period, set = c())
   {
   if (nrow(data) == 0)
   stop("A data frame is empty")
-  if (length(set) == 0)
-  set <- matched(data, period1 = period, period2 = period)
   period <-
   paste(period, "-01", sep = "")
   period <- as.Date(period)
@@ -1373,6 +1387,7 @@ quantities <- function(data, period, set = c())
   dplyr::filter(data, data$time >= period & data$time <= period2)
   if (nrow(data) == 0)
   stop("There are no data in selected period")
+  if (length(set) == 0) set<-unique(data$prodID)
   vec <- numeric(length(set))
   for (i in 1:length(set)) {
   d <- dplyr::filter(data, data$prodID == set[i])
@@ -1382,7 +1397,7 @@ quantities <- function(data, period, set = c())
   vec[i] <- sum(d$quantities)
   }
   return(vec)
-  }
+}
 
 #' @title  Providing a correlation coefficient for price and quantity of sold products
 #'
@@ -1495,27 +1510,20 @@ sales <- function(data,
                   {
                   if (nrow(data) == 0)
                   stop("A data frame is empty")
-                  if (length(set) == 0)
-                  set <-
-                  matched(data, period1 = period, period2 = period)
                   period <-
                   paste(period, "-01", sep = "")
                   period <- as.Date(period)
-                  lubridate::day(period) <- 1
-                  period2 <- period
-                  lubridate::day(period2) <-
-                  lubridate::days_in_month(period2)
                   data <-
-                  dplyr::filter(data, data$time >= period &
-                  data$time <= period2)
+                  dplyr::filter(data, lubridate::year(data$time) == lubridate::year(period) &
+                  lubridate::month(data$time) == lubridate::month(period))
                   if (nrow(data) == 0)
                   stop("There are no data in selected period")
+                  if (length(set) == 0) set<-unique(data$prodID)
                   vec <- numeric(length(set))
                   for (i in 1:length(set)) {
                   d <- dplyr::filter(data, data$prodID == set[i])
                   if (nrow(d) == 0)
                   vec[i] <- 0
-                  
                   else
                   vec[i] <- sum(d$prices * d$quantities)
                   }
@@ -1548,7 +1556,7 @@ sales <- function(data,
                   )
                   }
                   }
-                  
+
 #' @title  Providing information about sales of products from one or more datasets
 #'
 #' @description The function returns values of sales of products from one or more datasets or the corresponding barplot for these sales. 
@@ -6000,13 +6008,8 @@ chagmean <-
   start <- as.Date(start)
   end <- as.Date(end)
   dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from = start, to = end, by = "month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (agmean(data, start = dates[i], end = dates[i + 1], sigma))
@@ -6056,14 +6059,8 @@ chyoung <-
   start <- as.Date(start)
   end <- as.Date(end)
   dates <- c()
-  while (start <= end)
-  
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from = start, to = end, by = "month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (young(data, start = dates[i], end = dates[i + 1], base))
@@ -6113,13 +6110,8 @@ chgeoyoung <-
   start <- as.Date(start)
   end <- as.Date(end)
   dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from = start, to = end, by = "month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (geoyoung(data, start = dates[i], end = dates[i + 1], base))
@@ -6167,13 +6159,8 @@ chlowe <-
   start <- as.Date(start)
   end <- as.Date(end)
   dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from = start, to = end, by = "month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (lowe(data, start = dates[i], end = dates[i + 1], base))
@@ -6221,13 +6208,8 @@ chgeolowe <-
   start <- as.Date(start)
   end <- as.Date(end)
   dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from = start, to = end, by = "month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (geolowe(data, start = dates[i], end = dates[i + 1], base))
@@ -8449,12 +8431,14 @@ price_index <-
   "chgeolowe",
   "chbmw",
   "geks",
+  "wgeks",
   "geksj",
   "geksw",
   "ccdi",
   "gk",
   "tpd",
   "geks_splice",
+  "wgeks_splice",
   "geksj_splice",
   "geksw_splice",
   "ccdi_splice",
@@ -8462,6 +8446,8 @@ price_index <-
   "tpd_splice",
   "geks_fbew",
   "geks_fbmw",
+  "wgeks_fbew",
+  "wgeks_fbmw",
   "geksj_fbew",
   "geksj_fbmw",
   "geksw_fbew",
@@ -8484,7 +8470,39 @@ price_index <-
   "geksl_fbew",
   "wgeksl_fbew",
   "geksl_fbmw",
-  "wgeksl_fbmw"
+  "wgeksl_fbmw",
+  "geksgl",
+  "wgeksgl",
+  "geksgl_splice",
+  "wgeksgl_splice",
+  "geksgl_fbew",
+  "wgeksgl_fbew",
+  "geksgl_fbmw",
+  "wgeksgl_fbmw",
+  "geksaqu",
+  "wgeksaqu",
+  "geksaqu_splice",
+  "wgeksaqu_splice",
+  "geksaqu_fbew",
+  "wgeksaqu_fbew",
+  "geksaqu_fbmw",
+  "wgeksaqu_fbmw",
+  "geksaqi",
+  "wgeksaqi",
+  "geksaqi_splice",
+  "wgeksaqi_splice",
+  "geksaqi_fbew",
+  "wgeksaqi_fbew",
+  "geksaqi_fbmw",
+  "wgeksaqi_fbmw",
+  "geksgaqi",
+  "wgeksgaqi",
+  "geksgaqi_splice",
+  "wgeksgaqi_splice",
+  "geksgaqi_fbew",
+  "wgeksgaqi_fbew",
+  "geksgaqi_fbmw",
+  "wgeksgaqi_fbmw"
   )
   if (!(formula %in% aformula))
   stop ("There is a typo in the index name")
@@ -8629,6 +8647,8 @@ price_index <-
   #multilateral indices
   if (formula == "geks")
   set <- geks(data, start, end, start, window)
+  if (formula == "wgeks")
+  set <- wgeks(data, start, end, start, window)
   if (formula == "geksj")
   set <- geksj(data, start, end, start, window)
   if (formula == "geksw")
@@ -8645,13 +8665,47 @@ price_index <-
   set <- geksl(data, start, end, start, window)
   if (formula == "wgeksl")
   set <- wgeksl(data, start, end, start, window)
+  if (formula == "geksgl")
+  set <- geksgl(data, start, end, start, window)
+  if (formula == "wgeksgl")
+  set <- wgeksgl(data, start, end, start, window)
+  if (formula == "geksaqu")
+  set <- geksaqu(data, start, end, start, window)
+  if (formula == "wgeksaqu")
+  set <- wgeksaqu(data, start, end, start, window)
+  if (formula == "geksaqi")
+  set <- geksaqi(data, start, end, start, window)
+  if (formula == "wgeksaqi")
+  set <- wgeksaqi(data, start, end, start, window)
+  if (formula == "geksgaqi")
+  set <- geksaqi(data, start, end, start, window)
+  if (formula == "wgeksgaqi")
+  set <- wgeksaqi(data, start, end, start, window)
   #extended multilateral indices
   if (formula == "geks_splice")
   set <- geks_splice(data, start, end, window, splice, interval)
+  if (formula == "wgeks_splice")
+  set <- wgeks_splice(data, start, end, window, splice, interval)
   if (formula == "geksl_splice")
   set <- geksl_splice(data, start, end, window, splice, interval)
   if (formula == "wgeksl_splice")
   set <- wgeksl_splice(data, start, end, window, splice, interval)
+  if (formula == "geksgl_splice")
+  set <- geksgl_splice(data, start, end, window, splice, interval)
+  if (formula == "wgeksgl_splice")
+  set <- wgeksgl_splice(data, start, end, window, splice, interval)
+  if (formula == "geksaqu_splice")
+  set <- geksaqu_splice(data, start, end, window, splice, interval)
+  if (formula == "wgeksaqu_splice")
+  set <- wgeksaqu_splice(data, start, end, window, splice, interval)
+  if (formula == "geksaqi_splice")
+  set <- geksaqi_splice(data, start, end, window, splice, interval)
+  if (formula == "wgeksaqi_splice")
+  set <- wgeksaqi_splice(data, start, end, window, splice, interval)
+  if (formula == "geksgaqi_splice")
+  set <- geksgaqi_splice(data, start, end, window, splice, interval)
+  if (formula == "wgeksgaqi_splice")
+  set <- wgeksgaqi_splice(data, start, end, window, splice, interval)
   if (formula == "geksj_splice")
   set <- geksj_splice(data, start, end, window, splice, interval)
   if (formula == "geksw_splice")
@@ -8664,16 +8718,52 @@ price_index <-
   set <- tpd_splice(data, start, end, window, splice, interval)
   if (formula == "geks_fbew")
   set <- geks_fbew(data, start, end)
+  if (formula == "wgeks_fbew")
+  set <- wgeks_fbew(data, start, end)
   if (formula == "geksl_fbew")
   set <- geksl_fbew(data, start, end)
   if (formula == "wgeksl_fbew")
   set <- wgeksl_fbew(data, start, end)
+  if (formula == "geksgl_fbew")
+  set <- geksgl_fbew(data, start, end)
+  if (formula == "wgeksgl_fbew")
+  set <- wgeksgl_fbew(data, start, end)
+  if (formula == "geksaqu_fbew")
+  set <- geksaqu_fbew(data, start, end)
+  if (formula == "wgeksaqu_fbew")
+  set <- wgeksaqu_fbew(data, start, end)
+  if (formula == "geksaqi_fbew")
+  set <- geksaqi_fbew(data, start, end)
+  if (formula == "wgeksaqi_fbew")
+  set <- wgeksaqi_fbew(data, start, end)
+  if (formula == "geksgaqi_fbew")
+  set <- geksgaqi_fbew(data, start, end)
+  if (formula == "wgeksgaqi_fbew")
+  set <- wgeksgaqi_fbew(data, start, end)
   if (formula == "geks_fbmw")
   set <- geks_fbmw(data, start, end)
+  if (formula == "wgeks_fbmw")
+  set <- wgeks_fbmw(data, start, end)
   if (formula == "geksl_fbmw")
   set <- geksl_fbmw(data, start, end)
   if (formula == "wgeksl_fbmw")
   set <- wgeksl_fbmw(data, start, end)
+  if (formula == "geksgl_fbmw")
+  set <- geksgl_fbmw(data, start, end)
+  if (formula == "wgeksgl_fbmw")
+  set <- wgeksgl_fbmw(data, start, end)
+  if (formula == "geksaqu_fbmw")
+  set <- geksaqu_fbmw(data, start, end)
+  if (formula == "wgeksaqu_fbmw")
+  set <- wgeksaqu_fbmw(data, start, end)
+  if (formula == "geksaqi_fbmw")
+  set <- geksaqi_fbmw(data, start, end)
+  if (formula == "wgeksaqi_fbmw")
+  set <- wgeksaqi_fbmw(data, start, end)
+  if (formula == "geksgaqi_fbmw")
+  set <- geksgaqi_fbmw(data, start, end)
+  if (formula == "wgeksgaqi_fbmw")
+  set <- wgeksgaqi_fbmw(data, start, end)
   if (formula == "geksj_fbew")
   set <- geksj_fbew(data, start, end)
   if (formula == "geksj_fbmw")
@@ -8835,10 +8925,28 @@ price_index <-
   #extended multilateral indices
   if (formula == "geks_splice")
   set <- geks_splice(data, start, end, window, splice, interval)
+  if (formula == "wgeks_splice")
+  set <- wgeks_splice(data, start, end, window, splice, interval)
   if (formula == "geksl_splice")
   set <- geksl_splice(data, start, end, window, splice, interval)
   if (formula == "wgeksl_splice")
   set <- wgeksl_splice(data, start, end, window, splice, interval)
+  if (formula == "geksgl_splice")
+  set <- geksgl_splice(data, start, end, window, splice, interval)
+  if (formula == "wgeksgl_splice")
+  set <- wgeksgl_splice(data, start, end, window, splice, interval)
+  if (formula == "geksaqu_splice")
+  set <- geksaqu_splice(data, start, end, window, splice, interval)
+  if (formula == "wgeksaqu_splice")
+  set <- wgeksaqu_splice(data, start, end, window, splice, interval)
+  if (formula == "geksaqi_splice")
+  set <- geksaqi_splice(data, start, end, window, splice, interval)
+  if (formula == "wgeksaqi_splice")
+  set <- wgeksaqi_splice(data, start, end, window, splice, interval)
+  if (formula == "geksgaqi_splice")
+  set <- geksgaqi_splice(data, start, end, window, splice, interval)
+  if (formula == "wgeksgaqi_splice")
+  set <- wgeksgaqi_splice(data, start, end, window, splice, interval)
   if (formula == "geksj_splice")
   set <- geksj_splice(data, start, end, window, splice, interval)
   if (formula == "geksw_splice")
@@ -8864,10 +8972,28 @@ price_index <-
   #multilateral indices
   if (formula == "geks")
   set <- c(set, geks(data, t0, t, t0, window))
+  if (formula == "wgeks")
+  set <- c(set, wgeks(data, t0, t, t0, window))
   if (formula == "geksl")
   set <- c(set, geksl(data, t0, t, t0, window))
   if (formula == "wgeksl")
   set <- c(set, wgeksl(data, t0, t, t0, window))
+  if (formula == "geksgl")
+  set <- c(set, geksgl(data, t0, t, t0, window))
+  if (formula == "wgeksgl")
+  set <- c(set, wgeksgl(data, t0, t, t0, window))
+  if (formula == "geksaqu")
+  set <- c(set, geksaqu(data, t0, t, t0, window))
+  if (formula == "wgeksaqu")
+  set <- c(set, wgeksaqu(data, t0, t, t0, window))
+  if (formula == "geksaqi")
+  set <- c(set, geksaqi(data, t0, t, t0, window))
+  if (formula == "wgeksaqi")
+  set <- c(set, wgeksaqi(data, t0, t, t0, window))
+  if (formula == "geksgaqi")
+  set <- c(set, geksgaqi(data, t0, t, t0, window))
+  if (formula == "wgeksgaqi")
+  set <- c(set, wgeksgaqi(data, t0, t, t0, window))
   if (formula == "geksj")
   set <- c(set, geksj(data, t0, t, t0, window))
   if (formula == "geksw")
@@ -8880,16 +9006,52 @@ price_index <-
   set <- c(set, tpd(data, t0, t, t0, window))
   if (formula == "geks_fbew")
   set <- c(set, geks_fbew(data, t0, t))
+  if (formula == "wgeks_fbew")
+  set <- c(set, wgeks_fbew(data, t0, t))
   if (formula == "geksl_fbew")
   set <- c(set, geksl_fbew(data, t0, t))
   if (formula == "wgeksl_fbew")
   set <- c(set, wgeksl_fbew(data, t0, t))
+  if (formula == "geksgl_fbew")
+  set <- c(set, geksgl_fbew(data, t0, t))
+  if (formula == "wgeksgl_fbew")
+  set <- c(set, wgeksgl_fbew(data, t0, t))
+  if (formula == "geksaqu_fbew")
+  set <- c(set, geksaqu_fbew(data, t0, t))
+  if (formula == "wgeksaqu_fbew")
+  set <- c(set, wgeksaqu_fbew(data, t0, t))
+  if (formula == "geksaqi_fbew")
+  set <- c(set, geksaqi_fbew(data, t0, t))
+  if (formula == "wgeksaqi_fbew")
+  set <- c(set, wgeksaqi_fbew(data, t0, t))
+  if (formula == "geksgaqi_fbew")
+  set <- c(set, geksgaqi_fbew(data, t0, t))
+  if (formula == "wgeksgaqi_fbew")
+  set <- c(set, wgeksgaqi_fbew(data, t0, t))
   if (formula == "geks_fbmw")
   set <- c(set, geks_fbmw(data, t0, t))
+  if (formula == "wgeks_fbmw")
+  set <- c(set, wgeks_fbmw(data, t0, t))
   if (formula == "geksl_fbmw")
   set <- c(set, geksl_fbmw(data, t0, t))
   if (formula == "wgeksl_fbmw")
   set <- c(set, wgeksl_fbmw(data, t0, t))
+  if (formula == "geksgl_fbmw")
+  set <- c(set, geksgl_fbmw(data, t0, t))
+  if (formula == "wgeksgl_fbmw")
+  set <- c(set, wgeksgl_fbmw(data, t0, t))
+  if (formula == "geksaqu_fbmw")
+  set <- c(set, geksaqu_fbmw(data, t0, t))
+  if (formula == "wgeksaqu_fbmw")
+  set <- c(set, wgeksaqu_fbmw(data, t0, t))
+  if (formula == "geksaqi_fbmw")
+  set <- c(set, geksaqi_fbmw(data, t0, t))
+  if (formula == "wgeksaqi_fbmw")
+  set <- c(set, wgeksaqi_fbmw(data, t0, t))
+  if (formula == "geksgaqi_fbmw")
+  set <- c(set, geksgaqi_fbmw(data, t0, t))
+  if (formula == "wgeksgaqi_fbmw")
+  set <- c(set, wgeksgaqi_fbmw(data, t0, t))
   if (formula == "geksj_fbew")
   set <- c(set, geksj_fbew(data, t0, t))
   if (formula == "geksj_fbmw")
@@ -9447,11 +9609,12 @@ final_index <-
   FALSE
   )
   else if ((formula == "geks") |
+  (formula == "wgeks") |
   (formula == "geksw") |
   (formula == "geksj") |
   (formula == "ccdi") |
   (formula == "gk") |
-  (formula == "tpd") | (formula == "geksl") | (formula == "wgeksl")) {
+  (formula == "tpd") | (formula == "geksl") | (formula == "wgeksl") | (formula == "geksgl") | (formula == "wgeksgl") | (formula == "geksaqu") | (formula == "wgeksaqu") | (formula == "geksaqi") | (formula == "wgeksaqi") | (formula == "geksgaqi") | (formula == "wgeksgaqi")) {
   wend <- start
   lubridate::month(wend) <- lubridate::month(wend) + window - 1
   id <-
@@ -9464,12 +9627,17 @@ final_index <-
   )
   }
   else if ((formula == "geks_splice") |
+  (formula == "wgeks_splice") |
   (formula == "geksw_splice") |
   (formula == "geksj_splice") |
   (formula == "ccdi_splice") |
   (formula == "gk_splice") |
   (formula == "tpd_splice") |
-  (formula == "geksl_splice") | (formula == "wgeksl_splice")) {
+  (formula == "geksl_splice") | (formula == "wgeksl_splice") |
+  (formula == "geksgl_splice") | (formula == "wgeksgl_splice") |
+  (formula == "geksaqu_splice") | (formula == "wgeksaqu_splice") |
+  (formula == "geksaqi_splice") | (formula == "wgeksaqi_splice") |
+  (formula == "geksgaqi_splice") | (formula == "wgeksgaqi_splice")) {
   wend <- start
   lubridate::month(wend) <- lubridate::month(wend) + window - 1
   id <-
@@ -9482,12 +9650,17 @@ final_index <-
   )
   }
   else if ((formula == "geks_fbmw") |
+  (formula == "wgeks_fbmw") |
   (formula == "geksw_fbmw") |
   (formula == "geksj_fbmw") |
   (formula == "ccdi_fbmw") |
   (formula == "gk_fbmw") |
   (formula == "tpd_wbmw") |
-  (formula == "geksl_fbmw") | (formula == "wgeksl_fbmw")) {
+  (formula == "geksl_fbmw") | (formula == "wgeksl_fbmw") |
+  (formula == "geksgl_fbmw") | (formula == "wgeksgl_fbmw") |
+  (formula == "geksaqu_fbmw") | (formula == "wgeksaqu_fbmw") |
+  (formula == "geksaqi_fbmw") | (formula == "wgeksaqi_fbmw") |
+  (formula == "geksgaqi_fbmw") | (formula == "wgeksgaqi_fbmw")) {
   wstart <- end
   lubridate::year(wstart) <- lubridate::year(wstart) - 1
   if (lubridate::year(start) == lubridate::year(end))
@@ -9520,7 +9693,6 @@ final_index <-
   TRUE
   )
   
-  
   retindex <- c()
   w_start_ret <- c()
   w_end_ret <- c()
@@ -9529,6 +9701,7 @@ final_index <-
   idp<-c()
   for (k in 1:length(id)) {
   subset <- dplyr::filter(set, set$retID == id[k])
+  sign<-1
   if ((formula == "jevons") |
   (formula == "dutot") |
   (formula == "carli") |
@@ -9569,11 +9742,16 @@ final_index <-
   FALSE
   )
   else if ((formula == "geks") |
+  (formula == "wgeks") |
   (formula == "geksw") |
   (formula == "geksj") |
   (formula == "ccdi") |
   (formula == "gk") |
-  (formula == "tpd") | (formula == "geksl") | (formula == "wgeksl")) {
+  (formula == "tpd") | (formula == "geksl") | (formula == "wgeksl") | 
+  (formula == "geksgl") | (formula == "wgeksgl") |
+  (formula == "geksaqu") | (formula == "wgeksaqu") |
+  (formula == "geksaqi") | (formula == "wgeksaqi") |
+  (formula == "geksgaqi") | (formula == "wgeksgaqi")) {
   wend <- start
   lubridate::month(wend) <- lubridate::month(wend) + window - 1
   idp <-
@@ -9586,12 +9764,17 @@ final_index <-
   )
   }
   else if ((formula == "geks_splice") |
+  (formula == "wgeks_splice") |
   (formula == "geksw_splice") |
   (formula == "geksj_splice") |
   (formula == "ccdi_splice") |
   (formula == "gk_splice") |
   (formula == "tpd_splice") |
-  (formula == "geksl_splice") | (formula == "wgeksl_splice")) {
+  (formula == "geksl_splice") | (formula == "wgeksl_splice") |
+  (formula == "geksgl_splice") | (formula == "wgeksgl_splice") |
+  (formula == "geksaqu_splice") | (formula == "wgeksaqu_splice") |
+  (formula == "geksaqi_splice") | (formula == "wgeksaqi_splice") |
+  (formula == "geksgaqi_splice") | (formula == "wgeksgaqi_splice")) {
   wend <- start
   lubridate::month(wend) <- lubridate::month(wend) + window - 1
   idp <-
@@ -9604,12 +9787,17 @@ final_index <-
   )
   }
   else if ((formula == "geks_fbmw") |
+  (formula == "wgeks_fbmw") |
   (formula == "geksw_fbmw") |
   (formula == "geksj_fbmw") |
   (formula == "ccdi_fbmw") |
   (formula == "gk_fbmw") |
   (formula == "tpd_wbmw") |
-  (formula == "geksl_fbmw") | (formula == "wgeksl_fbmw")) {
+  (formula == "geksl_fbmw") | (formula == "wgeksl_fbmw") |
+  (formula == "geksgl_fbmw") | (formula == "wgeksgl_fbmw") |
+  (formula == "geksaqu_fbmw") | (formula == "wgeksaqu_fbmw") |
+  (formula == "geksaqi_fbmw") | (formula == "wgeksaqi_fbmw") |
+  (formula == "geksgaqi_fbmw") | (formula == "wgeksgaqi_fbmw")) {
   wstart <- end
   lubridate::year(wstart) <- lubridate::year(wstart) - 1
   if (lubridate::year(start) == lubridate::year(end))
@@ -9631,7 +9819,6 @@ final_index <-
   TRUE
   )
   }
-  
   else
   #chain indices case
   {
@@ -9640,7 +9827,6 @@ final_index <-
   time1<-start
   time2<-start
   lubridate::month(time2)<-lubridate::month(time2)+1
-  sign<-1
   while (time2<=end) {
   idp <-
   matched(
@@ -9654,9 +9840,8 @@ final_index <-
   lubridate::month(time1)<-lubridate::month(time1)+1
   lubridate::month(time2)<-lubridate::month(time2)+1
   }  
-  idp<-ifelse(sign>0,sign,NA)
   }
-  if (length(idp) > 0 && !(is.na(idp)))
+  if (length(idp) > 0 & sign > 0)
   id_ok <- c(id_ok, id[k])
   }
   id <- id_ok
@@ -9841,7 +10026,8 @@ final_index <-
   (formula == "geksj") |
   (formula == "ccdi") |
   (formula == "gk") |
-  (formula == "tpd") | (formula == "geksl") | (formula == "wgeksl"))
+  (formula == "tpd") | (formula == "geksl") | (formula == "wgeksl") | 
+  (formula == "geksaqu") | (formula == "wgeksaqu"))
   {
   wend <- start
   lubridate::month(wend) <-
@@ -9864,7 +10050,8 @@ final_index <-
   (formula == "ccdi_splice") |
   (formula == "gk_splice") |
   (formula == "tpd_splice") |
-  (formula == "geksl_splice") | (formula == "wgeksl_splice"))
+  (formula == "geksl_splice") | (formula == "wgeksl_splice") |
+  (formula == "geksaqu_splice") | (formula == "wgeksaqu_splice"))
   {
   wend <- start
   lubridate::month(wend) <-
@@ -9951,29 +10138,48 @@ final_index <-
   FALSE
   )
   else if ((formula == "geks") |
+  (formula == "wgeks") |
   (formula == "geksw") |
   (formula == "geksj") |
   (formula == "ccdi") |
   (formula == "gk") |
   (formula == "tpd") |
-  (formula == "geksl") | (formula == "wgeksl"))
+  (formula == "geksl") | (formula == "wgeksl") |
+  (formula == "geksgl") | (formula == "wgeksgl") |
+  (formula == "geksaqu") | (formula == "wgeksaqu") |
+  (formula == "geksaqi") | (formula == "wgeksaqi") |
+  (formula == "geksgaqi") | (formula == "wgeksgaqi"))
   id <- idd[[m]]
   else if ((formula == "geks_splice") |
+  (formula == "wgeks_splice") |
   (formula == "geksw_splice") |
   (formula == "geksj_splice") |
   (formula == "ccdi_splice") |
   (formula == "gk_splice") |
   (formula == "tpd_splice") |
   (formula == "geksl_splice") |
-  (formula == "wgeksl_splice"))
+  (formula == "wgeksl_splice") |
+  (formula == "geksgl_splice") |
+  (formula == "wgeksgl_splice") |
+  (formula == "geksaqu_splice") |
+  (formula == "wgeksaqu_splice") |
+  (formula == "geksaqi_splice") |
+  (formula == "wgeksaqi_splice") |
+  (formula == "geksgaqi_splice") |
+  (formula == "wgeksgaqi_splice"))
   id <- idd[[m]]
   else if ((formula == "geks_fbmw") |
+  (formula == "wgeks_fbmw") |
   (formula == "geksw_fbmw") |
   (formula == "geksj_fbmw") |
   (formula == "ccdi_fbmw") |
   (formula == "gk_fbmw") |
   (formula == "tpd_wbmw") |
-  (formula == "geksl_fbmw") | (formula == "wgeksl_fbmw")) {
+  (formula == "geksl_fbmw") | (formula == "wgeksl_fbmw") |
+  (formula == "geksgl_fbmw") | (formula == "wgeksgl_fbmw") |
+  (formula == "geksaqu_fbmw") | (formula == "wgeksaqu_fbmw") |
+  (formula == "geksaqi_fbmw") | (formula == "wgeksaqi_fbmw") |
+  (formula == "geksgaqi_fbmw") | (formula == "wgeksgaqi_fbmw")) {
   wstart <- end
   lubridate::year(wstart) <- lubridate::year(wstart) - 1
   if (lubridate::year(start) == lubridate::year(end))
@@ -10011,7 +10217,7 @@ final_index <-
   id_ok <- c()
   for (k in 1:length(id)) {
   subset <- dplyr::filter(set, set$retID == id[k])
-  
+  sign<-1
   if ((formula == "jevons") |
   (formula == "dutot") |
   (formula == "carli") |
@@ -10052,11 +10258,16 @@ final_index <-
   FALSE
   )
   else if ((formula == "geks") |
+  (formula == "wgeks") |
   (formula == "geksw") |
   (formula == "geksj") |
   (formula == "ccdi") |
   (formula == "gk") |
-  (formula == "tpd") | (formula == "geksl") | (formula == "wgeksl")) {
+  (formula == "tpd") | (formula == "geksl") | (formula == "wgeksl") | 
+  (formula == "geksgl") | (formula == "wgeksgl") |
+  (formula == "geksaqu") | (formula == "wgeksaqu") |
+  (formula == "geksaqi") | (formula == "wgeksaqi") |
+  (formula == "geksgaqi") | (formula == "wgeksgaqi")) {
   wend <- start
   lubridate::month(wend) <- lubridate::month(wend) + window - 1
   idp <-
@@ -10069,12 +10280,17 @@ final_index <-
   )
   }
   else if ((formula == "geks_splice") |
+  (formula == "wgeks_splice") |
   (formula == "geksw_splice") |
   (formula == "geksj_splice") |
   (formula == "ccdi_splice") |
   (formula == "gk_splice") |
   (formula == "tpd_splice") |
-  (formula == "geksl_splice") | (formula == "wgeksl_splice")) {
+  (formula == "geksl_splice") | (formula == "wgeksl_splice") |
+  (formula == "geksgl_splice") | (formula == "wgeksgl_splice") |
+  (formula == "geksaqu_splice") | (formula == "wgeksaqu_splice") |
+  (formula == "geksaqi_splice") | (formula == "wgeksaqi_splice") |
+  (formula == "geksgaqi_splice") | (formula == "wgeksgaqi_splice")) {
   wend <- start
   lubridate::month(wend) <- lubridate::month(wend) + window - 1
   idp <-
@@ -10087,12 +10303,17 @@ final_index <-
   )
   }
   else if ((formula == "geks_fbmw") |
+  (formula == "wgeks_fbmw") |
   (formula == "geksw_fbmw") |
   (formula == "geksj_fbmw") |
   (formula == "ccdi_fbmw") |
   (formula == "gk_fbmw") |
   (formula == "tpd_wbmw") |
-  (formula == "geksl_fbmw") | (formula == "wgeksl_fbmw")) {
+  (formula == "geksl_fbmw") | (formula == "wgeksl_fbmw") |
+  (formula == "geksgl_fbmw") | (formula == "wgeksgl_fbmw") |
+  (formula == "geksaqu_fbmw") | (formula == "wgeksaqu_fbmw") |
+  (formula == "geksaqi_fbmw") | (formula == "wgeksaqi_fbmw") |
+  (formula == "geksgaqi_fbmw") | (formula == "wgeksgaqi_fbmw")) {
   wstart <- end
   lubridate::year(wstart) <- lubridate::year(wstart) - 1
   if (lubridate::year(start) == lubridate::year(end))
@@ -10136,9 +10357,8 @@ final_index <-
   lubridate::month(time1)<-lubridate::month(time1)+1
   lubridate::month(time2)<-lubridate::month(time2)+1
   }  
-  idp<-ifelse(sign>0,sign,NA)
   }  
-  if (length(idp) > 0 && !(is.na(idp)))
+  if (length(idp) > 0 & sign > 0)
   id_ok <- c(id_ok, id[k])
   }
   id <- id_ok
@@ -10148,12 +10368,17 @@ final_index <-
   for (k in 1:length(id)) {
   subset <- dplyr::filter(set, set$retID == id[k])
   if ((formula == "geks_splice") |
+  (formula == "wgeks_splice") |
   (formula == "geksw_splice") |
   (formula == "geksj_splice") |
   (formula == "ccdi_splice") |
   (formula == "gk_splice") |
   (formula == "tpd_splice") |
-  (formula == "geksl_splice") | (formula == "wgeksl_splice"))
+  (formula == "geksl_splice") | (formula == "wgeksl_splice") |
+  (formula == "geksgl_splice") | (formula == "wgeksgl_splice") |
+  (formula == "geksaqu_splice") | (formula == "wgeksaqu_splice") |
+  (formula == "geksaqi_splice") | (formula == "wgeksaqi_splice") |
+  (formula == "geksgaqi_splice") | (formula == "wgeksgaqi_splice"))
   retindex <- c(retindex, retindexx[[m]][[k]][dist(start, end) + 1])
   else
   retindex <-
