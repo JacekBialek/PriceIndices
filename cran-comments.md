@@ -1,8 +1,12 @@
 ## Package update 
-* 37 new functions (concerning the WGEKS, GEKSL, WGEKSL, GEKS-AQU, WGEKS-AQU, GEKS-AQI, WGEKS-AQI, GEKS-GAQI, WGEKS-GAQI indices and its extensions, a new function: compare_distances)
-* 6 small bugs fixed (they concern **chlowe**, **chgeolowe**, **chyoung**, **chgeoyoung**, **chhybrid** and **chgeohybrid** functions)
-* a data set on **milk** has beed modified
-* a function **matched_fig** has been extended by adding a new parameter
+
+* New function:
+* a new function which allows to compare indices with a target price index was added (*compare_to_target*)
+
+* Improvements:
+* some function descriptions have been changed or improved
+* set of files.R has been reorganized
+* README file and vignette have been extended
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

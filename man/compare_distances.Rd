@@ -13,7 +13,7 @@ compare_distances(
 )
 }
 \arguments{
-\item{data}{The data frame containg values of indices which are to be compared}
+\item{data}{A data frame containg values of indices which are to be compared}
 
 \item{measure}{A parameter specifying what measure should be used to compare the indexes. Possible parameter values are: "MAD" (Mean Absolute Distance) or "RMSD" (Root Mean Square Distance).}
 

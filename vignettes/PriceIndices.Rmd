@@ -757,9 +757,28 @@ For instance, let us compare the Jevons, Dutot and Carli indices calculated for 
 
 ```{r}
 #Creating a data frame with unweighted bilateral index values
-df<-price_indices(milk, bilateral=c("jevons","dutot","carli"), start="2018-12",end="2019-12",interval=TRUE)
+df<-price_indices(milk, bilateral=c("jevons","dutot","carli"), 
+                  start="2018-12",end="2019-12",interval=TRUE)
 #Calculating average distances between indices (in p.p)
 compare_distances(df)
 ```
+
+**compare_to_target**
+
+The function calculates average distances between considered price indices and the target price index and it returns a data frame with: average distances on the basis of all values of compared indices (**distance** column), average semi-distances on the basis of values of compared indices which overestimate the target index values (**distance_upper** column) and average semi-distances on the basis of values of compared indices which underestimate the target index values (**distance_lower** column).
+
+For instance, let us compare the Jevons, Laspeyres, Paasche and Walsh price indices (calculated for the **milk** data set and for the time interval: December 2018 - December 2019) with the target Fisher price index:
+
+```{r}
+#Creating a data frame with example bilateral indices
+df<-price_indices(milk, 
+                  bilateral=c("jevons","laspeyres","paasche","walsh"),
+                  start="2018-12",end="2019-12",interval=TRUE)
+#Calculating the target Fisher price index
+target_index<-fisher(milk,start="2018-12",end="2019-12",interval=TRUE)
+#Calculating average distances between considered indices and the Fisher index (in p.p)
+compare_to_target(df,target=target_index)
+```
+
 
 

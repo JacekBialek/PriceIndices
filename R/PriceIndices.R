@@ -366,4 +366,6 @@
 #' \code{\link{compare_final_indices}}
 #'
 #' \code{\link{compare_distances}}
+#'
+#' \code{\link{compare_to_target}}
 NULL

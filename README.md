@@ -1,3 +1,8 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -102,12 +107,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.55         22      1     1
-#> 2 2020-01-01   2.85         19      2     1
-#> 3 2020-01-01   2.61         17      3     1
-#> 4 2020-01-01   2.79         19      4     1
-#> 5 2020-01-01   2.54         20      5     1
-#> 6 2020-01-01   2.46         21      6     1
+#> 1 2020-01-01   2.78         22      1     1
+#> 2 2020-01-01   2.62         19      2     1
+#> 3 2020-01-01   2.74         19      3     1
+#> 4 2020-01-01   2.81         20      4     1
+#> 5 2020-01-01   2.72         22      5     1
+#> 6 2020-01-01   2.82         17      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -302,7 +307,7 @@ head(data_predicted)
 #> 2 no information  11421            11421
 #> 3              g  11831            11831
 #> 4              g  11831            11831
-#> 5 no information  11811            11714
+#> 5 no information  11811            11421
 #> 6 no information  11421            11421
 ```
 
@@ -448,10 +453,11 @@ matched_fig(milk, start="2018-12", end="2019-12", type="prodID")
 ``` r
 matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
 #>      date  fraction
-#> 1 2019-01 0.9629630
-#> 2 2019-02 0.9444444
-#> 3 2019-03 0.9074074
-#> 4 2019-04 0.8727273
+#> 1 2018-12 1.0000000
+#> 2 2019-01 0.9629630
+#> 3 2019-02 0.9444444
+#> 4 2019-03 0.9074074
+#> 5 2019-04 0.8727273
 ```
 
 **prices**
@@ -721,19 +727,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.044959
-#> 2  14216 1.488534
-#> 3  15404 1.615743
-#> 4  17034 1.913652
-#> 5  34540 1.242277
-#> 6  51583 1.258648
+#> 1  14215 1.626276
+#> 2  14216 1.863481
+#> 3  15404 1.549253
+#> 4  17034 1.166161
+#> 5  34540 1.793729
+#> 6  51583 1.745329
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9861937
+#> [1] 0.9977967
 ```
 
 <a id="ad8"> </a>
@@ -1044,4 +1050,26 @@ compare_distances(df)
 #> jevons  0.000 2.482 2.093
 #> dutot   2.482 0.000 4.420
 #> carli   2.093 4.420 0.000
+```
+
+**compare\_to\_target**
+
+The function calculates average distances between considered price indices and the target price index and it returns a data frame with: average distances on the basis of all values of compared indices (**distance** column), average semi-distances on the basis of values of compared indices which overestimate the target index values (**distance\_upper** column) and average semi-distances on the basis of values of compared indices which underestimate the target index values (**distance\_lower** column).
+
+For instance, let us compare the Jevons, Laspeyres, Paasche and Walsh price indices (calculated for the **milk** data set and for the time interval: December 2018 - December 2019) with the target Fisher price index:
+
+``` r
+#Creating a data frame with example bilateral indices
+df<-price_indices(milk, 
+                  bilateral=c("jevons","laspeyres","paasche","walsh"),
+                  start="2018-12",end="2019-12",interval=TRUE)
+#Calculating the target Fisher price index
+target_index<-fisher(milk,start="2018-12",end="2019-12",interval=TRUE)
+#Calculating average distances between considered indices and the Fisher index (in p.p)
+compare_to_target(df,target=target_index)
+#>       index distance distance_lower distance_upper
+#> 1    jevons    2.759          0.045          2.714
+#> 2 laspeyres    1.429          0.000          1.429
+#> 3   paasche    1.403          1.403          0.000
+#> 4     walsh    0.174          0.113          0.061
 ```

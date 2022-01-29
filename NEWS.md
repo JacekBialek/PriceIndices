@@ -1,3 +1,14 @@
+# Package update 0.0.6 -> 0.0.7
+
+## New function
+* a new function which allows to compare indices with a target price index was added (*compare_to_target*)
+
+## Improvements
+* some function descriptions have been changed or improved
+* set of files.R has been reorganized
+* README file and vignette have been extended
+
+
 # Package update 0.0.5 -> 0.0.6
 
 ## New function

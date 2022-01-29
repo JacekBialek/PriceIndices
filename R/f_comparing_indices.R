@@ -134,7 +134,7 @@ ggplot2::ggplot(graph, ggplot2::aes(x=date, y=value, col=formula)) + ggplot2::ge
 #' @title  Calculating distances between price indices
 #'
 #' @description The function calculates distances between price indices
-#' @param data The data frame containg values of indices which are to be compared
+#' @param data A data frame containg values of indices which are to be compared
 #' @param measure A parameter specifying what measure should be used to compare the indexes. Possible parameter values are: "MAD" (Mean Absolute Distance) or "RMSD" (Root Mean Square Distance).
 #' @param pp Logical parameter indicating whether the results are to be presented in percentage points (then \code{pp} = TRUE).
 #' @param first A logical parameter that determines whether the first row of the data frame is to be taken into account when calculating the distance between the indices (then \code{first} = TRUE). Usually, the first row concerns the index values for the base period - all indexes are then set to one.
@@ -186,5 +186,93 @@ compare_distances<-function (data=data.frame(),measure="MAD", pp=TRUE, first=TRU
   }
   return (data2)
 }
+
+
+#' @title  Calculating distances between considered price indices and the target price index
+#'
+#' @description The function calculates distances between considered price indices and the target price index
+#' @param data A data frame containg values of indices which are to be compared to the target price index
+#' @param target A data frame or a vector containg values of the target price index
+#' @param measure A parameter specifying what measure should be used to compare indices. Possible parameter values are: "MAD" (Mean Absolute Distance) or "RMSD" (Root Mean Square Distance).
+#' @param pp Logical parameter indicating whether the results are to be presented in percentage points (then \code{pp} = TRUE).
+#' @param first A logical parameter that determines whether the first row of the data frame and the first row of the 'target' data frame (or its first element if it is a vector) are to be taken into account when calculating the distance between the indices (then \code{first} = TRUE). Usually, the first row concerns the index values for the base period - all indexes are then set to one.
+#' @param prec Parameter that determines how many decimal places are to be used in the presentation of results.
+#' @rdname compare_to_target
+#' @return The function calculates average distances between considered price indices and the target price index and it returns a data frame with: average distances on the basis of all values of compared indices ('distance' column), average semi-distances on the basis of values of compared indices which overestimate the target index values ('distance_upper' column) and average semi-distances on the basis of values of compared indices which underestimate the target index values ('distance_lower' column).
+#' @examples 
+#' #Creating a data frame with example bilateral indices
+#' \donttest{df<-price_indices(milk, 
+#' bilateral=c("jevons","laspeyres","paasche","walsh"),
+#' start="2018-12",end="2019-12",interval=TRUE)}
+#' #Calculating the target Fisher price index
+#' \donttest{target_index<-fisher(milk,start="2018-12",end="2019-12",interval=TRUE)}
+#' #Calculating average distances between considered indices and the Fisher index (in p.p)
+#' \donttest{compare_to_target(df,target=target_index)}
+#' @export
+
+compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = TRUE, first = TRUE, prec = 3)
+{
+  if (!(is.data.frame(data))) stop("The parameter 'data' must indicate a data frame.")
+  if (!((is.data.frame(target)) | (is.vector(target)))) stop("The parameter 'target' must indicate a data frame or a vector") 
+  if (is.data.frame(target)) 
+  { if (ncol(target)>2) stop("Data frame 'target' should contain only two columns: dates and index values!")
+    if (is.numeric(target[,1])) target<-target[,1]
+    else if (is.numeric(target[,2])) target<-target[,2]
+    else stop("Data frame 'target' should contain one numeric column with target index values!")
+  }
+  if (!(length(target)==nrow(data))) stop("Objects 'data' and 'target' must have the same number of cases!")
+  #checking values of parameters
+  good_measure<-c("MAD","RMSD") #Mean absolute distance vs Root mean square distance
+  if (!(measure %in% good_measure)) stop ("The 'measure' parameter takes values: 'MAD' or 'MSD'")
+  if (prec<=0) stop("The parameter 'prec' takes natural values and it must equal at least one!")
+  columns<-c()
+  for (i in 1:ncol(data)) if (is.numeric(data[,i])) columns<-c(columns,i)
+  if (length(columns)==0) stop("Data frame must contain at least one numerical column")
+  data<-data[,columns] #taking only numeric columns
+  if (first==TRUE) {data<-data[-1,]
+  target<-target[-1]
+  }
+  index<-colnames(data)
+  #distances of two indices
+  MAD<-function (v1, v2, type="all") {diff<-v1-v2
+                               if (type=="upper") diff[which(diff<0)]<-0
+                               if (type=="lower") diff[which(diff>0)]<-0
+                               return (mean(abs(diff)))
+  }
+  MSD<-function (v1, v2, type="all") {diff<-v1-v2
+                               if (type=="upper") diff[which(diff<0)]<-0
+                               if (type=="lower") diff[which(diff>0)]<-0
+                               return (sqrt(mean((diff)^2)))
+  }
+  distance<-c()
+  distance_upper<-c()
+  distance_lower<-c()
+  for (i in 1:ncol(data)) {
+    x<-data[,i]
+    #distance
+    if (measure=="MAD") dist<-MAD(x,target,type="all")
+    else dist<-MSD(x,target,type="all")
+    if (pp==TRUE) dist<-dist*100
+    dist<-round(dist, digits=prec)
+    distance<-c(distance,dist)
+    #distance_upper
+    if (measure=="MAD") dist2<-MAD(x,target,type="upper")
+    else dist2<-MSD(x,target,type="upper")
+    if (pp==TRUE) dist2<-dist2*100
+    dist2<-round(dist2, digits=prec)
+    distance_upper<-c(distance_upper,dist2)
+    #distance_lower
+    if (measure=="MAD") dist3<-MAD(x,target,type="lower")
+    else dist3<-MSD(x,target,type="lower")
+    if (pp==TRUE) dist3<-dist3*100
+    dist3<-round(dist3, digits=prec)
+    distance_lower<-c(distance_lower,dist3)
+  }
+  result<-data.frame(index=index, distance=distance,distance_lower=distance_lower,distance_upper=distance_upper)
+  return (result)
+}
+
+
+
 
 
