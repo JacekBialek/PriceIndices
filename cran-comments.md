@@ -1,3 +1,10 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* changed references with the right DOIs in DESCRIPTION,
+* used \dontest{} for the most time-consuming examples (6)
+
+
 ## Package update 
 
 * New function:
