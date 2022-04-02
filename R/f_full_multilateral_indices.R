@@ -621,7 +621,7 @@ tpd <-
 #' {Diewert, E. (2020). \emph{The Chain Drift Problem and Multilateral Indexes.} Chapter 6 in: Consumer Price Index Theory (draft)}
 #'
 #' @examples 
-#' SPQ(sugar, start="2018-12",end="2019-02")
+#' \donttest{SPQ(sugar, start="2018-12",end="2019-02")}
 #' \donttest{SPQ(milk, start="2018-12",end="2019-12",interval=TRUE)}
 #' @export
 

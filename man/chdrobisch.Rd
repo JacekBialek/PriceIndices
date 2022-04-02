@@ -22,7 +22,7 @@ The function returns a value (or vector of values) of the monthly chained Drobis
 This function returns a value (or vector of values) of the monthly chained Drobisch price index.
 }
 \examples{
-chdrobisch(sugar, start="2018-12", end="2019-04")
+\donttest{chdrobisch(sugar, start="2018-12", end="2019-04")}
 \donttest{chdrobisch(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{

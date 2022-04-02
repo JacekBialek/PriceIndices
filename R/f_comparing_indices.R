@@ -143,11 +143,11 @@ ggplot2::ggplot(graph, ggplot2::aes(x=date, y=value, col=formula)) + ggplot2::ge
 #' @return The function calculates average distances between price indices and it returns a data frame with these values for each pair of price indices.
 #' @examples 
 #' #Creating a data frame with unweighted bilateral index values
-#' df<-price_indices(milk, 
+#' \donttest{df<-price_indices(milk, 
 #' bilateral=c("jevons","dutot","carli"),
-#' start="2018-12",end="2019-12",interval=TRUE)
+#' start="2018-12",end="2019-12",interval=TRUE)}
 #' #Calculating average distances between indices (in p.p)
-#' compare_distances(df)
+#' \donttest{compare_distances(df)}
 #' @export
 
 compare_distances<-function (data=data.frame(),measure="MAD", pp=TRUE, first=TRUE, prec=3)

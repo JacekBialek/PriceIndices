@@ -629,7 +629,7 @@ chgeopaasche <-
 #'
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #' @examples 
-#' chdrobisch(sugar, start="2018-12", end="2019-04")
+#' \donttest{chdrobisch(sugar, start="2018-12", end="2019-04")}
 #' \donttest{chdrobisch(milk, start="2018-12", end="2020-01", interval=TRUE)}
 #' @export
 
@@ -1581,7 +1581,7 @@ chgeolowe <-
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
 #' @examples 
-#' chhybrid(sugar, start="2019-12", end="2020-05", base="2018-12")
+#' \donttest{chhybrid(sugar, start="2019-12", end="2020-05", base="2018-12")}
 #' \donttest{chhybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
 
@@ -1631,7 +1631,7 @@ chhybrid <-
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
 #' @examples 
-#' chgeohybrid(sugar, start="2019-12", end="2020-05", base="2018-12")
+#' \donttest{chgeohybrid(sugar, start="2019-12", end="2020-05", base="2018-12")}
 #' \donttest{chgeohybrid(milk, start="2019-12", end="2020-08", base="2018-12", interval=TRUE)}
 #' @export
 chgeohybrid <-
