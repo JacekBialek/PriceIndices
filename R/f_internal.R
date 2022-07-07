@@ -1219,7 +1219,14 @@ wgeksgaqi_fbmw2 <- function(data, start, end)  {
   ))
 }
 
+#' An additional function used in the 'model_classification' function
+#' @param str A character string which is transformed into unique integer number.
+#' @noRd
 
-
-
+conversion<-function (str)
+{
+  utf<-utf8ToInt(str)
+  int<-seq(1:nchar(str))
+  return (sum(utf*int))
+}
 

@@ -1,19 +1,13 @@
-## Resubmission
-This is a resubmission. In this version I have:
-
-* changed references with the right DOIs in DESCRIPTION,
-* used \dontest{} for the most time-consuming examples (6)
-
-
 ## Package update 
 
 * New function:
-* a new function which allows to compare indices with a target price index was added (*compare_to_target*)
+* a new internal function has been added (*conversion*). This function provides integer representation of the given text string.
 
 * Improvements:
-* some function descriptions have been changed or improved
-* set of files.R has been reorganized
-* README file and vignette have been extended
+* the following functions have been improved by changing a method for dealing with categorical variables: *model_classification*, *data_classifying*.
+* An existing artificial data set (dataCOICOP) has been change into the real scanner data set
+* Some new references have been added (e.g. for *GEKS-L*, *GEKS-GL*, *GEKS-AQI*, *GEKS-AQU* functions).
+* A README file has been improved by adding some new example with using ML methods for product classifiction.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

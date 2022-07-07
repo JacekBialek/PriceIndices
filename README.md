@@ -56,7 +56,7 @@ The second one, **dataMATCH**, can be used to demonstrate the **data\_matching**
 
 ***3) dataCOICOP***
 
-The third one, **dataCOICOP**, is a collection of artificial scanner data on the sale of tomatoes, fruit juices, low fat milk, full fat milk, sugar, chocolate, yoghurt, coffee, eggs and salt in the period from December 2018 to October 2020. It is a data frame with 8 columns and 96600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (liters); **prodID** - unique product codes obtained after product matching (data set contains 331 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (data set contains 10 different retIDs); **description** - descriptions of sold products (data set contains 12 different product descriptions), **unit** - sales units, e.g. 'kg', 'ml', etc.; **coicop** - identifiers of COICOP groups (10 groups). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
+The third one, **dataCOICOP**, is a ollection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022. It is a data frame with 9 columns and 139600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products; **description** - descriptions of sold products (original: in Polish); **codeID** - retailer product codes; **grammage** - product grammages, **unit** - sales units, e.g. 'kg', 'ml', etc.; **category** - product categories (in English) corresponding to COICOP 6 levels, **coicop6** - identifiers of local COICOP 6 groups (6 levels). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
 
 ***4) milk***
 
@@ -107,12 +107,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.78         22      1     1
-#> 2 2020-01-01   2.62         19      2     1
-#> 3 2020-01-01   2.74         19      3     1
-#> 4 2020-01-01   2.81         20      4     1
-#> 5 2020-01-01   2.72         22      5     1
-#> 6 2020-01-01   2.82         17      6     1
+#> 1 2020-01-01   2.51         21      1     1
+#> 2 2020-01-01   2.85         22      2     1
+#> 3 2020-01-01   2.51         21      3     1
+#> 4 2020-01-01   2.85         15      4     1
+#> 5 2020-01-01   2.70         21      5     1
+#> 6 2020-01-01   2.71         22      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -254,17 +254,19 @@ unique(subgroup2$description)
 
 **data\_classifying**
 
-This function predicts product COICOP levels using the selected machine learning model (see the **model** parameter). It provides the indicated data set with an additional column, i.e. *coicop\_predicted*. The selected model must be built previously (see the **model\_classification** function) and after the training process it can be saved on your disk (see the **save\_model** function) and then loaded at any time (see the **load\_model** function). Please note that the machine learning process is based on the XGBoost algorithm (from the XGBoost package) which is an implementation of gradient boosted decision trees designed for speed and performance. For example, let us build a machine learning model
+This function predicts product COICOP levels (or any other defined product levels) using the selected machine learning model (see the **model** parameter). It provides the indicated data set with an additional column, i.e. *coicop\_predicted*. The selected model must be built previously (see the **model\_classification** function) and after the training process it can be saved on your disk (see the **save\_model** function) and then loaded at any time (see the **load\_model** function). Please note that the machine learning process is based on the XGBoost algorithm (from the XGBoost package) which is an implementation of gradient boosted decision trees designed for speed and performance. For example, let us build a machine learning model
 
 ``` r
-my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))
-data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))
-data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))
+my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))
+data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))
+data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))
 ML<-model_classification(data_train,
                          data_test,
+                         coicop="coicop6",
                          grid=my.grid,
-                         indicators=c("prodID","unit","description"),
-                         key_words=c("milk"),rounds=50)
+                         indicators=c("description","codeIN"),
+                         key_words=c("uht"), 
+                         rounds=60)
 ```
 
 We can watch the results of the whole training process:
@@ -295,20 +297,20 @@ ML_fromPC<-load_model("My_model")
 #Prediction
 data_predicted<-data_classifying(ML_fromPC, data_test)
 head(data_predicted)
-#>         time prices quantities        prodID retID    description
-#> 1 2020-10-01   1.91         38 not available     5           milk
-#> 2 2020-09-01   1.46        105 not available     2           milk
-#> 3 2020-09-01   8.44        490 not available     5 no information
-#> 4 2020-09-01   8.16        783 not available    10      chocolate
-#> 5 2020-09-01   3.02        576 not available     2 no information
-#> 6 2020-10-01   1.62         90 not available     5           milk
-#>             unit coicop coicop_predicted
-#> 1             ml  11421            11421
-#> 2 no information  11421            11421
-#> 3              g  11831            11831
-#> 4              g  11831            11831
-#> 5 no information  11811            11421
-#> 6 no information  11421            11421
+#>         time prices quantities                            description codeIN
+#> 1 2021-11-01   3.03        379 g/wydojone mleko bez laktozyuht 3,2%1l  60001
+#> 2 2021-11-01   3.03        856 g/wydojone mleko bez laktozyuht 3,2%1l  60001
+#> 3 2021-11-01   3.03        369 g/wydojone mleko bez laktozyuht 3,2%1l  60001
+#> 4 2021-11-01   3.03        617 g/wydojone mleko bez laktozyuht 3,2%1l  60001
+#> 5 2021-11-01   3.03        613 g/wydojone mleko bez laktozyuht 3,2%1l  60001
+#> 6 2021-11-01   3.03        261 g/wydojone mleko bez laktozyuht 3,2%1l  60001
+#>   grammage unit       category coicop6 coicop_predicted
+#> 1        1    l UHT whole milk 11411_1          11411_1
+#> 2        1    l UHT whole milk 11411_1          11411_1
+#> 3        1    l UHT whole milk 11411_1          11411_1
+#> 4        1    l UHT whole milk 11411_1          11411_1
+#> 5        1    l UHT whole milk 11411_1          11411_1
+#> 6        1    l UHT whole milk 11411_1          11411_1
 ```
 
 **data\_matching**
@@ -727,19 +729,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.626276
-#> 2  14216 1.863481
-#> 3  15404 1.549253
-#> 4  17034 1.166161
-#> 5  34540 1.793729
-#> 6  51583 1.745329
+#> 1  14215 1.829411
+#> 2  14216 1.004808
+#> 3  15404 1.864543
+#> 4  17034 1.577752
+#> 5  34540 1.430664
+#> 6  51583 1.673339
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9977967
+#> [1] 0.9847877
 ```
 
 <a id="ad8"> </a>

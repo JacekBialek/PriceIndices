@@ -777,6 +777,8 @@ wgeks <-
 #'
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
 #' @examples 
 #' \donttest{geksl(milk, start="2019-01", end="2019-08",window=10)}
 #' \donttest{geksl(milk, start="2018-12", end="2019-12")}
@@ -847,6 +849,8 @@ geksl <-
 #' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
 #'
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{wgeksl(milk, start="2019-01", end="2019-08",window=10)}
@@ -927,6 +931,8 @@ wgeksl <-
 #'
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
 #' @examples 
 #' \donttest{geksgl(milk, start="2019-01", end="2019-08",window=10)}
 #' \donttest{geksgl(milk, start="2018-12", end="2019-12")}
@@ -997,6 +1003,8 @@ geksgl <-
 #' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
 #'
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{wgeksgl(milk, start="2019-01", end="2019-08",window=10)}
@@ -1076,6 +1084,8 @@ wgeksgl <-
 #' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
 #'
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{geksaqu(milk, start="2019-01", end="2019-08",window=10)}
@@ -1164,6 +1174,8 @@ geksaqu <-
 #' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
 #'
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{wgeksaqu(milk, start="2019-01", end="2019-08",window=10)}
@@ -1260,6 +1272,8 @@ wgeksaqu <-
 #'
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
 #' @examples 
 #' \donttest{geksaqi(milk, start="2019-01", end="2019-08",window=10)}
 #' \donttest{geksaqi(milk, start="2018-12", end="2019-12")}
@@ -1347,6 +1361,8 @@ geksaqi <-
 #' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
 #'
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{wgeksaqi(milk, start="2019-01", end="2019-08",window=10)}

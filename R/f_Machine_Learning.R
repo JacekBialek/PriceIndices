@@ -1,9 +1,10 @@
 #' @title  Building the machine learning model for product classification
 #'
-#' @description This function provides a trained machine learning model to classify products into coicop groups. In addition, the function returns the characteristics of the model and figures describing the learning process.
+#' @description This function provides a trained machine learning model to classify products into coicop groups or any other groups defined by the user. In addition, the function returns the characteristics of the model and figures describing the learning process.
 #' @param data_train Training data set for the model. This set must contain all the columns defined by the \code{indicators} parameter and the \code{coicop} column (with matched coicop groups to all products). If the \code{key_words} vector is non-empty, the set should also contain a \code{description} column. Ideally, the indicators should be of the numerical type. If the indicator is not of the numerical type, it will be converted to this type.
 #' @param data_test A test set that is used to validate the machine learning model. This set should have the same structure as the training set, but it is not obligatory. If the test set is not specified by the user then the test set is drawn from the training set (see \code{p} parameter).
-#' @param indicators A vector of column names to be considered in building a machine learning model.
+#' @param coicop A character string which indicates the column with COICOPs of products or labels for product groups. 
+#' @param indicators A vector of column names to be considered in building a machine learning model. Important: the indicated variables can be numeric but also categorical (factor or character types are acceptable). 
 #' @param key_words A vector of keywords or phrases that will be recognized in the \code{description} column. For each such keyword and or phrase, a new binary variable (column) will be created and included in the machine model training process.
 #' @param sensitivity A logical parameter that indicates whether lowercase or uppercase letters are to be distinguished when the \code{key_words} vector is not empty.
 #' @param p A parameter related to creating the testing set, if it has not been specified by the user. The test set is then created on the basis of a coicop-balanced subsample of the training set. The size of this subsample is 100p percents of the training set size.
@@ -11,16 +12,16 @@
 #' @param rounds The maximum number of iterations during the training stage.
 #' @param grid The list of vectors of parameters which are taken into consideration during the \code{Extreme Gradient Boosting training}. The default value of this list is as follows: \code{grid=list(eta=c(0.05,0.1,0.2),max_depth=c(6),min_child_weight=c(1),max_delta_step=c(0),subsample=c(1),gamma=c(0),lambda=c(1),alpha=c(0)}. The complete list of parameters for the used \code{Tree Booster} is available online \href{ https://xgboost.readthedocs.io/en/latest/parameter.html }{here}.
 #' @rdname model_classification
-#' @return In general, this function provides a trained machine learning model to classify products into coicop groups. In addition, the function returns the characteristics of the model and figures describing the learning process. The machine learning process is based on the \code{XGBoost} algorithm (from the \code{XGBoost} package) which is an implementation of gradient boosted decision trees designed for speed and performance. The function takes into account each combination of model parameters (specified by the \code{grid} list) and provides, inter alia, an optimally trained model (a model that minimizes the error rate calculated on the basis of a fixed value of the \code{w} parameter). After all, the function returns a list of the following objects: \code{model} - the optimally trained model; \code{best_parameters} - a set of parameters of the optimal model;  \code{indicators} - a vector of all indicators used; \code{key_words} - a vector of all key words and phrases used; \code{coicops} - a dataframe with categorized COICOPs; \code{sensitivity} - a value of the used 'sensitivity' parameter; \code{figure_training} - a plot of the error levels calculated for the training set and the testing set during the learning process of the returned model (error = 1 - accuracy); \code{figure_importance} - a plot of the relative importance of the used indicators. 
+#' @return In general, this function provides a trained machine learning model to classify products into coicop groups (or any other groups). In addition, the function returns the characteristics of the model and figures describing the learning process. The machine learning process is based on the \code{XGBoost} algorithm (from the \code{XGBoost} package) which is an implementation of gradient boosted decision trees designed for speed and performance. The function takes into account each combination of model parameters (specified by the \code{grid} list) and provides, inter alia, an optimally trained model (a model that minimizes the error rate calculated on the basis of a fixed value of the \code{w} parameter). After all, the function returns a list of the following objects: \code{model} - the optimally trained model; \code{best_parameters} - a set of parameters of the optimal model;  \code{indicators} - a vector of all indicators used; \code{key_words} - a vector of all key words and phrases used; \code{coicops} - a dataframe with categorized COICOPs; \code{sensitivity} - a value of the used 'sensitivity' parameter; \code{figure_training} - a plot of the error levels calculated for the training set and the testing set during the learning process of the returned model (error = 1 - accuracy); \code{figure_importance} - a plot of the relative importance of the used indicators. 
 #' @references
 #' {Tianqi Chen and Carlos Guestrin (2016). \emph{XGBoost: A Scalable Tree Boosting System}. 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.}
 #' 
 #' @examples 
-#' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
-#' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
-#' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
-#' \donttest{ML<-model_classification(data_train,data_test,grid=my.grid,
-#' indicators=c("prodID","unit","description"),key_words=c("milk"),rounds=50)}
+#' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
+#' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
+#' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
+#' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+#' indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
 #' \donttest{ML$best_parameters}
 #' \donttest{ML$indicators}
 #' \donttest{ML$figure_training} 
@@ -30,6 +31,7 @@
 model_classification <-
   function(data_train = data.frame(),
   data_test = data.frame(),
+  coicop="coicop",
   indicators = c(),
   key_words = c(),
   sensitivity = FALSE,
@@ -38,6 +40,13 @@ model_classification <-
   rounds = 200,
   grid = list())
   {
+  cn_train <- colnames(data_train)
+  if (!(coicop %in% cn_train))
+  stop ("Bad specification of the 'coicop' column!") 
+  if (nrow(data_test) > 0) {cn_test<-colnames(data_test)
+  if (!(coicop %in% cn_test)) stop ("Bad specification of the 'coicop' column!") }
+  colnames(data_train)[which(names(data_train) == coicop)] <- "coicop"
+  if (nrow(data_test) > 0) colnames(data_test)[which(names(data_test) == coicop)] <- "coicop"
   #default value of 'grid'
   grid_default <-
   list(
@@ -67,8 +76,6 @@ model_classification <-
   if ((length(indicators) + length(key_words)) == 0)
   stop ("The model cannot be built due to the lack of indicators")
   cn <- colnames(data_train)
-  if (!("coicop" %in% cn))
-  stop("A column 'coicop' is missing")
   if (("description" %in% indicators) | (length(key_words) >= 1)) {
   if (!(("description" %in% cn)))
   stop("A column 'description' is missing!")
@@ -85,8 +92,6 @@ model_classification <-
   } else
   {
   cn <- colnames(data_test)
-  if (!("coicop" %in% cn))
-  stop("A column 'coicop' is missing")
   if (("description" %in% indicators) | (length(key_words) >= 1)) {
   if (!(("description" %in% cn)))
   stop("A column 'description' is missing!")
@@ -137,7 +142,7 @@ model_classification <-
   for (i in 1:length(cols_train))
   if (is.numeric(data_train[, cols_train[i]]) == 0)
   data_train[, cols_train[i]] <-
-  as.numeric(as.factor(data_train[, cols_train[i]]))
+  sapply(as.character(data_train[, cols_train[i]]),conversion)
   X <- data.matrix(data_train)
   
   #data_test preparation
@@ -157,7 +162,7 @@ model_classification <-
   for (i in 1:length(cols_test))
   if (is.numeric(data_test[, cols_test[i]]) == 0)
   data_test[, cols_test[i]] <-
-  as.numeric(as.factor(data_test[, cols_test[i]]))
+  sapply(as.character(data_test[, cols_test[i]]),conversion)
   X_test <- data.matrix(data_test)
   
   #training and testing sets
@@ -271,6 +276,7 @@ model_classification <-
   )
   )
   }
+
   
 #' @title  Predicting product COICOP levels via the machine learning model
 #'
@@ -281,11 +287,11 @@ model_classification <-
 #' @return This function provides the indicated data set with an additional column, i.e. \code{coicop_predicted}, which is obtained by using the selected machine learning model.  
 #' @examples 
 #' #Building the model
-#' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
-#' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
-#' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
-#' \donttest{ML<-model_classification(data_train,data_test,grid=my.grid,
-#' indicators=c("prodID","unit","description"),key_words=c("milk"),rounds=50)}
+#' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
+#' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
+#' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
+#' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+#' indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
 #' #Data classification
 #' \donttest{data_classifying(ML, data_test)}
 #' @export
@@ -329,7 +335,7 @@ cols_new <- colnames(data_new)
 for (i in 1:length(cols_new))
 if (is.numeric(data_new[, cols_new[i]]) == 0)
 data_new[, cols_new[i]] <-
-as.numeric(as.factor(data_new[, cols_new[i]]))
+sapply(as.character(data_new[, cols_new[i]]),conversion)
 data_new <- data.matrix(data_new)
 predictions <- stats::predict(model_used, data_new) + 1
 predictions_new <- c()
@@ -341,6 +347,7 @@ c(predictions_new, as.vector(coicops$coicop_oryg)[no])
 data$coicop_predicted <- as.factor(predictions_new)
 return (data)
 }
+
 
 #' @title  Saving the machine learning model on the disk
 #'
@@ -355,11 +362,11 @@ return (data)
 #' \dontrun{setwd(wd)}
 #' #Building the model
 #' #Building the model
-#' \dontrun{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
-#' \dontrun{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
-#' \dontrun{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
-#' \dontrun{ML<-model_classification(data_train,data_test,grid=my.grid,
-#' indicators=c("prodID","unit","description"),key_words=c("milk"),rounds=50)}
+#' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
+#' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
+#' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
+#' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+#' indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
 #' #Saving the model
 #' \dontrun{save_model(ML, dir="My_model")}
 #' @export
@@ -402,11 +409,11 @@ paste(path, "figure_importance.RDS", sep = ""))
 #' \dontrun{wd<-tempdir()}
 #' \dontrun{setwd(wd)}
 #' #Building the model
-#' \dontrun{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
-#' \dontrun{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
-#' \dontrun{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
-#' \dontrun{ML<-model_classification(data_train,data_test,grid=my.grid,
-#' indicators=c("prodID","unit","description"),key_words=c("milk"),rounds=50)}
+#' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
+#' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
+#' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
+#' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+#' indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
 #' #Saving the model
 #' \dontrun{save_model(ML, dir="My_model")}
 #' #Loading the model

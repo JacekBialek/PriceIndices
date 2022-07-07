@@ -19,11 +19,11 @@ This function predicts product COICOP levels via the selected machine learning m
 }
 \examples{
 #Building the model
-\donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))}
-\donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))}
-\donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))}
-\donttest{ML<-model_classification(data_train,data_test,grid=my.grid,
-indicators=c("prodID","unit","description"),key_words=c("milk"),rounds=50)}
+\donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
+\donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
+\donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
+\donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
 #Data classification
 \donttest{data_classifying(ML, data_test)}
 }

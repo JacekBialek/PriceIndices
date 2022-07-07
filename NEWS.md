@@ -1,3 +1,15 @@
+# Package update 0.0.7 -> 0.0.8
+
+## New fucntion
+* a new internal function has been added (*conversion*). This function provides integer representation of the given text string.
+
+## Improvements
+* the following functions have been improved by changing a method for dealing with categorical variables: *model_classification*, *data_classifying*.
+* An existing artificial data set (dataCOICOP) has been change into the real scanner data set
+* Some new references have been added (e.g. for *GEKS-L*, *GEKS-GL*, *GEKS-AQI*, *GEKS-AQU* functions).
+* A README file has been improved by adding some new example with using ML methods for product classifiction.
+
+
 # Package update 0.0.6 -> 0.0.7
 
 ## New function

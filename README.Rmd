@@ -68,7 +68,7 @@ The second one, **dataMATCH**, can be used to demonstrate the **data_matching** 
 
 ***3) dataCOICOP***
 
-The third one, **dataCOICOP**, is a collection of artificial scanner data on the sale of tomatoes, fruit juices, low fat milk, full fat milk, sugar, chocolate, yoghurt, coffee, eggs and salt in the period from December 2018 to October 2020. It is a data frame with 8 columns and 96600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products (liters); **prodID** - unique product codes obtained after product matching (data set contains 331 different prodIDs); **retID** - unique codes identifying outlets/retailer sale points (data set contains 10 different retIDs); **description** - descriptions of sold products (data set contains 12 different product descriptions), **unit** - sales units, e.g. 'kg', 'ml', etc.; **coicop** - identifiers of COICOP groups (10 groups). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model_classification** and **data_classifying**).   
+The third one, **dataCOICOP**, is a ollection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022. It is a data frame with 9 columns and 139600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products; **description** - descriptions of sold products (original: in Polish); **codeID** - retailer product codes; **grammage** - product grammages, **unit** - sales units, e.g. 'kg', 'ml', etc.; **category** - product categories (in English) corresponding to COICOP 6 levels, **coicop6** - identifiers of local COICOP 6 groups (6 levels). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model_classification** and **data_classifying**).   
 
 ***4) milk***
 
@@ -180,17 +180,19 @@ unique(subgroup2$description)
 ```
 **data_classifying**
 
-This function predicts product COICOP levels using the selected machine learning model (see the **model** parameter). It provides the indicated data set with an additional column, i.e. *coicop_predicted*. The selected model must be built previously (see the **model_classification** function) and after the training process it can be saved on your disk (see the **save_model** function) and then loaded at any time (see the **load_model** function). Please note that the machine learning process is based on the XGBoost algorithm (from the XGBoost package) which is an implementation of gradient boosted decision trees designed for speed and performance. For example, let us build a machine learning model
+This function predicts product COICOP levels (or any other defined product levels) using the selected machine learning model (see the **model** parameter). It provides the indicated data set with an additional column, i.e. *coicop_predicted*. The selected model must be built previously (see the **model_classification** function) and after the training process it can be saved on your disk (see the **save_model** function) and then loaded at any time (see the **load_model** function). Please note that the machine learning process is based on the XGBoost algorithm (from the XGBoost package) which is an implementation of gradient boosted decision trees designed for speed and performance. For example, let us build a machine learning model
 
 ```{r, results=FALSE}
-my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5))
-data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2020-08-01"))
-data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time>as.Date("2020-08-01"))
+my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))
+data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))
+data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))
 ML<-model_classification(data_train,
                          data_test,
+                         coicop="coicop6",
                          grid=my.grid,
-                         indicators=c("prodID","unit","description"),
-                         key_words=c("milk"),rounds=50)
+                         indicators=c("description","codeIN"),
+                         key_words=c("uht"), 
+                         rounds=60)
 ```
 
 We can watch the results of the whole training process:
