@@ -3,9 +3,9 @@
 \docType{data}
 \name{dataCOICOP}
 \alias{dataCOICOP}
-\title{An artificial scanner data set for the product classification}
+\title{A real scanner data set for the product classification}
 \format{
-A data frame with 9 columns and 139600 rows. The used variables are as follows:
+A data frame with 10 columns and 139600 rows. The used variables are as follows:
 
 \code{time} - Dates of transactions (Year-Month-Day)
 
@@ -16,6 +16,8 @@ A data frame with 9 columns and 139600 rows. The used variables are as follows:
 \code{description} - Descriptions of sold products (original: in Polish)
 
 \code{codeIN} - Retailer product codes
+
+\code{retID} - Unique codes identifying outlets/retailer sale points
 
 \code{grammage} - Product grammages
 

@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -56,7 +51,7 @@ The second one, **dataMATCH**, can be used to demonstrate the **data\_matching**
 
 ***3) dataCOICOP***
 
-The third one, **dataCOICOP**, is a ollection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022. It is a data frame with 9 columns and 139600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products; **description** - descriptions of sold products (original: in Polish); **codeID** - retailer product codes; **grammage** - product grammages, **unit** - sales units, e.g. 'kg', 'ml', etc.; **category** - product categories (in English) corresponding to COICOP 6 levels, **coicop6** - identifiers of local COICOP 6 groups (6 levels). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
+The third one, **dataCOICOP**, is a ollection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022. It is a data frame with 10 columns and 139600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products; **description** - descriptions of sold products (original: in Polish); **codeID** - retailer product codes; **grammage** - product grammages, **unit** - sales units, e.g. 'kg', 'ml', etc.; **category** - product categories (in English) corresponding to COICOP 6 levels, **coicop6** - identifiers of local COICOP 6 groups (6 levels). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
 
 ***4) milk***
 
@@ -107,12 +102,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.51         21      1     1
-#> 2 2020-01-01   2.85         22      2     1
-#> 3 2020-01-01   2.51         21      3     1
-#> 4 2020-01-01   2.85         15      4     1
-#> 5 2020-01-01   2.70         21      5     1
-#> 6 2020-01-01   2.71         22      6     1
+#> 1 2020-01-01   2.78         17      1     1
+#> 2 2020-01-01   2.64         19      2     1
+#> 3 2020-01-01   2.70         20      3     1
+#> 4 2020-01-01   2.82         21      4     1
+#> 5 2020-01-01   2.69         17      5     1
+#> 6 2020-01-01   2.82         21      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -304,13 +299,13 @@ head(data_predicted)
 #> 4 2021-11-01   3.03        617 g/wydojone mleko bez laktozyuht 3,2%1l  60001
 #> 5 2021-11-01   3.03        613 g/wydojone mleko bez laktozyuht 3,2%1l  60001
 #> 6 2021-11-01   3.03        261 g/wydojone mleko bez laktozyuht 3,2%1l  60001
-#>   grammage unit       category coicop6 coicop_predicted
-#> 1        1    l UHT whole milk 11411_1          11411_1
-#> 2        1    l UHT whole milk 11411_1          11411_1
-#> 3        1    l UHT whole milk 11411_1          11411_1
-#> 4        1    l UHT whole milk 11411_1          11411_1
-#> 5        1    l UHT whole milk 11411_1          11411_1
-#> 6        1    l UHT whole milk 11411_1          11411_1
+#>   retID grammage unit       category coicop6 coicop_predicted
+#> 1     2        1    l UHT whole milk 11411_1          11411_1
+#> 2     3        1    l UHT whole milk 11411_1          11411_1
+#> 3     4        1    l UHT whole milk 11411_1          11411_1
+#> 4     5        1    l UHT whole milk 11411_1          11411_1
+#> 5     6        1    l UHT whole milk 11411_1          11411_1
+#> 6     7        1    l UHT whole milk 11411_1          11411_1
 ```
 
 **data\_matching**
@@ -562,7 +557,24 @@ This function presents values of the relative price and/or quantity dissimilarit
 dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start")
 ```
 
-<img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" /> <a id="ad4"> </a>
+<img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" /> **elasticity**
+
+This function returns a value of the elasticity of substitution. The procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated (see also **elasticity2**). For example:
+
+``` r
+elasticity(coffee, start = "2018-12", end = "2019-01")
+#> [1] 4.241791
+```
+
+**elasticity\_fig**
+
+The function provides a data frame or a figure presenting elasticities of substitution calculated for time interval (see the **figure** parameter). The elasticities of substitution can be calculated for subsequent months or for a fixed base month (see the **start** parameter) and rest of months from the given time interval (it depends on the **fixedbase** parameter). The presented function is based on the **elasticity** function, but see also **elasticity2\_fig**. For instance, to get elasticities of substitution calculated for milk products for subsequent months we run:
+
+``` r
+elasticity_fig (milk, start = "2018-12", end = "2019-12", fixedbase = FALSE)
+```
+
+<img src="man/figures/README-unnamed-chunk-41-1.png" width="100%" /> <a id="ad4"> </a>
 
 ### Functions for bilateral unweighted price index calculation
 
@@ -729,19 +741,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.829411
-#> 2  14216 1.004808
-#> 3  15404 1.864543
-#> 4  17034 1.577752
-#> 5  34540 1.430664
-#> 6  51583 1.673339
+#> 1  14215 1.341853
+#> 2  14216 1.271927
+#> 3  15404 1.742800
+#> 4  17034 1.865491
+#> 5  34540 1.722126
+#> 6  51583 1.194438
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9847877
+#> [1] 0.9774024
 ```
 
 <a id="ad8"> </a>
@@ -979,7 +991,7 @@ final_index2(data=coffee, by="description",all=TRUE,
              figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-54-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-56-1.png" width="100%" />
 
 Now, let us calculate and plot the same price index (with no aggregation) for each **retID**:
 
@@ -991,7 +1003,7 @@ final_index2(data=coffee, by="retID",all=TRUE,
              figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-55-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-57-1.png" width="100%" />
 
 <a id="ad12"> </a>
 
@@ -1009,7 +1021,7 @@ compare_indices(milk, start="2018-12",end="2019-12",bilateral=c("chjevons"),
                 namebilateral=c("Chain Jevons"), namefbmulti=c("Full GEKS"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-56-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-58-1.png" width="100%" />
 
 **compare\_final\_indices**
 
@@ -1031,7 +1043,7 @@ The comparison of obtained results can be made as follows (it may be time-consum
 compare_final_indices(finalindices=list(case1, case2),names=c("TPD without aggregation","TPD with aggregation"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-58-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-60-1.png" width="100%" />
 
 **compare\_distances**
 

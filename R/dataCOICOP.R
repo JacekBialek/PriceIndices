@@ -1,7 +1,7 @@
-#' An artificial scanner data set for the product classification 
+#' A real scanner data set for the product classification 
 #'
 #' A collection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022.
-#' @format A data frame with 9 columns and 139600 rows. The used variables are as follows:
+#' @format A data frame with 10 columns and 139600 rows. The used variables are as follows:
 #'
 #' \code{time} - Dates of transactions (Year-Month-Day)
 #'
@@ -12,6 +12,8 @@
 #' \code{description} - Descriptions of sold products (original: in Polish)
 #'
 #' \code{codeIN} - Retailer product codes
+#'
+#' \code{retID} - Unique codes identifying outlets/retailer sale points
 #'
 #' \code{grammage} - Product grammages
 #'

@@ -1,3 +1,8 @@
+# Package update 0.0.8 -> 0.0.9
+
+## New functions
+* 4 new functions for calculating elasticity of substitution have been added: *elasticity*, *elasticity2*, *elasticity_fig*, *elasticity2_fig*.
+
 # Package update 0.0.7 -> 0.0.8
 
 ## New fucntion

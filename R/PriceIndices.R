@@ -76,6 +76,14 @@
 #'
 #' \code{\link{dissimilarity_fig}}
 #'
+#' \code{\link{elasticity}}
+#'
+#' \code{\link{elasticity2}}
+#'
+#' \code{\link{elasticity_fig}}
+#'
+#' \code{\link{elasticity2_fig}}
+#'
 #' @section Functions for bilateral unweighted price index calculation:
 #' \code{\link{bmw}} 
 #'

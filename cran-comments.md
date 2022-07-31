@@ -1,13 +1,8 @@
 ## Package update 
 
-* New function:
-* a new internal function has been added (*conversion*). This function provides integer representation of the given text string.
+* New functions:
+4 new functions for calculating elasticity of substitution have been added: *elasticity*, *elasticity2*, *elasticity_fig*, *elasticity2_fig*.
 
-* Improvements:
-* the following functions have been improved by changing a method for dealing with categorical variables: *model_classification*, *data_classifying*.
-* An existing artificial data set (dataCOICOP) has been change into the real scanner data set
-* Some new references have been added (e.g. for *GEKS-L*, *GEKS-GL*, *GEKS-AQI*, *GEKS-AQU* functions).
-* A README file has been improved by adding some new example with using ML methods for product classifiction.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

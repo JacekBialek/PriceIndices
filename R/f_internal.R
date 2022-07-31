@@ -1230,3 +1230,106 @@ conversion<-function (str)
   return (sum(utf*int))
 }
 
+#' Calculating the Lloyd-Moulton price index
+#' This function returns the Lloyd-Moulton price index value  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param sigma The elasticity of substitution parameter (as numeric).
+#' @noRd
+
+lm <-
+    function(data,
+    start,
+    end,
+    sigma
+    )  {
+    if (start == end)
+    return (1)
+    if (sigma == 1)
+    stop("A specification of the parameter 'sigma' is wrong")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    data <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data, start, end)
+    price_end <-
+    prices(data, period = end, set = id)
+    price_start <-
+    prices(data, period = start, set = id)
+    quantity_start <-
+    quantities(data, period = start, set = id)
+    v0 <-
+    sum(price_start * quantity_start)
+    sum <-
+    sum(price_start * quantity_start / v0 * (price_end / price_start) ^ (1 -
+    sigma))
+    sum <-
+    sum ^ (1 / (1 - sigma))
+    return(sum)
+    }
+
+#' Calculating a current weight (CW) counterpart of the Lloyd-Moulton price index
+#' This function returns the Lloyd-Moulton price index value  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param sigma The elasticity of substitution parameter (as numeric).
+#' @noRd
+
+cw <-
+    function(data,
+    start,
+    end,
+    sigma
+    )  {
+    if (start == end)
+    return (1)
+    if (sigma == 1)
+    stop("A specification of the parameter 'sigma' is wrong")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    data <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data, start, end)
+    price_end <-
+    prices(data, period = end, set = id)
+    price_start <-
+    prices(data, period = start, set = id)
+    quantity_end <-
+    quantities(data, period = end, set = id)
+    v1 <-
+    sum(price_end * quantity_end)
+    sum <-
+    sum(price_end * quantity_end / v1 * (price_end / price_start) ^ (sigma -
+    1))
+    sum <-
+    sum ^ (1 / (sigma - 1))
+    return(sum)
+    }
+
+
