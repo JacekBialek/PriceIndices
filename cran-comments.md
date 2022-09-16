@@ -1,8 +1,7 @@
 ## Package update 
-
-* New functions:
-4 new functions for calculating elasticity of substitution have been added: *elasticity*, *elasticity2*, *elasticity_fig*, *elasticity2_fig*.
-
+* One new function (*expenditures*) has been added (faster version of *sales*)
+* System of weights in the TPD index has been changed. Now it corresponds to the system of weights used in "HICP Guide for Multilateral Methods".
+* Improved the speed of operation of all functions for price indices.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

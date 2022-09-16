@@ -1327,38 +1327,34 @@ data_matching <-
 #' @param period The time period (as character) limited to the year and month, e.g. "2019-03".
 #' @param set The set of unique product IDs to be used for determining prices of sold products (see also \code{\link{data_matching}}). If the \code{set} is empty, the function returns prices of all products being available in \code{period}.
 #' @rdname prices
-#' @return The function analyzes the user's data frame and returns prices (unit value) of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter.
+#' @return The function analyzes the user's data frame and returns prices (unit value) of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the price values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).
 #' @examples 
 #' \donttest{prices(milk, period="2019-06")}
-#' prices(milk, period="2019-12",set=c(400032, 71772, 82919))
+#' prices(milk, period="2019-12",set=c(400032, 82919))
 #' @export
 
   prices <- function(data, period, set = c())
   {
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   period <-
   paste(period, "-01", sep = "")
   period <- as.Date(period)
-  lubridate::day(period) <- 1
-  period2 <- period
-  lubridate::day(period2) <-
-  lubridate::days_in_month(period2)
-  data <-
-  dplyr::filter(data, data$time >= period & data$time <= period2)
+  data<-dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(period) &
+  lubridate::month(data$time) == lubridate::month(period)
+  ))
   if (nrow(data) == 0)
   stop("There are no data in selected period")
-  if (length(set) == 0) set<-unique(data$prodID)
-  vec <- numeric(length(set))
-  for (i in 1:length(set)) {
-  d <- dplyr::filter(data, data$prodID == set[i])
-  if (nrow(d) == 0)
-  vec[i] <- 0
-  #returning the unit value
-  else
-  vec[i] <- sum(d$prices * d$quantities) / sum(d$quantities)
+  if (length(set) > 0) {data<-dplyr::filter(data, prodID %in% set)
+  if (nrow(data) == 0)
+  stop("There are no data in selected period")
   }
-  return (vec)
+  data<-dplyr::summarise(dplyr::group_by(data, by=prodID), uv=sum(prices*quantities)/sum(quantities), .groups = 'drop')
+  return (data$uv)
   }
   
 #' @title  Providing quantities of sold products
@@ -1368,38 +1364,73 @@ data_matching <-
 #' @param period The time period (as character) limited to the year and month, e.g. "2019-03".
 #' @param set The set of unique product IDs to be used for determining quantities of sold products (see also \code{\link{data_matching}}). If the \code{set} is empty, the function returns quantities of all products being available in \code{period}.
 #' @rdname quantities
-#' @return The function analyzes the user's data frame and returns quantities of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter.
+#' @return The function analyzes the user's data frame and returns quantities of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the quantity values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).
 #' @examples 
 #' \donttest{quantities(milk, period="2019-06")}
-#' quantities(milk, period="2019-12",set=c(400032, 71772, 82919))
+#' quantities(milk, period="2019-12",set=c(400032, 82919))
 #' @export
 
 quantities <- function(data, period, set = c())
   {
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   period <-
   paste(period, "-01", sep = "")
   period <- as.Date(period)
-  lubridate::day(period) <- 1
-  period2 <- period
-  lubridate::day(period2) <-
-  lubridate::days_in_month(period2)
-  data <-
-  dplyr::filter(data, data$time >= period & data$time <= period2)
+  data<-dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(period) &
+  lubridate::month(data$time) == lubridate::month(period)
+  ))
   if (nrow(data) == 0)
   stop("There are no data in selected period")
-  if (length(set) == 0) set<-unique(data$prodID)
-  vec <- numeric(length(set))
-  for (i in 1:length(set)) {
-  d <- dplyr::filter(data, data$prodID == set[i])
-  if (nrow(d) == 0)
-  vec[i] <- 0
-  else
-  vec[i] <- sum(d$quantities)
+  if (length(set) > 0) {data<-dplyr::filter(data, prodID %in% set)
+  if (nrow(data) == 0)
+  stop("There are no data in selected period")
   }
-  return(vec)
+  data<-dplyr::summarise(dplyr::group_by(data, by=prodID), q=sum(quantities), .groups = 'drop')
+  return (data$q)
 }
+
+#' @title  Providing expenditures of sold products
+#'
+#' @description The function returns expenditures of sold products with given IDs. 
+#' @param data The user's data frame. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character) with unique product IDs. 
+#' @param period The time period (as character) limited to the year and month, e.g. "2019-03".
+#' @param set The set of unique product IDs to be used for determining expenditures of sold products (see also \code{\link{data_matching}}). If the \code{set} is empty, the function returns quantities of all products being available in \code{period}.
+#' @rdname expenditures
+#' @return The function analyzes the user's data frame and returns expenditures of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the expenditure values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).
+#' @examples 
+#' \donttest{expenditures(milk, period="2019-06")}
+#' expenditures(milk, period="2019-12",set=c(400032, 82919))
+#' @export
+
+expenditures <- function(data, period, set = c())
+  {
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  prodID<-NULL
+  period <-
+  paste(period, "-01", sep = "")
+  period <- as.Date(period)
+  data<-dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(period) &
+  lubridate::month(data$time) == lubridate::month(period)
+  ))
+  if (nrow(data) == 0)
+  stop("There are no data in selected period")
+  if (length(set) > 0) {data<-dplyr::filter(data, prodID %in% set)
+  if (nrow(data) == 0)
+  stop("There are no data in selected period")
+  }
+  data<-dplyr::summarise(dplyr::group_by(data, by=prodID), expend=sum(prices*quantities), .groups = 'drop')
+  return (data$expend)
+}
+
 
 #' @title  Providing a correlation coefficient for price and quantity of sold products
 #'
@@ -1500,7 +1531,7 @@ ggplot2::geom_line() + ggplot2::labs(x = "date", y = "correlation") + ggplot2::s
 #' @param shares A logical parameter indicating whether the function is to return shares of product sales.
 #' @param hist A logical parameter indicating whether the function is to return histogram of product sales.
 #' @rdname sales
-#' @return The function analyzes the user's data frame and returns values of sales of products with given IDs and being sold in time period indicated by the \code{period} parameter.
+#' @return The function analyzes the user's data frame and returns values of sales of products with given IDs and being sold in time period indicated by the \code{period} parameter (see also \code{expenditures} function which returns the expenditure values for sorted prodIDs).
 #' @examples 
 #' \donttest{sales(milk, period="2019-06", shares=TRUE, hist=TRUE)}
 #' sales(milk, period="2019-12",set=unique(milk$prodID)[1])
@@ -1701,7 +1732,7 @@ generate <-
   time <- c()
   for (i in 1:n) {
   if (days == TRUE) {
-  nd <- lubridate::days_in_month(start)
+  nd <- 28
   lubridate::day(start) <- sample(nd, 1)
   }
   time <- c(time, as.character(start))
@@ -1772,8 +1803,8 @@ price_r <- prices(data, period = r, set = id)
 price_t <- prices(data, period = t, set = id)
 quantity_r <- quantities(data, period = r, set = id)
 quantity_t <- quantities(data, period = t, set = id)
-sales_r <- sales(data, period = r, set = id)
-sales_t <- sales(data, period = t, set = id)
+sales_r <- expenditures(data, period = r, set = id)
+sales_t <- expenditures(data, period = t, set = id)
 sum_r <- sum(sales_r)
 sum_t <- sum(sales_t)
 prqt <- sum(price_r * quantity_t)
@@ -2164,7 +2195,7 @@ result<-rbind(result, row)
 return (result)
 }
 if (join_outlets==TRUE) {
-s<-dplyr::bind_rows(lapply(data_time, rows))
+s<-rbind(lapply(data_time, rows))
 if ("retID" %in% cols) s$retID<-NULL
 }
 else
@@ -2172,9 +2203,9 @@ else
 rows_ret<-function(outlets)
 {
 data_outlets<-split(outlets,outlets$retID)
-return (dplyr::bind_rows(lapply(data_outlets, rows)))
+return (rbind(lapply(data_outlets, rows)))
 }
-s<-dplyr::bind_rows(lapply(data_time, rows_ret))  
+s<-rbind(lapply(data_time, rows_ret))  
 }
 s<-stats::na.omit(s)
 return (s)  

@@ -754,31 +754,35 @@ fisher <-
   end <- start
   lubridate::month(end) <-
   lubridate::month(end) + 1
-  while (end <= end2)
-  {
-  t <- substr(end, 0, 7)
-  date <- c(date, t)
-  data2 <-
+  data21 <-
   dplyr::filter(
   data,
   (
   lubridate::year(data$time) == lubridate::year(start) &
   lubridate::month(data$time) == lubridate::month(start)
-  ) |
+  )) 
+  while (end <= end2)
+  {
+  t <- substr(end, 0, 7)
+  date <- c(date, t)
+  data22<-
+  dplyr::filter(
+  data,
   (
   lubridate::year(data$time) == lubridate::year(end) &
   lubridate::month(data$time) == lubridate::month(end)
   )
   )
-  id <- matched(data2, start, end)
+  data2<-dplyr::bind_rows(data21, data22) 
+  id <-intersect(unique(data21$prodID),unique(data22$prodID))
   price_end <-
-  prices(data2, period = end, set = id)
+  prices(data22, period = end, set = id)
   price_start <-
-  prices(data2, period = start, set = id)
+  prices(data21, period = start, set = id)
   quantity_end <-
-  quantities(data2, period = end, set = id)
+  quantities(data22, period = end, set = id)
   quantity_start <-
-  quantities(data2, period = start, set = id)
+  quantities(data21, period = start, set = id)
   result <-
   c(result, ((
   sum(price_end * quantity_end) / sum(price_start * quantity_end)
@@ -792,28 +796,31 @@ fisher <-
   }
   #returning one value
   else {
-  data <-
+  data1 <-
   dplyr::filter(
   data,
   (
   lubridate::year(data$time) == lubridate::year(start) &
   lubridate::month(data$time) == lubridate::month(start)
-  ) |
+  )) 
+  data2<-
+  dplyr::filter(
+  data,
   (
   lubridate::year(data$time) == lubridate::year(end) &
   lubridate::month(data$time) == lubridate::month(end)
   )
   )
-  id <-
-  matched(data, start, end, type = "prodID", interval = FALSE)
+  data<-dplyr::bind_rows(data1, data2)
+  id <-intersect(unique(data1$prodID),unique(data2$prodID))
   price_end <-
-  prices(data, period = end, set = id)
+  prices(data2, period = end, set = id)
   price_start <-
-  prices(data, period = start, set = id)
+  prices(data1, period = start, set = id)
   quantity_end <-
-  quantities(data, period = end, set = id)
+  quantities(data2, period = end, set = id)
   quantity_start <-
-  quantities(data, period = start, set = id)
+  quantities(data1, period = start, set = id)
   return (((
   sum(price_end * quantity_end) / sum(price_start * quantity_end)
   ) * (
@@ -821,6 +828,7 @@ fisher <-
   )) ^ (0.5))
   }
   }
+
 
 #' @title  Calculating the bilateral Tornqvist price index
 #'
@@ -879,9 +887,9 @@ tornqvist <-
   price_start <-
   prices(data2, period = start, set = id)
   sales_end <-
-  sales(data2, period = end, set = id)
+  expenditures(data2, period = end, set = id)
   sales_start <-
-  sales(data2, period = start, set = id)
+  expenditures(data2, period = start, set = id)
   sum_start <- sum(sales_start)
   sum_end <- sum(sales_end)
   tornq <-
@@ -914,9 +922,9 @@ tornqvist <-
   price_start <-
   prices(data, period = start, set = id)
   sales_end <-
-  sales(data, period = end, set = id)
+  expenditures(data, period = end, set = id)
   sales_start <-
-  sales(data, period = start, set = id)
+  expenditures(data, period = start, set = id)
   sum_start <- sum(sales_start)
   sum_end <- sum(sales_end)
   tornq <-
@@ -984,7 +992,7 @@ geolaspeyres <-
   price_start <-
   prices(data2, period = start, set = id)
   sales_start <-
-  sales(data2, period = start, set = id)
+  expenditures(data2, period = start, set = id)
   sum_start <- sum(sales_start)
   result <-
   c(result, prod((price_end / price_start) ^ (sales_start / sum_start)))
@@ -1013,7 +1021,7 @@ geolaspeyres <-
   price_start <-
   prices(data, period = start, set = id)
   sales_start <-
-  sales(data, period = start, set = id)
+  expenditures(data, period = start, set = id)
   sum_start <- sum(sales_start)
   return(prod((price_end / price_start) ^
   (sales_start / sum_start)))
@@ -1077,7 +1085,7 @@ geopaasche <-
   price_start <-
   prices(data2, period = start, set = id)
   sales_end <-
-  sales(data2, period = end, set = id)
+  expenditures(data2, period = end, set = id)
   sum_end <- sum(sales_end)
   result <-
   c(result, prod((price_end / price_start) ^ (sales_end / sum_end)))
@@ -1106,7 +1114,7 @@ geopaasche <-
   price_start <-
   prices(data, period = start, set = id)
   sales_end <-
-  sales(data, period = end, set = id)
+  expenditures(data, period = end, set = id)
   sum_end <- sum(sales_end)
   return(prod((price_end / price_start) ^
   (sales_end / sum_end)))
@@ -2568,7 +2576,7 @@ lehr <-
     price_start <-
     prices(data2, period = start, set = id)
     sale_base <-
-    sales(data2, period = base, set = id)
+    expenditures(data2, period = base, set = id)
     vold <- sum(sale_base)
     result <-
     c(result, sum(sale_base / vold * (price_end / price_start)))
@@ -2602,7 +2610,7 @@ lehr <-
     price_start <-
     prices(data, period = start, set = id)
     sale_base <-
-    sales(data, period = base, set = id)
+    expenditures(data, period = base, set = id)
     vold <- sum(sale_base)
     return(sum(sale_base / vold * (price_end /
     price_start)))
@@ -2678,7 +2686,7 @@ lehr <-
     price_start <-
     prices(data2, period = start, set = id)
     sale_base <-
-    sales(data2, period = base, set = id)
+    expenditures(data2, period = base, set = id)
     sale_base <-
     sale_base / sum(sale_base)
     result <-
@@ -2713,7 +2721,7 @@ lehr <-
     price_start <-
     prices(data, period = start, set = id)
     sale_base <-
-    sales(data, period = base, set = id)
+    expenditures(data, period = base, set = id)
     sale_base <-
     sale_base / sum(sale_base)
     return (prod((price_end / price_start) ^
@@ -3073,20 +3081,20 @@ hybrid <-
   )
   )
   id <-
-  intersect(matched(data2, start, end), matched(data, base, end))
+  intersect(matched(data2, start, end), matched(data2, base, end))
   price_end <-
   prices(data2, period = end, set = id)
   price_start <-
   prices(data2, period = start, set = id)
+  quantity_base<-
+  quantities(data2, period = base, set =
+  id)
   sale_base <-
-  prices(data2, period = base, set = id) * quantities(data2, period = base, set =
-  id)
+  expenditures(data2, period = base, set = id) 
   sale_start <-
-  prices(data2, period = start, set = id) * quantities(data2, period = base, set =
-  id)
+  price_start * quantity_base
   sale_end <-
-  prices(data2, period = end, set = id) * quantities(data2, period = base, set =
-  id)
+  price_end * quantity_base
   vol_base <- sum(sale_base)
   vol_start <- sum(sale_start)
   vol_end <- sum(sale_end)
@@ -3147,15 +3155,15 @@ hybrid <-
   prices(data, period = end, set = id)
   price_start <-
   prices(data, period = start, set = id)
+  quantity_base<-
+  quantities(data, period = base, set =
+  id)
   sale_base <-
-  prices(data, period = base, set = id) * quantities(data, period = base, set =
-  id)
+  expenditures(data, period = base, set = id) 
   sale_start <-
-  prices(data, period = start, set = id) * quantities(data, period = base, set =
-  id)
+  price_start * quantity_base
   sale_end <-
-  prices(data, period = end, set = id) * quantities(data, period = base, set =
-  id)
+  price_end * quantity_base
   vol_base <- sum(sale_base)
   vol_start <- sum(sale_start)
   vol_end <- sum(sale_end)
@@ -3251,20 +3259,20 @@ geohybrid <-
   )
   )
   id <-
-  intersect(matched(data2, start, end), matched(data, base, end))
+  intersect(matched(data2, start, end), matched(data2, base, end))
   price_end <-
   prices(data2, period = end, set = id)
   price_start <-
   prices(data2, period = start, set = id)
+  quantity_base<-
+  quantities(data2, period = base, set =
+  id)
   sale_base <-
-  prices(data2, period = base, set = id) * quantities(data2, period = base, set =
-  id)
+  expenditures(data2, period = base, set = id) 
   sale_start <-
-  prices(data2, period = start, set = id) * quantities(data2, period = base, set =
-  id)
+  price_start * quantity_base
   sale_end <-
-  prices(data2, period = end, set = id) * quantities(data2, period = base, set =
-  id)
+  price_end * quantity_base
   vol_base <- sum(sale_base)
   vol_start <- sum(sale_start)
   vol_end <- sum(sale_end)
@@ -3325,15 +3333,15 @@ geohybrid <-
   prices(data, period = end, set = id)
   price_start <-
   prices(data, period = start, set = id)
+  quantity_base<-
+  quantities(data, period = base, set =
+  id)
   sale_base <-
-  prices(data, period = base, set = id) * quantities(data, period = base, set =
-  id)
+  expenditures(data, period = base, set = id) 
   sale_start <-
-  prices(data, period = start, set = id) * quantities(data, period = base, set =
-  id)
+  price_start * quantity_base
   sale_end <-
-  prices(data, period = end, set = id) * quantities(data, period = base, set =
-  id)
+  price_end * quantity_base
   vol_base <- sum(sale_base)
   vol_start <- sum(sale_start)
   vol_end <- sum(sale_end)

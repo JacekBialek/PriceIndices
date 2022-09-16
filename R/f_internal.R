@@ -250,8 +250,9 @@ quantity <- function(data, period, ID)
 #' The function returns the price of a given product which was sold in a given period. 
 #' @param data The user's data frame. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{quantities} (as positive numeric) and \code{prodID} (as numeric or character) with unique product IDs. 
 #' @param period The time period (as character) limited to the year and month, e.g. "2019-03".
-#' @param ID The ID of unique product which is used for determining the price 
+#' @param ID The ID of unique product which is used for determining the quantity 
 #' @noRd
+
 
 price <- function(data, period, ID)
   {
@@ -268,10 +269,33 @@ price <- function(data, period, ID)
   dplyr::filter(data, data$time >= period & data$time <= period2)
   if (nrow(data) == 0)
   stop("There are no data in selected period")
-  data$sales <- data$prices * data$quantities
-  return(sum(data$sales) / sum(data$quantities))
+  return(sum(data$prices * data$quantities) / sum(data$quantities))
   }
   
+#' The function returns the expenditure of a given product which was sold in a given period. 
+#' @param data The user's data frame. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{quantities} (as positive numeric) and \code{prodID} (as numeric or character) with unique product IDs. 
+#' @param period The time period (as character) limited to the year and month, e.g. "2019-03".
+#' @param ID The ID of unique product which is used for determining the price 
+#' @noRd
+
+expenditure<-function (data, period, ID)
+{
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  period <- paste(period, "-01", sep = "")
+  period <- as.Date(period)
+  lubridate::day(period) <- 1
+  period2 <- period
+  lubridate::day(period2) <-
+  lubridate::days_in_month(period2)
+  data <- dplyr::filter(data, data$prodID == ID)
+  data <-
+  dplyr::filter(data, data$time >= period & data$time <= period2)
+  if (nrow(data) == 0)
+  stop("There are no data in selected period")
+  return(sum(data$prices * data$quantities))
+  }
+
 #' The function returns the logarithmic mean of two numbers. 
 #' @param x A real positive number
 #' @param y A real positive number
@@ -478,6 +502,7 @@ if (start == end)
 return (1)
 if (nrow(data) == 0)
 stop("A data frame is empty")
+time<-NULL
 start <- paste(start, "-01", sep = "")
 end <- paste(end, "-01", sep = "")
 start <- as.Date(start)
@@ -502,31 +527,34 @@ dates <- seq.Date(from = start, to = end, by = "month")
 dates <- format(dates, format = "%Y-%m")
 index1<-replicate(length(dates),1)
 index2<-replicate(length(dates),2)
-s <-
-function(tt)
-return (sales(d, period = tt, set = prodID))
-q <-
-function(tt)
-return (quantities(d, period = tt, set = prodID))
-expenditure <- sapply(dates, s)
-quantity <- sapply(dates, q)
+d2<-d
+d2$time<-as.character(d2$time)
+d2$time<-substr(d2$time,0,7)
+gr<-dplyr::summarise(dplyr::group_by(d2, time, prodID), expend=sum(prices*quantities), quant=sum(quantities),.groups="drop")
 #quantity weights - quality adjusted factors vi
 while (sqrt(sum((index1 - index2) ^ 2)) >
-0.01)
+0.005)
 {
-val <- function (i)  {
-xx <-
+val <- function (id)  {
+xx<-
 function (tt)
-return (expenditure[i, tt] / index1[which(dates == tt)])
+{
+gr_subset1<-dplyr::filter(gr, gr$time==tt & gr$prodID==id)
+if (nrow(gr_subset1)>0) return (sum(gr_subset1$expend) / index1[which(dates == tt)])
+else return (0)
+}
 yy <-
 function (tt)
-return (quantity[i, tt])
+{
+gr_subset2<-dplyr::filter(gr, gr$time==tt & gr$prodID==id)
+if (nrow(gr_subset2)>0) return (sum(gr_subset2$quant))
+else return (0)
+}
 x <- sum(sapply(dates, xx))
 y <- sum(sapply(dates, yy))
 return (x / y)
 }
-num_prod <- seq(1:length(prodID))
-values <- sapply(num_prod, val)
+values <- sapply(prodID, val)
 v <- data.frame(prodID, values)
 #series  of indices
 indd <-
@@ -899,6 +927,7 @@ aqu <-
   function(data, start, end, v=data.frame())  {
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
@@ -917,13 +946,15 @@ aqu <-
   )
   id <-
   matched(data, start, end, type = "prodID", interval = FALSE)
+  data<-dplyr::filter(data, prodID %in% id) 
   price_end <-
-  prices(data, period = end, set = id)
+  prices(data, period = end)
   quantity_start <-
-  quantities(data, period = start, set = id)
-  factors<-c()
-  for (ID in id) factors<-c(factors,v[v$prodID==ID,]$value)
-  return(sum(quantity_start * price_end) / sum(factors*quantity_start))
+  quantities(data, period = start)
+  v_v<-dplyr::filter(v, prodID %in% id)
+  v_v<-dplyr::arrange(v_v, prodID)
+  val<-v_v$values
+  return(sum(quantity_start * price_end) / sum(val*quantity_start))
   }
 
 #' An additional function used in the 'geksaqu_fbmw' function
@@ -1007,6 +1038,7 @@ aqi <-
   function(data, start, end, v=data.frame())  {
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
@@ -1025,15 +1057,17 @@ aqi <-
   )
   id <-
   matched(data, start, end, type = "prodID", interval = FALSE)
+  data<-dplyr::filter(data, prodID %in% id) 
   price_start <-
-  prices(data, period = start, set = id)
+  prices(data, period = start)
   price_end <-
-  prices(data, period = end, set = id)
+  prices(data, period = end)
   quantity_start <-
-  quantities(data, period = start, set = id)
-  factors<-c()
-  for (ID in id) factors<-c(factors,v[v$prodID==ID,]$value)
-  return(sum(factors*quantity_start * price_end/price_start) / sum(factors*quantity_start))
+  quantities(data, period = start)
+  v_v<-dplyr::filter(v, prodID %in% id)
+  v_v<-dplyr::arrange(v_v, prodID)
+  val<-v_v$values
+  return(sum(val*quantity_start * price_end/price_start) / sum(val*quantity_start))
   }
 
 #' An additional function used in the 'geksaqi_fbmw' function
@@ -1118,6 +1152,7 @@ gaqi <-
   function(data, start, end, v=data.frame())  {
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
@@ -1136,16 +1171,18 @@ gaqi <-
   )
   id <-
   matched(data, start, end, type = "prodID", interval = FALSE)
+  data<-dplyr::filter(data, prodID %in% id) 
   price_start <-
-  prices(data, period = start, set = id)
+  prices(data, period = start)
   price_end <-
-  prices(data, period = end, set = id)
+  prices(data, period = end)
   quantity_start <-
-  quantities(data, period = start, set = id)
-  factors<-c()
-  for (ID in id) factors<-c(factors,v[v$prodID==ID,]$value)
+  quantities(data, period = start)
+  v_v<-dplyr::filter(v, prodID %in% id)
+  v_v<-dplyr::arrange(v_v, prodID)
+  val<-v_v$values
   coef<-c()
-  coef<-factors*quantity_start/sum(factors*quantity_start)
+  coef<-val*quantity_start/sum(val*quantity_start)
   return(prod((price_end/price_start)^coef))
   }
 
@@ -1332,4 +1369,1942 @@ cw <-
     return(sum)
     }
 
+#' Calculating a numerator of the GEKS formula
+#' This function returns a numerator of the GEKS formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
 
+geks_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gks_num <-
+  function (tt) fisher(data, tt, end)
+  vec <- sapply(dates, gks_num)
+  geks_num <- prod(vec)
+  geks_num <- geks_num ^ (1 / window)
+  return(geks_num)
+  }
+
+#' Calculating a denomerator of the GEKS formula
+#' This function returns a denomerator of the GEKS formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geks_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gks_denom <-
+  function (tt) fisher(data, tt, start)
+  vec <- sapply(dates, gks_denom)
+  geks_denom <- prod(vec)
+  geks_denom <- geks_denom ^ (1 / window)
+  return(geks_denom)
+  }
+
+
+#' Calculating a numerator of the GEKS-W formula
+#' This function returns a numerator of the GEKS-W formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksw_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gksw_num <-
+  function (tt) walsh(data, tt, end)
+  vec <- sapply(dates, gksw_num)
+  geksw_num <- prod(vec)
+  geksw_num <- geksw_num ^ (1 / window)
+  return(geksw_num)
+  }
+
+#' Calculating a denomerator of the GEKS-W formula
+#' This function returns a denomerator of the GEKS-W formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksw_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gksw_denom <-
+  function (tt) walsh(data, tt, start)
+  vec <- sapply(dates, gksw_denom)
+  geksw_denom <- prod(vec)
+  geksw_denom <- geksw_denom ^ (1 / window)
+  return(geksw_denom)
+  }
+
+#' Calculating a numerator of the GEKS-J formula
+#' This function returns a numerator of the GEKS-J formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksj_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gksj_num <-
+  function (tt) jevons(data, tt, end)
+  vec <- sapply(dates, gksj_num)
+  geksj_num <- prod(vec)
+  geksj_num <- geksj_num ^ (1 / window)
+  return(geksj_num)
+  }
+
+#' Calculating a denomerator of the GEKS-J formula
+#' This function returns a denomerator of the GEKS-J formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksj_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gksj_denom <-
+  function (tt) jevons(data, tt, start)
+  vec <- sapply(dates, gksj_denom)
+  geksj_denom <- prod(vec)
+  geksj_denom <- geksj_denom ^ (1 / window)
+  return(geksj_denom)
+  }
+
+#' Calculating a numerator of the CCDI formula
+#' This function returns a numerator of the CCDI formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+ccdi_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  ccdi_num <-
+  function (tt) tornqvist(data, tt, end)
+  vec <- sapply(dates, ccdi_num)
+  ccdi_num <- prod(vec)
+  ccdi_num <- ccdi_num ^ (1 / window)
+  return(ccdi_num)
+  }
+
+#' Calculating a denomerator of the CCDI formula
+#' This function returns a denomerator of the CCDI formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+ccdi_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  ccdi_denom <-
+  function (tt) tornqvist(data, tt, start)
+  vec <- sapply(dates, ccdi_denom)
+  ccdi_denom <- prod(vec)
+  ccdi_denom <- ccdi_denom ^ (1 / window)
+  return(ccdi_denom)
+  }
+
+#' Calculating a numerator of the WGEKS formula
+#' This function returns a numerator of the WGEKS formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeks_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  wgks_num <-
+  function (tt) fisher(data, start=tt, end=end)
+  vec <- sapply(dates, wgks_num)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeks_num <-
+  prod(vec ^ expenditures)
+  return(wgeks_num)
+  }
+
+
+#' Calculating a denomerator of the WGEKS formula
+#' This function returns a denomerator of the WGEKS formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeks_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  wgks_denom <-
+  function (tt) fisher(data, start=tt, end=start)
+  vec <- sapply(dates, wgks_denom)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeks_denom <-
+  prod(vec ^ expenditures)
+  return(wgeks_denom)
+  }
+
+
+#' Calculating a numerator of the GEKS-L formula
+#' This function returns a numerator of the GEKS-L formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksl_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gksl_num <-
+  function (tt) nl(data, tt, end)
+  vec <- sapply(dates, gksl_num)
+  geksl_num <- prod(vec)
+  geksl_num <- geksl_num ^ (1 / window)
+  return(geksl_num)
+  }
+
+#' Calculating a denomerator of the GEKS-L formula
+#' This function returns a denomerator of the GEKS-L formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksl_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gksl_denom <-
+  function (tt) nl(data, tt, start)
+  vec <- sapply(dates, gksl_denom)
+  geksl_denom <- prod(vec)
+  geksl_denom <- geksl_denom ^ (1 / window)
+  return(geksl_denom)
+  }
+
+#' Calculating a numerator of the WGEKS-L formula
+#' This function returns a numerator of the WGEKS-L formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksl_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  wgksl_num <-
+  function (tt) nl(data, start=tt, end=end)
+  vec <- sapply(dates, wgksl_num)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksl_num <-
+  prod(vec ^ expenditures)
+  return(wgeksl_num)
+  }
+
+
+#' Calculating a denomerator of the WGEKS-L formula
+#' This function returns a denomerator of the WGEKS-L formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksl_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  wgksl_denom <-
+  function (tt) nl(data, start=tt, end=start)
+  vec <- sapply(dates, wgksl_denom)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksl_denom <-
+  prod(vec ^ expenditures)
+  return(wgeksl_denom)
+  }
+
+
+#' Calculating a numerator of the GEKS-GL formula
+#' This function returns a numerator of the GEKS-GL formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksgl_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gksgl_num <-
+  function (tt) geolaspeyres(data, tt, end)
+  vec <- sapply(dates, gksgl_num)
+  geksgl_num <- prod(vec)
+  geksgl_num <- geksgl_num ^ (1 / window)
+  return(geksgl_num)
+  }
+
+#' Calculating a denomerator of the GEKS-GL formula
+#' This function returns a denomerator of the GEKS-GL formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksgl_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  gksgl_denom <-
+  function (tt) geolaspeyres(data, tt, start)
+  vec <- sapply(dates, gksgl_denom)
+  geksgl_denom <- prod(vec)
+  geksgl_denom <- geksgl_denom ^ (1 / window)
+  return(geksgl_denom)
+  }
+
+#' Calculating a numerator of the WGEKS-GL formula
+#' This function returns a numerator of the WGEKS-GL formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksgl_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  wgksgl_num <-
+  function (tt) geolaspeyres(data, start=tt, end=end)
+  vec <- sapply(dates, wgksgl_num)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksgl_num <-
+  prod(vec ^ expenditures)
+  return(wgeksgl_num)
+  }
+
+
+#' Calculating a denomerator of the WGEKS-GL formula
+#' This function returns a denomerator of the WGEKS-GL formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksgl_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #main body
+  wgksgl_denom <-
+  function (tt) geolaspeyres(data, start=tt, end=start)
+  vec <- sapply(dates, wgksgl_denom)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksgl_denom <-
+  prod(vec ^ expenditures)
+  return(wgeksgl_denom)
+  }
+
+
+#' Calculating a numerator of the GEKS-AQU formula
+#' This function returns a numerator of the GEKS-AQU formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksaqu_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  gksaqu_num <-
+  function (tt) aqu(data, start=tt, end=end,v)
+  vec <- sapply(dates, gksaqu_num)
+  geksaqu_num <- prod(vec)
+  geksaqu_num <- geksaqu_num ^ (1 / window)
+  return(geksaqu_num)
+  }
+
+
+#' Calculating a denomerator of the GEKS-AQU formula
+#' This function returns a denomerator of the GEKS-AQU formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksaqu_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  gksaqu_denom <-
+  function (tt) aqu(data, start=tt, end=start,v)
+  vec <- sapply(dates, gksaqu_denom)
+  geksaqu_denom <- prod(vec)
+  geksaqu_denom <- geksaqu_denom ^ (1 / window)
+  return(geksaqu_denom)
+  }
+
+#' Calculating a numerator of the WGEKS-AQU formula
+#' This function returns a numerator of the WGEKS-AQU formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksaqu_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  wgksaqu_num <-
+  function (tt) aqu(data, start=tt, end=end,v)
+  vec <- sapply(dates, wgksaqu_num)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksaqu_num <- prod(vec ^ expenditures)
+  return(wgeksaqu_num)
+  }
+
+#' Calculating a denomerator of the WGEKS-AQU formula
+#' This function returns a denomerator of the WGEKS-AQU formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksaqu_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  wgksaqu_denom <-
+  function (tt) aqu(data, start=tt, end=start,v)
+  vec <- sapply(dates, wgksaqu_denom)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksaqu_denom <- prod(vec ^ expenditures)
+  return(wgeksaqu_denom)
+  }
+
+
+#' Calculating a numerator of the GEKS-AQI formula
+#' This function returns a numerator of the GEKS-AQI formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksaqi_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  gksaqi_num <-
+  function (tt) aqi(data, start=tt, end=end,v)
+  vec <- sapply(dates, gksaqi_num)
+  geksaqi_num <- prod(vec)
+  geksaqi_num <- geksaqi_num ^ (1 / window)
+  return(geksaqi_num)
+  }
+
+
+#' Calculating a denomerator of the GEKS-AQI formula
+#' This function returns a denomerator of the GEKS-AQI formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksaqi_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  gksaqi_denom <-
+  function (tt) aqi(data, start=tt, end=start,v)
+  vec <- sapply(dates, gksaqi_denom)
+  geksaqi_denom <- prod(vec)
+  geksaqi_denom <- geksaqi_denom ^ (1 / window)
+  return(geksaqi_denom)
+  }
+
+
+#' Calculating a numerator of the WGEKS-AQI formula
+#' This function returns a numerator of the WGEKS-AQI formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksaqi_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  wgksaqi_num <-
+  function (tt) aqi(data, start=tt, end=end,v)
+  vec <- sapply(dates, wgksaqi_num)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksaqi_num <- prod(vec ^ expenditures)
+  return(wgeksaqi_num)
+  }
+
+#' Calculating a denomerator of the WGEKS-AQI formula
+#' This function returns a denomerator of the WGEKS-AQI formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksaqi_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  wgksaqi_denom <-
+  function (tt) aqi(data, start=tt, end=start,v)
+  vec <- sapply(dates, wgksaqi_denom)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksaqi_denom <- prod(vec ^ expenditures)
+  return(wgeksaqi_denom)
+  }
+
+
+#' Calculating a numerator of the GEKS-GAQI formula
+#' This function returns a numerator of the GEKS-GAQI formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksgaqi_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  gksgaqi_num <-
+  function (tt) gaqi(data, start=tt, end=end,v)
+  vec <- sapply(dates, gksgaqi_num)
+  geksgaqi_num <- prod(vec)
+  geksgaqi_num <- geksgaqi_num ^ (1 / window)
+  return(geksgaqi_num)
+  }
+
+
+#' Calculating a denomerator of the GEKS-GAQI formula
+#' This function returns a denomerator of the GEKS-GAQI formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+geksgaqi_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  gksgaqi_denom <-
+  function (tt) gaqi(data, start=tt, end=start,v)
+  vec <- sapply(dates, gksgaqi_denom)
+  geksgaqi_denom <- prod(vec)
+  geksgaqi_denom <- geksgaqi_denom ^ (1 / window)
+  return(geksgaqi_denom)
+  }
+
+
+#' Calculating a numerator of the WGEKS-GAQI formula
+#' This function returns a numerator of the WGEKS-GAQI formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksgaqi_num <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  wgksgaqi_num <-
+  function (tt) gaqi(data, start=tt, end=end,v)
+  vec <- sapply(dates, wgksgaqi_num)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksgaqi_num <- prod(vec ^ expenditures)
+  return(wgeksgaqi_num)
+  }
+
+#' Calculating a denomerator of the WGEKS-GAQI formula
+#' This function returns a denomerator of the WGEKS-GAQI formula  
+#' @param data The user's data frame with information about products to be filtered. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{quantities}  (as positive numeric).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @noRd
+
+wgeksgaqi_denom <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  window = 13)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- c()
+  while (wstart <= wend)
+  {
+  t <- substr(wstart, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(wstart) <-
+  lubridate::month(wstart) + 1
+  }
+  
+  #data frame with quality adjusted factors
+  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
+  
+  fi<-function (ID) {
+    nom<-c()
+    denom<-c()
+    for (d in dates) {
+      nom<-c(nom, sales(data,period=d,set=ID))
+      denom<-c(denom, quantities(data,period=d,set=ID))
+    }
+   return (sum(nom)/sum(denom)) 
+   }
+  
+  vi<-sapply(availableID, fi)
+  v<-data.frame(prodID=availableID, value=vi)
+  
+  #main body
+  wgksgaqi_denom <-
+  function (tt) gaqi(data, start=tt, end=start,v)
+  vec <- sapply(dates, wgksgaqi_denom)
+  sales_in_time <-
+  function (tt)
+  return (sum(sales(data, tt)))
+  expenditures <-
+  sapply(dates, sales_in_time)
+  expenditures <-
+  expenditures / sum(expenditures)
+  wgeksgaqi_denom <- prod(vec ^ expenditures)
+  return(wgeksgaqi_denom)
+  }

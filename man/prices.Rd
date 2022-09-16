@@ -14,12 +14,12 @@ prices(data, period, set = c())
 \item{set}{The set of unique product IDs to be used for determining prices of sold products (see also \code{\link{data_matching}}). If the \code{set} is empty, the function returns prices of all products being available in \code{period}.}
 }
 \value{
-The function analyzes the user's data frame and returns prices (unit value) of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter.
+The function analyzes the user's data frame and returns prices (unit value) of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the price values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).
 }
 \description{
 The function returns prices (unit values) of sold products with given IDs.
 }
 \examples{
 \donttest{prices(milk, period="2019-06")}
-prices(milk, period="2019-12",set=c(400032, 71772, 82919))
+prices(milk, period="2019-12",set=c(400032, 82919))
 }

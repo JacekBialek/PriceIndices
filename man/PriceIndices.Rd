@@ -78,6 +78,8 @@ The list of package functions is as follows:
 
 \code{\link{sales_groups2}} 
 
+\code{\link{expenditures}}
+
 \code{\link{pqcor}}
 
 \code{\link{pqcor_fig}}

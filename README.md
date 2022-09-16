@@ -1,3 +1,9 @@
+---
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -51,7 +57,7 @@ The second one, **dataMATCH**, can be used to demonstrate the **data\_matching**
 
 ***3) dataCOICOP***
 
-The third one, **dataCOICOP**, is a ollection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022. It is a data frame with 10 columns and 139600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products; **description** - descriptions of sold products (original: in Polish); **codeID** - retailer product codes; **grammage** - product grammages, **unit** - sales units, e.g. 'kg', 'ml', etc.; **category** - product categories (in English) corresponding to COICOP 6 levels, **coicop6** - identifiers of local COICOP 6 groups (6 levels). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
+The third one, **dataCOICOP**, is a ollection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022. It is a data frame with 10 columns and 139600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products; **description** - descriptions of sold products (original: in Polish); **codeID** - retailer product codes; **retID** - IDs of retailer outlets; **grammage** - product grammages; **unit** - sales units, e.g. 'kg', 'ml', etc.; **category** - product categories (in English) corresponding to COICOP 6 levels; **coicop6** - identifiers of local COICOP 6 groups (6 levels). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
 
 ***4) milk***
 
@@ -102,12 +108,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.78         17      1     1
-#> 2 2020-01-01   2.64         19      2     1
-#> 3 2020-01-01   2.70         20      3     1
-#> 4 2020-01-01   2.82         21      4     1
-#> 5 2020-01-01   2.69         17      5     1
-#> 6 2020-01-01   2.82         21      6     1
+#> 1 2020-01-01   2.73         17      1     1
+#> 2 2020-01-01   2.90         24      2     1
+#> 3 2020-01-01   2.73         18      3     1
+#> 4 2020-01-01   2.97         19      4     1
+#> 5 2020-01-01   2.60         22      5     1
+#> 6 2020-01-01   2.70         23      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -161,11 +167,8 @@ After aggregating this data set over time and outlets we obtain:
 
 ``` r
 data_aggregating(dataAGGR)
-#>         time prices quantities prodID   description
-#> 1 2018-12-01     15        300 400032     goat milk
-#> 2 2018-12-01     15        700 403249 powdered milk
-#> 3 2020-07-01     20        100 400050     goat milk
-#> 4 2020-08-01     35        100 400050     goat milk
+#>      2018-12-01 2020-07-01 2020-08-01
+#> [1,] List,6     List,6     List,6
 ```
 
 **data\_unit**
@@ -459,31 +462,31 @@ matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
 
 **prices**
 
-The function returns prices (unit value) of products with a given ID (**prodID** column) and being sold in the time period indicated by the **period** parameter. The **set** parameter means a set of unique product IDs to be used for determining prices of sold products. If the set is empty the function returns prices of all products being available in the **period**. To get prices (unit values) of all available milk products sold in July, 2019, please use:
+The function returns prices (unit value) of products with a given ID (**prodID** column) and being sold in the time period indicated by the **period** parameter. The **set** parameter means a set of unique product IDs to be used for determining prices of sold products. If the set is empty the function returns prices of all products being available in the **period**. Please note that the function returns the price values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).To get prices (unit values) of all available milk products sold in July, 2019, please use:
 
 ``` r
 prices(milk, period="2019-06")
 #>  [1]  8.700000  8.669455  1.890000  2.950000  1.990000  2.990000  2.834464
 #>  [8]  4.702051  2.163273  2.236250  2.810000  2.860000  2.400000  2.588644
-#> [15]  3.790911  7.980000 64.057143 18.972121 12.622225  9.914052  7.102823
-#> [22]  3.180000  2.527874  1.810000  1.650548  2.790000  2.490000  2.590000
-#> [29]  7.970131  9.901111 15.266667 19.502286  2.231947  2.674401  2.371819
-#> [36]  2.490000  6.029412  6.441176  2.090000  1.990000  1.890000  1.450000
-#> [43]  2.680000  2.584184  2.683688  2.390000  3.266000  2.813238  7.966336
+#> [15]  3.790911  7.980000 64.057143  7.966336 18.972121 12.622225  9.914052
+#> [22]  7.102823  3.180000  2.527874  1.810000  1.650548  2.790000  2.490000
+#> [29]  2.590000  7.970131  9.901111 15.266667 19.502286  2.231947  2.674401
+#> [36]  2.371819  2.490000  6.029412  6.441176  2.090000  1.990000  1.890000
+#> [43]  1.450000  2.680000  2.584184  2.683688  2.390000  3.266000  2.813238
 ```
 
 **quantities**
 
-The function returns quantities of products with a given ID (**prodID** column) and being sold in the time period indicated by the **period** parameter. The **set** parameter means a set of unique product IDs to be used for determining prices of sold products. If the set is empty the function returns quantities of all products being available in the **period**. To get quantities of milk products with prodIDs: 400032, 71772 and 82919, and sold in July, 2019, please use:
+The function returns quantities of products with a given ID (**prodID** column) and being sold in the time period indicated by the **period** parameter. The **set** parameter means a set of unique product IDs to be used for determining prices of sold products. If the set is empty the function returns quantities of all products being available in the **period**. Please note that the function returns the quantity values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero). To get quantities of milk products with prodIDs: 400032, 71772 and 82919, and sold in July, 2019, please use:
 
 ``` r
 quantities(milk, period="2019-06", set=c(400032, 71772, 82919))
-#> [1] 114.5 117.0 102.0
+#> [1] 117.0 102.0 114.5
 ```
 
 **sales**
 
-The function returns values of sales of products with a given ID (**prodID** column) and being sold in the time period indicated by **period** parameter. The **set** parameter means a set of unique product IDs to be used for determining prices of sold products. If the set is empty the function returns values of sales of all products being available in the **period**. To get values of sales of milk products with prodIDs: 400032, 71772 and 82919, and sold in July, 2019, please use:
+The function returns values of sales of products with a given ID (**prodID** column) and being sold in the time period indicated by **period** parameter. The **set** parameter means a set of unique product IDs to be used for determining prices of sold products. If the set is empty the function returns values of sales of all products being available in the **period** (see also **expenditures** function which returns the expenditure values for sorted prodIDs). To get values of sales of milk products with prodIDs: 400032, 71772 and 82919, and sold in July, 2019, please use:
 
 ``` r
 sales(milk, period="2019-06", set=c(400032, 71772, 82919))
@@ -741,19 +744,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.341853
-#> 2  14216 1.271927
-#> 3  15404 1.742800
-#> 4  17034 1.865491
-#> 5  34540 1.722126
-#> 6  51583 1.194438
+#> 1  14215 1.980058
+#> 2  14216 1.931906
+#> 3  15404 1.792200
+#> 4  17034 1.599188
+#> 5  34540 1.286940
+#> 6  51583 1.969849
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9774024
+#> [1] 1.001773
 ```
 
 <a id="ad8"> </a>
@@ -786,9 +789,9 @@ These functions return a value (or values) of the selected multilateral price in
 
 ``` r
 tpd_splice(milk, start="2018-12", end="2020-02",window=10,splice="half",interval=TRUE)
-#>  [1] 1.0000000 1.0033636 0.9997753 0.9831710 0.9950045 0.9921984 0.9908530
-#>  [8] 0.9861655 0.9994412 0.9945041 0.9805130 0.9813733 0.9889166 0.9628495
-#> [15] 1.0021059
+#>  [1] 1.0000000 1.0038893 1.0000284 0.9837053 0.9954196 0.9924919 0.9913655
+#>  [8] 0.9866847 0.9998615 0.9949000 0.9806788 0.9808493 0.9888003 0.9628623
+#> [15] 1.0021956
 ```
 
 <a id="ad9"> </a>
@@ -880,20 +883,20 @@ price_index(milk, start="2018-12", end="2020-02",
             formula="tpd_splice",splice="movement",interval=TRUE)
 #>       date tpd_splice
 #> 1  2018-12  1.0000000
-#> 2  2019-01  1.0058281
-#> 3  2019-02  1.0008801
-#> 4  2019-03  0.9833854
-#> 5  2019-04  0.9950913
-#> 6  2019-05  0.9915562
-#> 7  2019-06  0.9920122
-#> 8  2019-07  0.9886072
-#> 9  2019-08  0.9998138
-#> 10 2019-09  0.9947203
-#> 11 2019-10  0.9796047
-#> 12 2019-11  0.9784985
-#> 13 2019-12  0.9895882
-#> 14 2020-01  0.9625456
-#> 15 2020-02  1.0031290
+#> 2  2019-01  1.0060062
+#> 3  2019-02  1.0008605
+#> 4  2019-03  0.9838784
+#> 5  2019-04  0.9954590
+#> 6  2019-05  0.9918611
+#> 7  2019-06  0.9923642
+#> 8  2019-07  0.9887632
+#> 9  2019-08  0.9999378
+#> 10 2019-09  0.9949736
+#> 11 2019-10  0.9798550
+#> 12 2019-11  0.9786244
+#> 13 2019-12  0.9896739
+#> 14 2020-01  0.9627272
+#> 15 2020-02  1.0034020
 ```
 
 **price\_indices**
@@ -911,14 +914,14 @@ price_indices(milk, start="2019-12", end="2020-08", bilateral=c("fisher"),
               splice=c("movement"), interval=TRUE)
 #>      date    fisher     young    agmean      geks        gk tpd_splice
 #> 1 2019-12 1.0000000 1.0000000 1.0000000 1.0000000 1.0000000  1.0000000
-#> 2 2020-01 0.9740581 0.9892721 0.9940157 0.9751969 0.9695107  0.9734589
-#> 3 2020-02 1.0123062 1.0039283 1.0140363 1.0087731 1.0106597  1.0101372
-#> 4 2020-03 1.0024357 0.9996556 1.0039500 0.9993375 1.0004861  0.9999263
-#> 5 2020-04 0.9779487 0.9896677 0.9972912 0.9752104 0.9710071  0.9771235
-#> 6 2020-05 1.0139845 1.0137411 1.0201698 1.0146765 1.0162489  1.0153823
-#> 7 2020-06 0.9947352 1.0001336 1.0071368 0.9991796 1.0032921  1.0053941
-#> 8 2020-07 1.0033918 1.0041741 1.0090451 1.0063783 1.0077500  1.0098352
-#> 9 2020-08 1.0112077 1.0096444 1.0147635 1.0113239 1.0150360  1.0153327
+#> 2 2020-01 0.9740581 0.9892721 0.9940157 0.9751969 0.9695107  0.9742047
+#> 3 2020-02 1.0123062 1.0039283 1.0140363 1.0087731 1.0106597  1.0104549
+#> 4 2020-03 1.0024357 0.9996556 1.0039500 0.9993375 1.0004861  1.0002618
+#> 5 2020-04 0.9779487 0.9896677 0.9972912 0.9752104 0.9710071  0.9768732
+#> 6 2020-05 1.0139845 1.0137411 1.0201698 1.0146765 1.0162489  1.0158926
+#> 7 2020-06 0.9947352 1.0001336 1.0071368 0.9991796 1.0032921  1.0053237
+#> 8 2020-07 1.0033918 1.0041741 1.0090451 1.0063783 1.0077500  1.0102820
+#> 9 2020-08 1.0112077 1.0096444 1.0147635 1.0113239 1.0150360  1.0156291
 ```
 
 **final\_index**

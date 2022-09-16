@@ -310,29 +310,33 @@ QU<-function(data, start, end, v)
 {
 if (start==end) return (1)  
 if (nrow(data)==0) stop("A data frame is empty")
+prodID<-NULL
 start<-paste(start,"-01",sep="")
 end<-paste(end,"-01",sep="")
 start<-as.Date(start)
 end<-as.Date(end)
-data<-dplyr::filter(data,(lubridate::year(data$time)==lubridate::year(start) & lubridate::month(data$time)==lubridate::month(start)) | (lubridate::year(data$time)==lubridate::year(end) & lubridate::month(data$time)==lubridate::month(end)))   
-Gstart<-matched(data,start,start) 
-Gend<-matched(data,end,end)
-sale_end<-sales(data,period=end,set=Gend)
-sale_start<-sales(data,period=start,set=Gstart)
-quantity_end<-quantities(data,period=end,set=Gend)
-quantity_start<-quantities(data,period=start,set=Gstart)
+data1<-dplyr::filter(data,lubridate::year(data$time)==lubridate::year(start) & lubridate::month(data$time)==lubridate::month(start)) 
+data2<-dplyr::filter(data, lubridate::year(data$time)==lubridate::year(end) & lubridate::month(data$time)==lubridate::month(end))   
+data<-dplyr::bind_rows(data1,data2)
+Gstart<-unique(data1$prodID) 
+Gend<-unique(data2$prodID) 
+sale_end<-expenditures(data2,period=end)
+sale_start<-expenditures(data1,period=start)
+quantity_end<-quantities(data2,period=end)
+quantity_start<-quantities(data1,period=start)
 #main body
 a<-sum(sale_end)
 b<-sum(sale_start)
-f<-function (prod) {vl<-dplyr::filter(v,v$prodID==prod)
-vl<-sum(vl$values)}
-val_end<-sapply(Gend,f)
-val_start<-sapply(Gstart,f)
+v_end<-dplyr::filter(v, prodID %in% Gend)
+v_end<-dplyr::arrange(v_end, prodID)
+val_end<-v_end$values
+v_start<-dplyr::filter(v, prodID %in% Gstart)
+v_start<-dplyr::arrange(v_start, prodID)
+val_start<-v_start$values
 c<-sum(val_end*quantity_end)
 d<-sum(val_start*quantity_start)
 return ((a/b)/(c/d))
 }
-
 
 #' @title  Calculating the multilateral Geary-Khamis price index
 #'
@@ -365,6 +369,9 @@ gk <-
   return (1)
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  time<-expend<-NULL
+  expend<-NULL
+  quant<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   wstart <-
@@ -407,32 +414,16 @@ gk <-
   lubridate::month(wst) <-
   lubridate::month(wst) + 1
   }
-  s <-
-  function(tt)
-  return (sales(d, period = tt, set = prodID))
-  q <-
-  function(tt)
-  return (quantities(d, period = tt, set = prodID))
-  expenditure <- sapply(dates, s)
-  quantity <- sapply(dates, q)
+  d2<-d
+  d2$time<-as.character(d2$time)
+  d2$time<-substr(d2$time,0,7)
   #quantity weights - quality adjusted factors vi
   while (sqrt(sum((index1 - index2) ^ 2)) >
   0.005)
   {
-  val <- function (i)  {
-  xx <-
-  function (tt)
-  return (expenditure[i, tt] / index1[which(dates == tt)])
-  yy <-
-  function (tt)
-  return (quantity[i, tt])
-  x <- sum(sapply(dates, xx))
-  y <- sum(sapply(dates, yy))
-  return (x / y)
-  }
-  num_prod <- seq(1:length(prodID))
-  values <- sapply(num_prod, val)
-  v <- data.frame(prodID, values)
+  gr<-dplyr::summarise(dplyr::group_by(d2, time, prodID),expend=sum(prices*quantities) / index1[which(dates == unique(time))],quant=sum(quantities),.groups="drop")
+  gr2<-dplyr::summarise(dplyr::group_by(gr, prodID), value=sum(expend)/sum(quant),.groups="drop")
+  v <- data.frame(prodID=gr2$prodID, values=gr2$value)
   #series  of indices
   indd <-
   function(tt)
@@ -446,8 +437,9 @@ gk <-
   result <- result[[1]]
   return (result)
   }
-  
 
+
+  
 #' @title  Calculating the multilateral TPD price index
 #'
 #' @description This function returns a value of the multilateral TPD (Time Product Dummy) price index.
@@ -475,6 +467,8 @@ tpd <-
   return (1)
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
+  time<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   wstart <-
@@ -500,7 +494,7 @@ tpd <-
   #data filtration,i.e. we obtan products which are available during the time window
   d <-
   dplyr::filter(data, data$time >= wstart & data$time <= wend)
-  products <- unique(d$prodID)
+  products <- sort(unique(d$prodID))
   if (length(products) < 2)
   stop ("At least two prodIDs must be available during the considered time interval")
   #main body
@@ -515,27 +509,26 @@ tpd <-
   lubridate::month(wst) <-
   lubridate::month(wst) + 1
   }
+  d$time<-as.character(d$time)
+  d$time<-substr(d$time, 0, 7)
   #dates of availability of products
-  av <-
-  list() #list of dates when the given i-th product is available
-  for (i in (1:length(products)))
-  {
-  d0 <- dplyr::filter(d, d$prodID == products[i])
-  time <- unique(d0$time)
-  time <- substr(time, 0, 7)
-  av[[i]] <- time
+  df<-dplyr::group_by(d,prodID,time)
+  df<-dplyr::summarise(df, pr=sum(prices*quantities)/sum(quantities), weig=sum(prices*quantities),.groups="drop")
+ av<-function (i) {
+  sub<-dplyr::filter(d, prodID==i)
+  return (as.character(unique(sub$time)))
   }
-  av_dates <-
-  c() #avaiable dates as one vector
-  for (i in (1:length(products)))
-  av_dates <- c(av_dates, av[[i]])
+  av_dates<-sapply(products, av)
+  av_dates<-as.vector(unlist(av_dates))
   #vector connected with the alfa parameter in TPD model
   alfa <-
   replicate(length(av_dates), 1) #unit vector
   #unit vectors corresponding to products
   vec <- list()
-  for (i in (1:length(products)))
-  vec[[i]] <- replicate(length(av[[i]]), 1)
+  i<-0
+  for (prod in products) {i<-i+1
+    vec[[i]] <- replicate(length(av(prod)), 1)
+  }  
   #gamma vectors connected with Di (i=1,2,...N-1)
   gm <- list()
   for (i in (1:(length(products) - 1))) {
@@ -561,34 +554,23 @@ tpd <-
   }
   sigma[[i]] <- sg
   }
-  #vector of log prices
-  logprices <- c()
-  for (i in (1:length(products))) {
-  for (k in (1:length(av[[i]])))
-  logprices <-
-  c(logprices, log(price(
-  d, period = av[[i]][k], ID = products[i]
-  )))
-  }
-  #vector of expenditures
-  weights <- c()
-  for (i in (1:length(products))) {
-  for (k in (1:length(av[[i]])))
-  weights <-
-  c(
-  weights,
-  price(d, period = av[[i]][k], ID = products[i]) * quantity(d, period = av[[i]][k], ID =
-  products[i])
-  )
-  }
-  weights <- diag(weights)
+  #vector of log prices 
+  logprices <- log(df$pr)
+  #system of weights
+  weights=df$weig
+  df_last<-data.frame(av_dates=av_dates, weights=weights)
+  df_last<-dplyr::mutate(
+  dplyr::group_by(
+  df_last,av_dates),
+  w=weights/sum(weights))
+  weights <- diag(df_last$w)
   #creating matrix X
   x <- alfa
   for (i in (1:(length(products) - 1)))
   x <- c(x, gm[[i]])
   for (i in (1:length(dates)))
   x <- c(x, sigma[[i]])
-  x <-
+  x<-
   matrix(x,
   nrow = length(av_dates),
   ncol = length(products) + length(dates))
@@ -1102,6 +1084,7 @@ geksaqu <-
   return (1)
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   wstart <-
@@ -1132,21 +1115,7 @@ geksaqu <-
   lubridate::month(wstart) + 1
   }
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksaqu <-
   function (tt)
@@ -1156,7 +1125,6 @@ geksaqu <-
   geksaqu <- geksaqu ^ (1 / window)
   return(geksaqu)
   }
-
 
 #' @title  Calculating the multilateral weighted WGEKS-AQU price index
 #'
@@ -1192,6 +1160,7 @@ wgeksaqu <-
   return (1)
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   wstart <-
@@ -1221,23 +1190,8 @@ wgeksaqu <-
   lubridate::month(wstart) <-
   lubridate::month(wstart) + 1
   }
-  
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksaqu <-
   function (tt)
@@ -1245,12 +1199,12 @@ wgeksaqu <-
   vec <- sapply(dates, wgksaqu)
   sales_in_time <-
   function (tt)
-  return (sum(sales(data, tt)))
-  expenditures <-
+  return (sum(expenditures(data, tt)))
+  expenditures_ <-
   sapply(dates, sales_in_time)
-  expenditures <-
-  expenditures / sum(expenditures)
-  wgeksaqu <- prod((vec[1, ] / vec[2, ])^expenditures)
+  expenditures_ <-
+  expenditures_ / sum(expenditures_)
+  wgeksaqu <- prod((vec[1, ] / vec[2, ])^expenditures_)
   return(wgeksaqu)
   }
 
@@ -1289,6 +1243,7 @@ geksaqi <-
   return (1)
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   wstart <-
@@ -1319,21 +1274,7 @@ geksaqi <-
   lubridate::month(wstart) + 1
   }
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksaqi <-
   function (tt)
@@ -1379,6 +1320,7 @@ wgeksaqi <-
   return (1)
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   wstart <-
@@ -1410,21 +1352,7 @@ wgeksaqi <-
   }
   
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksaqi <-
   function (tt)
@@ -1432,12 +1360,12 @@ wgeksaqi <-
   vec <- sapply(dates, wgksaqi)
   sales_in_time <-
   function (tt)
-  return (sum(sales(data, tt)))
-  expenditures <-
+  return (sum(expenditures(data, tt)))
+  expenditures_ <-
   sapply(dates, sales_in_time)
-  expenditures <-
-  expenditures / sum(expenditures)
-  wgeksaqi <- prod((vec[1, ] / vec[2, ])^expenditures)
+  expenditures_ <-
+  expenditures_ / sum(expenditures_)
+  wgeksaqi <- prod((vec[1, ] / vec[2, ])^expenditures_)
   return(wgeksaqi)
   }
 
@@ -1473,6 +1401,7 @@ geksgaqi <-
   return (1)
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   wstart <-
@@ -1503,21 +1432,7 @@ geksgaqi <-
   lubridate::month(wstart) + 1
   }
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksgaqi <-
   function (tt)
@@ -1560,6 +1475,7 @@ wgeksgaqi <-
   return (1)
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
   wstart <-
@@ -1591,34 +1507,20 @@ wgeksgaqi <-
   }
   
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksgaqi <-
   function (tt)
-  return (c(gaqi(data, start=tt, end=end,v), gaqi(data, start=tt, end=start,v)))
+  return (c(aqu(data, start=tt, end=end,v), aqu(data, start=tt, end=start,v)))
   vec <- sapply(dates, wgksgaqi)
   sales_in_time <-
   function (tt)
-  return (sum(sales(data, tt)))
-  expenditures <-
+  return (sum(expenditures(data, tt)))
+  expenditures_ <-
   sapply(dates, sales_in_time)
-  expenditures <-
-  expenditures / sum(expenditures)
-  wgeksgaqi <- prod((vec[1, ] / vec[2, ])^expenditures)
+  expenditures_ <-
+  expenditures_ / sum(expenditures_)
+  wgeksgaqi <- prod((vec[1, ] / vec[2, ])^expenditures_)
   return(wgeksgaqi)
   }
 

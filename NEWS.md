@@ -1,3 +1,14 @@
+# Package update 0.0.9 -> 0.1.1
+
+## New function
+* One new function (*expenditures*) has been added (faster version of *sales*)
+
+## Changes
+* System of weights in the TPD index has been changed. Now it corresponds to the system of weights used in "HICP Guide for Multilateral Methods".
+
+## Improvements
+Improved the speed of operation of all functions for price indices.
+
 # Package update 0.0.8 -> 0.0.9
 
 ## New functions

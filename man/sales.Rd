@@ -18,7 +18,7 @@ sales(data, period, set = c(), shares = FALSE, hist = FALSE)
 \item{hist}{A logical parameter indicating whether the function is to return histogram of product sales.}
 }
 \value{
-The function analyzes the user's data frame and returns values of sales of products with given IDs and being sold in time period indicated by the \code{period} parameter.
+The function analyzes the user's data frame and returns values of sales of products with given IDs and being sold in time period indicated by the \code{period} parameter (see also \code{expenditures} function which returns the expenditure values for sorted prodIDs).
 }
 \description{
 The function returns values of sales of products with given IDs.
