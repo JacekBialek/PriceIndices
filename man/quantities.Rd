@@ -4,7 +4,7 @@
 \alias{quantities}
 \title{Providing quantities of sold products}
 \usage{
-quantities(data, period, set = c())
+quantities(data, period, set = c(), ID = FALSE)
 }
 \arguments{
 \item{data}{The user's data frame. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character) with unique product IDs.}
@@ -12,14 +12,16 @@ quantities(data, period, set = c())
 \item{period}{The time period (as character) limited to the year and month, e.g. "2019-03".}
 
 \item{set}{The set of unique product IDs to be used for determining quantities of sold products (see also \code{\link{data_matching}}). If the \code{set} is empty, the function returns quantities of all products being available in \code{period}.}
+
+\item{ID}{A logical parameter indicating whether a data frame with prodIDs and quantities should be returned.}
 }
 \value{
-The function analyzes the user's data frame and returns quantities of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the quantity values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).
+The function analyzes the user's data frame and returns quantities of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the quantity values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero). If the ID parameter is set to TRUE then the function returns a data frame with columns: \code{by} (IDs of products) and \code{q} (quantities of products).
 }
 \description{
 The function returns quantities of sold products with given IDs.
 }
 \examples{
 \donttest{quantities(milk, period="2019-06")}
-quantities(milk, period="2019-12",set=c(400032, 82919))
+quantities(milk, period="2019-12", set=c(400032, 82919), ID=TRUE)
 }

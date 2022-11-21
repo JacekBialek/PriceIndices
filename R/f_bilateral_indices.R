@@ -6,7 +6,7 @@
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname jevons
-#' @return The function returns a value (or vector of values) of the unweighted bilateral Jevons price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).      
+#' @return The function returns a value (or vector of values) of the unweighted bilateral Jevons price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).      
 #' @references
 #' {Jevons, W. S., (1865). \emph{The variation of prices and the value of the currency since 1782}. J. Statist. Soc. Lond., 28, 294-320.}
 #'
@@ -95,7 +95,7 @@ jevons <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname dutot
-#' @return The function returns a value (or vector of values) of the unweighted bilateral Dutot price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).      
+#' @return The function returns a value (or vector of values) of the unweighted bilateral Dutot price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).      
 #' @references
 #' {Dutot, C. F., (1738). \emph{Reflexions Politiques sur les Finances et le Commerce}. The Hague: Les Freres Vaillant et Nicolas Prevost, Vol. 1.}
 #'
@@ -181,7 +181,7 @@ dutot <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname carli
-#' @return The function returns a value (or vector of values) of the unweighted bilateral Carli price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the unweighted bilateral Carli price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Carli, G. (1804). \emph{Del valore e della proporzione de'metalli monetati}. Scrittori Classici Italiani di Economia Politica, 13, 297-336.}
 #'
@@ -268,7 +268,7 @@ carli <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname cswd
-#' @return The function returns a value (or vector of values) of the unweighted bilateral CSWD price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the unweighted bilateral CSWD price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Carruthers, A.G., Sellwood, D. J, Ward, P. W. (1980). \emph{Recent developments in the retail price index}. Journal of the Royal Statistical Society. Series D (The Statisticain), 29(1), 1-32.}
 #'
@@ -359,7 +359,7 @@ cswd <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname harmonic
-#' @return The function returns a value (or vector of values) of the unweighted bilateral harmonic price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the unweighted bilateral harmonic price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #'
@@ -447,7 +447,7 @@ harmonic <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname bmw
-#' @return The function returns a value (or vector of values) of the unweighted bilateral BMW price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).  
+#' @return The function returns a value (or vector of values) of the unweighted bilateral BMW price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).  
 #' @references
 #' {Mehrhoff, J.(2007). \emph{A linear approximation to the Jevons index}. In: Von der Lippe (2007): Index Theory and Price Statistics, Peter Lang: Berlin, Germany.}
 #'
@@ -541,7 +541,7 @@ bmw <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname laspeyres
-#' @return The function returns a value (or vector of values) of the bilateral Laspeyres price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Laspeyres price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Laspeyres, E. (1871). \emph{Die Berechnung einer mittleren Waarenpreissteigerung}. Jahrbucher fur Nationalokonomie und Statistik 16, 296-314.}
 #'
@@ -634,7 +634,7 @@ laspeyres <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname paasche
-#' @return The function returns a value (or vector of values) of the bilateral Paasche price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Paasche price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Paasche, H. (1874). \emph{Uber die Preisentwicklung der letzten Jahre nach den Hamburger Borsennotirungen}. Jahrbucher fur Nationalokonomie und Statistik, 12, 168-178.}
 #'
@@ -727,7 +727,7 @@ paasche <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname fisher
-#' @return The function returns a value (or vector of values) of the bilateral Fisher price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating,please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Fisher price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating,please use the \code{\link{final_index}} function).   
 #' @references
 #' {Fisher, I. (1922). \emph{The Making of Index Numbers}. Boston: Houghton Mifflin.}
 #'
@@ -838,7 +838,7 @@ fisher <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname tornqvist
-#' @return The function returns a value (or vector of values) of the bilateral Tornqvist price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Tornqvist price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Tornqvist, L. (1936). \emph{The Bank of Finland's Consumption Price Index}. Bank of Finland Monthly Bulletin 10, 1-8.}
 #'
@@ -943,7 +943,7 @@ tornqvist <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname geolaspeyres
-#' @return The function returns a value (or vector of values) of the bilateral geo-logarithmic Laspeyres price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral geo-logarithmic Laspeyres price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #'
@@ -1036,7 +1036,7 @@ geolaspeyres <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname geopaasche
-#' @return The function returns a value (or vector of values) of the bilateral geo-logarithmic Paasche price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral geo-logarithmic Paasche price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang: Berlin, Germany.}
 #'
@@ -1129,7 +1129,7 @@ geopaasche <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname drobisch
-#' @return The function returns a value (or vector of values) of the bilateral Drobisch price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Drobisch price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
  #' {Drobisch, M. W. (1871). \emph{Ueber einige Einwurfe gegen die in diesen Jahrbuchern veroffentlichte neue Methode, die Veranderungen der Waarenpreise und des Geldwerths zu berechten}.Jahrbucher fur Nationalokonomie und Statistik, Vol. 16, s. 416-427.}
 #'
@@ -1189,7 +1189,7 @@ drobisch <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname marshall_edgeworth
-#' @return The function returns a value (or vector of values) of the bilateral Marshall-Edgeworth price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Marshall-Edgeworth price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
  #' {Marshall, A. (1887). \emph{Remedies for Fluctuations of General Prices}. Contemporary Review, 51, 355-375.}
 #'
@@ -1294,7 +1294,7 @@ marshall_edgeworth <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname walsh
-#' @return The function returns a value (or vector of values) of the bilateral Walsh price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).  
+#' @return The function returns a value (or vector of values) of the bilateral Walsh price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).  
 #' @references
 #' {Walsh, C. M. (1901). \emph{The Measurement of General Exchange Value}. The MacMillan Company, New York.}
 #'
@@ -1396,7 +1396,7 @@ walsh <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname bialek
-#' @return The function returns a value (or vector of values) of the bilateral Bialek price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Bialek price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Von der Lippe, P. (2012). \emph{Some short notes on the price index of Jacek Bialek}. Econometrics (Ekonometria). 1(35), 76-83.}
 #'
@@ -1509,7 +1509,7 @@ bialek <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname banajree
-#' @return The function returns a value (or vector of values) of the bilateral Banajree price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function)..   
+#' @return The function returns a value (or vector of values) of the bilateral Banajree price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function)..   
 #' @references
 #' {Banajree, K. S. (1977). \emph{On the factorial approach providing the true index of cost of living.} Gottingen : Vandenhoeck und Ruprecht.}
 #'
@@ -1620,7 +1620,7 @@ banajree <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname davies
-#' @return The function returns a value (or vector of values) of the bilateral Davies price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Davies price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Davies, G. R. (1924). \emph{The Problem of a Standard Index Number Formula.} Journal of the American Statistical Association, 19 (146), 180-188.}
 #'
@@ -1731,7 +1731,7 @@ davies <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname stuvel
-#' @return The function returns a value (or vector of values) of the bilateral Stuvel price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Stuvel price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Stuvel, G. (1957). \emph{A New Index Number Formula.} Econometrica, 25, 123-131.}
 #'
@@ -1844,7 +1844,7 @@ stuvel <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname palgrave
-#' @return The function returns a value (or vector of values) of the bilateral Palgrave price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Palgrave price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Palgrave, R. H. I. (1886). \emph{Currency and Standard of Value in England, France and India and the Rates of Exchange Between these Countries.} Memorandum submitted to the Royal Commission on Depression of trade and Industry, Third Report, Appendix B, 312-390.}
 #'
@@ -1945,7 +1945,7 @@ palgrave <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname geary_khamis
-#' @return The function returns a value (or vector of values) of the bilateral Geary-Khamis price index depending on the \code{interval} parameter (please use \code{\link{gk}} function to calculate the multilateral Geary-Khamis price index). If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Geary-Khamis price index depending on the \code{interval} parameter (please use \code{\link{gk}} function to calculate the multilateral Geary-Khamis price index). If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}}  function).   
 #' @references
 #' {Geary, R. G. (1958). \emph{A Note on Comparisons of Exchange Rates and Purchasing Power between Countries.} Journal of the Royal Statistical Society, Series A, 121, 97-99.}
 #'
@@ -2050,7 +2050,7 @@ geary_khamis <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname lehr
-#' @return The function returns a value (or vector of values) of the bilateral Lehr price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Lehr price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Lehr, J. (1885). \emph{Beitrage zur Statistik der Preise, insbesondere des Geldes und des Holzes.} J. D. Sauerlander, Frankfurt am Main.}
 #'
@@ -2164,7 +2164,7 @@ lehr <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname vartia
-#' @return The function returns a value (or vector of values) of the bilateral Vartia-I price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Vartia-I price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Vartia, Y. 0. (1976). \emph{Ideal Log-Change Index Numbers .}  Scandinavian Journal of Statistics 3(3), 121-126.}
 #'
@@ -2283,7 +2283,7 @@ lehr <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname sato_vartia
-#' @return The function returns a value (or vector of values) of the bilateral Vartia-II (Sato-Vartia) price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Vartia-II (Sato-Vartia) price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Sato, K. (1976). \emph{The Ideal Log-Change Index Number.}  The Review of Economics and Statistics, 58(2), 223-228.}
 #'
@@ -2402,7 +2402,7 @@ lehr <-
 #' @param sigma The elasticity of substitution parameter (as numeric).
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname lloyd_moulton
-#' @return The function returns a value (or vector of values) of the bilateral Lloyd-Moulton price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Lloyd-Moulton price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Lloyd, P. J. (1975). \emph{Substitution Effects and Biases in Nontrue Price Indices.}  The American Economic Review, 65, 301-313.}
 #'
@@ -2516,7 +2516,7 @@ lehr <-
 #' @param base The prior period used in the Young price index formula (as character) limited to the year and month, e.g. "2020-01"
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname young
-#' @return The function returns a value (or vector of values) of the bilateral Young price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Young price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Young, A. H. (1992). \emph{Alternative Measures of Change in Real Output and Prices.}  Survey of Current Business, 72, 32-48.}
 #'
@@ -2626,7 +2626,7 @@ lehr <-
 #' @param base The prior period used in the geometric Young price index formula (as character) limited to the year and month, e.g. "2020-01"
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname geoyoung
-#' @return The function returns a value (or vector of values) of the bilateral geometric Young price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral geometric Young price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Young, A. H. (1992). \emph{Alternative Measures of Change in Real Output and Prices.}  Survey of Current Business, 72, 32-48.}
 #'
@@ -2738,7 +2738,7 @@ lehr <-
 #' @param base The prior period used in the Lowe price index formula (as character) limited to the year and month, e.g. "2020-01".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname lowe
-#' @return The function returns a value (or vector of values) of the bilateral Lowe price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral Lowe price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
@@ -2851,7 +2851,7 @@ lehr <-
 #' @param base The prior period used in the geometric Lowe price index formula (as character) limited to the year and month, e.g. "2020-01"
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname geolowe
-#' @return The function returns a value (or vector of values) of the bilateral geometric Lowe price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral geometric Lowe price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
@@ -2966,7 +2966,7 @@ lehr <-
 #' @param sigma The elasticity of substitution parameter (as numeric)
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname agmean
-#' @return The function returns a value (or vector of values) of the bilateral AG Mean price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral AG Mean price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Lent J., & Dorfman,A. H. (2009). \emph{Using a Weighted Average of Base Period Price Indexes to Approximate a Superlative Index.} Journal of Official Statistics, 25(1), 139-149.}
 #' @examples 
@@ -3028,7 +3028,7 @@ lehr <-
 #' @param base The prior period used in the hybrid price index formula (as character) limited to the year and month, e.g. '2020-01'.
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname hybrid
-#' @return The function returns a value (or a vector of values) of the bilateral hybrid price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}}, \code{\link{final_index}} or \code{\link{final_index2}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or \code{\link{final_index2}} function).   
+#' @return The function returns a value (or a vector of values) of the bilateral hybrid price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
@@ -3206,7 +3206,7 @@ hybrid <-
 #' @param base The prior period used in the geohybrid price index formula (as character) limited to the year and month, e.g. "2020-01"
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname geohybrid
-#' @return The function returns a value (or vector of values) of the bilateral geohybrid price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_index}}, \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).   
+#' @return The function returns a value (or vector of values) of the bilateral geohybrid price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @references
 #' {Bialek, J. (2020). \emph{Proposition of a Hybrid Price Index Formula for the Consumer Price Index Measurement}. Equilibrium. Quarterly Journal of Economics and Economic Policy, 15(4), 697-716.}
 #'
@@ -3432,4 +3432,535 @@ tindex<-function(pmi=c(),psigma=c(),start, ratio=TRUE)
  return (DT)  
 }
 
+#' @title  Calculating the quadratic mean of order r quantity index
+#'
+#' @description This function returns a value (or vector of values) of the quadratic mean of order r quantity index.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param r The real and non-zero parameter.  
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname QMq
+#' @return The function returns a value (or vector of values) of the quadratic mean of order r quantity index - see CPI Manual (2004), Section 17.35, formula 17.30 (page 321).
+#' @references
+#' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
+#' @examples 
+#' QMq(sugar, start="2019-01", end="2020-01")
+#' \donttest{QMq(sugar, start="2019-01", end="2020-01", r=1.3, interval=TRUE)}
+#' @export
+
+QMq <-
+    function(data,
+    start,
+    end,
+    r = 2,
+    interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    if (r == 0)
+    stop("A specification of the parameter 'r' is wrong")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    #returning vector of values
+    if (interval == TRUE) {
+    result <- c(1)
+    end2 <- end
+    end <- start
+    lubridate::month(end) <-
+    lubridate::month(end) + 1
+    while (end <= end2)
+    {
+    t <- substr(end, 0, 7)
+    date <- c(date, t)
+    data2 <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data2, start, end)
+    price_end <-
+    prices(data2, period = end, set = id)
+    price_start <-
+    prices(data2, period = start, set = id)
+    quantity_end <-
+    quantities(data2, period = end, set = id)
+    quantity_start <-
+    quantities(data2, period = start, set = id)
+    v_start <-
+    sum(price_start * quantity_start)
+    v_end <-
+    sum(price_end * quantity_end)
+    #index calculation
+    sum1<-sum(price_start * quantity_start*(quantity_end/quantity_start)^(r/2))/v_start
+    sum2<-sum(price_end * quantity_end*(quantity_end/quantity_start)^(-r/2))/v_end
+    #returning results
+    result <- c(result, (sum1/sum2)^(1/r))
+    lubridate::month(end) <-
+    lubridate::month(end) + 1
+    }
+    return(result)
+    }
+    #returning one value
+    else {
+    data <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data, start, end)
+    price_end <-
+    prices(data, period = end, set = id)
+    price_start <-
+    prices(data, period = start, set = id)
+    quantity_end <-
+    quantities(data, period = end, set = id)
+    quantity_start <-
+    quantities(data, period = start, set = id)
+    v_start <-
+    sum(price_start * quantity_start)
+    v_end <-
+    sum(price_end * quantity_end)
+    #index calculation
+    sum1<-sum(price_start * quantity_start*(quantity_end/quantity_start)^(r/2))/v_start
+    sum2<-sum(price_end * quantity_end*(quantity_end/quantity_start)^(-r/2))/v_end
+    #returning results
+    return((sum1/sum2)^(1/r))
+    }
+    }
+
+#' @title  Calculating the quadratic mean of order r price index
+#'
+#' @description This function returns a value (or vector of values) of the quadratic mean of order r price index.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param r The real and non-zero parameter.  
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname QMp
+#' @return The function returns a value (or vector of values) of the quadratic mean of order r price index - see CPI Manual (2004), Section 17.40, formula 17.35 (page 321).
+#' @references
+#' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
+#' @examples 
+#' QMp(sugar, start="2019-01", end="2020-01")
+#' \donttest{QMp(sugar, start="2019-01", end="2020-01", r=1.3, interval=TRUE)}
+#' @export
+
+
+QMp <-
+    function(data,
+    start,
+    end,
+    r = 2,
+    interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    if (r == 0)
+    stop("A specification of the parameter 'r' is wrong")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    #returning vector of values
+    if (interval == TRUE) {
+    result <- c(1)
+    end2 <- end
+    end <- start
+    lubridate::month(end) <-
+    lubridate::month(end) + 1
+    while (end <= end2)
+    {
+    t <- substr(end, 0, 7)
+    date <- c(date, t)
+    data2 <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data2, start, end)
+    price_end <-
+    prices(data2, period = end, set = id)
+    price_start <-
+    prices(data2, period = start, set = id)
+    quantity_end <-
+    quantities(data2, period = end, set = id)
+    quantity_start <-
+    quantities(data2, period = start, set = id)
+    v_start <-
+    sum(price_start * quantity_start)
+    v_end <-
+    sum(price_end * quantity_end)
+    #index calculation
+    sum1<-sum(price_start * quantity_start*(price_end/price_start)^(r/2))/v_start
+    sum2<-sum(price_end * quantity_end*(price_end/price_start)^(-r/2))/v_end
+    #returning results
+    result <- c(result, (sum1/sum2)^(1/r))
+    lubridate::month(end) <-
+    lubridate::month(end) + 1
+    }
+    return(result)
+    }
+    #returning one value
+    else {
+    data <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data, start, end)
+    price_end <-
+    prices(data, period = end, set = id)
+    price_start <-
+    prices(data, period = start, set = id)
+    quantity_end <-
+    quantities(data, period = end, set = id)
+    quantity_start <-
+    quantities(data, period = start, set = id)
+    v_start <-
+    sum(price_start * quantity_start)
+    v_end <-
+    sum(price_end * quantity_end)
+    #index calculation
+    sum1<-sum(price_start * quantity_start*(price_end/price_start)^(r/2))/v_start
+    sum2<-sum(price_end * quantity_end*(price_end/price_start)^(-r/2))/v_end
+    #returning results
+    return((sum1/sum2)^(1/r))
+    }
+    }
+
+#' @title  Calculating the implicit quadratic mean of order r price index
+#'
+#' @description This function returns a value (or vector of values) of the implicit quadratic mean of order r price index.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param r The real and non-zero parameter.  
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname IQMp
+#' @return The function returns a value (or vector of values) of the implicit quadratic mean of order r price index - see CPI Manual (2004), Section 17.37, formula 17.32 (page 321).
+#' @references
+#' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
+#' @examples 
+#' IQMp(sugar, start="2019-01", end="2020-01")
+#' \donttest{IQMp(sugar, start="2019-01", end="2020-01", r=1.3, interval=TRUE)}
+#' @export
+
+IQMp <-
+    function(data,
+    start,
+    end,
+    r = 2,
+    interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    if (r == 0)
+    stop("A specification of the parameter 'r' is wrong")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    #returning vector of values
+    if (interval == TRUE) {
+    result <- c(1)
+    end2 <- end
+    end <- start
+    lubridate::month(end) <-
+    lubridate::month(end) + 1
+    while (end <= end2)
+    {
+    t <- substr(end, 0, 7)
+    date <- c(date, t)
+    data2 <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data2, start, end)
+    price_end <-
+    prices(data2, period = end, set = id)
+    price_start <-
+    prices(data2, period = start, set = id)
+    quantity_end <-
+    quantities(data2, period = end, set = id)
+    quantity_start <-
+    quantities(data2, period = start, set = id)
+    v_start <-
+    sum(price_start * quantity_start)
+    v_end <-
+    sum(price_end * quantity_end)
+    #index calculation
+    sum1<-sum(price_start * quantity_start*(quantity_end/quantity_start)^(r/2))/v_start
+    sum1<-sum1^(1/r)
+    sum2<-sum(price_end * quantity_end*(quantity_end/quantity_start)^(-r/2))/v_end
+    sum2<-sum2^(1/r)
+    #returning results
+    result <- c(result, v_end*sum2/(v_start*sum1))
+    lubridate::month(end) <-
+    lubridate::month(end) + 1
+    }
+    return(result)
+    }
+    #returning one value
+    else {
+    data <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data, start, end)
+    price_end <-
+    prices(data, period = end, set = id)
+    price_start <-
+    prices(data, period = start, set = id)
+    quantity_end <-
+    quantities(data, period = end, set = id)
+    quantity_start <-
+    quantities(data, period = start, set = id)
+    v_start <-
+    sum(price_start * quantity_start)
+    v_end <-
+    sum(price_end * quantity_end)
+    #index calculation
+    sum1<-sum(price_start * quantity_start*(quantity_end/quantity_start)^(r/2))/v_start
+    sum1<-sum1^(1/r)
+    sum2<-sum(price_end * quantity_end*(quantity_end/quantity_start)^(-r/2))/v_end
+    sum2<-sum2^(1/r)
+    #returning results
+    return(v_end*sum2/(v_start*sum1))
+    }
+    }
+
+#' @title  Calculating the value index
+#'
+#' @description This function returns a value (or vector of values) of the value index
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname value_index
+#' @return The function returns a value (or vector of values) of the value index. The value index is calculated as sum of expenditures from period \code{end} divided by sum of expenditures from period \code{start}.
+#' @references
+#' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
+#' @examples 
+#' value_index(sugar, start="2019-01", end="2020-01")
+#' \donttest{value_index(sugar, start="2019-01", end="2020-01", interval=TRUE)}
+#' @export
+
+value_index <-
+    function(data,
+    start,
+    end,
+    interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    #returning vector of values
+    if (interval == TRUE) {
+    result <- c(1)
+    end2 <- end
+    end <- start
+    lubridate::month(end) <-
+    lubridate::month(end) + 1
+    while (end <= end2)
+    {
+    t <- substr(end, 0, 7)
+    date <- c(date, t)
+    data2 <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data, start, end)
+    expenditures_end <-
+    expenditures(data, period = end, set = id)
+    expenditures_start <-
+    expenditures(data, period = start, set = id)
+    #returning results
+    result <- c(result, sum(expenditures_end)/sum(expenditures_start))
+    lubridate::month(end) <-
+    lubridate::month(end) + 1
+    }
+    return(result)
+    }
+    #returning one value
+    else {
+    data <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data, start, end)
+    expenditures_end <-
+    expenditures(data, period = end, set = id)
+    expenditures_start <-
+    expenditures(data, period = start, set = id)
+    #returning results
+    return(sum(expenditures_end)/sum(expenditures_start))
+    }
+    }
+
+#' @title  Calculating the unit value index
+#'
+#' @description This function returns a value (or vector of values) of the unit value index
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname unit_value_index
+#' @return The function returns a value (or vector of values) of the unit value index. The value index is calculated as the unit value at time \code{start} divided by the unit value at time \code{start}.
+#' @references
+#' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
+#' @examples 
+#' unit_value_index(sugar, start="2019-01", end="2020-01")
+#' \donttest{unit_value_index(sugar, start="2019-01", end="2020-01", interval=TRUE)}
+#' @export
+
+unit_value_index <-
+    function(data,
+    start,
+    end,
+    interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    #returning vector of values
+    if (interval == TRUE) {
+    result <- c(1)
+    end2 <- end
+    end <- start
+    lubridate::month(end) <-
+    lubridate::month(end) + 1
+    while (end <= end2)
+    {
+    t <- substr(end, 0, 7)
+    date <- c(date, t)
+    data2 <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data, start, end)
+    expenditures_end <-
+    expenditures(data, period = end, set = id)
+    expenditures_start <-
+    expenditures(data, period = start, set = id)
+    quantities_end <-
+    quantities(data, period = end, set = id)
+    quantities_start <-
+    quantities(data, period = start, set = id)
+    #returning results
+    result <- c(result, (sum(expenditures_end)/sum(quantities_end)) /(sum(expenditures_start)/sum(quantities_start)))
+    lubridate::month(end) <-
+    lubridate::month(end) + 1
+    }
+    return(result)
+    }
+    #returning one value
+    else {
+    data <-
+    dplyr::filter(
+    data,
+    (
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    ) |
+    (
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+    )
+    id <- matched(data, start, end)
+    expenditures_end <-
+    expenditures(data, period = end, set = id)
+    expenditures_start <-
+    expenditures(data, period = start, set = id)
+    quantities_end <-
+    quantities(data, period = end, set = id)
+    quantities_start <-
+    quantities(data, period = start, set = id)
+    #returning results
+    result <- (sum(expenditures_end)/sum(quantities_end)) /(sum(expenditures_start)/sum(quantities_start))
+    return (result)
+    }
+    }
 

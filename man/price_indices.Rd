@@ -2,29 +2,18 @@
 % Please edit documentation in R/f_general.R
 \name{price_indices}
 \alias{price_indices}
-\title{A very general function to compute one or more price indices}
+\title{A general function to compute one or more price indices}
 \usage{
 price_indices(
   data,
   start,
   end,
-  bilateral = c(),
-  bindex = c(),
-  base = c(),
-  cesindex = c(),
-  sigma = c(),
-  simindex = c(),
-  fbmulti = c(),
-  fbwindow = c(),
-  splicemulti = c(),
-  splicewindow = c(),
+  formula = c(),
+  window = c(),
   splice = c(),
-  namebilateral = bilateral,
-  namebindex = bindex,
-  namecesindex = cesindex,
-  namesimindex = simindex,
-  namefbmulti = fbmulti,
-  namesplicemulti = splicemulti,
+  base = c(),
+  sigma = c(),
+  r = c(),
   interval = FALSE
 )
 }
@@ -35,51 +24,39 @@ price_indices(
 
 \item{end}{The research period (as character) limited to the year and month, e.g. "2020-04".}
 
-\item{bilateral}{A vector of character strings indicating bilateral price index formulas that are to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.}
+\item{formula}{A vector of character strings indicating price index formulas that are to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.}
 
-\item{bindex}{A vector of character strings indicating Lowe- or Young-type price index formulas that are to be calculated. Available options are: \code{young},\code{geoyoung},\code{lowe} and \code{geolowe}.}
+\item{window}{A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index.}
 
-\item{base}{The vector of prior periods used in the Young- or Lowe-type price indices. Each element of the vector (as character) must be limited to the year and month, e.g. "2020-01".}
+\item{splice}{A vector of character strings. Each element of the vector indicates the splicing method is to be used for the corresponding multilateral index. Available values of vector elements are: "movement", "window","half","mean" and their additional variants: "window_published", "half_published" and "mean_published".}
 
-\item{cesindex}{A vector of character strings indicating CES price index formulas that are to be calculated. To see available options, please use the link: \code{\link{PriceIndices}}.}
+\item{base}{The vector of prior periods used in the Young- or Lowe-type price indices or hybrid/geohybrid index. Each element of the vector (as character) must be limited to the year and month, e.g. "2020-01".}
 
-\item{sigma}{The vector of elasticity of substitution parameters used in the Lloyed-Moulton and AG Mean indices.}
+\item{sigma}{The vector of elasticity of substitution parameters used in the Lloyed-Moulton, AG Mean or GEKS-LM indices (as numeric).}
 
-\item{simindex}{A vector of character strings indicating multilateral price index formulas based on relative price and quantity similarity that are to be calculated. To see available options, please use the link: \code{\link{PriceIndices}}.}
+\item{r}{The vector of non-zero parameters used in the quadratic mean of order r quantity / price index or in the GEKS-QM index (as numeric).}
 
-\item{fbmulti}{A vector of character strings indicating multilateral price index formulas that are to be calculated. The available set of indices includes full-window multilateral indices or their FBEW and FBMW extensions.To see available options, please use the link: \code{\link{PriceIndices}}.}
-
-\item{fbwindow}{A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index (if it is selected by \code{fbmulti}).}
-
-\item{splicemulti}{A vector of character strings indicating multilateral price index formulas that are to be extended by using splicing methods. To see available options. please use the link: \code{\link{PriceIndices}}.}
-
-\item{splicewindow}{A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index (if it is selected by \code{splicemulti}).}
-
-\item{splice}{A vector of character strings. Each element of the vector indicates the splicing method is to be used for the corresponding multilateral index (if it is selected by \code{splicemulti} ). Available values of vector elements are: "movement", "window","half","mean" and their additional variants: "window_published", "half_published" and "mean_published".}
-
-\item{namebilateral}{A vector of character strings describing names of bilateral price indices that are to be displayed. If this vector is empty, then default names are used.}
-
-\item{namebindex}{A vector of character strings describing names of Young- and/or Lowe-type price indices are to be displayed. If this vector is empty, then default names are used.}
-
-\item{namecesindex}{A vector of character strings describing names of CES price indices that are to be displayed. If this vector is empty, then default names are used.}
-
-\item{namesimindex}{A vector of character strings describing names of multilateral price index formulas based on relative price and quantity similarity that are to be displayed. If this vector is empty, then default names are used.}
-
-\item{namefbmulti}{A vector of character strings describing names of full-window multilateralindices or their FBEW and FBMW extensions that are to be displayed. If this vector is empty, then default names are used.}
-
-\item{namesplicemulti}{A vector of character strings describing names of multilateral splice indices that are to be displayed. If this vector is empty, then default names are used.}
-
-\item{interval}{A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).}
+\item{interval}{A logical value indicating whether the function is to provide price indices comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).}
 }
 \value{
-This general function returns a value or values of the selected price indices. If the \code{interval} parameter is set to TRUE, then it returns a data frame where its first column indicates dates and the remaining columns show corresponding values of all selected price indices. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} or the \code{\link{final_index2}} function).
+This general function returns a value or values of the selected price indices. If the \code{interval} parameter is set to TRUE, then it returns a data frame where its first column indicates dates and the remaining columns show corresponding values of all selected price indices. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).
 }
 \description{
 This function returns a value or values of the selected price indices.
 }
 \examples{
-\donttest{price_indices(milk, start="2018-12",end="2019-04",bilateral=c("jevons"),
-fbmulti=c("tpd"),fbwindow=c(6),interval=TRUE)}
-\donttest{price_indices(milk, start="2018-12", end="2019-05",
-fbmulti=c("tpd","geks"),fbwindow=c(10,12),interval=TRUE)}
+\donttest{price_indices(milk, 
+         start="2018-12",end="2019-12",
+         formula=c("geks","ccdi","hybrid","fisher",
+         "QMp","young","geksl_fbew"),
+         window=c(13,13),
+         base=c("2019-03","2019-03"),
+         r=c(3),interval=TRUE)}
+\donttest{price_indices(milk, 
+         start="2018-12",end="2019-12",
+         formula=c("geks","ccdi","hybrid","fisher",
+         "QMp","young","geksl_fbew"),
+         window=c(13,13),
+         base=c("2019-03","2019-03"),
+         r=c(3),interval=FALSE)}
 }

@@ -1,94 +1,30 @@
 #' @title  A function for graphical comparison of price indices
 #'
 #' @description This function returns a figure with plots of selected price indices. 
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} is also essential (as positive numeric) because unit values are calculated. 
-#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
-#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
-#' @param bilateral A vector of character strings indicating bilateral price index formulas that are to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.
-#' @param bindex A vector of character strings indicating Lowe- or Young-type price index formulas that are to be calculated. Available options are: \code{young}, \code{geoyoung}, \code{lowe} and \code{geolowe}. 
-#' @param cesindex A vector of character strings indicating CES price index formulas that are to be calculated. To see available options, please use the link: \code{\link{PriceIndices}}.
-#' @param simindex A vector of character strings indicating multilateral price index formulas based on relative price and quantity similarity that are to be calculated. To see available options, please use the link: \code{\link{PriceIndices}}.
-#' @param fbmulti A vector of character strings indicating multilateral price index formulas that are to be calculated. The available set of indices includes full-window multilateral indices or their FBEW and FBMW extensions.To see available options, please use the link: \code{\link{PriceIndices}}.
-#' @param splicemulti The vector of character strings indicating multilateral price index formulas are to be extended by using splicing methods. To see available options please use the link: \code{\link{PriceIndices}}.
-#' @param base The vector of prior periods used in the Young- or Lowe-type price indices. Each element of the vector (as character) must be limited to the year and month, e.g. "2020-01".
-#' @param sigma The vector of elasticity of substitution parameters used in the Lloyed-Moulton and AG Mean indices.
-#' @param fbwindow A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index (if it is selected by \code{fbmulti}).
-#' @param splicewindow A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index (if it is selected by \code{splicemulti}).
-#' @param splice A vector of character strings. Each element of the vector indicates the splicing method is to be used for the corresponding multilateral index (if it is selected by \code{splicemulti} ). Available values of vector elements are: "movement", "window","half","mean","window_published","half_published","mean_published".
-#' @param namebilateral A vector of character strings describing names of bilateral price indices that are to be displayed. If this vector is empty, then default names are used.
-#' @param namebindex A vector of character strings describing names of Young- and/or Lowe-type price indices are to be displayed. If this vector is empty then default names are used.
-#' @param namecesindex A vector of character strings describing names of CES price indices that are to be displayed. If this vector is empty, then default names are used.
-#' @param namesimindex A vector of character strings describing names of multilateral price index formulas based on relative price and quantity similarity that are to be displayed. If this vector is empty, then default names are used.
-#' @param namefbmulti A vector of character strings describing names of full-window multilateralindices or their FBEW and FBMW extensions that are to be displayed. If this vector is empty, then default names are used.
-#' @param namesplicemulti  A vector of character strings describing names of multilateral splice indices that are to be displayed. If this vector is empty, then default names are used.
+#' @param data The user's data frame with price index values. It must contain columns: \code{time} (as character in format: year-month, e.g. '2020-12') and columns with index values. 
+#' @param names A vector of strings indicating names of indices which are to be used in the figure's legend.
 #' @param date_breaks A string giving the distance between breaks on the X axis like "1 month" (default value) or "4 months".
-#' @rdname compare_indices
-#' @return This function calculates selected bilateral or/and multilateral price indices and returns a figure with plots of these indices (together with dates on X-axis and a corresponding legend). The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use functions: \code{\link{final_index}} and \code{\link{compare_final_indices}}).   
+#' @rdname compare_indices_df
+#' @return This function returns a figure with plots of previously calculated indices (together with dates on X-axis and a corresponding legend). Indices must be provided as a data frame, where the the first column must includes dates limited to the year and month (e.g.: "2020-04").   
 #' @examples 
-#' \donttest{compare_indices(milk, start="2018-12", end="2019-04",
-#' bilateral=c("jevons"),fbmulti=c("tpd"),fbwindow=c(6))}
-#' \donttest{compare_indices(milk, start="2018-12", end="2019-05",
-#' fbmulti=c("tpd","geks"),fbwindow=c(10,12))}
+#' \donttest{df<-price_indices(milk, start = "2018-12", end = "2019-12", 
+#' formula=c("laspeyres", "fisher"), interval = TRUE)}
+#' \donttest{compare_indices_df(df)}
 #' @export
 
-compare_indices <-
+compare_indices_df <-
   function(data,
-  start,
-  end,
-  bilateral = c(),
-  bindex = c(),
-  base = c(),
-  cesindex = c(),
-  sigma = c(),
-  simindex = c(),
-  fbmulti = c(),
-  fbwindow = c(),
-  splicemulti = c(),
-  splicewindow = c(),
-  splice = c(),
-  namebilateral = bilateral,
-  namebindex = bindex,
-  namecesindex = cesindex,
-  namesimindex = simindex,
-  namefbmulti = fbmulti,
-  namesplicemulti = splicemulti,
+  names = colnames(data)[2:length(colnames(data))],
   date_breaks  = "1 month")
   {
-  date <- value <- formula <- NULL
-  if (nrow(data) == 0)
-  stop("A data frame is empty")
-  if (length(bilateral) + length(bindex) + length(cesindex) + length(fbmulti) +
-  length(splicemulti) + length(simindex) == 0)
-  stop("at least one price index formula must be chosen")
-  #main body
-  graph <-
-  price_indices(
-  data,
-  start,
-  end,
-  bilateral,
-  bindex,
-  base,
-  cesindex,
-  sigma,
-  simindex,
-  fbmulti,
-  fbwindow,
-  splicemulti,
-  splicewindow,
-  splice,
-  namebilateral,
-  namebindex,
-  namecesindex,
-  namesimindex,
-  namefbmulti,
-  namesplicemulti,
-  interval = TRUE
-  )
-  graph$date <- as.Date(paste(graph$date, "-01", sep = ""))
-  graph <- reshape::melt(graph, id.var = 'date')
-  colnames(graph) <- c("date", "formula", "value")
-  ggplot2::ggplot(graph, ggplot2::aes(x = date, y = value, col = formula)) + ggplot2::geom_point() +
+  time<-value<-formula<-NULL
+  if (nrow(data)==0) stop("Your data frame is empty!")
+  if (!(length(names)==ncol(data)-1)) stop("Number of columns and number of names are different!")  
+  data$time <- as.Date(paste(data$time, "-01", sep = ""))
+  colnames(data)<-c("time", names)
+  data <- reshape::melt(data, id.var = 'time')
+  colnames(data) <- c("time", "formula", "value")
+  ggplot2::ggplot(data, ggplot2::aes(x = time, y = value, col = formula)) + ggplot2::geom_point() +
   ggplot2::geom_line() + ggplot2::labs(x = "date", y = "price index value") +
   ggplot2::scale_x_date(date_labels = "%Y %m", date_breaks  = date_breaks) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
@@ -97,11 +33,11 @@ compare_indices <-
 #' @title  A general function for graphical comparison of price indices
 #'
 #' @description This function returns a figure with plots of previously calculated price indices. 
-#' @param finalindices A list of data frames with previously calculated price indices. Each data frame must consist of two columns, i.e. the first column must includes dates limited to the year and month (e.g.: "2020-04") and the second column must indicate price index values for corresponding dates. The above-mentioned single data frame may be created manually in the previous step or it may be a result of functions: \code{price_index} or \code{final_index}. All considered data frames must have an identical number of rows.
+#' @param data A list of data frames with previously calculated price indices. Each data frame must consist of two columns, i.e. the first column must includes dates limited to the year and month (e.g.: "2020-04") and the second column must indicate price index values for corresponding dates. The above-mentioned single data frame may be created manually in the previous step or it may be a result of functions: \code{price_index} or \code{final_index}. All considered data frames must have an identical number of rows.
 #' @param names A vector of character strings describing names of presented indices.
 #' @param date_breaks A string giving the distance between breaks on the X axis like "1 month" (default value) or "4 months".
-#' @rdname compare_final_indices
-#' @return This function returns a figure with plots of previously calculated price indices. It allows for graphical comparison of price index values which were previously calculated and now are provided as data frames (see \code{finalindices} parameter).
+#' @rdname compare_indices_list
+#' @return This function returns a figure with plots of previously calculated price indices. It allows for graphical comparison of price index values which were previously calculated and now are provided as a list of data frames (see \code{data} parameter).
 #' @examples 
 #' ## Caluclating two indices by using two different package functions:
 #' \donttest{index1<-final_index(datasets=list(milk), start="2018-12", 
@@ -109,25 +45,25 @@ compare_indices <-
 #' \donttest{index2<-price_index(milk,start="2018-12", end="2019-12",
 #' formula="geks",interval=TRUE)}
 #' ## Graphical comparison of these two indices 
-#' \donttest{compare_final_indices(finalindices=list(index1,index2), 
+#' \donttest{compare_indices_list(data=list(index1,index2), 
 #' names=c("Walsh index", "GEKS index"))}
 #' @export
 
-compare_final_indices<-function(finalindices = list(), names = c(), date_breaks = "1 month")
+compare_indices_list<-function(data = list(), names = c(), date_breaks = "1 month")
 {
-date<-value<-formula<-NULL
-if (length(finalindices)==0) stop("at least one final index must be chosen")
-for (m in 1:length(finalindices)) {if (nrow(data.frame(finalindices[[m]]))==0) stop("At least one data frame is empty")
+time<-value<-formula<-NULL
+if (length(data)==0) stop("at least one final index must be chosen")
+for (m in 1:length(data)) {if (nrow(data.frame(data[[m]]))==0) stop("At least one data frame is empty")
 }
-for (m in 1:length(finalindices)) {if (!(nrow(data.frame(finalindices[[m]]))==nrow(data.frame(finalindices[[1]])))) stop("Data frames must have identical number of rows")  
+for (m in 1:length(data)) {if (!(nrow(data.frame(data[[m]]))==nrow(data.frame(data[[1]])))) stop("Data frames must have identical number of rows")  
 }
-graph<-data.frame(finalindices[1])
-if (length(finalindices)>1) for (i in 2:length(finalindices)) graph<-cbind(graph, data.frame(finalindices[i])[2]) 
+graph<-data.frame(data[1])
+if (length(data)>1) for (i in 2:length(data)) graph<-cbind(graph, data.frame(data[i])[2]) 
 if (length(names)>0) for (i in 1:length(names)) colnames(graph)[i+1]<-names[i]
-graph$date<-as.Date(paste(graph$date,"-01",sep=""))
-graph<-reshape::melt(graph, id.var='date') 
-colnames(graph)<-c("date","formula","value")
-ggplot2::ggplot(graph, ggplot2::aes(x=date, y=value, col=formula)) + ggplot2::geom_point()+ggplot2::geom_line()+ggplot2::labs(x="date",y="price index value")+ggplot2::scale_x_date(date_labels="%Y %m",date_breaks  =date_breaks)+ggplot2::theme(axis.text.x = ggplot2::element_text(angle=45, hjust = 1)) 
+graph$time<-as.Date(paste(graph$time,"-01",sep=""))
+graph<-reshape::melt(graph, id.var='time') 
+colnames(graph)<-c("time","formula","value")
+ggplot2::ggplot(graph, ggplot2::aes(x=time, y=value, col=formula)) + ggplot2::geom_point()+ggplot2::geom_line()+ggplot2::labs(x="tame",y="price index value")+ggplot2::scale_x_date(date_labels="%Y %m",date_breaks =date_breaks)+ggplot2::theme(axis.text.x = ggplot2::element_text(angle=45, hjust = 1)) 
 }
 
 

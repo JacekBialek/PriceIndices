@@ -1,7 +1,8 @@
 ## Package update 
-* One new function (*expenditures*) has been added (faster version of *sales*)
-* System of weights in the TPD index has been changed. Now it corresponds to the system of weights used in "HICP Guide for Multilateral Methods".
-* Improved the speed of operation of all functions for price indices.
+
+* New functions added: a) bilateral methods - *value_index*, *unit_value_index*, *QMp*, *IQMp*, *QMq*; b) chain indices: *chQMp*, *chIQMp*, *chQMq*; c) multilateral methods: *gekslm*, *geksqm*, *geksiqm*, *utpd* + their extensions (splice, FMW, FBEW). Moreover: new (faster) function *price_indices*, new functions for price comparisons: *compare_indices_df* and *compare_indices_list* (old functions: *compare_indices* and *compare_final_indices* were removed). Rebuilt function *final_index* (old function *final_index2* was removed).
+* Improved speed of **data_filtering** and **data_matching** functions (**data_matching** is now based on the *reclin2* package instead of *reclin*).
+* Improved speed of multilateral index functions: **geks**, **wgeks**, **geksj**, **geksw**, **geksl**, **geksgl**, **wgeksl** and **wgeksgl**.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

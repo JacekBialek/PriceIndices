@@ -7,7 +7,7 @@
 #' @param prices A character name of the column which provides product prices. 
 #' @param quantities A character name of the column which provides product quantities.
 #' @param prodID  A character name of the column which provides product IDs. The \code{prodID} column should include unique product IDs used for product matching (as numeric or character). It is not obligatory to consider this column while data preparing but it is required while price index calculating (to obtain it, please see \code{\link{data_matching}}). 
- #' @param retID A character name of the column which provides outlet IDs (retailer sale points). The \code{retID} column should include unique outlet IDs used for aggregating subindices over outlets. It is not obligatory to consider this column while data preparing but it is required while final price index calculating (to obtain it, please see the \code{\link{final_index}} or \code{\link{final_index2}} function).
+#' @param retID A character name of the column which provides outlet IDs (retailer sale points). The \code{retID} column should include unique outlet IDs used for aggregating subindices over outlets. It is not obligatory to consider this column while data preparing but it is required while final price index calculating (to obtain it, please see the \code{\link{final_index}} function).
 #' @param description A character name of the column which provides product descriptions. It is not obligatory to consider this column while data preparing but it is required while product selecting (please see the \code{\link{data_selecting}} function).
 #' @param codeIN A character name of the column which provides internal product codes (from the retailer). It is not obligatory to consider this column while data preparing but it may be required while product matching (please see the \code{\link{data_matching}} function).
 #' @param codeOUT A character name of the column which provides external product codes (e.g. GTIN or SKU). It is not obligatory to consider this column while data preparing but it may be required while product matching (please see the \code{\link{data_matching}} function).
@@ -149,9 +149,9 @@ data_preparing <-
 #' @param codeOUT A logical value, e.g. if there are external product codes, such as GTIN or SKU (as numeric or character) written in \code{codeOUT} column and there is a need to use that column while data preparing then, that parameter should be set to TRUE. Otherwise it is set to FALSE.
 #' @param  description A logical value, e.g. if there are product labels (as character) written in \code{description} column and there is a need to use that column while data preparing, then that parameter should be set to TRUE. Otherwise it is set to FALSE.
 #' @param  onlydescription A logical value indicating whether products with identical labels (described in the \code{description}) are to be matched.
-#' @param precision A threshold value for the Jaro-Winkler distance measure when comparing labels (its value must belong to the interval [0,1]). Two labels are treated as similar enough if their Jaro-Winkler distance exceeds the \code{precision} value. 
+#' @param precision A threshold value for the Jaro-Winkler similarity measure when comparing labels (its value must belong to the interval [0,1]). Two labels are treated as similar enough if their Jaro-Winkler similarity exceeds the \code{precision} value. 
 #' @rdname data_matching
-#' @return This function returns a data set defined in the first parameter (\code{data}) with an additional column (\code{prodID}). Two products are treated as being matched if they have the same \code{prodID} value. The procedure of generating the above-mentioned additional column depends on the set of chosen columns for matching. In most extreme case, when the \code{onlydescription} parameter value is TRUE, two products are also matched if they have identical descriptions. Other cases are as follows: \code{Case 1}: Parameters \code{codeIN}, \code{codeOUT} and \code{description} are set to TRUE. Products with two identical codes or one of the codes identical and an identical \code{description} are automatically matched. Products are also matched if they have identical one of codes and the Jaro-Winkler distance of their descriptions is bigger than the \code{precision} value.\code{Case 2}: Only one of the parameters: \code{codeIN} or \code{codeOUT} are set to TRUE and also the \code{description} parameter is set to TRUE. Products with an identical chosen code and an identical description are automatically matched. In the second stage, products are also matched if they have an identical chosen code and the Jaro-Winkler distance of their descriptions is bigger than the \code{precision} value. \code{Case 3}: Parameters \code{codeIN} and \code{codeOUT} are set to TRUE and the parameter \code{description} is set to FALSE. In this case, products are matched if they have both codes identical. \code{Case 4}: Only the parameter \code{description} is set to TRUE. This case requires the \code{onlydescription} parameter to be TRUE and then the matching process is based only on product labels (two products are matched if they have identical descriptions). \code{Case 5}:  Only one of the parameters: \code{codeIN} or \code{codeOUT} are set to TRUE and the \code{description} parameter is set to FALSE. In this case, the only reasonable option is to return the \code{prodID} column which is identical with the chosen code column. Please note that if the set of column names defined in the \code{variables} parameter is not empty, then the values of these additional columns must be identical while product matching.
+#' @return This function returns a data set defined in the first parameter (\code{data}) with an additional column (\code{prodID}). Two products are treated as being matched if they have the same \code{prodID} value. The procedure of generating the above-mentioned additional column depends on the set of chosen columns for matching. In most extreme case, when the \code{onlydescription} parameter value is TRUE, two products are also matched if they have identical descriptions. Other cases are as follows: \code{Case 1}: Parameters \code{codeIN}, \code{codeOUT} and \code{description} are set to TRUE. Products with two identical codes or one of the codes identical and an identical \code{description} are automatically matched. Products are also matched if they have identical one of codes and the Jaro-Winkler similarity of their descriptions is bigger than the \code{precision} value.\code{Case 2}: Only one of the parameters: \code{codeIN} or \code{codeOUT} are set to TRUE and also the \code{description} parameter is set to TRUE. Products with an identical chosen code and an identical description are automatically matched. In the second stage, products are also matched if they have an identical chosen code and the Jaro-Winkler similarity of their descriptions is bigger than the \code{precision} value. \code{Case 3}: Parameters \code{codeIN} and \code{codeOUT} are set to TRUE and the parameter \code{description} is set to FALSE. In this case, products are matched if they have both codes identical. \code{Case 4}: Only the parameter \code{description} is set to TRUE. This case requires the \code{onlydescription} parameter to be TRUE and then the matching process is based only on product labels (two products are matched if they have identical descriptions). \code{Case 5}:  Only one of the parameters: \code{codeIN} or \code{codeOUT} are set to TRUE and the \code{description} parameter is set to FALSE. In this case, the only reasonable option is to return the \code{prodID} column which is identical with the chosen code column. Please note that if the set of column names defined in the \code{variables} parameter is not empty, then the values of these additional columns must be identical while product matching.
 #' @examples 
 #' data_matching(dataMATCH, start="2018-12",end="2019-02",onlydescription=TRUE,interval=TRUE)
 #' \donttest{data_matching(dataMATCH, start="2018-12",end="2019-02",precision=0.98, interval=TRUE)}
@@ -176,7 +176,6 @@ data_matching <-
   if ((precision < 0) |
   (precision > 1))
   stop("parametr 'precision' must belong to [0,1]")
-  
   prodID<-NULL
   #preparing data set
   columns <- c()
@@ -224,87 +223,87 @@ data_matching <-
   #main body
   if (codeIN == TRUE & codeOUT == TRUE & description == TRUE)
   {
-  pairs <- reclin::pair_blocking(data, data, blocking_var = variables)
-  pairs <- reclin::filter_pairs_for_deduplication(pairs)
-  pairs <- reclin::compare_pairs(pairs, by = "descriptionID")
+  if (length(variables)>0) pairs <- reclin2::pair_blocking(data, on = variables,  deduplication = TRUE)
+  else pairs <- reclin2::pair(data, deduplication = TRUE)
+  pairs <- reclin2::compare_pairs(pairs, on = "descriptionID")
   pairs <-
-  reclin::compare_pairs(pairs,
-  by = "description",
-  default_comparator = reclin::jaro_winkler())
-  pairs <- reclin::compare_pairs(pairs, by = "codeOUT")
-  pairs <- reclin::compare_pairs(pairs, by = "codeIN")
+  reclin2::compare_pairs(pairs,
+  on = "description",
+  default_comparator = reclin2::jaro_winkler())
+  pairs <- reclin2::compare_pairs(pairs, on = "codeOUT")
+  pairs <- reclin2::compare_pairs(pairs, on = "codeIN")
   pairs$simsum <-
   pairs$descriptionID * pairs$codeOUT + pairs$descriptionID * pairs$codeIN +
   pairs$codeOUT * pairs$codeIN + pairs$description * pairs$codeOUT + pairs$description *
   pairs$codeIN + onlydescription * pairs$descriptionID
   pairs <-
-  reclin::select_threshold(pairs, precision, weight = "simsum", var = "select")
+  reclin2::select_threshold(pairs, threshold=precision, score = "simsum", variable = "select")
   pairs <-
-  reclin::deduplicate_equivalence(pairs, selection = "select", var = "prodID")
+  reclin2::deduplicate_equivalence(pairs, selection = "select", variable = "prodID")
   pairs$descriptionID <- NULL
   }
   else if (codeIN == TRUE & codeOUT == FALSE & description == TRUE)
   {
-  pairs <- reclin::pair_blocking(data, data, blocking_var = variables)
-  pairs <- reclin::filter_pairs_for_deduplication(pairs)
-  pairs <- reclin::compare_pairs(pairs, by = "descriptionID")
+  if (length(variables)>0) pairs <- reclin2::pair_blocking(data, on = variables, deduplication = TRUE)
+  else pairs <- reclin2::pair(data, deduplication = TRUE)
+  pairs <- reclin2::compare_pairs(pairs, on = "descriptionID")
   pairs <-
-  reclin::compare_pairs(pairs,
-  by = "description",
-  default_comparator = reclin::jaro_winkler())
-  pairs <- reclin::compare_pairs(pairs, by = "codeIN")
+  reclin2::compare_pairs(pairs,
+  on = "description",
+  default_comparator = reclin2::jaro_winkler())
+  pairs <- reclin2::compare_pairs(pairs, on = "codeIN")
   pairs$simsum <-
   pairs$descriptionID * pairs$codeIN + pairs$description * pairs$codeIN +
   onlydescription * pairs$descriptionID
   pairs <-
-  reclin::select_threshold(pairs, precision, weight = "simsum", var = "select")
+  reclin2::select_threshold(pairs, threshold=precision, score = "simsum", variable = "select")
   pairs <-
-  reclin::deduplicate_equivalence(pairs, selection = "select", var = "prodID")
+  reclin2::deduplicate_equivalence(pairs, selection = "select", variable = "prodID")
   pairs$descriptionID <- NULL
   }
   else if (codeIN == FALSE & codeOUT == TRUE & description == TRUE)
   {
-  pairs <- reclin::pair_blocking(data, data, blocking_var = variables)
-  pairs <- reclin::filter_pairs_for_deduplication(pairs)
-  pairs <- reclin::compare_pairs(pairs, by = "descriptionID")
+  if (length(variables)>0) pairs <- reclin2::pair_blocking(data, on = variables, deduplication = TRUE)
+  else pairs <- reclin2::pair(data, deduplication = TRUE)
+  pairs <- reclin2::compare_pairs(pairs, on = "descriptionID")
   pairs <-
-  reclin::compare_pairs(pairs,
-  by = "description",
-  default_comparator = reclin::jaro_winkler())
-  pairs <- reclin::compare_pairs(pairs, by = "codeOUT")
+  reclin2::compare_pairs(pairs,
+  on = "description",
+  default_comparator = reclin2::jaro_winkler())
+  pairs <- reclin2::compare_pairs(pairs, on = "codeOUT")
   pairs$simsum <-
   pairs$descriptionID * pairs$codeOUT + pairs$description * pairs$codeOUT +
   onlydescription * pairs$descriptionID
   pairs <-
-  reclin::select_threshold(pairs, precision, weight = "simsum", var = "select")
+  reclin2::select_threshold(pairs, threshold=precision, score = "simsum", variable = "select")
   pairs <-
-  reclin::deduplicate_equivalence(pairs, selection = "select", var = "prodID")
+  reclin2::deduplicate_equivalence(pairs, selection = "select", variable = "prodID")
   pairs$descriptionID <- NULL
   }
   else if (codeIN == TRUE & codeOUT == TRUE & description == FALSE)
   {
-  pairs <- reclin::pair_blocking(data, data, blocking_var = variables)
-  pairs <- reclin::filter_pairs_for_deduplication(pairs)
-  pairs <- reclin::compare_pairs(pairs, by = "codeIN")
-  pairs <- reclin::compare_pairs(pairs, by = "codeOUT")
+  if (length(variables)>0) pairs <- reclin2::pair_blocking(data, on = variables, deduplication = TRUE)
+  else pairs <- reclin2::pair(data, deduplication = TRUE)
+  pairs <- reclin2::compare_pairs(pairs, on = "codeIN")
+  pairs <- reclin2::compare_pairs(pairs, on = "codeOUT")
   pairs$simsum <- (pairs$codeIN * pairs$codeOUT)
   pairs <-
-  reclin::select_threshold(pairs, 0.5, weight = "simsum", var = "select")
+  reclin2::select_threshold(pairs, 0.5, score = "simsum", variable = "select")
   pairs <-
-  reclin::deduplicate_equivalence(pairs, selection = "select", var = "prodID")
+  reclin2::deduplicate_equivalence(pairs, selection = "select", variable = "prodID")
   }
   else if (codeIN == FALSE & codeOUT == FALSE & description == TRUE)
   {
   if (onlydescription == TRUE)
   {
-  pairs <- reclin::pair_blocking(data, data, blocking_var = variables)
-  pairs <- reclin::filter_pairs_for_deduplication(pairs)
-  pairs <- reclin::compare_pairs(pairs, by = "descriptionID")
+  if (length(variables)>0) pairs <- reclin2::pair_blocking(data, on = variables, deduplication = TRUE)
+  else pairs <- reclin2::pair(data, deduplication = TRUE)
+  pairs <- reclin2::compare_pairs(pairs, on = "descriptionID")
   pairs$simsum <- pairs$descriptionID
   pairs <-
-  reclin::select_threshold(pairs, 0.5, weight = "simsum", var = "select")
+  reclin2::select_threshold(pairs, 0.5, score = "simsum", variable = "select")
   pairs <-
-  reclin::deduplicate_equivalence(pairs, selection = "select", var = "prodID")
+  reclin2::deduplicate_equivalence(pairs, selection = "select", variable = "prodID")
   pairs$descriptionID <- NULL
   }
   else
@@ -326,23 +325,20 @@ data_matching <-
   codeOUT == FALSE &
   description == FALSE)
   stop("at least one of parameters: codeIN, codeOUT or description must be TRUE")
-
   #pairs - new dataframe with reduced dataframe with matched products (additional column:   prodID)
   #now, let us back to the oryginal dataset, i.e. 'data_oryginal'
   #names of columns which are considered in matching process
+  pairs<-data.frame(pairs)
   columns <- colnames(dplyr::select(pairs,-prodID))
-  
   #setting a pattern
   value_pattern<-pairs[,"prodID"]
   vector_pattern<-as.character(pairs[,columns[1]])
   if (length(columns)>1) for (i in 1:length(columns)) vector_pattern<-paste(vector_pattern,  as.character(pairs[,columns[i]]),sep="")
-  
   #matching
   vector_test<-as.character(data_oryginal[,columns[1]])
   if (length(columns)>1) for (i in 1:length(columns)) vector_test<-paste(vector_test,as.character(data_oryginal[,columns[i]]),sep="")
   f<-function (word) value_pattern[which(vector_pattern==word)]
   data_oryginal$prodID<-sapply(vector_test,f)
-  
   return (data_oryginal)
   }
 
@@ -1326,14 +1322,15 @@ data_matching <-
 #' @param data The user's data frame. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character) with unique product IDs. 
 #' @param period The time period (as character) limited to the year and month, e.g. "2019-03".
 #' @param set The set of unique product IDs to be used for determining prices of sold products (see also \code{\link{data_matching}}). If the \code{set} is empty, the function returns prices of all products being available in \code{period}.
+#' @param ID A logical parameter indicating whether a data frame with prodIDs and prices (unit values) should be returned.
 #' @rdname prices
-#' @return The function analyzes the user's data frame and returns prices (unit value) of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the price values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).
+#' @return The function analyzes the user's data frame and returns prices (unit value) of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note, that the function returns the price values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero). If the ID parameter is set to TRUE then the function returns a data frame with columns: \code{by} (IDs of products) and \code{uv} (unit values of products).
 #' @examples 
 #' \donttest{prices(milk, period="2019-06")}
-#' prices(milk, period="2019-12",set=c(400032, 82919))
+#' prices(milk, period="2019-12", set=c(400032, 82919), ID=TRUE)
 #' @export
 
-  prices <- function(data, period, set = c())
+  prices <- function(data, period, set = c(), ID = FALSE)
   {
   if (nrow(data) == 0)
   stop("A data frame is empty")
@@ -1354,7 +1351,8 @@ data_matching <-
   stop("There are no data in selected period")
   }
   data<-dplyr::summarise(dplyr::group_by(data, by=prodID), uv=sum(prices*quantities)/sum(quantities), .groups = 'drop')
-  return (data$uv)
+  if (ID==FALSE) return (data$uv)
+  else return(data)
   }
   
 #' @title  Providing quantities of sold products
@@ -1363,14 +1361,15 @@ data_matching <-
 #' @param data The user's data frame. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character) with unique product IDs. 
 #' @param period The time period (as character) limited to the year and month, e.g. "2019-03".
 #' @param set The set of unique product IDs to be used for determining quantities of sold products (see also \code{\link{data_matching}}). If the \code{set} is empty, the function returns quantities of all products being available in \code{period}.
+#' @param ID A logical parameter indicating whether a data frame with prodIDs and quantities should be returned.
 #' @rdname quantities
-#' @return The function analyzes the user's data frame and returns quantities of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the quantity values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).
+#' @return The function analyzes the user's data frame and returns quantities of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the quantity values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero). If the ID parameter is set to TRUE then the function returns a data frame with columns: \code{by} (IDs of products) and \code{q} (quantities of products).
 #' @examples 
 #' \donttest{quantities(milk, period="2019-06")}
-#' quantities(milk, period="2019-12",set=c(400032, 82919))
+#' quantities(milk, period="2019-12", set=c(400032, 82919), ID=TRUE)
 #' @export
 
-quantities <- function(data, period, set = c())
+quantities <- function(data, period, set = c(), ID = FALSE)
   {
   if (nrow(data) == 0)
   stop("A data frame is empty")
@@ -1391,7 +1390,8 @@ quantities <- function(data, period, set = c())
   stop("There are no data in selected period")
   }
   data<-dplyr::summarise(dplyr::group_by(data, by=prodID), q=sum(quantities), .groups = 'drop')
-  return (data$q)
+  if (ID==FALSE) return (data$q)
+  else return(data)
 }
 
 #' @title  Providing expenditures of sold products
@@ -1400,14 +1400,15 @@ quantities <- function(data, period, set = c())
 #' @param data The user's data frame. It must contain columns: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character) with unique product IDs. 
 #' @param period The time period (as character) limited to the year and month, e.g. "2019-03".
 #' @param set The set of unique product IDs to be used for determining expenditures of sold products (see also \code{\link{data_matching}}). If the \code{set} is empty, the function returns quantities of all products being available in \code{period}.
+#' @param ID A logical parameter indicating whether a data frame with prodIDs and quantities should be returned.
 #' @rdname expenditures
-#' @return The function analyzes the user's data frame and returns expenditures of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the expenditure values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).
+#' @return The function analyzes the user's data frame and returns expenditures of products with given \code{ID} and being sold in the time period indicated by the \code{period} parameter. Please note that the function returns the expenditure values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero). If the ID parameter is set to TRUE then the function returns a data frame with columns: \code{by} (IDs of products) and \code{expend} (expenditures of products).
 #' @examples 
 #' \donttest{expenditures(milk, period="2019-06")}
-#' expenditures(milk, period="2019-12",set=c(400032, 82919))
+#' expenditures(milk, period="2019-12", set=c(400032, 82919), ID=TRUE)
 #' @export
 
-expenditures <- function(data, period, set = c())
+expenditures <- function(data, period, set = c(), ID = FALSE) 
   {
   if (nrow(data) == 0)
   stop("A data frame is empty")
@@ -1428,7 +1429,8 @@ expenditures <- function(data, period, set = c())
   stop("There are no data in selected period")
   }
   data<-dplyr::summarise(dplyr::group_by(data, by=prodID), expend=sum(prices*quantities), .groups = 'drop')
-  return (data$expend)
+  if (ID==FALSE) return (data$expend)
+  else return(data)
 }
 
 
@@ -2159,7 +2161,7 @@ return (TRUE)
 #' @param data The user's data frame.
 #' @param join_outlets A logical value indicating whether the data aggregation over outlets should be also done.
 #' @rdname data_aggregating
-#' @return The function aggregates the user's data frame over time and/or over outlets. Consequently, we obtain monthly data, where the unit value is calculated instead of a price for each \code{prodID} observed in each month (the \code{time} column gets the Date format: "Year-Month-01"). If the parameter \code{join_outlets} is TRUE, then the function also performs aggregation over outlets (retIDs) and the \code{retID} column is removed from the data frame. The main advantage of using this function is the ability to reduce the size of the data frame and the time needed to calculate the price index.
+#' @return The function aggregates the user's data frame over time and/or over outlets. Consequently, we obtain monthly data, where the unit value is calculated instead of a price for each \code{prodID} observed in each month (the \code{time} column gets the Date format: "Year-Month-01"). If the parameter \code{join_outlets} is TRUE, then the function also performs aggregation over outlets (retIDs) and the \code{retID} column is removed from the data frame. The main advantage of using this function is the ability to reduce the size of the data frame and the time needed to calculate the price index. Please note, that unnecessary columns are removed (e.g. \code{description}).
 #' @examples 
 #' #Example 1
 #' data_aggregating(dataAGGR,join_outlets = FALSE)
@@ -2171,44 +2173,20 @@ return (TRUE)
 
 data_aggregating<-function (data, join_outlets = TRUE)
 {
+time<-prodID<-retID<-prices2<-quantities2<-NULL
 #checking columns
 cols<-colnames(data)
 if (!("time" %in% cols) | !("prodID" %in% cols)) stop("A data frame must contain columns: time, prodID")
 if ((join_outlets==FALSE) & !("retID" %in% cols)) stop("A date frame must contain the 'retID' column")
-if ((join_outlets==FALSE) & ("retID" %in% cols)) data$retID<-as.numeric(data$retID)
 #main body
-lubridate::day(data$time)<-1
-data_time<-split(data, data$time)
-rows<-function (group)
-{
-result<-data.frame()
-data_prodID<-split(group, group$prodID)
-for (i in 1:length(data_prodID)) {
-d<-data_prodID[[i]]
-price<-sum(d$prices*d$quantities)/sum(d$quantities)
-quantity<-sum(d$quantities)  
-row<-d[1,]
-row$prices<-price
-row$quantities<-quantity
-result<-rbind(result, row)
-}
-return (result)
-}
-if (join_outlets==TRUE) {
-s<-rbind(lapply(data_time, rows))
-if ("retID" %in% cols) s$retID<-NULL
-}
-else
-{
-rows_ret<-function(outlets)
-{
-data_outlets<-split(outlets,outlets$retID)
-return (rbind(lapply(data_outlets, rows)))
-}
-s<-rbind(lapply(data_time, rows_ret))  
-}
-s<-stats::na.omit(s)
-return (s)  
+data$time<-as.character(data$time)
+data$time<-substr(data$time,0,7)
+if (join_outlets==TRUE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),.groups="drop")
+else data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID, retID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),.groups="drop")
+data_aggr$time<-paste(data_aggr$time,"-01",sep="")
+data_aggr$time<-as.Date(data_aggr$time)
+data_aggr<-dplyr::rename(data_aggr, prices=prices2, quantities=quantities2)
+return (data_aggr)
 }
 
 #' @title  Calculating the elasticity of substitution 

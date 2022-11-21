@@ -1,3 +1,13 @@
+# Package update 0.1.1 -> 0.1.2
+
+## New functions:
+
+* New functions added: a) bilateral methods - *value_index*, *unit_value_index*, *QMp*, *IQMp*, *QMq*; b) chain indices: *chQMp*, *chIQMp*, *chQMq*; c) multilateral methods: *gekslm*, *geksqm*,*geksiqm*, *utpd* + their extensions (splice, FMW, FBEW). Moreover: new (faster) function *price_indices*, new functions for price comparisons: *compare_indices_df* and *compare_indices_list* (old functions: *compare_indices* and *compare_final_indices* were removed). Rebuilt function *final_index* (old function *final_index2* was removed).
+
+## Improvements
+* Improved speed of **data_filtering** and **data_matching** functions (**data_matching** is now based on the *reclin2* package instead of *reclin*).
+* Improved speed of multilateral index functions: **geks**, **wgeks**, **geksj**, **geksw**, **geksl**, **geksgl**, **wgeksl** and **wgeksgl**.
+
 # Package update 0.0.9 -> 0.1.1
 
 ## New function

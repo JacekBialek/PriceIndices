@@ -1,6 +1,6 @@
 Package: PriceIndices
 Title: Calculating Bilateral and Multilateral Price Indexes
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: 
     person(given = "Jacek",
            family = "Białek",
@@ -16,7 +16,7 @@ Imports:
     dplyr (>= 0.8.3),
     ggplot2 (>= 3.2.0),
     reshape,
-    reclin,
+    reclin2,
     stringr,
     xgboost,
     caret,

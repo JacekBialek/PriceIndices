@@ -2,60 +2,66 @@
 % Please edit documentation in R/f_general.R
 \name{final_index}
 \alias{final_index}
-\title{The most general package function to compute the price dynamics}
+\title{A general function to compute a final price index}
 \usage{
 final_index(
-  datasets = list(),
-  start,
-  end,
-  formula = "fisher",
-  window = 13,
-  splice = "movement",
-  base = start,
-  sigma = 0.7,
-  aggrret = "tornqvist",
-  aggrsets = "tornqvist",
+  data = data.frame(),
+  start = c(),
+  end = c(),
+  formula = c(),
+  window = c(),
+  splice = c(),
+  base = c(),
+  sigma = c(),
+  r = c(),
+  outlets = FALSE,
+  groups = FALSE,
+  by = c(),
+  aggr = "fisher",
   interval = FALSE
 )
 }
 \arguments{
-\item{datasets}{The user's list of data frames with subgroups of sold products. Each data frame must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric), \code{prodID} (as numeric, factor or character) and \code{retID} (as numeric, factor or character).}
+\item{data}{The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{retID} (as numeric, factor or character) is also essential if the aggregation over outlets is considered. A column with grouping variable (as numeric, factor or character - indicated by the \code{by} parameter) is essential if the aggregation over product subgroups is considered.}
 
 \item{start}{The base period (as character) limited to the year and month, e.g. "2019-12".}
 
 \item{end}{The research period (as character) limited to the year and month, e.g. "2020-04".}
 
-\item{formula}{The character string indicating the (final or main) price index formula is to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.}
+\item{formula}{The character string indicating the price index formula is to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.}
 
-\item{window}{The length of the time window if the multilateral index is selected (as positive integer: typically multilateral methods are based on the 13-month time window and thus the default value is 13).}
+\item{window}{The length of the time window if the multilateral index is selected (as positive integer: typically multilateral methods are based on the 13-month time window).}
 
-\item{splice}{A character string indicating the splicing method (if the multilateral splicing index is selected). Available options are: "movement", "window","half", "mean" and also "window_published", "half_published" and "mean_published".}
+\item{splice}{A character string indicating the splicing method (if the multilateral splicing index is selected). Available options are: "movement", "window","half","mean" and their additional variants: "window_published", "half_published" and "mean_published".}
 
 \item{base}{The prior period used in the Young- or Lowe-type price indices (as character) limited to the year and month, e.g. "2020-01".}
 
-\item{sigma}{The elasticity of substitution parameter used in the Lloyed-Moulton and AG Mean indices (as numeric).}
+\item{sigma}{The elasticity of substitution parameter used in the Lloyed-Moulton, AG Mean or GEKS-LM indices (as numeric).}
 
-\item{aggrret}{A character string indicating the formula for aggregation over outlets (retailer sale points). Available options are: "none", "laspeyres", "paasche", "geolaspeyres", "geopaasche", "fisher", "tornqvist", "arithmetic" and "geometric". The first option means that there is no aggregating over outlets. The last two options mean unweighted methods of aggregating, i.e. the arithmetic or geometric mean is used.}
+\item{r}{The non-zero parameter used in the quadratic mean of order r quantity / price index or in the GEKS-QM index (as numeric).}
 
-\item{aggrsets}{A character string indicating the formula for aggregation over product subgroups. Available options are: "none", "laspeyres", "paasche", "geolaspeyres", "geopaasche", "fisher", "tornqvist", "arithmetic" and "geometric". The first option means that there is no aggregating over product subgroups. The last two options mean unweighted methods of aggregating, i.e. the arithmetic or geometric mean is used.}
+\item{outlets}{A logical parameter indicating whether the aggregation over outlets (defined by \code{retID} column) should be done.}
 
-\item{interval}{A logical value indicating whether the function is to provide the price index comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).}
+\item{groups}{A logical parameter indicating whether the aggregation over product subgroups (indicated by 'by' parameter) should be done.}
+
+\item{by}{A character string which indicates a column name for creating product subgroups.}
+
+\item{aggr}{The formula used for aggregating partial index results (available values are: "arithmetic", "geometric", "laspeyres", "paasche", "fisher", "tornqvist").}
+
+\item{interval}{A logical value indicating whether the function is to provide price indices comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).}
 }
 \value{
-This function returns a value or values of the selected (final) price index taking into consideration aggregation over product subgroups and/or over outlets (retailer sale points defined in \code{retID} column) . To be more precise: if both types of aggregation are selected, then for each subgroup of products and for each outlet (point of sale) price indices are calculated separately and then aggregated (according to the aggregation methods indicated) to the form of the final price index. If the \code{interval} parameter is set to TRUE then it returns a data frame with two columns: dates and final index values (after optional aggregating). Please note that different index formulas may use different time intervals (or time periods) for calculations and each time, aggregation over outlets is done for the set of retIDs being available during the whole considered time interval.
+This general function returns a value or values of the selected final price index for the selected type of aggregation of partial results. If the \code{interval} parameter is set to TRUE, then it returns a data frame where its first column indicates dates and the remaining columns show corresponding values of all selected price indices.
 }
 \description{
-This function returns a value or values of the selected (final) price index taking into consideration aggregation over product subgroups and/or over outlets.
+This function returns a value (or values) of the selected final price index for the selected type of aggregation of partial results.
 }
 \examples{
-\donttest{ final_index(datasets=list(milk),start="2018-12",end="2020-02",
-formula="walsh",aggrret="paasche",aggrsets="none")}
-## defining two subgroups of milk
-\donttest{g1<-dplyr::filter(milk, milk$description=="full-fat milk UHT")}
-\donttest{g2<-dplyr::filter(milk, milk$description=="low-fat milk UHT")}
-## Final price index calculations (for the whole time interval) 
-## with aggregating over subgroups g1 and g2 and over outlets
-## Please note that the default value (formula) for aggregating over outlets is "tornqvist""
-\donttest{final_index(datasets=list(g1,g2), start="2018-12",
-end="2019-12",formula="fisher",aggrsets="geometric",interval=TRUE)}
+\donttest{final_index(coffee, start = "2018-12", end = "2019-12", 
+         formula = "fisher", groups = TRUE, outlets = FALSE, 
+         aggr = "tornqvist", by = "description")}
+\donttest{final_index(milk, start = "2018-12", end = "2019-12", 
+         formula = "fisher", groups = TRUE, outlets = TRUE, 
+         aggr = "laspeyres", by = "description", 
+         interval = TRUE)}
 }

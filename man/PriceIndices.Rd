@@ -110,7 +110,7 @@ The list of package functions is as follows:
 \code{\link{harmonic}}
 }
 
-\section{Functions for bilateral weighted price index calculation}{
+\section{Functions for bilateral weighted index calculation}{
 
 \code{\link{agmean}} 
 
@@ -163,9 +163,19 @@ The list of package functions is as follows:
 \code{\link{walsh}}
 
 \code{\link{young}}
+
+\code{\link{QMp}}
+
+\code{\link{IQMp}}
+
+\code{\link{QMq}}
+
+\code{\link{value_index}}
+
+\code{\link{unit_value_index}}
 }
 
-\section{Functions for chain price index calculation}{
+\section{Functions for chain index calculation}{
 
 \code{\link{chbmw}} 
 
@@ -230,6 +240,12 @@ The list of package functions is as follows:
 \code{\link{chwalsh}}
 
 \code{\link{chyoung}}
+
+\code{\link{chQMp}}
+
+\code{\link{chIQMp}}
+
+\code{\link{chQMq}}
 }
 
 \section{Functions for multilateral price index calculation}{
@@ -263,6 +279,12 @@ The list of package functions is as follows:
 \code{\link{geksj}}
 
 \code{\link{geksw}}
+
+\code{\link{geksqm}}
+
+\code{\link{geksiqm}}
+
+\code{\link{gekslm}}
 
 \code{\link{gk}}
 
@@ -305,6 +327,12 @@ The list of package functions is as follows:
 
 \code{\link{wgeksgaqi_splice}}
 
+\code{\link{geksqm_splice}}
+
+\code{\link{geksiqm_splice}}
+
+\code{\link{gekslm_splice}}
+
 \code{\link{gk_splice}}
 
 \code{\link{tpd_splice}}
@@ -341,6 +369,12 @@ The list of package functions is as follows:
 \code{\link{geksgaqi_fbew}}
 
 \code{\link{wgeksgaqi_fbew}}
+
+\code{\link{geksqm_fbew}}
+
+\code{\link{geksiqm_fbew}}
+
+\code{\link{gekslm_fbew}}
 
 \code{\link{gk_fbew}}
 
@@ -379,6 +413,12 @@ The list of package functions is as follows:
 
 \code{\link{wgeksgaqi_fbmw}}
 
+\code{\link{geksqm_fbmw}}
+
+\code{\link{geksiqm_fbmw}}
+
+\code{\link{gekslm_fbmw}}
+
 \code{\link{gk_fbmw}}
 
 \code{\link{tpd_fbmw}}
@@ -386,20 +426,16 @@ The list of package functions is as follows:
 
 \section{General functions for price index calculations}{
 
-\code{\link{price_index}} 
-
 \code{\link{price_indices}}
 
 \code{\link{final_index}}
-
-\code{\link{final_index2}}
 }
 
 \section{Functions for comparisons of price indices}{
 
-\code{\link{compare_indices}} 
+\code{\link{compare_indices_df}} 
 
-\code{\link{compare_final_indices}}
+\code{\link{compare_indices_list}}
 
 \code{\link{compare_distances}}
 
