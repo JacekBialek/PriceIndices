@@ -20,7 +20,7 @@ The function aggregates the user's data frame over time and optionally over outl
 \examples{
 #Example 1
 data_aggregating(dataAGGR,join_outlets = FALSE)
-data_aggregating(dataAGGR,join_outlets = FALSE)
+data_aggregating(dataAGGR,join_outlets = TRUE)
 #Example 2 (data frame reduction)
 nrow(milk)
 nrow(data_aggregating(milk))
