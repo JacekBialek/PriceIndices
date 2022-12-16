@@ -53,5 +53,5 @@ This function returns a prepared data frame based on the user's data set. The re
 \examples{
 \donttest{data_preparing(milk, time="time",prices="prices",quantities="quantities")}
 \donttest{data_preparing(dataCOICOP, time="time",
-prices="prices",quantities="quantities",additional="coicop")}
+prices="prices",quantities="quantities",additional="coicop6")}
 }

@@ -20,7 +20,7 @@
 #' @examples 
 #' \donttest{data_preparing(milk, time="time",prices="prices",quantities="quantities")}
 #' \donttest{data_preparing(dataCOICOP, time="time",
-#' prices="prices",quantities="quantities",additional="coicop")}
+#' prices="prices",quantities="quantities",additional="coicop6")}
 #' @export
 
 data_preparing <-
