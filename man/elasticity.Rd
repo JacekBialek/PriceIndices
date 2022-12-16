@@ -4,7 +4,15 @@
 \alias{elasticity}
 \title{Calculating the elasticity of substitution}
 \usage{
-elasticity(data, start, end, left = -10, right = 10, precision = 1e-06)
+elasticity(
+  data,
+  start,
+  end,
+  method = "lm",
+  left = -10,
+  right = 10,
+  precision = 1e-06
+)
 }
 \arguments{
 \item{data}{The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character).}
@@ -13,6 +21,8 @@ elasticity(data, start, end, left = -10, right = 10, precision = 1e-06)
 
 \item{end}{The research period (as character) limited to the year and month, e.g. "2020-04".}
 
+\item{method}{The index formula for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f} and \code{sv}.}
+
 \item{left}{The beginning of an interval for estimation of the elasticity of substitution (its default value is -10).}
 
 \item{right}{The end of an interval for estimation of the elasticity of substitution (its default value is 10).}
@@ -20,13 +30,15 @@ elasticity(data, start, end, left = -10, right = 10, precision = 1e-06)
 \item{precision}{The precision of estimation (a 'stop' condition for the procedure). A default value of this parameter is 0.000001.}
 }
 \value{
-This function returns a value of the elasticity of substitution. The procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. The procedure continues until the absolute value of the LM-CW difference is greater than the value of the 'precision' parameter.
+This function returns a value of the elasticity of substitution. If the \code{method} parameter is set to \code{lm}, the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the \code{method} parameter is set to \code{f}, the Fisher price index formula is used instead of the CW price index. If the \code{method} parameter is set to \code{sv}, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter.
 }
 \description{
 This function returns a value of the elasticity of substitution
 }
 \examples{
 \donttest{elasticity(coffee, start = "2018-12", end = "2019-01")}
+\donttest{elasticity(coffee, start = "2018-12", end = "2019-01", method = "f")}
+\donttest{elasticity(coffee, start = "2018-12", end = "2019-01", method = "sv")}
 }
 \references{
 {de Haan, J., Balk, B.M., Hansen, C.B. (2010). \emph{Retrospective Approximations of Superlative Price Indexes for Years Where Expenditure Data Is Unavailable.} In: Biggeri, L., Ferrari, G. (eds) Price Indexes in Time and Space. Contributions to Statistics. Physica-Verlag HD.}

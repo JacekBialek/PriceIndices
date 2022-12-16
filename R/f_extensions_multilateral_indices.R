@@ -2035,6 +2035,10 @@ wgeks_fbmw <- function(data, start, end)  {
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{geksl_splice(milk, start="2018-12", end="2020-02",splice="half")}
 #' \donttest{geksl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
@@ -2178,6 +2182,10 @@ geksl_splice <-
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{geksl_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -2234,6 +2242,10 @@ geksl_fbew <- function(data, start, end)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{geksl_fbmw(milk, start="2019-12", end="2020-04")}
@@ -2294,6 +2306,10 @@ geksl_fbmw <- function(data, start, end)  {
 #' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{wgeksl_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -2437,6 +2453,10 @@ wgeksl_splice <-
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{wgeksl_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -2478,7 +2498,6 @@ wgeksl_fbew <- function(data, start, end)  {
 }
 
 
-
 #' @title  Extending the multilateral weighted GEKS-L price index by using the FBMW method.
 #'
 #' @description This function returns a value of the multilateral weighted GEKS-L price index extended by using the FBMW (Fixed Base Moving Window) method.
@@ -2495,6 +2514,10 @@ wgeksl_fbew <- function(data, start, end)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{wgeksl_fbmw(milk, start="2019-12", end="2020-04")}
@@ -2555,6 +2578,10 @@ wgeksl_fbmw <- function(data, start, end)  {
 #' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{geksgl_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -2699,6 +2726,10 @@ geksgl_splice <-
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{geksgl_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -2756,6 +2787,10 @@ geksgl_fbew <- function(data, start, end)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{geksgl_fbmw(milk, start="2019-12", end="2020-04")}
@@ -2816,6 +2851,10 @@ geksgl_fbmw <- function(data, start, end)  {
 #' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{wgeksgl_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -2960,6 +2999,10 @@ wgeksgl_splice <-
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{wgeksgl_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -3017,6 +3060,10 @@ wgeksgl_fbew <- function(data, start, end)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{wgeksgl_fbmw(milk, start="2019-12", end="2020-04")}
@@ -3077,6 +3124,8 @@ wgeksgl_fbmw <- function(data, start, end)  {
 #' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{geksaqu_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -3221,6 +3270,8 @@ geksaqu_splice <-
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
 #' @examples 
 #' \donttest{geksaqu_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -3277,6 +3328,8 @@ geksaqu_fbew <- function(data, start, end)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{geksaqu_fbmw(milk, start="2019-12", end="2020-04")}
@@ -3337,6 +3390,8 @@ geksaqu_fbmw <- function(data, start, end)  {
 #' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{wgeksaqu_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -3481,6 +3536,8 @@ wgeksaqu_splice <-
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
 #' @examples 
 #' \donttest{wgeksaqu_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -3538,6 +3595,8 @@ wgeksaqu_fbew <- function(data, start, end)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{wgeksaqu_fbmw(milk, start="2019-12", end="2020-04")}
@@ -3598,6 +3657,8 @@ wgeksaqu_fbmw <- function(data, start, end)  {
 #' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{geksaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -3742,6 +3803,8 @@ geksaqi_splice <-
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
 #' @examples 
 #' \donttest{geksaqi_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -3799,6 +3862,8 @@ geksaqi_fbew <- function(data, start, end)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{geksaqi_fbmw(milk, start="2019-12", end="2020-04")}
@@ -3858,6 +3923,8 @@ geksaqi_fbmw <- function(data, start, end)  {
 #' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{wgeksaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -4002,6 +4069,8 @@ wgeksaqi_splice <-
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
 #' @examples 
 #' \donttest{wgeksaqi_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -4043,7 +4112,6 @@ wgeksaqi_fbew <- function(data, start, end)  {
 }
 
 
-
 #' @title  Extending the multilateral weighted GEKS-AQI price index by using the FBMW method.
 #'
 #' @description This function returns a value of the multilateral weighted GEKS-AQI price index extended by using the FBMW (Fixed Base Moving Window) method.
@@ -4060,6 +4128,8 @@ wgeksaqi_fbew <- function(data, start, end)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{wgeksaqi_fbmw(milk, start="2019-12", end="2020-04")}
@@ -4120,6 +4190,8 @@ wgeksaqi_fbmw <- function(data, start, end)  {
 #' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
 #' \donttest{geksgaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}

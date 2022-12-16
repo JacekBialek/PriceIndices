@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -12,7 +7,7 @@ Goals of PriceIndices are as follows: a) data processing before price index calc
 
 Białek, J. (2021). PriceIndices – a New R Package for Bilateral and Multilateral Price Index Calculations, Statistika – Statistics and Economy Journal, Vol. 2/2021, 122-141, Czech Statistical Office, Praga.
 
-Białek, J. (2022). Scanner data processing in a newest version of the PriceIndices package, Statistical Journal of the IAOS, DOI: 10.3233/SJI-220963.
+Białek, J. (2022). Scanner data processing in a newest version of the PriceIndices package, Statistical Journal of the IAOS, 38 (4), 1369-1397, DOI: 10.3233/SJI-220963.
 
 ## Installation
 
@@ -111,12 +106,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.59         20      1     1
-#> 2 2020-01-01   2.83         21      2     1
-#> 3 2020-01-01   2.85         24      3     1
-#> 4 2020-01-01   2.81         18      4     1
-#> 5 2020-01-01   2.83         22      5     1
-#> 6 2020-01-01   2.68         20      6     1
+#> 1 2020-01-01   2.54         21      1     1
+#> 2 2020-01-01   2.82         20      2     1
+#> 3 2020-01-01   2.74         21      3     1
+#> 4 2020-01-01   2.61         23      4     1
+#> 5 2020-01-01   2.98         21      5     1
+#> 6 2020-01-01   2.80         20      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -127,6 +122,30 @@ tindex(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),start="2020-01",ratio=FALS
 #> 1 2020-01 1.000000
 #> 2 2020-02 1.012882
 #> 3 2020-03 1.019131
+```
+
+The User may also generate an artificial scanner dataset where prices are lognormally distributed and quantities are calculated under the assumption that consumers have CES (Constant Elasticity of Substitution) preferences and their spending on all products is fixed (see the **generate\_CES** function). Please watch the following example:
+
+``` r
+#Generating an artificial dataset (the elasticity of substitution is 1.25)
+df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
+elasticity=1.25,start="2020-01",n=100,days=TRUE)
+head(df)
+#>         time prices quantities prodID retID
+#> 1 2020-01-10   2.83  6.7462310      1     1
+#> 2 2020-01-25   2.53  6.2493097      2     1
+#> 3 2020-01-02   2.69  6.4351220      3     1
+#> 4 2020-01-09   2.95  0.6526529      4     1
+#> 5 2020-01-28   2.66  3.0525990      5     1
+#> 6 2020-01-22   2.92  1.3833192      6     1
+```
+
+Now, we can verify the value of elasticity of substitution using this generated dataset:
+
+``` r
+#Verifying the elasticity of substitution
+elasticity(df, start="2020-01",end="2020-02")
+#> [1] 1.25
 ```
 
 <a id="ad2"> </a>
@@ -281,7 +300,7 @@ We can watch the results of the whole training process:
 ML$figure_training
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" />
 
 or we can observe the importance of the used indicators:
 
@@ -289,7 +308,7 @@ or we can observe the importance of the used indicators:
 ML$figure_importance
 ```
 
-<img src="man/figures/README-unnamed-chunk-17-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" />
 
 Now, let us save the model on the disk. After saving the model we can load it and use at any time:
 
@@ -456,7 +475,7 @@ The function returns a **data frame** or a **figure** presenting the **matched\_
 matched_fig(milk, start="2018-12", end="2019-12", type="prodID")
 ```
 
-<img src="man/figures/README-unnamed-chunk-29-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" />
 
 ``` r
 matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
@@ -529,7 +548,7 @@ sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07",
              barplot=TRUE, shares=TRUE, names=categories)
 ```
 
-<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" /> **pqcor**
+<img src="man/figures/README-unnamed-chunk-37-1.png" width="100%" /> **pqcor**
 
 The function returns **Pearson's correlation coefficient** for price and quantity of products with given IDs (defined by the **set** parameter) and sold in the **period**. If the **set** is empty, the function works for all products being available in the **period**. The **figure** parameter indicates whether the function returns a figure with a correlation coefficient (TRUE) or just a correlation coefficient (FALSE). For instance:
 
@@ -539,7 +558,7 @@ pqcor(milk, period="2019-05")
 pqcor(milk, period="2019-05",figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-36-1.png" width="100%" /> **pqcor\_fig**
+<img src="man/figures/README-unnamed-chunk-38-1.png" width="100%" /> **pqcor\_fig**
 
 The function returns **Pearson's correlation coefficients** between price and quantity of products with given IDs (defined by the **set** parameter) and sold in the time interval defined by the **start** and **end** parameters. If the **set** is empty the function works for all available products. Correlation coefficients are calculated for each month separately. Results are presented in tabular or graphical form depending on the **figure** parameter. Both cases are presented below:
 
@@ -556,7 +575,7 @@ pqcor_fig(milk, start="2018-12", end="2019-06", figure=FALSE)
 pqcor_fig(milk, start="2018-12", end="2019-06")
 ```
 
-<img src="man/figures/README-unnamed-chunk-37-1.png" width="100%" /> **dissimilarity**
+<img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" /> **dissimilarity**
 
 This function returns a value of the relative price (dSP) and/or quantity (dSQ) dissimilarity measure. In a special case, when the **type** parameter is set to **pq**, the function provides the value of dSPQ measure (relative price and quantity dissimilarity measure calculated as **min(dSP,dSQ)**. For instance:
 
@@ -573,9 +592,9 @@ This function presents values of the relative price and/or quantity dissimilarit
 dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start")
 ```
 
-<img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" /> **elasticity**
+<img src="man/figures/README-unnamed-chunk-41-1.png" width="100%" /> **elasticity**
 
-This function returns a value of the elasticity of substitution. The procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated (see also **elasticity2**). For example:
+This function returns a value of the elasticity of substitution. If the **method** parameter is set to **lm** (it is a default value), the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the **method** parameter is set to **f**, the Fisher price index formula is used instead of the CW price index. If the **method** parameter is set to **sv**, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter. For example:
 
 ``` r
 elasticity(coffee, start = "2018-12", end = "2019-01")
@@ -584,13 +603,14 @@ elasticity(coffee, start = "2018-12", end = "2019-01")
 
 **elasticity\_fig**
 
-The function provides a data frame or a figure presenting elasticities of substitution calculated for time interval (see the **figure** parameter). The elasticities of substitution can be calculated for subsequent months or for a fixed base month (see the **start** parameter) and rest of months from the given time interval (it depends on the **fixedbase** parameter). The presented function is based on the **elasticity** function, but see also **elasticity2\_fig**. For instance, to get elasticities of substitution calculated for milk products for subsequent months we run:
+The function provides a data frame or a figure presenting elasticities of substitution calculated for time interval (see the **figure** parameter). The elasticities of substitution can be calculated for subsequent months or for a fixed base month (see the **start** parameter) and rest of months from the given time interval (it depends on the **fixedbase** parameter). The presented function is based on the **elasticity** function. For instance, to get elasticities of substitution calculated for milk products for subsequent months we run:
 
 ``` r
-elasticity_fig (milk, start = "2018-12", end = "2019-12", fixedbase = FALSE)
+elasticity_fig (milk,start="2018-12",end="2019-04",figure=TRUE, 
+method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-41-1.png" width="100%" /> <a id="ad4"> </a>
+<img src="man/figures/README-unnamed-chunk-43-1.png" width="100%" /> <a id="ad4"> </a>
 
 ### Functions for bilateral unweighted price index calculation
 
@@ -770,19 +790,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.580344
-#> 2  14216 1.769872
-#> 3  15404 1.004895
-#> 4  17034 1.606677
-#> 5  34540 1.865757
-#> 6  51583 1.995211
+#> 1  14215 1.116944
+#> 2  14216 1.574951
+#> 3  15404 1.358906
+#> 4  17034 1.253776
+#> 5  34540 1.382378
+#> 6  51583 1.493010
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.028463
+#> [1] 1.042086
 ```
 
 <a id="ad8"> </a>
@@ -1010,7 +1030,7 @@ formula=c("laspeyres", "fisher"), interval = TRUE)
 compare_indices_df(df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-54-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-56-1.png" width="100%" />
 
 Now, let us compare the impact of the aggregating over outlets on the price index results (e.g. the Laspeyres formula is the assumed aggregating method). For this purpose, let us calculate the Fisher price index in two cases: **case1** without the above-mentioned aggregation and **case2** which considers that aggregation. We use the **milk** dataset and the yearly time interval:
 
@@ -1032,7 +1052,7 @@ compare_indices_list(data=list(case1, case2),
                 "Fisher with aggregation"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-56-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-58-1.png" width="100%" />
 
 **compare\_distances**
 

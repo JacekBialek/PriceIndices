@@ -42,7 +42,7 @@ generate(
 \item{days}{A logical parameter indicating whether the trading day in a given month is to be randomised. The default value of \code{days} is FALSE, which means that each transaction for a given month takes place on the first day of the month.}
 }
 \value{
-This function returns an artificial scanner dataset where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by \code{pmi}, \code{sigma}, \code{qmi} and \code{qsigma} parameters. This function works for a fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.
+This function returns an artificial scanner dataset where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by \code{pmi}, \code{psigma}, \code{qmi} and \code{qsigma} parameters. This function works for a fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.
 }
 \description{
 This function provides artificial scanner datasets where prices and quantities are lognormally distributed.

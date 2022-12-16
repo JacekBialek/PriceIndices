@@ -1691,7 +1691,7 @@ sales_groups <-
 #' @param start The first period in the generated data frame (as character) limited to the year and month, e.g. '2019-12'.
 #' @param days A logical parameter indicating whether the trading day in a given month is to be randomised. The default value of \code{days} is FALSE, which means that each transaction for a given month takes place on the first day of the month.
 #' @rdname generate
-#' @return This function returns an artificial scanner dataset where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by \code{pmi}, \code{sigma}, \code{qmi} and \code{qsigma} parameters. This function works for a fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.   
+#' @return This function returns an artificial scanner dataset where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by \code{pmi}, \code{psigma}, \code{qmi} and \code{qsigma} parameters. This function works for a fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.   
 #'
 #' @examples 
 #' generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(3,4,4),
@@ -1759,6 +1759,96 @@ generate <-
   return (DT)
   }
   
+#' @title  Generating an artificial scanner dataset in the CES model
+#'
+#' @description This function provides artificial scanner datasets where prices are lognormally distributed and quantities are obtained under a CES utility.
+#' @param pmi A numeric vector indicating \code{mi} parameters for lognormally distributed prices from the subsequent months.
+#' @param psigma A numeric vector indicating \code{sigma} parameters for lognormally distributed prices from the subsequent months.
+#' @param prec A numeric value indicating precision, i.e. the number of decimal places, for generating prices.
+#' @param elasticity The elasticity of substitution. The default value is 0.7.
+#' @param S Sum of spending. The default value is 1000. 
+#' @param alfa A numeric vector indicating positive weights that reflect the consumer preferences.By default, this vector is randomized based on a uniform distribution. 
+#' @param n An integer parameter indicating the number of products which are to be generated.
+#' @param n0 An integer parameter indicating the first (the smallest) prodID.
+#' @param r An integer parameter indicating the number of outlets (retailer sale points) for which prices and quantities are to be generated.
+#' @param r0 n0 An integer parameter indicating the first (the smallest) retID.
+#' @param start The first period in the generated data frame (as character) limited to the year and month, e.g. '2019-12'.
+#' @param days A logical parameter indicating whether the trading day in a given month is to be randomised. The default value of \code{days} is FALSE, which means that each transaction for a given month takes place on the first day of the month.
+#' @rdname generate_CES
+#' @return This function returns an artificial scanner dataset where prices are lognormally distributed, quantities are calculated under the assumption that consumers have CES (Constant Elasticity of Substitution) preferences and their spending on all products is \code{S}. The characteristics for the lognormal price distribution are set by \code{pmi} and \code{psigma} parameters. This function works for a fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.   
+#' @references
+#' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
+#' @examples 
+#' #Generating an artificial dataset (the elasticity of substitution is 1.25)
+#' \donttest{df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
+#' elasticity=1.25,start="2020-01",n=100,days=TRUE)}
+#' #Verifying the elasticity of substitution
+#' \donttest{elasticity(df, start="2020-01",end="2020-02")}
+#' @export
+
+generate_CES <-
+  function(pmi = c(),
+  psigma = c(),
+  prec = 2,
+  elasticity=0.7,
+  S=1000,
+  alfa = c(),
+  n = 100,
+  n0 = 1,
+  r = 1,
+  r0 = 1,
+  start,
+  days = FALSE)
+  {
+  if ((length(pmi) <= 1) |
+  (length(psigma) <= 1))
+  stop("Lengths of parameters pmi and psigma must be 2 or more!")
+  if (!(length(pmi) == length(psigma)))
+  stop("Lengths of parameters pmi and psigma must be identical!")
+  if (S<=0) stop("The S parameter must be positive!")
+  if (length(alfa)>0) {
+  if (!(length(alfa)==n)) stop("Length of parameter alfa and a value of n must be identical!")  
+  if (!(sum(alfa)==1)) stop("Sum of elements of the alfa vector must be one!")
+  }
+  else
+  {
+  alfa<-stats::runif(n,0,1)
+  alfa<-alfa/sum(alfa)
+  }  
+  start <- paste(start, "-01", sep = "")
+  start <- as.Date(start)
+  #rand data frames for all periods
+  DT <- data.frame()
+  for (k in 1:length(pmi))
+  {
+  #time
+  time <- c()
+  for (i in 1:n) {
+  if (days == TRUE) {
+  nd <- 28
+  lubridate::day(start) <- sample(nd, 1)
+  }
+  time <- c(time, as.character(start))
+  }
+  time <- as.Date(time)
+  #prodID
+  prodID <- seq(n0, n0 + n - 1)
+  ret <- r0 + r - 1
+  for (i in r0:ret) {
+  #retID
+  retID <- replicate(n, i)
+  #prices
+  prices <- stats::rlnorm(n, pmi[k], psigma[k])
+  prices <- round(prices, prec)
+  #quantities
+  denom<-sum(alfa*(prices/alfa)^(1-elasticity))
+  quantities <-((S/prices)*alfa*(prices/alfa)^(1-elasticity))/denom 
+  DT <- rbind(DT, data.frame(time, prices, quantities, prodID, retID))
+  }
+  lubridate::month(start) <- lubridate::month(start) + 1
+  }
+  return (DT)
+  }
 
 #' @title  Calculating the relative price and/or quantity dissimilarity measure between periods
 #'
@@ -2195,25 +2285,34 @@ return (data_aggr)
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character). 
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param method The index formula for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f} and \code{sv}.
 #' @param left The beginning of an interval for estimation of the elasticity of substitution (its default value is -10).
 #' @param right The end of an interval for estimation of the elasticity of substitution (its default value is 10).
 #' @param precision The precision of estimation (a 'stop' condition for the procedure). A default value of this parameter is 0.000001.
 #' @rdname elasticity
-#' @return This function returns a value of the elasticity of substitution. The procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. The procedure continues until the absolute value of the LM-CW difference is greater than the value of the 'precision' parameter.    
+#' @return This function returns a value of the elasticity of substitution. If the \code{method} parameter is set to \code{lm}, the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the \code{method} parameter is set to \code{f}, the Fisher price index formula is used instead of the CW price index. If the \code{method} parameter is set to \code{sv}, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter.    
 #' @references
 #' {de Haan, J., Balk, B.M., Hansen, C.B. (2010). \emph{Retrospective Approximations of Superlative Price Indexes for Years Where Expenditure Data Is Unavailable.} In: Biggeri, L., Ferrari, G. (eds) Price Indexes in Time and Space. Contributions to Statistics. Physica-Verlag HD.}
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' \donttest{elasticity(coffee, start = "2018-12", end = "2019-01")}
+#' \donttest{elasticity(coffee, start = "2018-12", end = "2019-01", method = "f")}
+#' \donttest{elasticity(coffee, start = "2018-12", end = "2019-01", method = "sv")}
 #' @export
 
-elasticity<-function (data, start, end, left = -10, right = 10, precision = 0.000001)
+elasticity<-function (data, start, end, method = "lm", left = -10, right = 10, precision = 0.000001)
 {
   if (nrow(data)==0) stop("A data frame is empty!")
   if (right<=left) stop("Bad specification of 'left' and 'right' parameters!")
   if (precision<=0 | precision>0.5) stop("'precision' should be a small, positive number!")
-  superlative<-function (sigma) lm(data, start, end, sigma)-cw(data, start, end, sigma)
+  av_methods<-c("lm","f","sv")
+  if (!(method %in% av_methods)) stop("Available options for the 'method' parameter are: 'lm', 'f' or 'sv'.")
+  superlative<-function (sigma) {
+  if (method=="lm") return (lm(data, start, end, sigma)-cw(data, start, end, sigma))
+  if (method=="f") return (lm(data, start, end, sigma)-fisher(data, start, end))
+  if (method=="sv") return (lm(data, start, end, sigma)-sato_vartia(data, start, end))
+  }
   if (superlative(left)*superlative(right)>0) stop("There is no solution in the given interval!")
   ll=left
   pp=right
@@ -2226,43 +2325,6 @@ elasticity<-function (data, start, end, left = -10, right = 10, precision = 0.00
   return (x0)
 }
 
-#' @title  Calculating the elasticity of substitution 
-#'
-#' @description This function returns a value of the elasticity of substitution parameter
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character). 
-#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
-#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
-#' @param left The beginning of an interval for estimation of the elasticity of substitution (its default value is -10).
-#' @param right The end of an interval for estimation of the elasticity of substitution (its default value is 10).
-#' @param precision The precision of estimation (a 'stop' condition for the procedure). A default value of this parameter is 0.000001.
-#' @rdname elasticity2
-#' @return This function returns a value of the elasticity of substitution (or rather its approximation). The procedure of estimation solves the equation: LM(sigma)-PF=0 numerically, where LM denotes the Lloyd-Moulton price index, PF denotes the Fisher price index, and sigma is the elasticity of substitution parameter, which is estimated. The procedure continues until the absolute value of the LM-PF difference is greater than the value of the 'precision' parameter.    
-#' @references
-#' {de Haan, J., Balk, B.M., Hansen, C.B. (2010). \emph{Retrospective Approximations of Superlative Price Indexes for Years Where Expenditure Data Is Unavailable.} In: Biggeri, L., Ferrari, G. (eds) Price Indexes in Time and Space. Contributions to Statistics. Physica-Verlag HD.}
-#'
-#' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
-#' @examples 
-#' \donttest{elasticity2(coffee, start = "2018-12", end = "2019-01")}
-#' @export
-
-elasticity2<-function (data, start, end, left = -10, right = 10, precision = 0.000001)
-{
-  if (nrow(data)==0) stop("A data frame is empty!")
-  if (right<=left) stop("Bad specification of 'left' and 'right' parameters!")
-  if (precision<=0 | precision>0.5) stop("'precision' should be a small, positive number!")
-  
-  superlative<-function (sigma) lm(data, start, end, sigma)-fisher(data, start, end)
-  if (superlative(left)*superlative(right)>0) stop("There is no solution in the given interval!")
-  ll=left
-  pp=right
-  x0=(ll+pp)/2
-  while (abs(superlative(x0))>precision) {
-                                      if (superlative(ll)*superlative(x0)>0) ll=x0
-                                      else pp=x0
-                                      x0=(ll+pp)/2
-                                      }
-  return (x0)
-}
 
 #' @title  Presenting elasticities of substitution for time interval
 #'
@@ -2270,9 +2332,11 @@ elasticity2<-function (data, start, end, left = -10, right = 10, precision = 0.0
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character). 
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param method A vector indicating index formulas for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f} and \code{sv} or their combinations.
 #' @param fixedbase A logical parameter indicating whether the procedure is to work for subsequent months from the considered time interval (\code{fixedbase}=FALSE). Otherwise the period defined by \code{start} plays a role of fixed base month (\code{fixedbase}=TRUE)
 #' @param figure A logical parameter indicating whether the function returns a figure (TRUE) or a data frame (FALSE) with values of elasticity of substitution.
 #' @param date_breaks A string giving the distance between breaks on the X axis like "1 month" (default value) or "4 months".
+#' @param names A character string indicating names of indices used for elasticity approximation (see the \code{method} parameter).
 #' @param left The beginning of an interval for estimation of each elasticity of substitution (its default value is -10)
 #' @param right The end of an interval for estimation of each elasticity of substitution (its default value is 10)
 #' @param precision The precision of estimation (a 'stop' condition for the procedure). A default value of this parameter is 0.000001.
@@ -2283,83 +2347,48 @@ elasticity2<-function (data, start, end, left = -10, right = 10, precision = 0.0
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' \donttest{elasticity_fig (milk,start="2018-12",end="2019-12",figure=TRUE)}
+#' \donttest{elasticity_fig (milk,start="2018-12",end="2019-04",figure=TRUE, 
+#' method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))}
 #' \donttest{elasticity_fig (milk,start="2018-12",end="2019-12",figure=FALSE)}
 #' @export
 
-elasticity_fig<-function(data, start, end, fixedbase = TRUE, figure = TRUE, date_breaks = "1 month", left = -10, right = 10, precision = 0.000001)
+elasticity_fig<-function(data, start, end, method = c("lm"), fixedbase = TRUE, figure = TRUE, date_breaks = "1 month", names=c(), left = -10, right = 10, precision = 0.000001)
 {
 value<-NULL
+formula<-NULL
 start <- paste(start, "-01", sep = "")
 end <- paste(end, "-01", sep = "")
 start <- as.Date(start)
 end <- as.Date(end)
 if (end<=start) stop ("Bad specification of dates!")
+if (length(names)>0) if (!(length(names)==length(method))) stop ("Parameters 'method' and 'names' must have identical length!")
 #vector of elasticities  
-el<-c() 
+el<-c()
 #vector of dates
 date <- seq.Date(from = start, to = end, by = "month")
 date <- format(date, format = "%Y-%m")
-if (fixedbase == TRUE) for (i in 2:length(date)) el<-c(el, elasticity(data, start = date[1], end = date[i], left = left, right = right, precision = precision))
-else for (i in 2:length(date)) el<-c(el, elasticity(data, start = date[i-1], end = date[i], left = left, right = right, precision = precision))
-date<-date[2:length(date)]
-df<-data.frame(date, el)
+df<-data.frame(date=date[2:length(date)])
+nm<-length(method) #number of methods
+if (fixedbase == TRUE) {for (k in 1:nm)
+  {el<-c()
+  for (i in 2:length(date)) el<-c(el,elasticity(data, start = date[1], end = date[i], method = method[k], left = left, right = right, precision = precision))
+  df[,k+1]<-el
+  }}
+else {for (k in 1:nm)
+  {el<-c()
+  for (i in 2:length(date)) el<-c(el,elasticity(data, start = date[i-1], end = date[i], method = method[k], left = left, right = right, precision = precision))
+  df[,k+1]<-el 
+}}
+if (length(names)==0) colnames(df)<-c("date",method)
+else colnames(df)<-c("date",names)
 if (figure == FALSE) return (df)
 else {
 df$date<-as.Date(paste(df$date,"-01",sep = ""))
 df<-reshape::melt(df, id.var = 'date') 
 colnames(df)<-c("date","formula","value")
-fig<-ggplot2::ggplot(df, ggplot2::aes(x = date, y = value)) + ggplot2::geom_point()+ggplot2::geom_line()+ggplot2::labs(x = "date",y = "elasticity of substitution")+ggplot2::scale_x_date(date_labels = "%Y %m",date_breaks = date_breaks)+ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))   
+fig<-ggplot2::ggplot(df, ggplot2::aes(x = date, y = value, col = formula)) + ggplot2::geom_point()+ggplot2::geom_line()+ggplot2::labs(x = "date",y = "elasticity of substitution")+ggplot2::scale_x_date(date_labels = "%Y %m",date_breaks = date_breaks)+ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))   
 return (fig)  
      }
 }
 
-#' @title  Presenting elasticities of substitution for time interval
-#'
-#' @description The function provides a data frame or a figure presenting elasticities of substitution calculated for time interval.
-#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character). 
-#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
-#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
-#' @param fixedbase A logical parameter indicating whether the procedure is to work for subsequent months from the considered time interval (\code{fixedbase}=FALSE). Otherwise the period defined by \code{start} plays a role of fixed base month (\code{fixedbase}=TRUE)
-#' @param figure A logical parameter indicating whether the function returns a figure (TRUE) or a data frame (FALSE) with values of elasticity of substitution.
-#' @param date_breaks A string giving the distance between breaks on the X axis like "1 month" (default value) or "4 months".
-#' @param left The beginning of an interval for estimation of the elasticity of substitution (its default value is -10)
-#' @param right The end of an interval for estimation of the elasticity of substitution (its default value is 10)
-#' @param precision The precision of estimation (a 'stop' condition for the procedure). A default value of this parameter is 0.000001.
-#' @rdname elasticity2_fig
-#' @return The function provides a data frame or a figure presenting elasticities of substitution calculated for time interval (see the \code{figure} parameter). The elasticities of substitution can be calculated for subsequent months or for a fixed base month (see the \code{start} parameter) and rest of months from the given time interval (it depends on the \code{fixedbase} parameter). The above-mentioned parameters for compared months are calculated by using the \code{elasticity2} function.    
-#' @references
-#' {de Haan, J., Balk, B.M., Hansen, C.B. (2010). \emph{Retrospective Approximations of Superlative Price Indexes for Years Where Expenditure Data Is Unavailable.} In: Biggeri, L., Ferrari, G. (eds) Price Indexes in Time and Space. Contributions to Statistics. Physica-Verlag HD.}
-#'
-#' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
-#' @examples 
-#' \donttest{elasticity2_fig (milk,start="2018-12",end="2019-12",figure=TRUE)}
-#' \donttest{elasticity2_fig (milk,start="2018-12",end="2019-12",figure=FALSE)}
-#' @export
 
-elasticity2_fig<-function(data, start, end, fixedbase = TRUE, figure = TRUE, date_breaks = "1 month", left = -10, right = 10, precision = 0.000001)
-{
-value<-NULL
-start <- paste(start, "-01", sep = "")
-end <- paste(end, "-01", sep = "")
-start <- as.Date(start)
-end <- as.Date(end)
-if (end<=start) stop ("Bad specification of dates!")
-#vector of elasticities  
-el<-c() 
-#vector of dates
-date <- seq.Date(from = start, to = end, by = "month")
-date <- format(date, format = "%Y-%m")
-if (fixedbase == TRUE) for (i in 2:length(date)) el<-c(el, elasticity2(data, start = date[1], end = date[i], left = left, right = right, precision = precision))
-else for (i in 2:length(date)) el<-c(el, elasticity2(data, start = date[i-1], end = date[i], left = left, right = right, precision = precision))
-date<-date[2:length(date)]
-df<-data.frame(date, el)
-if (figure == FALSE) return (df)
-else {
-df$date<-as.Date(paste(df$date,"-01",sep = ""))
-df<-reshape::melt(df, id.var = 'date') 
-colnames(df)<-c("date","formula","value")
-fig<-ggplot2::ggplot(df, ggplot2::aes(x = date, y = value)) + ggplot2::geom_point()+ggplot2::geom_line()+ggplot2::labs(x = "date",y = "elasticity of substitution")+ggplot2::scale_x_date(date_labels = "%Y %m",date_breaks = date_breaks)+ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))   
-return (fig)  
-     }
-}

@@ -29,7 +29,7 @@ Too read more about the package please see (and cite :)) papers:
 
 Białek, J. (2021). PriceIndices – a New R Package for Bilateral and Multilateral Price Index Calculations, Statistika – Statistics and Economy Journal, Vol. 2/2021, 122-141, Czech Statistical Office, Praga.
 
-Białek, J. (2022). Scanner data processing in a newest version of the PriceIndices package, Statistical Journal of the IAOS, DOI: 10.3233/SJI-220963.
+Białek, J. (2022). Scanner data processing in a newest version of the PriceIndices package, Statistical Journal of the IAOS, 38 (4), 1369-1397, DOI: 10.3233/SJI-220963.
 
 ## Installation
 
@@ -120,6 +120,19 @@ From the other hand you can use **tindex** function to obtain the theoretical va
 ```{r}
 tindex(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),start="2020-01",ratio=FALSE)
 ```
+The User may also generate an artificial scanner dataset where prices are lognormally distributed and quantities are calculated under the assumption that consumers have CES (Constant Elasticity of Substitution) preferences and their spending on all products is fixed (see the **generate_CES** function). Please watch the following example:
+```{r}
+#Generating an artificial dataset (the elasticity of substitution is 1.25)
+df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
+elasticity=1.25,start="2020-01",n=100,days=TRUE)
+head(df)
+```
+Now, we can verify the value of elasticity of substitution using this generated dataset:
+```{r}
+#Verifying the elasticity of substitution
+elasticity(df, start="2020-01",end="2020-02")
+```
+
 <a id="ad2">   </a>
 
 ### Functions for data processing
@@ -382,17 +395,18 @@ dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start
 ```
 **elasticity**
 
-This function returns a value of the elasticity of substitution. The procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated (see also **elasticity2**). For example:
+This function returns a value of the elasticity of substitution. If the **method** parameter is set to **lm** (it is a default value), the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the **method** parameter is set to **f**, the Fisher price index formula is used instead of the CW price index. If the **method** parameter is set to **sv**, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter. For example:
 
 ```{r}
 elasticity(coffee, start = "2018-12", end = "2019-01")
 ```
 **elasticity_fig**
 
-The function provides a data frame or a figure presenting elasticities of substitution calculated for time interval (see the **figure** parameter). The elasticities of substitution can be calculated for subsequent months or for a fixed base month (see the **start** parameter) and rest of months from the given time interval (it depends on the **fixedbase** parameter). The presented function is based on the **elasticity** function, but see also **elasticity2_fig**. For instance, to get elasticities of substitution calculated for milk products for subsequent months we run:
+The function provides a data frame or a figure presenting elasticities of substitution calculated for time interval (see the **figure** parameter). The elasticities of substitution can be calculated for subsequent months or for a fixed base month (see the **start** parameter) and rest of months from the given time interval (it depends on the **fixedbase** parameter). The presented function is based on the **elasticity** function. For instance, to get elasticities of substitution calculated for milk products for subsequent months we run:
 
 ```{r}
-elasticity_fig (milk, start = "2018-12", end = "2019-12", fixedbase = FALSE)
+elasticity_fig (milk,start="2018-12",end="2019-04",figure=TRUE, 
+method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))
 ```
 <a id="ad4">   </a>
 
