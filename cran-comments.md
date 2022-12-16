@@ -1,3 +1,9 @@
+## Resubmission
+
+* An example for 'data_preparing' function has been corrected (the missing column 'coicop' should be named 'coicop6' - it is ok now)
+* All Polish signs from a column 'description' in the 'dataCOICOP' dataset have been removed.
+
+
 ## Package update 
 
 * New functions added: a) bilateral methods - *value_index*, *unit_value_index*, *QMp*, *IQMp*, *QMq*; b) chain indices: *chQMp*, *chIQMp*, *chQMq*; c) multilateral methods: *gekslm*, *geksqm*,*geksiqm*, *utpd* + their extensions (splice, FMW, FBEW). New function for generating artficial scanner datasets (*generate_CES*). Moreover: new (faster) function *price_indices*, new functions for price comparisons: *compare_indices_df* and *compare_indices_list* (old functions: *compare_indices* and *compare_final_indices* were removed). Rebuilt function *final_index* (old function *final_index2* was removed).
