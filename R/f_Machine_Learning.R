@@ -196,7 +196,7 @@ model_classification <-
   subsample = grid$subsample[p5],
   gamma = grid$gamma[p6],
   lambda = grid$lambda[p7],
-  apha = grid$alpha[p8]
+  alpha = grid$alpha[p8]
   )
   
   #fitting the model
