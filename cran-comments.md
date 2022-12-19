@@ -4,6 +4,7 @@
 
 * 1) An example for 'data_preparing' function has been corrected (the missing column 'coicop' should be named 'coicop6' - it is ok now)
 * 2) All Polish signs from a column 'description' in the 'dataCOICOP' dataset have been removed.
+* 3) Examples with using 'price_indices' function have been corrected.
 
 
 ## Package update 

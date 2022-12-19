@@ -80,8 +80,8 @@ ggplot2::ggplot(graph, ggplot2::aes(x=time, y=value, col=formula)) + ggplot2::ge
 #' @examples 
 #' #Creating a data frame with unweighted bilateral index values
 #' \donttest{df<-price_indices(milk, 
-#' bilateral=c("jevons","dutot","carli"),
-#' start="2018-12",end="2019-12",interval=TRUE)}
+#' formula=c("jevons","dutot","carli"), 
+#' start="2018-12", end="2019-12",interval=TRUE)}
 #' #Calculating average distances between indices (in p.p)
 #' \donttest{compare_distances(df)}
 #' @export
@@ -138,7 +138,7 @@ compare_distances<-function (data=data.frame(),measure="MAD", pp=TRUE, first=TRU
 #' @examples 
 #' #Creating a data frame with example bilateral indices
 #' \donttest{df<-price_indices(milk, 
-#' bilateral=c("jevons","laspeyres","paasche","walsh"),
+#' formula=c("jevons","laspeyres","paasche","walsh"),
 #' start="2018-12",end="2019-12",interval=TRUE)}
 #' #Calculating the target Fisher price index
 #' \donttest{target_index<-fisher(milk,start="2018-12",end="2019-12",interval=TRUE)}
