@@ -40,10 +40,10 @@ compare_indices_df <-
 #' @return This function returns a figure with plots of previously calculated price indices. It allows for graphical comparison of price index values which were previously calculated and now are provided as a list of data frames (see \code{data} parameter).
 #' @examples 
 #' ## Caluclating two indices by using two different package functions:
-#' \donttest{index1<-final_index(datasets=list(milk), start="2018-12", 
+#' \donttest{index1<-final_index(data=milk, start="2018-12", 
 #' end="2019-12",formula="walsh",interval=TRUE)}
-#' \donttest{index2<-price_index(milk,start="2018-12", end="2019-12",
-#' formula="geks",interval=TRUE)}
+#' \donttest{index2<-price_indices(milk,start="2018-12", end="2019-12",
+#' formula="geks",window=13,interval=TRUE)}
 #' ## Graphical comparison of these two indices 
 #' \donttest{compare_indices_list(data=list(index1,index2), 
 #' names=c("Walsh index", "GEKS index"))}
