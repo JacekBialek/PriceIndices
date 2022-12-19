@@ -35,7 +35,7 @@ The function calculates distances between considered price indices and the targe
 \examples{
 #Creating a data frame with example bilateral indices
 \donttest{df<-price_indices(milk, 
-bilateral=c("jevons","laspeyres","paasche","walsh"),
+formula=c("jevons","laspeyres","paasche","walsh"),
 start="2018-12",end="2019-12",interval=TRUE)}
 #Calculating the target Fisher price index
 \donttest{target_index<-fisher(milk,start="2018-12",end="2019-12",interval=TRUE)}

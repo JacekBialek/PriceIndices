@@ -32,8 +32,8 @@ The function calculates distances between price indices
 \examples{
 #Creating a data frame with unweighted bilateral index values
 \donttest{df<-price_indices(milk, 
-bilateral=c("jevons","dutot","carli"),
-start="2018-12",end="2019-12",interval=TRUE)}
+formula=c("jevons","dutot","carli"), 
+start="2018-12", end="2019-12",interval=TRUE)}
 #Calculating average distances between indices (in p.p)
 \donttest{compare_distances(df)}
 }
