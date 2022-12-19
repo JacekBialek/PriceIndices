@@ -1,7 +1,5 @@
 ## Resubmission
 
-* Unimportant file 'CRAN-RELEASE' has been deleted.
-
 * Since the auto-check found additional issues for the *last* version released on CRAN, all these problems have been fixed as follows:
 
 * 1) An example for 'data_preparing' function has been corrected (the missing column 'coicop' should be named 'coicop6' - it is ok now)
