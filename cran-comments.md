@@ -2,7 +2,7 @@
 
 * Bug fixes: graphical result of the **compare_indices_list** function has been corrected 
 (a label concerning the X-axis is now named 'date')
-
+* References have been updated in the case of the *generate* function.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

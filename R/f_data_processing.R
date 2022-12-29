@@ -1675,7 +1675,6 @@ sales_groups <-
   }
   }
   
-
 #' @title  Generating an artificial scanner dataset
 #'
 #' @description This function provides artificial scanner datasets where prices and quantities are lognormally distributed.
@@ -1692,7 +1691,8 @@ sales_groups <-
 #' @param days A logical parameter indicating whether the trading day in a given month is to be randomised. The default value of \code{days} is FALSE, which means that each transaction for a given month takes place on the first day of the month.
 #' @rdname generate
 #' @return This function returns an artificial scanner dataset where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by \code{pmi}, \code{psigma}, \code{qmi} and \code{qsigma} parameters. This function works for a fixed number of products and outlets (see \code{n} and \code{r} parameters). The generated dataset is ready for further price index calculations.   
-#'
+#' @references
+#' {Sulewski, P., Białek, J. (2022). \emph{Probability Distribution Modelling of Scanner Prices and Relative Prices}. Statistika – Statistics and Economy Journal, Vol. 3/2022, 282-298, Czech Statistical Office, Prague.}
 #' @examples 
 #' generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(3,4,4),
 #' qsigma=c(0.1,0.1,0.15),start="2020-01",days=TRUE)

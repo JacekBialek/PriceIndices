@@ -53,3 +53,6 @@ qsigma=c(0.1,0.1,0.15),start="2020-01",days=TRUE)
 \donttest{generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),qmi=c(6,6,7),
 qsigma=c(0.1,0.1,0.15),start="2020-01",n=1000,n0=132578,r=10)}
 }
+\references{
+{Sulewski, P., Białek, J. (2022). \emph{Probability Distribution Modelling of Scanner Prices and Relative Prices}. Statistika – Statistics and Economy Journal, Vol. 3/2022, 282-298, Czech Statistical Office, Prague.}
+}
