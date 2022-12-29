@@ -63,7 +63,7 @@ if (length(names)>0) for (i in 1:length(names)) colnames(graph)[i+1]<-names[i]
 graph$time<-as.Date(paste(graph$time,"-01",sep=""))
 graph<-reshape::melt(graph, id.var='time') 
 colnames(graph)<-c("time","formula","value")
-ggplot2::ggplot(graph, ggplot2::aes(x=time, y=value, col=formula)) + ggplot2::geom_point()+ggplot2::geom_line()+ggplot2::labs(x="tame",y="price index value")+ggplot2::scale_x_date(date_labels="%Y %m",date_breaks =date_breaks)+ggplot2::theme(axis.text.x = ggplot2::element_text(angle=45, hjust = 1)) 
+ggplot2::ggplot(graph, ggplot2::aes(x=time, y=value, col=formula)) + ggplot2::geom_point()+ggplot2::geom_line()+ggplot2::labs(x="date",y="price index value")+ggplot2::scale_x_date(date_labels="%Y %m",date_breaks =date_breaks)+ggplot2::theme(axis.text.x = ggplot2::element_text(angle=45, hjust = 1)) 
 }
 
 

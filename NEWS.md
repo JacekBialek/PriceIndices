@@ -1,3 +1,11 @@
+# Package update 0.1.2 -> 0.1.3
+
+## Bug fixes
+
+* Graphical result of the **compare_indices_list** function has been corrected 
+(a label concerning the X-axis is now named 'date')
+
+
 # Package update 0.1.1 -> 0.1.2
 
 ## New functions:
