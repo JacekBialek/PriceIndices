@@ -82,8 +82,8 @@ jevons <-
   prices(data, period = end, set = id)
   price_start <-
   prices(data, period = start, set = id)
-  jev <- prod(price_end / price_start)
-  return(jev ^ (1 / length(id)))
+  jev <- prod((price_end / price_start)^(1 / length(id)))
+  return(jev)
   }
   }
 
