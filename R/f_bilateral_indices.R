@@ -55,9 +55,9 @@ jevons <-
   prices(data2, period = end, set = id)
   price_start <-
   prices(data2, period = start, set = id)
-  jev <- prod(price_end / price_start)
+  jev <- prod((price_end / price_start)^(1 / length(id)))
   result <-
-  c(result, jev ^ (1 / length(id)))
+  c(result, jev)
   lubridate::month(end) <-
   lubridate::month(end) + 1
   }
