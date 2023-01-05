@@ -4194,7 +4194,6 @@ wgeksaqi_fbmw <- function(data, start, end)  {
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
-#' \donttest{geksgaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
 #' \donttest{geksgaqi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
