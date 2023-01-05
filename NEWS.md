@@ -5,7 +5,7 @@
 * Graphical result of the **compare_indices_list** function has been corrected 
 (a label concerning the X-axis is now named 'date')
 * References have been updated in the case of the *generate* function.
-
+* A wrong example concerning the *geksgaqi_splice* function has been deleted.
 
 # Package update 0.1.1 -> 0.1.2
 
