@@ -1,3 +1,8 @@
+# Package update 0.1.3 -> 0.1.4
+
+## Bug fixes
+* A new parameter has beed added to the function 'price_indices' (*names*). It allows to compare e.g. the same splice multilateral index but for many different splicing methods (their names can be distinguished).
+
 # Package update 0.1.2 -> 0.1.3
 
 ## Bug fixes

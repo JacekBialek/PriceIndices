@@ -1,9 +1,6 @@
 ## Package update 
 
-* Bug fixes: graphical result of the **compare_indices_list** function has been corrected 
-(a label concerning the X-axis is now named 'date')
-* References have been updated in the case of the *generate* function.
-* A wrong example concerning the *geksgaqi_splice* function has been deleted.
+* Bug fixes: a new parameter has beed added to the function 'price_indices' (*names*). It allows to compare e.g. the same splice multilateral index but for many different splicing methods (their names can be distinguished).
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

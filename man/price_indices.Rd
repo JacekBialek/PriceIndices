@@ -14,7 +14,8 @@ price_indices(
   base = c(),
   sigma = c(),
   r = c(),
-  interval = FALSE
+  interval = FALSE,
+  names = c()
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ price_indices(
 \item{r}{The vector of non-zero parameters used in the quadratic mean of order r quantity / price index or in the GEKS-QM index (as numeric).}
 
 \item{interval}{A logical value indicating whether the function is to provide price indices comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).}
+
+\item{names}{A vector of strings indicating names of indices which are to be used in the resulting data frame.}
 }
 \value{
 This general function returns a value or values of the selected price indices. If the \code{interval} parameter is set to TRUE, then it returns a data frame where its first column indicates dates and the remaining columns show corresponding values of all selected price indices. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).

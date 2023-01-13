@@ -11,6 +11,7 @@
 #' @param sigma The vector of elasticity of substitution parameters used in the Lloyed-Moulton, AG Mean or GEKS-LM indices (as numeric).
 #' @param r The vector of non-zero parameters used in the quadratic mean of order r quantity / price index or in the GEKS-QM index (as numeric).
 #' @param interval A logical value indicating whether the function is to provide price indices comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).
+#' @param names A vector of strings indicating names of indices which are to be used in the resulting data frame.
 #' @rdname price_indices
 #' @return This general function returns a value or values of the selected price indices. If the \code{interval} parameter is set to TRUE, then it returns a data frame where its first column indicates dates and the remaining columns show corresponding values of all selected price indices. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
 #' @examples 
@@ -40,7 +41,8 @@ price_indices <-
   base = c(),
   sigma = c(),
   r=c(),
-  interval = FALSE)
+  interval = FALSE,
+  names=c())
   {
   aformula <-
   c(
@@ -195,7 +197,9 @@ price_indices <-
   )
   for (index in formula) if (!(index %in% aformula))
   stop ("There is a typo in the index name")
-    
+  
+  if (length(names)>0) if (!(length(names)==length(formula))) stop ("Parameters 'formula' and 'names' must have the same length!")
+  
   #indices for increasing parameters:
   inc_splice<-c("geks_splice","wgeks_splice",
   "geksj_splice","geksw_splice","ccdi_splice",
@@ -362,20 +366,24 @@ price_indices <-
                                      r=p_r[form],
                                      interval=FALSE))
     } 
-   df<-data.frame(price_index=formula, value=unlist(results_list))
+   if (length(names)>0) df<-data.frame(price_index=names, value=unlist(results_list))
+   else df<-data.frame(price_index=formula, value=unlist(results_list))
    return(df)
   }
   else
   {
   for (form in 1:length(formula))
-     {results_list<-append(results_list, price_index(data, start, end, 
+     {
+  dfs<-price_index(data, start, end, 
                                      formula[form], 
                                      window=p_window[form],
                                      splice=p_splice[form],
                                      base=p_base[form],
                                      sigma=p_sigma[form],
                                      r=p_r[form],
-                                     interval=TRUE)[2])
+                                     interval=TRUE)
+  if (length(names)>0) colnames(dfs)[2]<-names[form]   
+  results_list<-append(results_list, dfs[2])
   }
   results_list<-dplyr::bind_rows(results_list)
   start<-paste(start, "-01", sep="")
