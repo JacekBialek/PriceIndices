@@ -1350,7 +1350,7 @@ data_matching <-
   if (nrow(data) == 0)
   stop("There are no data in selected period")
   }
-  data<-dplyr::summarise(dplyr::group_by(data, by=prodID), uv=ifelse(sum(quantities)==0,sum(prices),sum(prices*quantities)/sum(quantities)), .groups = 'drop')
+  data<-dplyr::summarise(dplyr::group_by(data, by=prodID), uv=ifelse(sum(quantities)==0,sum(prices)/length(prices),sum(prices*quantities)/sum(quantities)), .groups = 'drop')
   if (ID==FALSE) return (data$uv)
   else return(data)
   }
