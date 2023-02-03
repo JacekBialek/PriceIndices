@@ -47,5 +47,6 @@ mbennet(milk, "2018-12", "2019-12", matched=TRUE, contributions=TRUE)
 }
 \references{
 {Bennet, T. L., (1920). \emph{The Theory of Measurement of Changes in Cost of Living}. Journal of the Royal Statistical Society, 83, 455-462.}
+
 {Fox, K.J., (2006). \emph{A Method for Transitive and Additive Multilateral Comparisons: A Transitive Bennet Indicator}. Journal of Economics, 87(1), 73-87.}
 }
