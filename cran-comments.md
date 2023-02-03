@@ -1,5 +1,7 @@
 ## Package update 
 
+* New functions for bennet price and quantity indicators have been added (*bennet* and *mbennet*).
+
 * Bug fixes: a new parameter has beed added to the function 'price_indices' (*names*). It allows to compare e.g. the same splice multilateral index but for many different splicing methods (their names can be distinguished).
 * The *geksj* function has been corrected for the case when we observe large number of decreasing prices.
 
