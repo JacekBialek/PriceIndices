@@ -4924,8 +4924,8 @@ mbennet_internal <-
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
   setID<-NULL
-  if (matched==FALSE) setID<-available(data, period1=start, period2=end, interval=FALSE)
-  else setID<-matched(data, period1=start, period2=end, interval=FALSE)  
+  if (matched==FALSE) setID<-available(data, period1=start, period2=end, interval=TRUE)
+  else setID<-matched(data, period1=start, period2=end, interval=TRUE)  
   #frames with all prices and quantities for all periods
   pq<-function (tm) {frame<-prices(data, period=tm, ID=TRUE)
   frame$q<-quantities(data, period=tm, ID=FALSE)
