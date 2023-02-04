@@ -597,7 +597,7 @@ price_index <-
   if (formula == "wgeksgl")
   set <- c(set, wgeksgl_num(data, t0, t, t0, window)/denominator)
   if (formula == "geksaqu")
-  set <- c(set, denominator*geksaqu_num(data, t0, t, t0, window)/denominator)
+  set <- c(set, geksaqu_num(data, t0, t, t0, window)/denominator)
   if (formula == "wgeksaqu")
   set <- c(set, wgeksaqu_num(data, t0, t, t0, window)/denominator)
   if (formula == "geksaqi")
@@ -2252,14 +2252,8 @@ geks_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gks_num <-
   function (tt) fisher(data, tt, end)
@@ -2309,14 +2303,8 @@ geks_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gks_denom <-
   function (tt) fisher(data, tt, start)
@@ -2367,14 +2355,8 @@ geksw_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksw_num <-
   function (tt) walsh(data, tt, end)
@@ -2424,14 +2406,8 @@ geksw_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksw_denom <-
   function (tt) walsh(data, tt, start)
@@ -2481,14 +2457,8 @@ geksj_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksj_num <-
   function (tt) jevons(data, tt, end)
@@ -2538,14 +2508,8 @@ geksj_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksj_denom <-
   function (tt) jevons(data, tt, start)
@@ -2595,14 +2559,8 @@ ccdi_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   ccdi_num <-
   function (tt) tornqvist(data, tt, end)
@@ -2652,14 +2610,8 @@ ccdi_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   ccdi_denom <-
   function (tt) tornqvist(data, tt, start)
@@ -2709,14 +2661,8 @@ wgeks_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   wgks_num <-
   function (tt) fisher(data, start=tt, end=end)
@@ -2774,14 +2720,8 @@ wgeks_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   wgks_denom <-
   function (tt) fisher(data, start=tt, end=start)
@@ -2839,14 +2779,8 @@ geksl_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksl_num <-
   function (tt) nl(data, tt, end)
@@ -2896,14 +2830,8 @@ geksl_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksl_denom <-
   function (tt) nl(data, tt, start)
@@ -2953,14 +2881,8 @@ wgeksl_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   wgksl_num <-
   function (tt) nl(data, start=tt, end=end)
@@ -3018,14 +2940,8 @@ wgeksl_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   wgksl_denom <-
   function (tt) nl(data, start=tt, end=start)
@@ -3083,14 +2999,8 @@ geksgl_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksgl_num <-
   function (tt) geolaspeyres(data, tt, end)
@@ -3140,14 +3050,8 @@ geksgl_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksgl_denom <-
   function (tt) geolaspeyres(data, tt, start)
@@ -3197,14 +3101,8 @@ wgeksgl_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   wgksgl_num <-
   function (tt) geolaspeyres(data, start=tt, end=end)
@@ -3262,14 +3160,8 @@ wgeksgl_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   wgksgl_denom <-
   function (tt) geolaspeyres(data, start=tt, end=start)
@@ -3327,30 +3219,11 @@ geksaqu_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop") 
   #main body
   gksaqu_num <-
   function (tt) aqu(data, start=tt, end=end,v)
@@ -3401,30 +3274,11 @@ geksaqu_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksaqu_denom <-
   function (tt) aqu(data, start=tt, end=start,v)
@@ -3474,31 +3328,11 @@ wgeksaqu_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
-  
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksaqu_num <-
   function (tt) aqu(data, start=tt, end=end,v)
@@ -3554,31 +3388,11 @@ wgeksaqu_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
-  
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksaqu_denom <-
   function (tt) aqu(data, start=tt, end=start,v)
@@ -3593,7 +3407,6 @@ wgeksaqu_denom <-
   wgeksaqu_denom <- prod(vec ^ expenditures)
   return(wgeksaqu_denom)
   }
-
 
 #' Calculating a numerator of the GEKS-AQI formula
 #' This function returns a numerator of the GEKS-AQI formula  
@@ -3635,30 +3448,11 @@ geksaqi_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksaqi_num <-
   function (tt) aqi(data, start=tt, end=end,v)
@@ -3709,30 +3503,11 @@ geksaqi_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksaqi_denom <-
   function (tt) aqi(data, start=tt, end=start,v)
@@ -3783,31 +3558,11 @@ wgeksaqi_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
-  
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksaqi_num <-
   function (tt) aqi(data, start=tt, end=end,v)
@@ -3863,31 +3618,11 @@ wgeksaqi_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
-  
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksaqi_denom <-
   function (tt) aqi(data, start=tt, end=start,v)
@@ -3944,30 +3679,11 @@ geksgaqi_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksgaqi_num <-
   function (tt) gaqi(data, start=tt, end=end,v)
@@ -4018,30 +3734,11 @@ geksgaqi_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksgaqi_denom <-
   function (tt) gaqi(data, start=tt, end=start,v)
@@ -4050,7 +3747,6 @@ geksgaqi_denom <-
   geksgaqi_denom <- geksgaqi_denom ^ (1 / window)
   return(geksgaqi_denom)
   }
-
 
 #' Calculating a numerator of the WGEKS-GAQI formula
 #' This function returns a numerator of the WGEKS-GAQI formula  
@@ -4092,31 +3788,11 @@ wgeksgaqi_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
-  
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksgaqi_num <-
   function (tt) gaqi(data, start=tt, end=end,v)
@@ -4172,31 +3848,11 @@ wgeksgaqi_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
-  
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
-  availableID<-available(data,period1=dates[1],period2=dates[length(dates)],interval=TRUE)
-  
-  fi<-function (ID) {
-    nom<-c()
-    denom<-c()
-    for (d in dates) {
-      nom<-c(nom, sales(data,period=d,set=ID))
-      denom<-c(denom, quantities(data,period=d,set=ID))
-    }
-   return (sum(nom)/sum(denom)) 
-   }
-  
-  vi<-sapply(availableID, fi)
-  v<-data.frame(prodID=availableID, value=vi)
-  
+  v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksgaqi_denom <-
   function (tt) gaqi(data, start=tt, end=start,v)
@@ -4254,14 +3910,8 @@ geksiqm_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksiqm_num <-
   function (tt) IQMp(data, tt, end, r)
@@ -4313,14 +3963,8 @@ geksiqm_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksiqm_denom <-
   function (tt) IQMp(data, tt, start, r)
@@ -4374,14 +4018,8 @@ geksqm_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksqm_num <-
   function (tt) QMp(data, tt, end, r)
@@ -4433,14 +4071,8 @@ geksqm_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gksqm_denom <-
   function (tt) QMp(data, tt, start, r)
@@ -4493,14 +4125,8 @@ gekslm_num <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gkslm_num <-
   function (tt) lloyd_moulton(data, tt, end, sigma)
@@ -4552,14 +4178,8 @@ gekslm_denom <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gkslm_denom <-
   function (tt) lloyd_moulton(data, tt, start, sigma)
@@ -4568,7 +4188,6 @@ gekslm_denom <-
   gekslm_denom <- gekslm_denom ^ (1 / window)
   return(gekslm_denom)
   }
-
 
 #' A general function to compute a final price index
 #' This function returns a value of the selected final price index for the selected type of aggregation of partial results. 

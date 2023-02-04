@@ -566,7 +566,6 @@ gk <-
   }
 
 
-  
 #' @title  Calculating the multilateral TPD price index
 #'
 #' @description This function returns a value of the multilateral TPD (Time Product Dummy) price index.
@@ -1539,14 +1538,9 @@ geksaqu <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
@@ -1615,14 +1609,9 @@ wgeksaqu <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
@@ -1698,14 +1687,9 @@ geksaqi <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
@@ -1775,15 +1759,9 @@ wgeksaqi <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
-  
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
@@ -1856,14 +1834,9 @@ geksgaqi <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
@@ -1930,15 +1903,9 @@ wgeksgaqi <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
-  
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
@@ -2015,13 +1982,8 @@ geksiqm <-
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gks <-
   function (tt)
@@ -2088,14 +2050,8 @@ geksqm <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gks <-
   function (tt)
@@ -2105,8 +2061,6 @@ geksqm <-
   geks_qm <- geks_qm ^ (1 / window)
   return(geks_qm)
   }
-
-
 
 
 #' @title  Calculating the multilateral GEKS-LM price index
@@ -2167,14 +2121,8 @@ gekslm <-
   stop("parameters must satisfy: end<wstart+window")
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
-  dates <- c()
-  while (wstart <= wend)
-  {
-  t <- substr(wstart, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wstart) <-
-  lubridate::month(wstart) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   #main body
   gks <-
   function (tt)
