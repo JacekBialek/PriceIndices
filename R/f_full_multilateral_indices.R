@@ -532,15 +532,8 @@ gk <-
   index1 <- rep(1, window)
   index2 <- rep(2, window)
   #set of dates
-  dates <- c()
-  wst <- wstart
-  while (wst <= wend)
-  {
-  t <- substr(wst, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(wst) <-
-  lubridate::month(wst) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
   d2<-d
   d2$time<-as.character(d2$time)
   d2$time<-substr(d2$time,0,7)
@@ -624,17 +617,9 @@ tpd <-
   if (length(products) < 2)
   stop ("At least two prodIDs must be available during the considered time interval")
   #main body
-  dates <-
-  c()  #vector with all dates written as 7 signs from the time interval [1,T]
-  wst <- wstart
-  lubridate::month(wst) <-
-  lubridate::month(wst) + 1
-  while (wst <= wend)
-  {
-  dates <- c(dates, substr(wst, 0, 7))
-  lubridate::month(wst) <-
-  lubridate::month(wst) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  dates<-dates[2:length(dates)]
   d$time<-as.character(d$time)
   d$time<-substr(d$time, 0, 7)
   #dates of availability of products
@@ -774,17 +759,9 @@ utpd <-
   if (length(products) < 2)
   stop ("At least two prodIDs must be available during the considered time interval")
   #main body
-  dates <-
-  c()  #vector with all dates written as 7 signs from the time interval [1,T]
-  wst <- wstart
-  lubridate::month(wst) <-
-  lubridate::month(wst) + 1
-  while (wst <= wend)
-  {
-  dates <- c(dates, substr(wst, 0, 7))
-  lubridate::month(wst) <-
-  lubridate::month(wst) + 1
-  }
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  dates<-dates[2:length(dates)]
   d$time<-as.character(d$time)
   d$time<-substr(d$time, 0, 7)
   #dates of availability of products
