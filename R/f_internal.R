@@ -3217,6 +3217,7 @@ geksaqu_num <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3272,6 +3273,7 @@ geksaqu_denom <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3326,6 +3328,7 @@ wgeksaqu_num <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3386,6 +3389,7 @@ wgeksaqu_denom <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3446,6 +3450,7 @@ geksaqi_num <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3501,6 +3506,7 @@ geksaqi_denom <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3556,6 +3562,7 @@ wgeksaqi_num <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3616,6 +3623,7 @@ wgeksaqi_denom <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3677,6 +3685,7 @@ geksgaqi_num <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3732,6 +3741,7 @@ geksgaqi_denom <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3786,6 +3796,7 @@ wgeksgaqi_num <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3846,6 +3857,7 @@ wgeksgaqi_denom <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  prodID<-NULL
   start <- substr(start, 0, 7)
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
@@ -3973,8 +3985,6 @@ geksiqm_denom <-
   geksiqm_denom <- geksiqm_denom ^ (1 / window)
   return(geksiqm_denom)
   }
-
-
 
 #' Calculating a numerator of the GEKS-QM formula
 #' This function returns a numerator of the GEKS-QM formula  
@@ -4536,6 +4546,9 @@ mbennet_internal <-
   lubridate::month(wend) + window - 1
   if (end > wend)
   stop("parameters must satisfy: end<wstart+window")
+  price_contributions<-NULL
+  quantity_contributions<-NULL
+  value_differences<-NULL
   no_start<-dist(wstart, start)+1
   no_end<-dist(wstart, end)+1
   start <- substr(start, 0, 7)
