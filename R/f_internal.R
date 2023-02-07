@@ -4367,9 +4367,9 @@ bennet_internal <-
   quantity_contributions<-(0.5*(p_start+p_tt))*(q_tt-q_start)
   value_differences<-p_tt*q_tt-p_start*q_start
   #indicators
-  price_indicator<-sum((0.5*(q_start+q_tt))*(p_tt-p_start))
-  quantity_indicator<-sum((0.5*(p_start+p_tt))*(q_tt-q_start))
-  value_difference<-sum(p_tt*q_tt-p_start*q_start)
+  price_indicator<-sum(price_contributions)
+  quantity_indicator<-sum(quantity_contributions)
+  value_difference<-sum(value_differences)
   #returning list
   return (list(setID,round(value_differences,prec),
                round(price_contributions,prec),
@@ -4456,9 +4456,9 @@ bennet_matched_internal <-
   quantity_contributions<-(0.5*(p_start+p_tt))*(q_tt-q_start)
   value_differences<-p_tt*q_tt-p_start*q_start
   #indicators
-  price_indicator<-sum((0.5*(q_start+q_tt))*(p_tt-p_start))
-  quantity_indicator<-sum((0.5*(p_start+p_tt))*(q_tt-q_start))
-  value_difference<-sum(p_tt*q_tt-p_start*q_start)
+  price_indicator<-sum(price_contributions)
+  quantity_indicator<-sum(quantity_contributions)
+  value_difference<-sum(value_differences)
   #returning list
   return (list(setID,round(value_differences,prec),
                round(price_contributions,prec),
