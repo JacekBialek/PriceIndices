@@ -34,15 +34,16 @@ remotes::install_github("JacekBialek/PriceIndices")
 1.  <a href="#ad1">Data sets included in the package and generating artificial scanner data sets</a>
 2.  <a href="#ad2">Functions for data processing</a>
 3.  <a href="#ad3">Functions providing dataset characteristics</a>
-4.  <a href="#ad4">Functions for bilateral unweighted price index calculation</a>
-5.  <a href="#ad5">Functions for bilateral weighted price index calculation</a>
-6.  <a href="#ad6">Functions for chain price index calculation</a>
-7.  <a href="#ad7">Functions for multilateral price index calculation</a>
+4.  <a href="#ad4">Functions for bilateral unweighted price index calculations</a>
+5.  <a href="#ad5">Functions for bilateral weighted price index calculations</a>
+6.  <a href="#ad6">Functions for chain price index calculations</a>
+7.  <a href="#ad7">Functions for multilateral price index calculations</a>
 8.  <a href="#ad8">Functions for extending multilateral price indices by using splicing methods</a>
 9.  <a href="#ad9">Functions for extending multilateral price indices by using the FBEW method</a>
 10. <a href="#ad10">Functions for extending multilateral price indices by using the FBMW method</a>
 11. <a href="#ad11">General functions for price index calculations</a>
 12. <a href="#ad12">Functions for comparisons of price indices</a>
+13. <a href="#ad13">Functions for price and quantity indicator calculations</a>
 
 <a id="ad1"> </a>
 
@@ -111,12 +112,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.80         23      1     1
-#> 2 2020-01-01   2.62         23      2     1
-#> 3 2020-01-01   2.75         23      3     1
-#> 4 2020-01-01   2.76         22      4     1
-#> 5 2020-01-01   2.86         18      5     1
-#> 6 2020-01-01   3.04         23      6     1
+#> 1 2020-01-01   2.95         20      1     1
+#> 2 2020-01-01   2.67         21      2     1
+#> 3 2020-01-01   2.87         23      3     1
+#> 4 2020-01-01   2.98         22      4     1
+#> 5 2020-01-01   2.65         21      5     1
+#> 6 2020-01-01   2.67         20      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -137,12 +138,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-22   2.83   4.236289      1     1
-#> 2 2020-01-09   2.88   3.859330      2     1
-#> 3 2020-01-16   2.81   1.618691      3     1
-#> 4 2020-01-12   2.90   5.396912      4     1
-#> 5 2020-01-17   2.74   1.976293      5     1
-#> 6 2020-01-27   2.65   1.369175      6     1
+#> 1 2020-01-08   2.74  3.1582043      1     1
+#> 2 2020-01-04   2.80  4.2876173      2     1
+#> 3 2020-01-13   2.48  3.0196874      3     1
+#> 4 2020-01-09   2.93  3.9875946      4     1
+#> 5 2020-01-03   2.77  7.6189109      5     1
+#> 6 2020-01-20   2.87  0.8750079      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -795,19 +796,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.775934
-#> 2  14216 1.445651
-#> 3  15404 1.551369
-#> 4  17034 1.245110
-#> 5  34540 1.525972
-#> 6  51583 1.690244
+#> 1  14215 1.889326
+#> 2  14216 1.319037
+#> 3  15404 1.674013
+#> 4  17034 1.490368
+#> 5  34540 1.524934
+#> 6  51583 1.041316
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9796895
+#> [1] 0.9684493
 ```
 
 <a id="ad8"> </a>
@@ -1100,4 +1101,75 @@ compare_to_target(df,target=target_index)
 #> 2 laspeyres    1.429          0.000          1.429
 #> 3   paasche    1.403          1.403          0.000
 #> 4     walsh    0.174          0.113          0.061
+```
+
+**compare\_indices\_jk**
+
+This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: **results**, which is a data frame with basic characteristics of the calculated indices (including the **jackknife estimates** for selected price indices), and **figure** which presents a box-plot for the considered indices. The User may control a way of creating product subgroups (subsamples) via the **by** parameter (in the classical jackknife method **by** should indicate **prodID**). Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
+
+``` r
+#creating a list with jackknife results
+comparison<-compare_indices_jk(milk,
+formula=c("jevons","fisher","geks"),
+start="2018-12",
+end="2019-12", 
+window=c(13),
+names=c("Jevons","Fisher","GEKS"), 
+by="retID",
+title="Jackknife box-plots for milk products")
+#displaying a data frame with basic characteristics of the calculated indices
+comparison$results
+#>    index all_products mean_jack_knife sd_jack_knife
+#> 1 Jevons    1.0249373       1.0479343   0.026703299
+#> 2 Fisher    0.9868354       0.9867241   0.004328695
+#> 3   GEKS    0.9876664       0.9876414   0.003637010
+```
+
+``` r
+#displaying box-plotes created for the price index values obtained by using the jackknife method:
+comparison$figure
+```
+
+<img src="man/figures/README-unnamed-chunk-62-1.png" width="100%" />
+
+<a id="ad13"> </a>
+
+There are two package functions for calculating price and quantity indicators. The **bennet** function returns the (bilateral) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mbennet** function returns the multilateral (transitive) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. For instance, the following command calculates the Bennet price and quantity indicators for milk products:
+
+``` r
+bennet(milk, start = "2018-12", end = "2019-12", interval=TRUE)
+#>       time Value_difference Price_indicator Quantity_indicator
+#> 1  2019-01        -31942.53          628.05          -32570.58
+#> 2  2019-02        -35995.09         -175.29          -35819.80
+#> 3  2019-03        -42158.05        -3810.15          -38347.90
+#> 4  2019-04        -56934.44        -2427.25          -54507.20
+#> 5  2019-05        -50961.52        -2580.91          -48380.61
+#> 6  2019-06        -48842.58        -2396.05          -46446.53
+#> 7  2019-07        -33974.27        -3232.63          -30741.64
+#> 8  2019-08        -37962.80         4500.45          -42463.26
+#> 9  2019-09        -33833.42        -1092.32          -32741.09
+#> 10 2019-10        -35001.60        -1665.10          -33336.50
+#> 11 2019-11        -16928.94         2313.87          -19242.81
+#> 12 2019-12          9859.34        -2151.48           12010.83
+```
+
+where price and quantity contributions of each subgroups of milk products can be obtained as follows:
+
+``` r
+milk$prodID<-milk$description
+bennet(milk, start = "2018-12", end = "2019-12", contributions = TRUE)
+#>                      prodID value_differences price_contributions
+#> 1 full-fat milk pasteurized           -711.57             -633.65
+#> 2         full-fat milk UHT           8767.34            -1927.29
+#> 3                 goat milk           -602.29               -4.10
+#> 4  low-fat milk pasteurized           1421.39              647.66
+#> 5          low-fat milk UHT          -1525.62              369.49
+#> 6             powdered milk           2510.09             1444.46
+#>   quantity_contributions
+#> 1                 -77.92
+#> 2               10694.63
+#> 3                -598.18
+#> 4                 773.73
+#> 5               -1895.11
+#> 6                1065.63
 ```

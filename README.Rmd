@@ -47,15 +47,16 @@ remotes::install_github("JacekBialek/PriceIndices")
 1.  <a href="#ad1">Data sets included in the package and generating artificial scanner data sets</a>
 2.  <a href="#ad2">Functions for data processing</a>
 3.  <a href="#ad3">Functions providing dataset characteristics</a>
-4.  <a href="#ad4">Functions for bilateral unweighted price index calculation</a>
-5.  <a href="#ad5">Functions for bilateral weighted price index calculation</a>
-6.  <a href="#ad6">Functions for chain price index calculation</a>
-7.  <a href="#ad7">Functions for multilateral price index calculation</a>
+4.  <a href="#ad4">Functions for bilateral unweighted price index calculations</a>
+5.  <a href="#ad5">Functions for bilateral weighted price index calculations</a>
+6.  <a href="#ad6">Functions for chain price index calculations</a>
+7.  <a href="#ad7">Functions for multilateral price index calculations</a>
 8.  <a href="#ad8">Functions for extending multilateral price indices by using splicing methods</a>
 9.  <a href="#ad9">Functions for extending multilateral price indices by using the FBEW method</a>
 10.  <a href="#ad10">Functions for extending multilateral price indices by using the FBMW method</a>
 11. <a href="#ad11">General functions for price index calculations</a>
 12. <a href="#ad12">Functions for comparisons of price indices</a> 
+13. <a href="#ad13">Functions for price and quantity indicator calculations</a>
 
 <a id="ad1">   </a>
 
@@ -799,3 +800,41 @@ target_index<-fisher(milk,start="2018-12",end="2019-12",interval=TRUE)
 compare_to_target(df,target=target_index)
 ```
 
+**compare_indices_jk**
+
+This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: **results**, which is a data frame with basic characteristics of the calculated indices (including the **jackknife estimates** for selected price indices), and **figure** which presents a box-plot for the considered indices. The User may control a way of creating product subgroups (subsamples) via the **by** parameter (in the classical jackknife method **by** should indicate **prodID**). Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
+
+```{r}
+#creating a list with jackknife results
+comparison<-compare_indices_jk(milk,
+formula=c("jevons","fisher","geks"),
+start="2018-12",
+end="2019-12", 
+window=c(13),
+names=c("Jevons","Fisher","GEKS"), 
+by="retID",
+title="Jackknife box-plots for milk products")
+#displaying a data frame with basic characteristics of the calculated indices
+comparison$results
+```
+
+```{r}
+#displaying box-plotes created for the price index values obtained by using the jackknife method:
+comparison$figure
+```
+
+<a id="ad13">   </a>
+
+There are two package functions for calculating price and quantity indicators. The **bennet** function returns the (bilateral) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mbennet** function returns the multilateral (transitive) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. For instance, the following command calculates the Bennet price and quantity indicators for milk products:
+
+```{r}
+bennet(milk, start = "2018-12", end = "2019-12", interval=TRUE)
+```
+
+where price and quantity contributions of each subgroups of milk products
+can be obtained as follows:
+
+```{r}
+milk$prodID<-milk$description
+bennet(milk, start = "2018-12", end = "2019-12", contributions = TRUE)
+```
