@@ -26,7 +26,7 @@ compare_indices_jk(
 
 \item{end}{The research period (as character) limited to the year and month, e.g. "2020-04".}
 
-\item{by}{A character string which indicates a column name for creating product subgroups (in the classical jackknife method \code{by} should indicate \code{prodID}).}
+\item{by}{A character string which indicates a column name for creating product subgroups (in the classical jackknife method \code{by} should indicate \code{prodID}). In each, successive repetition, the indicated price indexes are counted on the set of products reduced by the subset determined by the successive element of the column indicated by the \code{by} parameter.}
 
 \item{formula}{A vector of character strings indicating price index formulas that are to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.}
 
@@ -45,7 +45,7 @@ compare_indices_jk(
 \item{title}{A character string indicating a title of the created box-plot.}
 }
 \value{
-This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: \code{results}, which is a data frame with basic characteristics of the calculated indices, and \code{figure} which presents a box-plot for the considered indices.
+This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: \code{results}, which is a data frame with basic characteristics of the calculated indices (means and standard deviations) , and \code{figure} which presents a box-plot for the considered indices.
 }
 \description{
 This function presents a comparison of selected indices obtained by using the jackknife method.

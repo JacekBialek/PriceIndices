@@ -215,7 +215,7 @@ compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = 
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also essential even if the selected index is an unweighted formula (unit values are calculated). 
 #' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
-#' @param by A character string which indicates a column name for creating product subgroups (in the classical jackknife method \code{by} should indicate \code{prodID}).
+#' @param by A character string which indicates a column name for creating product subgroups (in the classical jackknife method \code{by} should indicate \code{prodID}). In each, successive repetition, the indicated price indexes are counted on the set of products reduced by the subset determined by the successive element of the column indicated by the \code{by} parameter.
 #' @param formula A vector of character strings indicating price index formulas that are to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.
 #' @param window A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index.
 #' @param splice A vector of character strings. Each element of the vector indicates the splicing method is to be used for the corresponding multilateral index. Available values of vector elements are: "movement", "window","half","mean" and their additional variants: "window_published", "half_published" and "mean_published".
@@ -225,7 +225,7 @@ compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = 
 #' @param names A vector of strings indicating names of indices which are to be used in the resulting data frame.
 #' @param title A character string indicating a title of the created box-plot.
 #' @rdname compare_indices_jk
-#' @return This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: \code{results}, which is a data frame with basic characteristics of the calculated indices, and \code{figure} which presents a box-plot for the considered indices.
+#' @return This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: \code{results}, which is a data frame with basic characteristics of the calculated indices (means and standard deviations) , and \code{figure} which presents a box-plot for the considered indices.
 #' @references
 #' {Quenouille, M.H. (1956). \emph{Notes on bias in estimation}. Biometrika, 43 (3–4), 353–360}
 #'
