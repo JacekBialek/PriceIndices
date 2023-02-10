@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -112,12 +107,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.95         20      1     1
-#> 2 2020-01-01   2.67         21      2     1
-#> 3 2020-01-01   2.87         23      3     1
-#> 4 2020-01-01   2.98         22      4     1
-#> 5 2020-01-01   2.65         21      5     1
-#> 6 2020-01-01   2.67         20      6     1
+#> 1 2020-01-01   2.71         20      1     1
+#> 2 2020-01-01   2.67         20      2     1
+#> 3 2020-01-01   3.00         23      3     1
+#> 4 2020-01-01   2.96         20      4     1
+#> 5 2020-01-01   2.80         19      5     1
+#> 6 2020-01-01   2.76         18      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -138,12 +133,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-08   2.74  3.1582043      1     1
-#> 2 2020-01-04   2.80  4.2876173      2     1
-#> 3 2020-01-13   2.48  3.0196874      3     1
-#> 4 2020-01-09   2.93  3.9875946      4     1
-#> 5 2020-01-03   2.77  7.6189109      5     1
-#> 6 2020-01-20   2.87  0.8750079      6     1
+#> 1 2020-01-28   2.70  1.6832902      1     1
+#> 2 2020-01-02   2.81  1.3307502      2     1
+#> 3 2020-01-28   2.81  1.2364641      3     1
+#> 4 2020-01-25   2.58  2.6228021      4     1
+#> 5 2020-01-12   2.84  0.3782135      5     1
+#> 6 2020-01-02   2.73  0.4932179      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -796,19 +791,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.889326
-#> 2  14216 1.319037
-#> 3  15404 1.674013
-#> 4  17034 1.490368
-#> 5  34540 1.524934
-#> 6  51583 1.041316
+#> 1  14215 1.363819
+#> 2  14216 1.933406
+#> 3  15404 1.835475
+#> 4  17034 1.097723
+#> 5  34540 1.241958
+#> 6  51583 1.234011
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9684493
+#> [1] 1.006895
 ```
 
 <a id="ad8"> </a>
