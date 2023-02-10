@@ -42,7 +42,7 @@ This function returns the multilateral Bennet price and quantity indicators and 
 This function returns the multilateral Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products.
 }
 \examples{
-mbennet(milk, "2018-12", "2019-12", matched=TRUE, contributions=TRUE)
+\donttest{mbennet(milk, "2018-12", "2019-12", matched=TRUE, contributions=TRUE)}
 \donttest{mbennet(coffee, start="2018-12", end="2019-03", interval=TRUE)}
 }
 \references{

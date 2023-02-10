@@ -18,7 +18,7 @@
 #'
 #' {Fox, K.J., (2006). \emph{A Method for Transitive and Additive Multilateral Comparisons: A Transitive Bennet Indicator}. Journal of Economics, 87(1), 73-87.}
 #' @examples 
-#' mbennet(milk, "2018-12", "2019-12", matched=TRUE, contributions=TRUE)
+#' \donttest{mbennet(milk, "2018-12", "2019-12", matched=TRUE, contributions=TRUE)}
 #' \donttest{mbennet(coffee, start="2018-12", end="2019-03", interval=TRUE)}
 #' @export
 

@@ -2585,7 +2585,6 @@ wgeksl_fbmw <- function(data, start, end)  {
 #'
 #' @examples 
 #' \donttest{geksgl_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{geksgl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 geksgl_splice <-

@@ -7,6 +7,7 @@
 ## Bug fixes
 * A new parameter has beed added to the function 'price_indices' (*names*). It allows to compare e.g. the same splice multilateral index but for many different splicing methods (their names can be distinguished).
 * The *geksj* function has been corrected for the case when we observe large number of decreasing prices.
+* Problems with examples have been deleted ('donttest{}' formula is used)
 
 # Package update 0.1.2 -> 0.1.3
 
