@@ -2,6 +2,7 @@
 
 ## New functions
 * New functions for bennet price and quantity indicators have been added (*bennet* and *mbennet*).
+* New function for comparison of price indices by using the jackknife method has been added (*compare_indices_jk*).
 
 ## Bug fixes
 * A new parameter has beed added to the function 'price_indices' (*names*). It allows to compare e.g. the same splice multilateral index but for many different splicing methods (their names can be distinguished).

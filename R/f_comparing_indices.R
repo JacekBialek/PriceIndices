@@ -209,6 +209,121 @@ compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = 
 }
 
 
-
+#' @title  A general function to compare indices by using the jackknife method
+#'
+#' @description This function presents a comparison of selected indices obtained by using the jackknife method. 
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also essential even if the selected index is an unweighted formula (unit values are calculated). 
+#' @param start The base period (as character) limited to the year and month, e.g. "2019-12".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param by A character string which indicates a column name for creating product subgroups (in the classical jackknife method \code{by} should indicate \code{prodID}).
+#' @param formula A vector of character strings indicating price index formulas that are to be calculated. To see available options please use the link: \code{\link{PriceIndices}}.
+#' @param window A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index.
+#' @param splice A vector of character strings. Each element of the vector indicates the splicing method is to be used for the corresponding multilateral index. Available values of vector elements are: "movement", "window","half","mean" and their additional variants: "window_published", "half_published" and "mean_published".
+#' @param base The vector of prior periods used in the Young- or Lowe-type price indices or hybrid/geohybrid index. Each element of the vector (as character) must be limited to the year and month, e.g. "2020-01".
+#' @param sigma The vector of elasticity of substitution parameters used in the Lloyed-Moulton, AG Mean or GEKS-LM indices (as numeric).
+#' @param r The vector of non-zero parameters used in the quadratic mean of order r quantity / price index or in the GEKS-QM index (as numeric).
+#' @param names A vector of strings indicating names of indices which are to be used in the resulting data frame.
+#' @param title A character string indicating a title of the created box-plot.
+#' @rdname compare_indices_jk
+#' @return This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: \code{results}, which is a data frame with basic characteristics of the calculated indices, and \code{figure} which presents a box-plot for the considered indices.
+#' @references
+#' {Quenouille, M.H. (1956). \emph{Notes on bias in estimation}. Biometrika, 43 (3–4), 353–360}
+#'
+#' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
+#' @examples 
+#' \donttest{#creating a list with jackknife results
+#' comparison<-compare_indices_jk(milk,
+#' formula=c("jevons","fisher","geks"),
+#' start="2018-12",
+#' end="2019-12", 
+#' window=c(13),
+#' names=c("Jevons","Fisher","GEKS"), 
+#' by="retID",
+#' title="Jackknife box-plots for milk products")
+#' #displaying results
+#' comparison$results
+#' comparison$figure}
+#' @export
+  
+compare_indices_jk<-function(data, 
+                   start, 
+                   end,
+                   by="prodID",
+                   formula =c(),
+                   window=c(),
+                   splice=c(),
+                   base=c(),
+                   sigma=c(),
+                   r=c(),
+                   names=c(), 
+                   title=c())
+{
+value<-NULL
+if (length(by)==0) stop("You must indicate a column for grouping (see 'by' parameter)!")
+av_col<-colnames(data)
+if (!(by %in% av_col)) stop("Bad specification of the 'by' parameter!")
+data$help<-data$prodID
+colnames(data)[which(colnames(data)==by)]<-"groupID" 
+data$prodID<-data$help
+data$help<-NULL
+#sampling a subset of products
+reduce<-function(x) 
+{
+  subset<-dplyr::filter(data, !(data$groupID==x))
+  return (subset)
+}
+list_group<-lapply(unique(data$groupID),reduce) 
+price_index_help<-function (set)
+return (price_indices(data=set, 
+                   start=start, 
+                   end=end,
+                   formula=formula,
+                   window=window,
+                   splice=splice,
+                   base=base,
+                   sigma=sigma,
+                   r=r,
+                   names=names,
+                   interval=FALSE))
+list_indices<-lapply(list_group,price_index_help)
+n<-length(list_indices) #number of calculated indices
+list_joined<-dplyr::bind_rows(list_indices)
+#jack-knife estimates
+indices<-price_indices(data=data, 
+                   start=start, 
+                   end=end,
+                   formula=formula,
+                   window=window,
+                   splice=splice,
+                   base=base,
+                   sigma=sigma,
+                   r=r,
+                   names=names,
+                   interval=FALSE)
+indices_names<-unique(indices$price_index)
+global_index<-c()
+mean_index<-c()
+sd_index<-c()
+for (index in indices_names)
+{ #global value
+  teta<-NULL
+  index_values<-NULL
+  teta<-dplyr::filter(indices, indices$price_index==index)$value
+  index_values<-dplyr::filter(list_joined, list_joined$price_index==index)$value
+  index_values<-n*teta-(n-1)*index_values
+  global_index<-c(global_index, teta)
+  mean_index<-c(mean_index, mean(index_values))
+  sd_index<-c(sd_index, stats::sd(index_values))
+  }
+df<-data.frame(index=indices_names, 
+               all_products=global_index,
+               mean_jack_knife=mean_index, 
+               sd_jack_knife=sd_index)
+#box-plot for index values
+figure<-ggplot2::ggplot(data=list_joined, 
+                        mapping=ggplot2::aes(x=price_index, y=value))+ggplot2::geom_boxplot()+ggplot2::xlab("price index")+ggplot2::ylab("price index value")
+if (length(title)>0) figure<-figure+ggplot2::labs(title=title)
+return (list(results=df,figure=figure))
+}
 
 

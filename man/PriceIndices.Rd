@@ -445,6 +445,8 @@ The list of package functions is as follows:
 
 \code{\link{compare_indices_list}}
 
+\code{\link{compare_indices_jk}}
+
 \code{\link{compare_distances}}
 
 \code{\link{compare_to_target}}
