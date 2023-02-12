@@ -1350,9 +1350,9 @@ walsh <-
   quantities(data2, period = start, set = id)
   result <-
   c(result, sum(
-  price_end * (quantity_start * quantity_end) ^ (0.5) / sum(price_start *
+  price_end * (quantity_start * quantity_end) ^ (0.5)) / sum(price_start *
   (quantity_start * quantity_end) ^ (0.5))
-  ))
+  )
   lubridate::month(end) <-
   lubridate::month(end) + 1
   }
@@ -1382,9 +1382,9 @@ walsh <-
   quantity_start <-
   quantities(data, period = start, set = id)
   return(sum(
-  price_end * (quantity_start * quantity_end) ^ (0.5) / sum(price_start *
+  price_end * (quantity_start * quantity_end) ^ (0.5)) / sum(price_start *
   (quantity_start * quantity_end) ^ (0.5))
-  ))
+  )
   }
   }
   
