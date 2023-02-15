@@ -16,7 +16,9 @@ data_preparing(
   codeOUT = NULL,
   grammage = NULL,
   unit = NULL,
-  additional = c()
+  additional = c(),
+  zero_prices = FALSE,
+  zero_quantities = TRUE
 )
 }
 \arguments{
@@ -43,9 +45,13 @@ data_preparing(
 \item{unit}{A character name of the column which provides the unit of the grammage of products}
 
 \item{additional}{A character vector of names of additional columns to be considered while data preparing (records with missing values are deleted).}
+
+\item{zero_prices}{A logical parameter indicating whether zero prices are to be acceptable.}
+
+\item{zero_quantities}{A logical parameter indicating whether zero quantities are to be acceptable.}
 }
 \value{
-The resulting data frame is free from missing values, zero or negative prices and quantities. As a result, column \code{time} is set to be Date type (in format: `Year-Month-01`), columns \code{prices} and \code{quantities} are set to be numeric. If the column \code{description} is selected, then it is set to be character type. If columns: \code{prodID}, \code{retID}, \code{codeIN} or  \code{codeOUT} are selected, then they are set to be factor type.
+The resulting data frame is free from: missing values, negative prices (if \code{zero_prices} is set to TRUE), zero or negative prices (if \code{zero_prices} is set to FALSE), negative quantities (if \code{zero_quantities} is set to TRUE) and zero and negative quantities (if \code{zero_prices} is set to FALSE). As a result, column \code{time} is set to be Date type (in format: `Year-Month-01`), columns \code{prices} and \code{quantities} are set to be numeric. If the column \code{description} is selected, then it is set to be character type. If columns: \code{prodID}, \code{retID}, \code{codeIN} or  \code{codeOUT} are selected, then they are set to be factor type.
 }
 \description{
 This function returns a prepared data frame based on the user's data set. The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains required columns).

@@ -33,7 +33,7 @@ This function returns a value or values (depending on \code{interval} parameter)
 This function returns a value (or values) of the multilateral GEKS-GAQI price index extended by using window splicing methods. Available splicing methods are: movement splice, window splice, half splice, mean splice and their additional variants: window splice on published indices (WISP), half splice on published indices (HASP) and mean splice on published indices (see \code{References}).
 }
 \examples{
-\donttest{geksgaqi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+\donttest{geksgaqi_splice(milk, start="2018-12", end="2020-01",window=10)}
 }
 \references{
 {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}

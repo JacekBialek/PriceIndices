@@ -21,7 +21,6 @@
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #' @examples 
 #' \donttest{geks_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{geks_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 geks_splice <-
@@ -277,7 +276,6 @@ geks_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #' @examples 
 #' \donttest{geksw_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{geksw_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 geksw_splice <-
@@ -536,7 +534,6 @@ geksw_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #' @examples 
 #' \donttest{geksj_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{geksj_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 geksj_splice <-
@@ -794,7 +791,6 @@ geksj_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #' @examples 
 #' \donttest{ccdi_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{ccdi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 ccdi_splice <-
@@ -1040,7 +1036,6 @@ ccdi_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #' @examples 
 #' \donttest{gk_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{gk_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 gk_splice <-
@@ -1283,7 +1278,6 @@ gk_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #' @examples 
 #' \donttest{tpd_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{tpd_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 tpd_splice <-
@@ -1531,7 +1525,6 @@ tpd_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #' @examples 
 #' \donttest{utpd_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{utpd_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 utpd_splice <-
@@ -1777,7 +1770,6 @@ utpd_fbmw <- function(data, start, end)  {
 #'
 #' @examples 
 #' \donttest{wgeks_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{wgeks_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 wgeks_splice <-
@@ -2041,7 +2033,6 @@ wgeks_fbmw <- function(data, start, end)  {
 #'
 #' @examples 
 #' \donttest{geksl_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{geksl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 geksl_splice <-
@@ -2313,7 +2304,6 @@ geksl_fbmw <- function(data, start, end)  {
 #'
 #' @examples 
 #' \donttest{wgeksl_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{wgeksl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 wgeksl_splice <-
@@ -2857,7 +2847,6 @@ geksgl_fbmw <- function(data, start, end)  {
 #'
 #' @examples 
 #' \donttest{wgeksgl_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{wgeksgl_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 wgeksgl_splice <-
@@ -3128,7 +3117,6 @@ wgeksgl_fbmw <- function(data, start, end)  {
 #'
 #' @examples 
 #' \donttest{geksaqu_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{geksaqu_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 geksaqu_splice <-
@@ -3394,7 +3382,6 @@ geksaqu_fbmw <- function(data, start, end)  {
 #'
 #' @examples 
 #' \donttest{wgeksaqu_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{wgeksaqu_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 wgeksaqu_splice <-
@@ -3661,7 +3648,6 @@ wgeksaqu_fbmw <- function(data, start, end)  {
 #'
 #' @examples 
 #' \donttest{geksaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{geksaqi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 geksaqi_splice <-
@@ -3927,7 +3913,6 @@ geksaqi_fbmw <- function(data, start, end)  {
 #'
 #' @examples 
 #' \donttest{wgeksaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{wgeksaqi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 wgeksaqi_splice <-
@@ -4193,7 +4178,7 @@ wgeksaqi_fbmw <- function(data, start, end)  {
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' @examples 
-#' \donttest{geksgaqi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
+#' \donttest{geksgaqi_splice(milk, start="2018-12", end="2020-01",window=10)}
 #' @export
 
 geksgaqi_splice <-
@@ -4454,7 +4439,6 @@ geksgaqi_fbmw <- function(data, start, end)  {
 #'
 #' @examples 
 #' \donttest{wgeksgaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
-#' \donttest{wgeksgaqi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 #' @export
 
 wgeksgaqi_splice <-
@@ -4714,7 +4698,6 @@ wgeksgaqi_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #' @examples 
 #' \donttest{geksiqm_splice(milk, start="2018-12", end="2020-02", r=0.8, splice="half")}
-#' \donttest{geksiqm_splice(milk, start="2018-12", end="2020-02", window=10, interval=TRUE)}
 #' @export
 
 geksiqm_splice <-
@@ -4975,7 +4958,6 @@ geksiqm_fbmw <- function(data, start, end, r)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #' @examples 
 #' \donttest{geksqm_splice(milk, start="2018-12", end="2020-02", r=0.8, splice="half")}
-#' \donttest{geksqm_splice(milk, start="2018-12", end="2020-02", window=10, interval=TRUE)}
 #' @export
 
 geksqm_splice <-
@@ -5237,7 +5219,6 @@ geksqm_fbmw <- function(data, start, end, r)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #' @examples 
 #' \donttest{gekslm_splice(milk, start="2018-12", end="2020-02", sigma=0.8, splice="half")}
-#' \donttest{gekslm_splice(milk, start="2018-12", end="2020-02", window=10, interval=TRUE)}
 #' @export
 
 gekslm_splice <-

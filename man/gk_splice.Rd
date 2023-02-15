@@ -27,7 +27,6 @@ This function returns a value (or values) of the multilateral Geary-Khamis price
 }
 \examples{
 \donttest{gk_splice(milk, start="2018-12", end="2020-02",splice="half")}
-\donttest{gk_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 }
 \references{
 {Chessa, A. G. (2019). \emph{A Comparison of Index Extension Methods for Multilateral Methods.} Paper presented at the 16th Meeting of the Ottawa Group on Price Indices, 8-10 May 2019, Rio de Janeiro, Brazil.}

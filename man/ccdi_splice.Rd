@@ -34,7 +34,6 @@ This function returns a value (or values) of the multilateral CCDI price index (
 }
 \examples{
 \donttest{ccdi_splice(milk, start="2018-12", end="2020-02",splice="half")}
-\donttest{ccdi_splice(milk, start="2018-12", end="2020-02",window=10,interval=TRUE)}
 }
 \references{
 {Caves, D.W., Christensen, L.R. and Diewert, W.E. (1982). \emph{Multilateral comparisons of output, input, and productivity using superlative index numbers.} Economic Journal 92, 73-86.}

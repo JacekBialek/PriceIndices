@@ -14,8 +14,10 @@
 #' @param grammage A character name of the numeric column which provides the grammage of products
 #' @param unit A character name of the column which provides the unit of the grammage of products
 #' @param additional A character vector of names of additional columns to be considered while data preparing (records with missing values are deleted).
+#' @param zero_prices A logical parameter indicating whether zero prices are to be acceptable.
+#' @param zero_quantities A logical parameter indicating whether zero quantities are to be acceptable.
 #' @rdname data_preparing
-#' @return The resulting data frame is free from missing values, zero or negative prices and quantities. As a result, column \code{time} is set to be Date type (in format: `Year-Month-01`), columns \code{prices} and \code{quantities} are set to be numeric. If the column \code{description} is selected, then it is set to be character type. If columns: \code{prodID}, \code{retID}, \code{codeIN} or  \code{codeOUT} are selected, then they are set to be factor type.
+#' @return The resulting data frame is free from: missing values, negative prices (if \code{zero_prices} is set to TRUE), zero or negative prices (if \code{zero_prices} is set to FALSE), negative quantities (if \code{zero_quantities} is set to TRUE) and zero and negative quantities (if \code{zero_prices} is set to FALSE). As a result, column \code{time} is set to be Date type (in format: `Year-Month-01`), columns \code{prices} and \code{quantities} are set to be numeric. If the column \code{description} is selected, then it is set to be character type. If columns: \code{prodID}, \code{retID}, \code{codeIN} or  \code{codeOUT} are selected, then they are set to be factor type.
 #'
 #' @examples 
 #' \donttest{data_preparing(milk, time="time",prices="prices",quantities="quantities")}
@@ -35,7 +37,9 @@ data_preparing <-
   codeOUT = NULL,
   grammage = NULL,
   unit = NULL,
-  additional = c())
+  additional = c(),
+  zero_prices=FALSE,
+  zero_quantities=TRUE)
   {
   if (nrow(data) == 0)
   stop("A data frame is empty")
@@ -132,10 +136,16 @@ data_preparing <-
   data <- dplyr::select(data, variables)
   #filtering
   data <- stats::na.omit(data)
-  data <- dplyr::filter(data, data$prices > 0 & data$quantities > 0)
+  if ((zero_prices==TRUE) & (zero_quantities==TRUE))
+    data <- dplyr::filter(data, data$prices >= 0 & data$quantities >= 0)
+  if ((zero_prices==TRUE) & (zero_quantities==FALSE))
+    data <- dplyr::filter(data, data$prices >= 0 & data$quantities > 0)
+  if ((zero_prices==FALSE) & (zero_quantities==TRUE))
+    data <- dplyr::filter(data, data$prices > 0 & data$quantities >= 0)
+  if ((zero_prices==FALSE) & (zero_quantities==FALSE))
+    data <- dplyr::filter(data, data$prices > 0 & data$quantities > 0)
   return(data)
   }
-  
 
 #' @title  Matching products 
 #'
@@ -2391,4 +2401,249 @@ return (fig)
      }
 }
 
+#' @title  Imputing missing and (optionally) zero prices.
+#'
+#' @description This function imputes missing prices and (optionally) zero prices by using carry forward/backward prices. 
+#'
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as numeric), \code{quantities} (as numeric - for future calculations) and \code{prodID} (as numeric, factor or character). A column \code{retID} (as factor, character or numeric) is also needed if the User wants to impute prices over outlets.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param zero_prices A logical parameter indicating whether zero prices are to be imputed too (then it is set to TRUE).
+#' @param outlets A logical parameter indicating whether imputations are to be done for each outlet separately (then it is set to TRUE).
+#' @rdname data_imputing
+#' @return This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the \code{outlets} parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame which is ready for price index calculations.
+#'
+#' @examples 
+#' \donttest{
+#' # Preparing a data set with zero and missing prices:
+#' dataMATCH$prodID<-dataMATCH$codeIN 
+#' data<-dplyr::select(dataMATCH, time, prices, quantities, prodID, retID)
+#' set1<-data[1:5,]
+#' set1$prices<-0
+#' set2<-data[6:30,]
+#' df<-rbind(set1, set2)
+#' # Price imputing:
+#' data_imputing(df, start="2018-12", end="2019-03",
+#'              zero_prices=TRUE,
+#'              outlets=TRUE)}
+#' @export
 
+data_imputing<-function (data, start, end, 
+                         zero_prices=TRUE, 
+                         outlets=TRUE)
+{
+#initial step:
+if (nrow(data) == 0)
+  stop("A data frame is empty")
+time<-prodID<-retID<-label<-NULL
+start <- paste(start, "-01", sep = "")
+end <- paste(end, "-01", sep = "")
+start <- as.Date(start)
+end <- as.Date(end)
+data<-dplyr::filter(data, time>=start & time<=end)
+dates <- seq.Date(from = start, to = end, by = "month")
+dates<-substr(dates,0,7)
+#available prodIDs
+#helping function for forward-backward procedure
+help<-function (x, set)
+{
+  s<-set[which(set<x)]
+  if (length(s)>0) s<-max(s)
+  else s<-min(set[which(set>x)])
+  return (s)
+}
+#main procedure
+impute_prices<-function (data.)
+{  
+# case with no aggregation over outlets and over groups 
+av_ID<-unique(data.$prodID)
+data.<-data_aggregating (data., join_outlets=TRUE)
+if (zero_prices==TRUE) data.<-dplyr::filter(data., prices>0)
+#procedure for each prodID
+prices<-c()
+impute<-function (id)
+{
+df<-dplyr::filter(data., prodID==id)
+av_dates<-substr(unique(df$time),0,7) #available dates
+imp_dates<-setdiff(dates, av_dates)   #dates which require imputation
+if (length(imp_dates)==0) return (df)
+else {
+av_n<-match(av_dates, dates)
+imp_n<-match(imp_dates, dates)
+for (x in imp_n) prices<-c(prices, prices(df,
+                                period=dates[help(x,av_n)],
+                                set=id,
+                                ID=FALSE))
+imp_dates<-paste(imp_dates,"-01",sep="")
+imp_dates<-as.Date(imp_dates)
+df2<-data.frame(
+  time=imp_dates,
+  prices=prices,
+  quantities=rep(0,length(prices)),
+  prodID=rep(id, length(prices))
+)
+return (rbind(df,df2))
+}
+}
+result_list<-lapply(av_ID, impute)
+result_list<-dplyr::bind_rows(result_list)
+return (dplyr::select(result_list, time, prices, quantities, prodID))
+}
+#results
+if (outlets==FALSE) return (impute_prices(data))
+else
+{
+impute_prices_list<-function (data.)
+{retID<-unique(data.$retID)
+ df_list<-impute_prices(data.)
+ df_list$retID<-retID
+ return (df_list)
+}
+outlets<-split(data, data$retID)
+result_list<-lapply(outlets, impute_prices_list)
+result_list<-dplyr::bind_rows(result_list)
+return (dplyr::select(result_list, time, prices, quantities, prodID, retID))
+}
+}
+
+#' @title  Detecting and summarising available, matched, new and disappearing products.
+#'
+#' @description This function detects and summarises available, matched, new as well as disappearing products on the basis of their prodIDs. 
+#'
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01') and \code{prodID} (as numeric, factor or character). 
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @rdname products
+#' @return This function detects and summarises available, matched, new and disappearing products on the basis of their prodIDs. It compares products from the base period (\code{start}) with products from the current period (\code{end}). It returns a list containing the following objects: \code{details} with prodIDs of available, matched, new and disappearing products, \code{statistics} with basic statistics for them and \code{figure} with a pie chart describing a contribution of matched, new and disappearing products in a set of available products.
+#'
+#' @examples 
+#' \donttest{list<-products(milk, "2018-12","2019-12")
+#' list$details
+#' list$statistics
+#' list$figure
+#' }
+#' @export
+
+
+products<-function(data, start, end)
+{
+if (nrow(data) == 0)
+  stop("A data frame is empty")
+label<-volume<-NULL
+start <- paste(start, "-01", sep = "")
+end <- paste(end, "-01", sep = "")
+start <- as.Date(start)
+end <- as.Date(end) 
+d_start<-dplyr::filter(
+    data,
+    lubridate::year(data$time) == lubridate::year(start) &
+    lubridate::month(data$time) == lubridate::month(start)
+    )
+d_end<-dplyr::filter(
+    data,
+    lubridate::year(data$time) == lubridate::year(end) &
+    lubridate::month(data$time) == lubridate::month(end)
+    )
+available_prodID<-base::union(d_start$prodID,d_end$prodID)
+matched_prodID<-base::intersect(d_start$prodID,d_end$prodID)
+new_prodID<-base::setdiff(d_end$prodID,d_start$prodID)
+disappearing_prodID<-base::setdiff(d_start$prodID,d_end$prodID)
+#list with summary of products
+summary_prodID<-list(available_prodID=available_prodID,
+              matched_prodID=matched_prodID,
+              new_prodID=new_prodID,
+              disappearing_prodID=disappearing_prodID)
+#product statistics
+df_prodID<-data.frame(
+  products=c("available","matched","new","disappearing"),
+  volume=c(length(available_prodID), length(matched_prodID),
+           length(new_prodID),length(disappearing_prodID)),
+  shares=c(100, round(100*length(matched_prodID)/length(available_prodID),2),
+           round(100*length(new_prodID)/length(available_prodID),2),
+           round(100*length(disappearing_prodID)/length(available_prodID),2)))
+#figure with product statistics
+df<-df_prodID[2:4,]
+df$label<-as.character(round(df$shares, 2))
+df$label<-paste(df$label,"%")
+figure<-ggplot2::ggplot(df, 
+    ggplot2::aes(x = "", y = volume, fill = products)) +
+    ggplot2::geom_bar(width = 1, stat = "identity", color = "black") +
+    ggplot2::coord_polar("y", start = 0)+
+    ggplot2::geom_text(ggplot2::aes(y = volume, label = label), 
+                       color = "black",
+                       position = ggplot2::position_stack(vjust = 0.5))+
+    ggplot2::theme_void()
+return (list(details=summary_prodID,statistics=df_prodID,figure=figure))
+}
+
+#' @title  Function for graphical comparison of available, matched, new as well as disappearing products.
+#'
+#' @description This function returns a figure with plots of volume (or contributions) of available, matched, new as well as disappearing products. 
+#' 
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01') and \code{prodID} (as numeric, factor or character). 
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param show A character vector indicating which groups of products are to be taken into consideration. Available options are \code{available}, \code{matched}, \code{new} and \code{disappearing}. 
+#' @param fixed_base A logical parameter indicating whether each month is to be compared to the base period (TRUE) or to the previous month (then it is set to FALSE).
+#' @param contributions A logical parameter indicating whether contributions or volumes counted for available, matched, new and disappearing products are to be displayed.
+#' @param date_breaks A string giving the distance between breaks on the X axis like "1 month" (default value) or "4 months".
+#' @rdname products_figure
+#' @return This function returns a figure with plots of volume (or contributions) of available, matched, new as well as disappearing products. The User may control which groups of products are to be taken into consideration. Available options are \code{available}, \code{matched}, \code{new} and \code{disappearing}.
+#'
+#' @examples 
+#' \donttest{products_figure(milk, "2018-12","2019-04", 
+#' fixed_base=TRUE, contributions=FALSE,
+#' show=c("new","disappearing","matched","available"))}
+#' @export
+
+products_figure<-function(data, 
+                          start, 
+                          end, 
+                          show=c("available","matched","new","disappearing"),
+                          fixed_base=TRUE, 
+                          contributions=TRUE, 
+                          date_breaks="1 month")
+{
+if (nrow(data) == 0)
+  stop("A data frame is empty")
+av_show<-c("available","matched","new","disappearing")
+for (s in show) if (!(s %in% av_show))
+  stop ("There is a typo in 'show' !") 
+start <- paste(start, "-01", sep = "")
+end <- paste(end, "-01", sep = "")
+start <- as.Date(start)
+end <- as.Date(end)
+dates <- seq.Date(from = start, to = end, by = "month")
+dates<-substr(dates, 0, 7)  
+#helping function for the fixed base case
+f_base_help<-function (t) { df_prod<-products(data=data,start=dates[1],end=dates[t])$statistics
+df_prod$time<-dates[t]
+return (df_prod)
+  }
+#helping function for the chain case
+f_chain_help<-function (t) { df_prod<-products(data=data,start=dates[t-1],end=dates[t])$statistics
+df_prod$time<-dates[t]
+return (df_prod)
+  }  
+#creating a data frame with results
+if (fixed_base==TRUE) list_df<-lapply(seq(2,length(dates)),f_base_help)
+else list_df<-lapply(seq(2,length(dates)),f_chain_help)
+df<-dplyr::bind_rows(list_df)
+df$time <- as.Date(paste(df$time, "-01", sep = ""))
+df$products<-as.character(df$products)
+df<-dplyr::filter(df, df$products %in% show)
+time<-volume<-products<-shares<-figure<-NULL
+if (contributions==TRUE) {#graphical presentation of shares
+figure<-ggplot2::ggplot(df, ggplot2::aes(x = time, y = shares, col = products)) + ggplot2::geom_point() +
+ggplot2::geom_line() + ggplot2::labs(x = "date", y = "contribution value [%]") +
+ggplot2::scale_x_date(date_labels = "%Y %m", date_breaks  = date_breaks) +
+ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))   
+}
+else {#graphical presentation of volumes
+figure<-ggplot2::ggplot(df, ggplot2::aes(x = time, y = volume, col = products)) + ggplot2::geom_point() +
+ggplot2::geom_line() + ggplot2::labs(x = "date", y = "volume") +
+ggplot2::scale_x_date(date_labels = "%Y %m", date_breaks  = date_breaks) +
+ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) 
+}
+return (figure)
+}
