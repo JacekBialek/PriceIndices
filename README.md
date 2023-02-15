@@ -1,3 +1,8 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -107,12 +112,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.71         20      1     1
-#> 2 2020-01-01   2.67         20      2     1
-#> 3 2020-01-01   3.00         23      3     1
-#> 4 2020-01-01   2.96         20      4     1
-#> 5 2020-01-01   2.80         19      5     1
-#> 6 2020-01-01   2.76         18      6     1
+#> 1 2020-01-01   2.73         25      1     1
+#> 2 2020-01-01   2.62         18      2     1
+#> 3 2020-01-01   2.72         20      3     1
+#> 4 2020-01-01   3.05         17      4     1
+#> 5 2020-01-01   2.69         17      5     1
+#> 6 2020-01-01   2.71         19      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -133,12 +138,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-28   2.70  1.6832902      1     1
-#> 2 2020-01-02   2.81  1.3307502      2     1
-#> 3 2020-01-28   2.81  1.2364641      3     1
-#> 4 2020-01-25   2.58  2.6228021      4     1
-#> 5 2020-01-12   2.84  0.3782135      5     1
-#> 6 2020-01-02   2.73  0.4932179      6     1
+#> 1 2020-01-04   2.81  6.3090078      1     1
+#> 2 2020-01-08   2.69  6.5630742      2     1
+#> 3 2020-01-09   2.71  0.7107194      3     1
+#> 4 2020-01-02   2.75  0.1016913      4     1
+#> 5 2020-01-21   2.62  6.6621530      5     1
+#> 6 2020-01-09   2.73  2.2953316      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -155,7 +160,7 @@ elasticity(df, start="2020-01",end="2020-02")
 
 **data\_preparing**
 
-This function returns a prepared data frame based on the user's data set (you can check if your data set it is suitable for further price index calculation by using **data\_check** function). The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains the required columns). The resulting data frame is free from missing values, zero or negative prices and quantities. As a result, the column **time** is set to be **Date** type (in format: 'Year-Month-01'), while the columns **prices** and **quantities** are set to be **numeric**. If the **description** parameter is set to *TRUE* then the column **description** is set to be **character** type (otherwise it is deleted). Please note that the **milk** set is an already prepared dataset but let us assume for a moment that we want to make sure that it does not contain missing values and we do not need the column **description** for further calculations. For this purpose, we use the **data\_preparing** function as follows:
+This function returns a prepared data frame based on the user's data set (you can check if your data set it is suitable for further price index calculation by using **data\_check** function). The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains the required columns). The resulting data frame is free from missing values, negative and (optionally) zero prices and quantities. As a result, the column **time** is set to be **Date** type (in format: 'Year-Month-01'), while the columns **prices** and **quantities** are set to be **numeric**. If the **description** parameter is set to *TRUE* then the column **description** is set to be **character** type (otherwise it is deleted). Please note that the **milk** set is an already prepared dataset but let us assume for a moment that we want to make sure that it does not contain missing values and we do not need the column **description** for further calculations. For this purpose, we use the **data\_preparing** function as follows:
 
 ``` r
 head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
@@ -166,6 +171,29 @@ head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
 #> 4 2019-02-01   8.78        8.0
 #> 5 2019-03-01   8.78        0.5
 #> 6 2019-03-01   8.78        1.5
+```
+
+**data\_imputing**
+
+This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the outlets parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame which is ready for price index calculations, for instance:
+
+``` r
+#Creating a data frame with zero prices (df)
+data<-dplyr::filter(milk,time>=as.Date("2018-12-01") & time<=as.Date("2019-03-01"))
+sample<-dplyr::sample_n(data, 100)
+rest<-setdiff(data, sample)
+sample$prices<-0
+df<-rbind(sample, rest)
+#The Fisher price index calculated for the original data set
+fisher(df, "2018-12","2019-03")
+#> [1] 1.029504
+#Zero price imputations:
+df2<-data_imputing(df, start="2018-12", end="2019-03",
+              zero_prices=TRUE,
+              outlets=TRUE)
+#The Fisher price index calculated for the data set with imputed prices:
+fisher(df2, "2018-12","2019-03")
+#> [1] 1.027674
 ```
 
 **data\_aggregating**
@@ -301,7 +329,7 @@ We can watch the results of the whole training process:
 ML$figure_training
 ```
 
-<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" />
 
 or we can observe the importance of the used indicators:
 
@@ -309,7 +337,7 @@ or we can observe the importance of the used indicators:
 ML$figure_importance
 ```
 
-<img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" />
 
 Now, let us save the model on the disk. After saving the model we can load it and use at any time:
 
@@ -476,7 +504,7 @@ The function returns a **data frame** or a **figure** presenting the **matched\_
 matched_fig(milk, start="2018-12", end="2019-12", type="prodID")
 ```
 
-<img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-32-1.png" width="100%" />
 
 ``` r
 matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
@@ -488,7 +516,35 @@ matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
 #> 5 2019-04 0.8727273
 ```
 
-**prices**
+**products**
+
+This function detects and summarises available, matched, new and disappearing products on the basis of their prodIDs. It compares products from the base period (**start**) with products from the current period (**end**). It returns a list containing the following objects: details with prodIDs of available, matched, new and disappearing products, statistics with basic statistics for them and figure with a pie chart describing a contribution of matched, new and disappearing products in a set of available products. Please see the following example:
+
+``` r
+list<-products(milk, "2018-12","2019-12")
+list$statistics
+#>       products volume shares
+#> 1    available     61 100.00
+#> 2      matched     47  77.05
+#> 3          new      8  13.11
+#> 4 disappearing      6   9.84
+```
+
+``` r
+list$figure
+```
+
+<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" /> **products\_fig**
+
+This function returns a figure with plots of volume (or contributions) of available, matched, new as well as disappearing products. The User may control which groups of products are to be taken into consideration. Available options are **available**, **matched**, **new** and **disappearing**. Please follow the example:
+
+``` r
+products_fig(milk, "2018-12","2019-12", 
+fixed_base=TRUE, contributions=FALSE,
+show=c("new","disappearing","matched","available"))
+```
+
+<img src="man/figures/README-unnamed-chunk-36-1.png" width="100%" /> **prices**
 
 The function returns prices (unit value) of products with a given ID (**prodID** column) and being sold in the time period indicated by the **period** parameter. The **set** parameter means a set of unique product IDs to be used for determining prices of sold products. If the set is empty the function returns prices of all products being available in the **period**. Please note that the function returns the price values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).To get prices (unit values) of all available milk products sold in July, 2019, please use:
 
@@ -549,7 +605,7 @@ sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07",
              barplot=TRUE, shares=TRUE, names=categories)
 ```
 
-<img src="man/figures/README-unnamed-chunk-37-1.png" width="100%" /> **pqcor**
+<img src="man/figures/README-unnamed-chunk-41-1.png" width="100%" /> **pqcor**
 
 The function returns **Pearson's correlation coefficient** for price and quantity of products with given IDs (defined by the **set** parameter) and sold in the **period**. If the **set** is empty, the function works for all products being available in the **period**. The **figure** parameter indicates whether the function returns a figure with a correlation coefficient (TRUE) or just a correlation coefficient (FALSE). For instance:
 
@@ -559,7 +615,7 @@ pqcor(milk, period="2019-05")
 pqcor(milk, period="2019-05",figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-38-1.png" width="100%" /> **pqcor\_fig**
+<img src="man/figures/README-unnamed-chunk-42-1.png" width="100%" /> **pqcor\_fig**
 
 The function returns **Pearson's correlation coefficients** between price and quantity of products with given IDs (defined by the **set** parameter) and sold in the time interval defined by the **start** and **end** parameters. If the **set** is empty the function works for all available products. Correlation coefficients are calculated for each month separately. Results are presented in tabular or graphical form depending on the **figure** parameter. Both cases are presented below:
 
@@ -576,7 +632,7 @@ pqcor_fig(milk, start="2018-12", end="2019-06", figure=FALSE)
 pqcor_fig(milk, start="2018-12", end="2019-06")
 ```
 
-<img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" /> **dissimilarity**
+<img src="man/figures/README-unnamed-chunk-43-1.png" width="100%" /> **dissimilarity**
 
 This function returns a value of the relative price (dSP) and/or quantity (dSQ) dissimilarity measure. In a special case, when the **type** parameter is set to **pq**, the function provides the value of dSPQ measure (relative price and quantity dissimilarity measure calculated as **min(dSP,dSQ)**. For instance:
 
@@ -593,7 +649,7 @@ This function presents values of the relative price and/or quantity dissimilarit
 dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start")
 ```
 
-<img src="man/figures/README-unnamed-chunk-41-1.png" width="100%" /> **elasticity**
+<img src="man/figures/README-unnamed-chunk-45-1.png" width="100%" /> **elasticity**
 
 This function returns a value of the elasticity of substitution. If the **method** parameter is set to **lm** (it is a default value), the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the **method** parameter is set to **f**, the Fisher price index formula is used instead of the CW price index. If the **method** parameter is set to **sv**, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter. For example:
 
@@ -611,7 +667,7 @@ elasticity_fig (milk,start="2018-12",end="2019-04",figure=TRUE,
 method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-43-1.png" width="100%" /> <a id="ad4"> </a>
+<img src="man/figures/README-unnamed-chunk-47-1.png" width="100%" /> <a id="ad4"> </a>
 
 ### Functions for bilateral unweighted price index calculation
 
@@ -791,19 +847,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.363819
-#> 2  14216 1.933406
-#> 3  15404 1.835475
-#> 4  17034 1.097723
-#> 5  34540 1.241958
-#> 6  51583 1.234011
+#> 1  14215 1.607394
+#> 2  14216 1.256659
+#> 3  15404 1.085739
+#> 4  17034 1.653425
+#> 5  34540 1.747666
+#> 6  51583 1.604946
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.006895
+#> [1] 1.011091
 ```
 
 <a id="ad8"> </a>
@@ -1031,7 +1087,7 @@ formula=c("laspeyres", "fisher"), interval = TRUE)
 compare_indices_df(df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-56-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-60-1.png" width="100%" />
 
 Now, let us compare the impact of the aggregating over outlets on the price index results (e.g. the Laspeyres formula is the assumed aggregating method). For this purpose, let us calculate the Fisher price index in two cases: **case1** without the above-mentioned aggregation and **case2** which considers that aggregation. We use the **milk** dataset and the yearly time interval:
 
@@ -1053,7 +1109,7 @@ compare_indices_list(data=list(case1, case2),
                 "Fisher with aggregation"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-58-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-62-1.png" width="100%" />
 
 **compare\_distances**
 
@@ -1125,7 +1181,7 @@ comparison$results
 comparison$figure
 ```
 
-<img src="man/figures/README-unnamed-chunk-62-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-66-1.png" width="100%" />
 
 <a id="ad13"> </a>
 
@@ -1154,17 +1210,17 @@ where price and quantity contributions of each subgroups of milk products can be
 milk$prodID<-milk$description
 bennet(milk, start = "2018-12", end = "2019-12", contributions = TRUE)
 #>                      prodID value_differences price_contributions
-#> 1 full-fat milk pasteurized           -711.57             -633.65
-#> 2         full-fat milk UHT           8767.34            -1927.29
+#> 1         full-fat milk UHT           8767.34            -1927.29
+#> 2 full-fat milk pasteurized           -711.57             -633.65
 #> 3                 goat milk           -602.29               -4.10
-#> 4  low-fat milk pasteurized           1421.39              647.66
-#> 5          low-fat milk UHT          -1525.62              369.49
+#> 4          low-fat milk UHT          -1525.62              369.49
+#> 5  low-fat milk pasteurized           1421.39              647.66
 #> 6             powdered milk           2510.09             1444.46
 #>   quantity_contributions
-#> 1                 -77.92
-#> 2               10694.63
+#> 1               10694.63
+#> 2                 -77.92
 #> 3                -598.18
-#> 4                 773.73
-#> 5               -1895.11
+#> 4               -1895.11
+#> 5                 773.73
 #> 6                1065.63
 ```

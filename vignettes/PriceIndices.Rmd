@@ -368,7 +368,7 @@ list$figure
 This function returns a figure with plots of volume (or contributions) of available, matched, new as well as disappearing products. The User may control which groups of products are to be taken into consideration. Available options are **available**, **matched**, **new** and **disappearing**. Please follow the example:
 
 ```{r}
-products_figure(milk, "2018-12","2019-12", 
+products_fig(milk, "2018-12","2019-12", 
 fixed_base=TRUE, contributions=FALSE,
 show=c("new","disappearing","matched","available"))
 

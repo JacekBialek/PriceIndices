@@ -142,6 +142,27 @@ This function returns a prepared data frame based on the user's data set (you ca
 head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
 ```
 
+**data_imputing**
+
+This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the outlets parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame which is ready for price index calculations, for instance:
+
+```{r}
+#Creating a data frame with zero prices (df)
+data<-dplyr::filter(milk,time>=as.Date("2018-12-01") & time<=as.Date("2019-03-01"))
+sample<-dplyr::sample_n(data, 100)
+rest<-setdiff(data, sample)
+sample$prices<-0
+df<-rbind(sample, rest)
+#The Fisher price index calculated for the original data set
+fisher(df, "2018-12","2019-03")
+#Zero price imputations:
+df2<-data_imputing(df, start="2018-12", end="2019-03",
+              zero_prices=TRUE,
+              outlets=TRUE)
+#The Fisher price index calculated for the data set with imputed prices:
+fisher(df2, "2018-12","2019-03")
+```
+
 **data_aggregating**
 
 The function aggregates the user's data frame over time and/or over outlets. Consequently, we obtain monthly data, where the unit value is calculated instead of a price for each **prodID** observed in each month (the time column gets the Date format: "Year-Month-01"). If paramter **join_outlets** is *TRUE*, then the function also performs aggregation over outlets (*retIDs*) and the **retID** column is removed from the data frame. The main advantage of using this function is the ability to reduce the size of the data frame and the time needed to calculate the price index. For instance, let us consider the following data set:
@@ -325,6 +346,28 @@ matched_fig(milk, start="2018-12", end="2019-12", type="prodID")
 ```
 ```{r}
 matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
+```
+**products**
+
+This function detects and summarises available, matched, new and disappearing products on the basis of their prodIDs. It compares products from the base period (**start**) with products from the current period (**end**). It returns a list containing the following objects: details with prodIDs of available, matched, new and disappearing products, statistics with basic statistics for them and figure with a pie chart describing a contribution of matched, new and disappearing products in a set of available products. Please see the following example:
+
+```{r}
+list<-products(milk, "2018-12","2019-12")
+list$statistics
+```
+
+```{r}
+list$figure
+```
+**products_fig**
+
+This function returns a figure with plots of volume (or contributions) of available, matched, new as well as disappearing products. The User may control which groups of products are to be taken into consideration. Available options are **available**, **matched**, **new** and **disappearing**. Please follow the example:
+
+```{r}
+products_fig(milk, "2018-12","2019-12", 
+fixed_base=TRUE, contributions=FALSE,
+show=c("new","disappearing","matched","available"))
+
 ```
 **prices**
 
