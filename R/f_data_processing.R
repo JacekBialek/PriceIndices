@@ -2588,7 +2588,7 @@ return (list(details=summary_prodID,statistics=df_prodID,figure=figure))
 #' @param contributions A logical parameter indicating whether contributions or volumes counted for available, matched, new and disappearing products are to be displayed.
 #' @param date_breaks A string giving the distance between breaks on the X axis like "1 month" (default value) or "4 months".
 #' @rdname products_fig
-#' @return This function returns a figure with plots of volume (or contributions) of available, matched, new as well as disappearing products. The User may control which groups of products are to be taken into consideration. Available options are \code{available}, \code{matched}, \code{new} and \code{disappearing}.
+#' @return This function returns a figure with plots of volume (or contributions) of available, matched, new as well as disappearing products. The User may control which groups of products are to be taken into consideration (see the \code{show} parameter). Available options are \code{available}, \code{matched}, \code{new} and \code{disappearing}.
 #'
 #' @examples 
 #' \donttest{products_fig(milk, "2018-12","2019-04", 
