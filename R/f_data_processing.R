@@ -2587,16 +2587,16 @@ return (list(details=summary_prodID,statistics=df_prodID,figure=figure))
 #' @param fixed_base A logical parameter indicating whether each month is to be compared to the base period (TRUE) or to the previous month (then it is set to FALSE).
 #' @param contributions A logical parameter indicating whether contributions or volumes counted for available, matched, new and disappearing products are to be displayed.
 #' @param date_breaks A string giving the distance between breaks on the X axis like "1 month" (default value) or "4 months".
-#' @rdname products_figure
+#' @rdname products_fig
 #' @return This function returns a figure with plots of volume (or contributions) of available, matched, new as well as disappearing products. The User may control which groups of products are to be taken into consideration. Available options are \code{available}, \code{matched}, \code{new} and \code{disappearing}.
 #'
 #' @examples 
-#' \donttest{products_figure(milk, "2018-12","2019-04", 
+#' \donttest{products_fig(milk, "2018-12","2019-04", 
 #' fixed_base=TRUE, contributions=FALSE,
 #' show=c("new","disappearing","matched","available"))}
 #' @export
 
-products_figure<-function(data, 
+products_fig<-function(data, 
                           start, 
                           end, 
                           show=c("available","matched","new","disappearing"),

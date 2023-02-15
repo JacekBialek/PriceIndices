@@ -33,6 +33,8 @@
 #'
 #' \code{\link{data_preparing}} 
 #'
+#' \code{\link{data_imputing}} 
+#'
 #' \code{\link{data_aggregating}} 
 #'
 #' \code{\link{data_unit}} 
@@ -61,6 +63,10 @@
 #' \code{\link{matched_index}}
 #' 
 #' \code{\link{matched_fig}}
+#'
+#' \code{\link{products}}
+#'
+#' \code{\link{products_fig}}
 #'
 #' \code{\link{prices}} 
 #'
