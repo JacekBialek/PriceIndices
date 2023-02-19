@@ -25,7 +25,7 @@ elasticity_fig(
 
 \item{end}{The research period (as character) limited to the year and month, e.g. "2020-04".}
 
-\item{method}{A vector indicating index formulas for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f} and \code{sv} or their combinations.}
+\item{method}{A vector indicating index formulas for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f}, \code{t}, \code{w} and \code{sv} or their combinations.}
 
 \item{fixedbase}{A logical parameter indicating whether the procedure is to work for subsequent months from the considered time interval (\code{fixedbase}=FALSE). Otherwise the period defined by \code{start} plays a role of fixed base month (\code{fixedbase}=TRUE)}
 

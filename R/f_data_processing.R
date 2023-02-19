@@ -2295,12 +2295,12 @@ return (data_aggr)
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character). 
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
-#' @param method The index formula for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f} and \code{sv}.
+#' @param method The index formula for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f}, \code{t}, \code{w} and \code{sv}.
 #' @param left The beginning of an interval for estimation of the elasticity of substitution (its default value is -10).
 #' @param right The end of an interval for estimation of the elasticity of substitution (its default value is 10).
 #' @param precision The precision of estimation (a 'stop' condition for the procedure). A default value of this parameter is 0.000001.
 #' @rdname elasticity
-#' @return This function returns a value of the elasticity of substitution. If the \code{method} parameter is set to \code{lm}, the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the \code{method} parameter is set to \code{f}, the Fisher price index formula is used instead of the CW price index. If the \code{method} parameter is set to \code{sv}, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter.    
+#' @return This function returns a value of the elasticity of substitution. If the \code{method} parameter is set to \code{lm}, the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the \code{method} parameter is set to \code{f}, the Fisher price index formula is used instead of the CW price index. If the \code{method} parameter is set to \code{t}, the Tornqvist price index formula is used instead of the CW price index. If the \code{method} parameter is set to \code{w}, the Walsh price index formula is used instead of the CW price index. If the \code{method} parameter is set to \code{sv}, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter.    
 #' @references
 #' {de Haan, J., Balk, B.M., Hansen, C.B. (2010). \emph{Retrospective Approximations of Superlative Price Indexes for Years Where Expenditure Data Is Unavailable.} In: Biggeri, L., Ferrari, G. (eds) Price Indexes in Time and Space. Contributions to Statistics. Physica-Verlag HD.}
 #'
@@ -2316,11 +2316,13 @@ elasticity<-function (data, start, end, method = "lm", left = -10, right = 10, p
   if (nrow(data)==0) stop("A data frame is empty!")
   if (right<=left) stop("Bad specification of 'left' and 'right' parameters!")
   if (precision<=0 | precision>0.5) stop("'precision' should be a small, positive number!")
-  av_methods<-c("lm","f","sv")
-  if (!(method %in% av_methods)) stop("Available options for the 'method' parameter are: 'lm', 'f' or 'sv'.")
+  av_methods<-c("lm","f","t","w","sv")
+  if (!(method %in% av_methods)) stop("Available options for the 'method' parameter are: 'lm', 'f', 't', 'w' or 'sv'.")
   superlative<-function (sigma) {
   if (method=="lm") return (lm(data, start, end, sigma)-cw(data, start, end, sigma))
   if (method=="f") return (lm(data, start, end, sigma)-fisher(data, start, end))
+  if (method=="t") return (lm(data, start, end, sigma)-tornqvist(data, start, end))
+  if (method=="w") return (lm(data, start, end, sigma)-walsh(data, start, end))
   if (method=="sv") return (lm(data, start, end, sigma)-sato_vartia(data, start, end))
   }
   if (superlative(left)*superlative(right)>0) stop("There is no solution in the given interval!")
@@ -2342,7 +2344,7 @@ elasticity<-function (data, start, end, method = "lm", left = -10, right = 10, p
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities} (as positive numeric) and \code{prodID} (as numeric, factor or character). 
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
-#' @param method A vector indicating index formulas for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f} and \code{sv} or their combinations.
+#' @param method A vector indicating index formulas for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f}, \code{t}, \code{w} and \code{sv} or their combinations.
 #' @param fixedbase A logical parameter indicating whether the procedure is to work for subsequent months from the considered time interval (\code{fixedbase}=FALSE). Otherwise the period defined by \code{start} plays a role of fixed base month (\code{fixedbase}=TRUE)
 #' @param figure A logical parameter indicating whether the function returns a figure (TRUE) or a data frame (FALSE) with values of elasticity of substitution.
 #' @param date_breaks A string giving the distance between breaks on the X axis like "1 month" (default value) or "4 months".

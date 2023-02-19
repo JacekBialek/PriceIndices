@@ -21,7 +21,7 @@ elasticity(
 
 \item{end}{The research period (as character) limited to the year and month, e.g. "2020-04".}
 
-\item{method}{The index formula for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f} and \code{sv}.}
+\item{method}{The index formula for which the CES index will be equated to calculate the elasticity. Acceptable options are \code{lm}, \code{f}, \code{t}, \code{w} and \code{sv}.}
 
 \item{left}{The beginning of an interval for estimation of the elasticity of substitution (its default value is -10).}
 
@@ -30,7 +30,7 @@ elasticity(
 \item{precision}{The precision of estimation (a 'stop' condition for the procedure). A default value of this parameter is 0.000001.}
 }
 \value{
-This function returns a value of the elasticity of substitution. If the \code{method} parameter is set to \code{lm}, the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the \code{method} parameter is set to \code{f}, the Fisher price index formula is used instead of the CW price index. If the \code{method} parameter is set to \code{sv}, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter.
+This function returns a value of the elasticity of substitution. If the \code{method} parameter is set to \code{lm}, the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the \code{method} parameter is set to \code{f}, the Fisher price index formula is used instead of the CW price index. If the \code{method} parameter is set to \code{t}, the Tornqvist price index formula is used instead of the CW price index. If the \code{method} parameter is set to \code{w}, the Walsh price index formula is used instead of the CW price index. If the \code{method} parameter is set to \code{sv}, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter.
 }
 \description{
 This function returns a value of the elasticity of substitution
