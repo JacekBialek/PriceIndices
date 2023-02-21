@@ -1,7 +1,7 @@
 # Package update 0.1.4 -> 0.1.5
 
 ## New functions: 
-* New functions for price imputations (*data_imputing*) and for detecting new and disappearing products (*products* and *products_figure*).
+* New functions for price imputations (*data_imputing*) and for detecting new and disappearing products (*products* and *products_fig*).
 
 ## Improvements: 
 * The **data_preparing** function has now two additional parameters which allow to consider zero prices and zero quantities.

@@ -1,6 +1,6 @@
 ## Package update 
 
-* New functions for price imputations (*data_imputing*) and for detecting new and disappearing products (*products* and *products_figure*).
+* New functions for price imputations (*data_imputing*) and for detecting new and disappearing products (*products* and *products_fig*).
 * Improvement: the *data_preparing* function has now two additional parameters which allow to consider zero prices and zero quantities.
 * New methods for **elasticity** and **elasticity_fig** functions have beelibraryn added.
 
