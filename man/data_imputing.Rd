@@ -24,6 +24,20 @@ This function imputes missing prices (unit values) and (optionally) zero prices 
 This function imputes missing prices and (optionally) zero prices by using carry forward/backward prices.
 }
 \examples{
+# Creating a small data set with zero prices:
+time.<-c("2018-12-01","2019-01-01")
+time<-as.Date(c(time., time.))
+p1<-c(0,23)
+p2<-c(14,0)
+q1<-c(15,25)
+q2<-c(44,79)
+quantities<-c(q1,q2)
+prices<-c(p1,p2)
+prodID<-c(1,1,2,2)
+my_data<-data.frame(time, prices, quantities, prodID)
+# Price imputing:
+data_imputing(my_data, start="2018-12", end="2019-01",
+zero_prices=TRUE, outlets=FALSE)
 \donttest{
 # Preparing a data set with zero and missing prices:
 dataMATCH$prodID<-dataMATCH$codeIN 
@@ -34,6 +48,5 @@ set2<-data[6:30,]
 df<-rbind(set1, set2)
 # Price imputing:
 data_imputing(df, start="2018-12", end="2019-03",
-             zero_prices=TRUE,
-             outlets=TRUE)}
+zero_prices=TRUE, outlets=TRUE)}
 }

@@ -2416,6 +2416,20 @@ return (fig)
 #' @return This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the \code{outlets} parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame which is ready for price index calculations.
 #'
 #' @examples 
+#' # Creating a small data set with zero prices:
+#' time.<-c("2018-12-01","2019-01-01")
+#' time<-as.Date(c(time., time.))
+#' p1<-c(0,23)
+#' p2<-c(14,0)
+#' q1<-c(15,25)
+#' q2<-c(44,79)
+#' quantities<-c(q1,q2)
+#' prices<-c(p1,p2)
+#' prodID<-c(1,1,2,2)
+#' my_data<-data.frame(time, prices, quantities, prodID)
+#' # Price imputing:
+#' data_imputing(my_data, start="2018-12", end="2019-01",
+#' zero_prices=TRUE, outlets=FALSE)
 #' \donttest{
 #' # Preparing a data set with zero and missing prices:
 #' dataMATCH$prodID<-dataMATCH$codeIN 
@@ -2426,8 +2440,7 @@ return (fig)
 #' df<-rbind(set1, set2)
 #' # Price imputing:
 #' data_imputing(df, start="2018-12", end="2019-03",
-#'              zero_prices=TRUE,
-#'              outlets=TRUE)}
+#' zero_prices=TRUE, outlets=TRUE)}
 #' @export
 
 data_imputing<-function (data, start, end, 
@@ -2466,6 +2479,7 @@ prices<-c()
 impute<-function (id)
 {
 df<-dplyr::filter(data., prodID==id)
+if (nrow(df)==0) return (df)
 av_dates<-substr(unique(df$time),0,7) #available dates
 imp_dates<-setdiff(dates, av_dates)   #dates which require imputation
 if (length(imp_dates)==0) return (df)
