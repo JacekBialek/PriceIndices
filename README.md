@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -112,12 +107,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.73         25      1     1
-#> 2 2020-01-01   2.62         18      2     1
-#> 3 2020-01-01   2.72         20      3     1
-#> 4 2020-01-01   3.05         17      4     1
-#> 5 2020-01-01   2.69         17      5     1
-#> 6 2020-01-01   2.71         19      6     1
+#> 1 2020-01-01   2.79         17      1     1
+#> 2 2020-01-01   2.70         20      2     1
+#> 3 2020-01-01   3.08         19      3     1
+#> 4 2020-01-01   2.65         17      4     1
+#> 5 2020-01-01   2.77         18      5     1
+#> 6 2020-01-01   2.91         18      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -138,12 +133,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-04   2.81  6.3090078      1     1
-#> 2 2020-01-08   2.69  6.5630742      2     1
-#> 3 2020-01-09   2.71  0.7107194      3     1
-#> 4 2020-01-02   2.75  0.1016913      4     1
-#> 5 2020-01-21   2.62  6.6621530      5     1
-#> 6 2020-01-09   2.73  2.2953316      6     1
+#> 1 2020-01-04   2.55  1.5030938      1     1
+#> 2 2020-01-24   2.94  4.9154898      2     1
+#> 3 2020-01-27   2.99  0.2783017      3     1
+#> 4 2020-01-10   2.57  8.3215079      4     1
+#> 5 2020-01-15   2.70  3.5837420      5     1
+#> 6 2020-01-26   2.81  4.1617117      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -186,14 +181,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 1.029504
+#> [1] 0.9249767
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 1.027674
+#> [1] 0.9259522
 ```
 
 **data\_aggregating**
@@ -318,7 +313,7 @@ ML<-model_classification(data_train,
                          data_test,
                          coicop="coicop6",
                          grid=my.grid,
-                         indicators=c("description","codeIN"),
+                         indicators=c("description","codeIN","grammage"),
                          key_words=c("uht"), 
                          rounds=60)
 ```
@@ -651,7 +646,7 @@ dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start
 
 <img src="man/figures/README-unnamed-chunk-45-1.png" width="100%" /> **elasticity**
 
-This function returns a value of the elasticity of substitution. If the **method** parameter is set to **lm** (it is a default value), the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the **method** parameter is set to **f**, the Fisher price index formula is used instead of the CW price index. If the **method** parameter is set to **sv**, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter. For example:
+This function returns a value of the elasticity of substitution. If the **method** parameter is set to **lm** (it is a default value), the procedure of estimation solves the equation: LM(sigma)-CW(sigma)=0 numerically, where LM denotes the Lloyd-Moulton price index, the CW denotes a current weight counterpart of the Lloyd-Moulton price index, and sigma is the elasticity of substitution parameter, which is estimated. If the **method** parameter is set to **f**, the Fisher price index formula is used instead of the CW price index. If the **method** parameter is set to **t**, the Tornqvist price index formula is used instead of the CW price index. If the **method** parameter is set to **w**, the Walsh price index formula is used instead of the CW price index. If the **method** parameter is set to **sv**, the Sato-Vartia price index formula is used instead of the CW price index.The procedure continues until the absolute value of this difference is greater than the value of the 'precision' parameter. For example:
 
 ``` r
 elasticity(coffee, start = "2018-12", end = "2019-01")
@@ -847,19 +842,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.607394
-#> 2  14216 1.256659
-#> 3  15404 1.085739
-#> 4  17034 1.653425
-#> 5  34540 1.747666
-#> 6  51583 1.604946
+#> 1  14215 1.172120
+#> 2  14216 1.548162
+#> 3  15404 1.340074
+#> 4  17034 1.844000
+#> 5  34540 1.596766
+#> 6  51583 1.893480
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.011091
+#> [1] 0.9888488
 ```
 
 <a id="ad8"> </a>

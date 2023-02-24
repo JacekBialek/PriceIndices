@@ -234,7 +234,7 @@ ML<-model_classification(data_train,
                          data_test,
                          coicop="coicop6",
                          grid=my.grid,
-                         indicators=c("description","codeIN"),
+                         indicators=c("description","codeIN","grammage"),
                          key_words=c("uht"), 
                          rounds=60)
 ```
