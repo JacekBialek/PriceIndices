@@ -261,7 +261,7 @@ model_classification <-
   ggplot2::coord_flip() +
   ggplot2::geom_bar(stat = "identity",
   fill = "grey",
-  color = "black") + ggplot2::labs(x = "Relative importance")
+  color = "black") + ggplot2::labs(x = "Indicators")
   
   return (
   list(
