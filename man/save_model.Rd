@@ -27,7 +27,7 @@ This function saves a list of machine learning model elements on the disk, i.e. 
 \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
 \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
-indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
+indicators=c("description","codeIN", "grammage"),key_words=c("uht"),rounds=60)}
 #Saving the model
 \dontrun{save_model(ML, dir="My_model")}
 }

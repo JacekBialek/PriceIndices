@@ -23,7 +23,7 @@ This function predicts product COICOP levels via the selected machine learning m
 \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
 \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
-indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
+indicators=c("description","codeIN", "grammage"),key_words=c("uht"),rounds=60)}
 #Data classification
 \donttest{data_classifying(ML, data_test)}
 }

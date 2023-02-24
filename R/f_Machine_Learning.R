@@ -21,7 +21,7 @@
 #' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 #' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
 #' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
-#' indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
+#' indicators=c("description","codeIN","grammage"),key_words=c("uht"),rounds=60)}
 #' \donttest{ML$best_parameters}
 #' \donttest{ML$indicators}
 #' \donttest{ML$figure_training} 
@@ -291,7 +291,7 @@ model_classification <-
 #' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 #' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
 #' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
-#' indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
+#' indicators=c("description","codeIN", "grammage"),key_words=c("uht"),rounds=60)}
 #' #Data classification
 #' \donttest{data_classifying(ML, data_test)}
 #' @export
@@ -366,7 +366,7 @@ return (data)
 #' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 #' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
 #' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
-#' indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
+#' indicators=c("description","codeIN", "grammage"),key_words=c("uht"),rounds=60)}
 #' #Saving the model
 #' \dontrun{save_model(ML, dir="My_model")}
 #' @export
@@ -413,7 +413,7 @@ paste(path, "figure_importance.RDS", sep = ""))
 #' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 #' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
 #' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
-#' indicators=c("description","codeIN"),key_words=c("uht"),rounds=60)}
+#' indicators=c("description","codeIN", "grammage"),key_words=c("uht"),rounds=60)}
 #' #Saving the model
 #' \dontrun{save_model(ML, dir="My_model")}
 #' #Loading the model
