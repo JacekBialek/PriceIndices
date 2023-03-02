@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the monthly chained quadra
 This function returns a value (or vector of values) of the monthly chained quadratic mean of order r quantity index.
 }
 \examples{
-chQMq(sugar, start="2019-01", end="2020-01")
+\donttest{chQMq(sugar, start="2019-01", end="2020-01")}
 \donttest{chQMq(sugar, start="2019-01", end="2020-01", r=1.3, interval=TRUE)}
 }
 \references{

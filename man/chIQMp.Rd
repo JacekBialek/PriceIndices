@@ -24,7 +24,7 @@ The function returns a value (or vector of values) of the monthly chained implic
 This function returns a value (or vector of values) of the monthly chained implicit quadratic mean of order r price index.
 }
 \examples{
-chIQMp(sugar, start="2019-01", end="2020-01")
+\donttest{chIQMp(sugar, start="2019-01", end="2020-01")}
 \donttest{chIQMp(sugar, start="2019-01", end="2020-01", r=1.3, interval=TRUE)}
 }
 \references{

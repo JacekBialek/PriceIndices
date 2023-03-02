@@ -1,3 +1,5 @@
+*Note*: this is a resubmittion, the problem with an example (too long running the *chQMq* function, I used 'donttest{}' formula) has been fixed! 
+
 ## Package update 
 
 * New functions for price imputations (*data_imputing*) and for detecting new and disappearing products (*products* and *products_fig*).

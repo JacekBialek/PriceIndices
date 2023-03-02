@@ -1679,7 +1679,7 @@ chgeohybrid <-
 #' @references
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chQMq(sugar, start="2019-01", end="2020-01")
+#' \donttest{chQMq(sugar, start="2019-01", end="2020-01")}
 #' \donttest{chQMq(sugar, start="2019-01", end="2020-01", r=1.3, interval=TRUE)}
 #' @export
 
@@ -1729,7 +1729,7 @@ chQMq <-
 #' @references
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chQMp(sugar, start="2019-01", end="2020-01")
+#' \donttest{chQMp(sugar, start="2019-01", end="2020-01")}
 #' \donttest{chQMp(sugar, start="2019-01", end="2020-01", r=1.3, interval=TRUE)}
 #' @export
 
@@ -1779,7 +1779,7 @@ chQMp <-
 #' @references
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' chIQMp(sugar, start="2019-01", end="2020-01")
+#' \donttest{chIQMp(sugar, start="2019-01", end="2020-01")}
 #' \donttest{chIQMp(sugar, start="2019-01", end="2020-01", r=1.3, interval=TRUE)}
 #' @export
 
