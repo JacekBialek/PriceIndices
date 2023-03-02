@@ -51,14 +51,14 @@ This function presents a comparison of selected indices obtained by using the ja
 This function presents a comparison of selected indices obtained by using the jackknife method.
 }
 \examples{
-\donttest{#creating a list with jackknife results
-comparison<-compare_indices_jk(milk,
-formula=c("jevons","fisher","geks"),
+\donttest{milk.<-dplyr::filter(milk, milk$prodID \%in\% 
+sample(unique(milk$prodID),4))
+#creating a list with jackknife results
+comparison<-compare_indices_jk(milk.,
+formula=c("jevons","fisher"),
 start="2018-12",
 end="2019-12", 
-window=c(13),
-names=c("Jevons","Fisher","GEKS"), 
-by="retID",
+names=c("Jevons","Fisher"), 
 title="Jackknife box-plots for milk products")
 #displaying results
 comparison$results

@@ -231,14 +231,14 @@ compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = 
 #'
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
-#' \donttest{#creating a list with jackknife results
-#' comparison<-compare_indices_jk(milk,
-#' formula=c("jevons","fisher","geks"),
+#' \donttest{milk.<-dplyr::filter(milk, milk$prodID %in% 
+#' sample(unique(milk$prodID),4))
+#' #creating a list with jackknife results
+#' comparison<-compare_indices_jk(milk.,
+#' formula=c("jevons","fisher"),
 #' start="2018-12",
 #' end="2019-12", 
-#' window=c(13),
-#' names=c("Jevons","Fisher","GEKS"), 
-#' by="retID",
+#' names=c("Jevons","Fisher"), 
 #' title="Jackknife box-plots for milk products")
 #' #displaying results
 #' comparison$results
