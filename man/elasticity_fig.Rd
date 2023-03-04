@@ -49,8 +49,8 @@ The function provides a data frame or a figure presenting elasticities of substi
 }
 \examples{
 \donttest{elasticity_fig (milk,start="2018-12",end="2019-04",figure=TRUE, 
-method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))}
-\donttest{elasticity_fig (milk,start="2018-12",end="2019-12",figure=FALSE)}
+method=c("lm","f"),names=c("LM","Fisher"))}
+\donttest{elasticity_fig (milk,start="2018-12",end="2019-06",figure=FALSE)}
 }
 \references{
 {de Haan, J., Balk, B.M., Hansen, C.B. (2010). \emph{Retrospective Approximations of Superlative Price Indexes for Years Where Expenditure Data Is Unavailable.} In: Biggeri, L., Ferrari, G. (eds) Price Indexes in Time and Space. Contributions to Statistics. Physica-Verlag HD.}

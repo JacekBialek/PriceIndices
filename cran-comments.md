@@ -1,14 +1,8 @@
-*Note*: this is a resubmittion, the problem with an example (too long running the *chQMq* function, I used 'donttest{}' formula) has been fixed! 
-
 ## Package update 
 
-* New functions for price imputations (*data_imputing*) and for detecting new and disappearing products (*products* and *products_fig*).
-* Improvement: the *data_preparing* function has now two additional parameters which allow to consider zero prices and zero quantities.
-* New methods for **elasticity** and **elasticity_fig** functions have been added.
+* Improvements: The **elasticity** and thus **elasticity_fig** are much faster now.
 
-* Bug fixes: a new parameter has beed added to the function 'price_indices' (*names*). It allows to compare e.g. the same splice multilateral index but for many different splicing methods (their names can be distinguished).
-* The *geksj* function has been corrected for the case when we observe large number of decreasing prices.
-* Problems with examples have been deleted ('donttest{}' formula is used)
+* Bug fixes: An example in **elasticity_fig** has been corrected (there is no error now).
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

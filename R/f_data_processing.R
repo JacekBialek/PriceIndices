@@ -2318,12 +2318,24 @@ elasticity<-function (data, start, end, method = "lm", left = -10, right = 10, p
   if (precision<=0 | precision>0.5) stop("'precision' should be a small, positive number!")
   av_methods<-c("lm","f","t","w","sv")
   if (!(method %in% av_methods)) stop("Available options for the 'method' parameter are: 'lm', 'f', 't', 'w' or 'sv'.")
+  p_start<-p_end<-q_start<-q_end<-e_start<-e_end<-sv.<-NULL
+  id<-matched(data, start, end)
+  p_start<-prices(data=data, period=start, set=id)
+  p_end<-prices(data=data, period=end, set=id)
+  q_start<-quantities(data=data, period=start, set=id)
+  q_end<-quantities(data=data, period=end, set=id)
+  s_start<-p_start*q_start
+  s_start<-s_start/sum(s_start)
+  s_end<-p_end*q_end
+  s_end<-s_end/sum(s_end)
+  if (method=="sv") sv.<-sato_vartia(data, start, end)
   superlative<-function (sigma) {
-  if (method=="lm") return (lm(data, start, end, sigma)-cw(data, start, end, sigma))
-  if (method=="f") return (lm(data, start, end, sigma)-fisher(data, start, end))
-  if (method=="t") return (lm(data, start, end, sigma)-tornqvist(data, start, end))
-  if (method=="w") return (lm(data, start, end, sigma)-walsh(data, start, end))
-  if (method=="sv") return (lm(data, start, end, sigma)-sato_vartia(data, start, end))
+  if (method=="lm") return (
+    (sum(s_start*(p_end/p_start)^(1-sigma)))^(1/(1-sigma))-(sum(s_end*(p_end/p_start)^(-1+sigma)))^(1/(-1+sigma)))
+  if (method=="f") return ((sum(s_start*(p_end/p_start)^(1-sigma)))^(1/(1-sigma))-(sum(q_start*p_end)*sum(q_end*p_end)/(sum(q_start*p_start)*sum(q_end*p_start)))^0.5)
+  if (method=="t") return ((sum(s_start*(p_end/p_start)^(1-sigma)))^(1/(1-sigma))-prod((p_end/p_start)^(0.5*(s_start+s_end))))
+  if (method=="w") return ((sum(s_start*(p_end/p_start)^(1-sigma)))^(1/(1-sigma))-sum(p_end*(q_start*q_end)^0.5)/sum(p_start*(q_start*q_end)^0.5))
+  if (method=="sv") return ((sum(s_start*(p_end/p_start)^(1-sigma)))^(1/(1-sigma))-sv.)
   }
   if (superlative(left)*superlative(right)>0) stop("There is no solution in the given interval!")
   ll=left
@@ -2360,8 +2372,8 @@ elasticity<-function (data, start, end, method = "lm", left = -10, right = 10, p
 #' {(2004). \emph{Consumer Price Index Manual. Theory and practice}. ILO/IMF/OECD/UNECE/Eurostat/The World Bank, International Labour Office (ILO), Geneva.}
 #' @examples 
 #' \donttest{elasticity_fig (milk,start="2018-12",end="2019-04",figure=TRUE, 
-#' method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))}
-#' \donttest{elasticity_fig (milk,start="2018-12",end="2019-12",figure=FALSE)}
+#' method=c("lm","f"),names=c("LM","Fisher"))}
+#' \donttest{elasticity_fig (milk,start="2018-12",end="2019-06",figure=FALSE)}
 #' @export
 
 elasticity_fig<-function(data, start, end, method = c("lm"), fixedbase = TRUE, figure = TRUE, date_breaks = "1 month", names=c(), left = -10, right = 10, precision = 0.000001)
