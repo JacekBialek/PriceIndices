@@ -2425,7 +2425,7 @@ return (fig)
 #' @param zero_prices A logical parameter indicating whether zero prices are to be imputed too (then it is set to TRUE).
 #' @param outlets A logical parameter indicating whether imputations are to be done for each outlet separately (then it is set to TRUE).
 #' @rdname data_imputing
-#' @return This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the \code{outlets} parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame which is ready for price index calculations.
+#' @return This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the \code{outlets} parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame (monthly aggregated) which is ready for price index calculations.
 #'
 #' @examples 
 #' # Creating a small data set with zero prices:

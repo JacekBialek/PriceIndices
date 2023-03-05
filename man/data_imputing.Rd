@@ -18,7 +18,7 @@ data_imputing(data, start, end, zero_prices = TRUE, outlets = TRUE)
 \item{outlets}{A logical parameter indicating whether imputations are to be done for each outlet separately (then it is set to TRUE).}
 }
 \value{
-This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the \code{outlets} parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame which is ready for price index calculations.
+This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the \code{outlets} parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame (monthly aggregated) which is ready for price index calculations.
 }
 \description{
 This function imputes missing prices and (optionally) zero prices by using carry forward/backward prices.
