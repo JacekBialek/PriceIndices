@@ -2,7 +2,7 @@
 
 * Improvements: The **elasticity** and thus **elasticity_fig** are much faster now.
 
-* Bug fixes: An example in **elasticity_fig** has been corrected (there is no error now).
+* Bug fixes: An example in **elasticity_fig** has been corrected (there is no error now). The *price_indices* function has been corrected due to the *lloyd-moulton* sub-function. 
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

@@ -33,7 +33,7 @@ price_indices(
 
 \item{base}{The vector of prior periods used in the Young- or Lowe-type price indices or hybrid/geohybrid index. Each element of the vector (as character) must be limited to the year and month, e.g. "2020-01".}
 
-\item{sigma}{The vector of elasticity of substitution parameters used in the Lloyed-Moulton, AG Mean or GEKS-LM indices (as numeric).}
+\item{sigma}{The vector of elasticity of substitution parameters used in the Lloyd-Moulton, AG Mean or GEKS-LM indices (as numeric).}
 
 \item{r}{The vector of non-zero parameters used in the quadratic mean of order r quantity / price index or in the GEKS-QM index (as numeric).}
 

@@ -8,7 +8,7 @@
 #' @param window A vector of integers. Each element of the vector defines the length of the time window of the corresponding multilateral index.
 #' @param splice A vector of character strings. Each element of the vector indicates the splicing method is to be used for the corresponding multilateral index. Available values of vector elements are: "movement", "window","half","mean" and their additional variants: "window_published", "half_published" and "mean_published".
 #' @param base The vector of prior periods used in the Young- or Lowe-type price indices or hybrid/geohybrid index. Each element of the vector (as character) must be limited to the year and month, e.g. "2020-01".
-#' @param sigma The vector of elasticity of substitution parameters used in the Lloyed-Moulton, AG Mean or GEKS-LM indices (as numeric).
+#' @param sigma The vector of elasticity of substitution parameters used in the Lloyd-Moulton, AG Mean or GEKS-LM indices (as numeric).
 #' @param r The vector of non-zero parameters used in the quadratic mean of order r quantity / price index or in the GEKS-QM index (as numeric).
 #' @param interval A logical value indicating whether the function is to provide price indices comparing the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be presented (the fixed base month is defined by \code{start}).
 #' @param names A vector of strings indicating names of indices which are to be used in the resulting data frame.

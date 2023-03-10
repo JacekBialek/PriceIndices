@@ -4,7 +4,7 @@
 * The **elasticity** and thus **elasticity_fig** are much faster now.
 
 ## Bug fixes: 
-* An example in **elasticity_fig** has been corrected (there is no error now).
+* An example in **elasticity_fig** has been corrected (there is no error now). The *price_indices* function has been corrected due to the *lloyd-moulton* sub-function.
 
 # Package update 0.1.4 -> 0.1.5
 
