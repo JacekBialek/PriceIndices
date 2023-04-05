@@ -223,9 +223,10 @@ compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = 
 #' @param sigma The vector of elasticity of substitution parameters used in the Lloyed-Moulton, AG Mean or GEKS-LM indices (as numeric).
 #' @param r The vector of non-zero parameters used in the quadratic mean of order r quantity / price index or in the GEKS-QM index (as numeric).
 #' @param names A vector of strings indicating names of indices which are to be used in the resulting data frame.
-#' @param title A character string indicating a title of the created box-plot.
+#' @param title_iterations A character string indicating a title of the created box-plot for iteration index values.
+#' @param title_pseudovalues A character string indicating a title of the created box-plot for obtained (jackknife) index pseudovalues.
 #' @rdname compare_indices_jk
-#' @return This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: \code{results}, which is a data frame with basic characteristics of the calculated indices (means and standard deviations) , and \code{figure} which presents a box-plot for the considered indices.
+#' @return This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with four elements: \code{iterations}, which is a data frame with basic characteristics of the calculated iteration index values (means, standard deviations, coefficients of variation and results for all sample), \code{pseudovalues}, which is a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure (i.e. the jackknife estimators and their standard deviations and coefficients of variation), \code{figure_iterations} which presents a box-plot for the calculated iteration index values, and \code{figure_pseudovalues} which presents a box-plot for the calculated index pseudovalues obtained in the jackknife procedure.
 #' @references
 #' {Quenouille, M.H. (1956). \emph{Notes on bias in estimation}. Biometrika, 43 (3–4), 353–360}
 #'
@@ -239,12 +240,15 @@ compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = 
 #' start="2018-12",
 #' end="2019-12", 
 #' names=c("Jevons","Fisher"), 
-#' title="Jackknife box-plots for milk products")
+#' title_iterations="Box-plots for iteration values (milk products)",
+#' title_pseudovalues="Box-plots for pseudovalues (milk products)")
 #' #displaying results
-#' comparison$results
-#' comparison$figure}
+#' comparison$iterations
+#' comparison$pseudovalues
+#' comparison$figure_iterations
+#' comparison$figure_pseudovalues}
 #' @export
-  
+
 compare_indices_jk<-function(data, 
                    start, 
                    end,
@@ -256,7 +260,8 @@ compare_indices_jk<-function(data,
                    sigma=c(),
                    r=c(),
                    names=c(), 
-                   title=c())
+                   title_iterations=c(),
+                   title_pseudovalues=c())
 {
 value<-NULL
 if (length(by)==0) stop("You must indicate a column for grouping (see 'by' parameter)!")
@@ -266,6 +271,7 @@ data$help<-data$prodID
 colnames(data)[which(colnames(data)==by)]<-"groupID" 
 data$prodID<-data$help
 data$help<-NULL
+n<-length(unique(data$groupID)) #number of calculated iteration indices
 #sampling a subset of products
 reduce<-function(x) 
 {
@@ -286,7 +292,6 @@ return (price_indices(data=set,
                    names=names,
                    interval=FALSE))
 list_indices<-lapply(list_group,price_index_help)
-n<-length(list_indices) #number of calculated indices
 list_joined<-dplyr::bind_rows(list_indices)
 #jack-knife estimates
 indices<-price_indices(data=data, 
@@ -302,28 +307,47 @@ indices<-price_indices(data=data,
                    interval=FALSE)
 indices_names<-unique(indices$price_index)
 global_index<-c()
-mean_index<-c()
-sd_index<-c()
+index_values<-c()
+index_values2<-c()
+df_index<-data.frame(matrix(ncol = length(indices_names), nrow = n))
+df_index2<-data.frame(matrix(ncol = length(indices_names), nrow = n))
+colnames(df_index)<-indices_names
+colnames(df_index2)<-indices_names
 for (index in indices_names)
 { #global value
   teta<-NULL
   index_values<-NULL
   teta<-dplyr::filter(indices, indices$price_index==index)$value
-  index_values<-dplyr::filter(list_joined, list_joined$price_index==index)$value
-  index_values<-n*teta-(n-1)*index_values
+  index_values<-dplyr::filter(list_joined,  list_joined$price_index==index)$value
+  index_values2<-n*teta-(n-1)*index_values
+  df_index[,index]<-index_values  #iteration values
+  df_index2[,index]<-index_values2 #pseudovalues
   global_index<-c(global_index, teta)
-  mean_index<-c(mean_index, mean(index_values))
-  sd_index<-c(sd_index, stats::sd(index_values))
   }
-df<-data.frame(index=indices_names, 
-               all_products=global_index,
-               mean_jack_knife=mean_index, 
-               sd_jack_knife=sd_index)
-#box-plot for index values
-figure<-ggplot2::ggplot(data=list_joined, 
-                        mapping=ggplot2::aes(x=price_index, y=value))+ggplot2::geom_boxplot()+ggplot2::xlab("price index")+ggplot2::ylab("price index value")
-if (length(title)>0) figure<-figure+ggplot2::labs(title=title)
-return (list(results=df,figure=figure))
+#data frame with iteration index results
+df_index<-reshape::melt(data=df_index,value.name = value)
+df<-dplyr::summarise(dplyr::group_by(df_index, variable), 
+                      mean_iterations=mean(value), 
+                      sd_iterations=stats::sd(value),
+                      cv_iterations=stats::sd(value)/mean(value))
+#data frame with pseudovalues index results
+df_index2<-reshape::melt(data=df_index2,value.name = value)
+df2<-dplyr::summarise(dplyr::group_by(df_index2, variable), 
+                      jk_estimator=mean(value), 
+                      sd_jk_estimator=stats::sd(value),
+                      cv_jk=stats::sd(value)/mean(value))
+#box-plot for iteration values
+figure<-ggplot2::ggplot(data=df_index, 
+                        mapping=ggplot2::aes(x=variable, y=value))+ggplot2::geom_boxplot()+ggplot2::xlab("price index")+ggplot2::ylab("price index value")
+if (length(title_iterations)>0) figure<-figure+ggplot2::labs(title=title_iterations)
+#box-plot for pseudovalues
+figure2<-ggplot2::ggplot(data=df_index2, 
+                        mapping=ggplot2::aes(x=variable, y=value))+ggplot2::geom_boxplot()+ggplot2::xlab("price index")+ggplot2::ylab("price index value")
+if (length(title_pseudovalues)>0) figure2<-figure2+ggplot2::labs(title=title_pseudovalues)
+df$all_sample<-global_index
+return (list(iterations=df,
+             pseudovalues=df2, 
+             figure_iterations=figure, 
+             figure_pseudovalues=figure2))
 }
-
 

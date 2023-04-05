@@ -16,7 +16,8 @@ compare_indices_jk(
   sigma = c(),
   r = c(),
   names = c(),
-  title = c()
+  title_iterations = c(),
+  title_pseudovalues = c()
 )
 }
 \arguments{
@@ -42,10 +43,12 @@ compare_indices_jk(
 
 \item{names}{A vector of strings indicating names of indices which are to be used in the resulting data frame.}
 
-\item{title}{A character string indicating a title of the created box-plot.}
+\item{title_iterations}{A character string indicating a title of the created box-plot for iteration index values.}
+
+\item{title_pseudovalues}{A character string indicating a title of the created box-plot for obtained (jackknife) index pseudovalues.}
 }
 \value{
-This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: \code{results}, which is a data frame with basic characteristics of the calculated indices (means and standard deviations) , and \code{figure} which presents a box-plot for the considered indices.
+This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with four elements: \code{iterations}, which is a data frame with basic characteristics of the calculated iteration index values (means, standard deviations, coefficients of variation and results for all sample), \code{pseudovalues}, which is a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure (i.e. the jackknife estimators and their standard deviations and coefficients of variation), \code{figure_iterations} which presents a box-plot for the calculated iteration index values, and \code{figure_pseudovalues} which presents a box-plot for the calculated index pseudovalues obtained in the jackknife procedure.
 }
 \description{
 This function presents a comparison of selected indices obtained by using the jackknife method.
@@ -59,10 +62,13 @@ formula=c("jevons","fisher"),
 start="2018-12",
 end="2019-12", 
 names=c("Jevons","Fisher"), 
-title="Jackknife box-plots for milk products")
+title_iterations="Box-plots for iteration values (milk products)",
+title_pseudovalues="Box-plots for pseudovalues (milk products)")
 #displaying results
-comparison$results
-comparison$figure}
+comparison$iterations
+comparison$pseudovalues
+comparison$figure_iterations
+comparison$figure_pseudovalues}
 }
 \references{
 {Quenouille, M.H. (1956). \emph{Notes on bias in estimation}. Biometrika, 43 (3–4), 353–360}
