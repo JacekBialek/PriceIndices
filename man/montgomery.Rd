@@ -40,5 +40,5 @@ montgomery(milk, "2018-12", "2019-12", matched=TRUE, contributions=TRUE)
 \donttest{montgomery(coffee, start="2018-12", end="2019-03", interval=TRUE)}
 }
 \references{
-
+{Montgomery, J. K., (1929). \emph{Is There a Theoretically Correct Price Index of a Group of Commodities?} Rome, International Institute of Agriculture}
 }

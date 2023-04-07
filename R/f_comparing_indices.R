@@ -263,7 +263,7 @@ compare_indices_jk<-function(data,
                    title_iterations=c(),
                    title_pseudovalues=c())
 {
-value<-NULL
+value<-variable<-NULL
 if (length(by)==0) stop("You must indicate a column for grouping (see 'by' parameter)!")
 av_col<-colnames(data)
 if (!(by %in% av_col)) stop("Bad specification of the 'by' parameter!")

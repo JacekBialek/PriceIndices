@@ -46,5 +46,7 @@ This function returns the multilateral Montgomery price and quantity indicators 
 \donttest{mmontgomery(coffee, start="2018-12", end="2019-03", interval=TRUE)}
 }
 \references{
+{Montgomery, J. K., (1929). \emph{Is There a Theoretically Correct Price Index of a Group of Commodities?} Rome, International Institute of Agriculture}
 
+{Fox, K.J., (2006). \emph{A Method for Transitive and Additive Multilateral Comparisons: A Transitive Bennet Indicator}. Journal of Economics, 87(1), 73-87.}
 }

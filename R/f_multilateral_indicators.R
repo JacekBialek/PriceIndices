@@ -98,7 +98,7 @@ mbennet <-
 #' @rdname mmontgomery
 #' @return This function returns the multilateral Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products.    
 #' @references
-#' {Montgomery, J. K., (1929). \emph{Is There a Theoretically Correct Price Index of a Group of Commodities?. Rome, International Institute of Agriculture}
+#' {Montgomery, J. K., (1929). \emph{Is There a Theoretically Correct Price Index of a Group of Commodities?} Rome, International Institute of Agriculture}
 #'
 #' {Fox, K.J., (2006). \emph{A Method for Transitive and Additive Multilateral Comparisons: A Transitive Bennet Indicator}. Journal of Economics, 87(1), 73-87.}
 #' @examples 
