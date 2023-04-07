@@ -993,7 +993,6 @@ expenditure<-function (data, period, ID)
 #' @param y A real positive number
 #' @noRd
   
-#logarithmic means
   L <- function (x, y) {
   if (x == y)
   return (x)
@@ -1001,6 +1000,11 @@ expenditure<-function (data, period, ID)
   return ((y - x) / log(y / x))
   }
   
+#' The function returns the logarithmic mean of two numbers. 
+#' @param x A real positive number vector
+#' @param y A real positive number vector
+#' @noRd 
+
   LL <- function (x) {
   if (x[1] == x[2])
   return (x[1])
@@ -1008,6 +1012,20 @@ expenditure<-function (data, period, ID)
   return ((x[1] - x[2]) / log(x[1] / x[2]))
   }
   
+#' The function returns the logarithmic mean of elements of two vectors. 
+#' @param x A real positive number vector
+#' @param y A real positive number vector
+#' @noRd
+
+Lv <- function (x, y) {
+  nx<-seq(1,length(x))
+  help<-function (i) 
+  {
+   if (x[i]==y[i]) return (x[i])
+    else return ((x[i]-y[i])/log(x[i]/y[i]))}
+   return (sapply(nx, help))   
+  }
+
 #' An additional function used in the 'geks_fbmw' function
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric or character).
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
@@ -4556,8 +4574,8 @@ mbennet_internal <-
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
   setID<-NULL
-  if (matched==FALSE) setID<-available(data, period1=start, period2=end, interval=TRUE)
-  else setID<-matched(data, period1=start, period2=end, interval=TRUE)  
+  if (matched==FALSE) setID<-available(data, period1=wstart, period2=wend, interval=TRUE)
+  else setID<-matched(data, period1=wstart, period2=wend, interval=TRUE)  
   #frames with all prices and quantities for all periods
   pq<-function (tm) {frame<-prices(data, period=tm, ID=TRUE)
   frame$q<-quantities(data, period=tm, ID=FALSE)
@@ -4601,6 +4619,326 @@ mbennet_internal <-
   #contributions
   price_contributions<-0.5*(1/window)*(p_end*q_end-p_start*q_start+q_tt*(p_end-p_start)-p_tt*(q_end-q_start))
   quantity_contributions<-0.5*(1/window)*(p_end*q_end-p_start*q_start+p_tt*(q_end-q_start)-q_tt*(p_end-p_start))
+  value_differences<-price_contributions+quantity_contributions
+  return (data.frame(setID, value_differences,price_contributions,quantity_contributions))
+  }
+  list_df<-lapply(seq(1,n),bt)
+  list_df<-dplyr::bind_rows(list_df)
+  list_df<-dplyr::summarise(dplyr::group_by(list_df,by=setID),
+                      value_differences=sum(value_differences),
+                      price_contributions=sum(price_contributions),
+                      quantity_contributions=sum(quantity_contributions),
+                      .groups="drop")
+  if (contributions==TRUE) {
+    list_df$value_differences<-round(list_df$value_differences,prec)
+    list_df$price_contributions<-round(list_df$price_contributions,prec)
+    list_df$quantity_contributions<-round(list_df$quantity_contributions,prec)
+    return (list_df)}
+  else return (data.frame(
+                     Value_difference=round(sum(list_df$value_differences),prec), 
+                     Price_indicator=round(sum(list_df$price_contributions),prec),
+                     Quantity_indicator=round(sum(list_df$quantity_contributions),prec)))    
+  }
+
+
+#' An additional function used in the 'montgomery' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical parameter indicating whether calculations are to be made for the whole time interval (TRUE) or no (FALSE).
+#' @param contributions A logical parameter indicating whether contributions of individual products are to be displayed. If it is \code{TRUE}, then contributions are calculated for the the base period \code{start} and the current period \code{end}.
+#' @param prec A numeric vector indicating precision, i.e. the number of decimal places for presenting results.
+#' @noRd
+
+montgomery_internal <-
+  function(data,
+  start,
+  end,
+  interval=FALSE,
+  contributions=FALSE,
+  prec=2)  {
+  if (start == end)
+  return (0)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  dates <- seq.Date(from = start, to = end, by = "month")
+  pq<-function (tm) {frame<-prices(data, period=tm, ID=TRUE)
+  frame$q<-quantities(data, period=tm, ID=FALSE)
+  return (frame)}
+  pq_list<-lapply(dates, pq)  
+  #main body
+  k<-2
+  n<-length(dates)
+  bt<-function (tt) 
+  {
+  setID<-union(pq_list[[1]]$by,pq_list[[tt]]$by)  #union of IDs
+  #helping functions
+  pq_help_start<-function (id) {
+    if (!(id %in% pq_list[[1]]$by)) return (c(0.000001,0.000001))
+    else {
+      df_help<-dplyr::filter(pq_list[[1]],by==id)
+      return (c(df_help$uv,df_help$q))
+    }
+  }
+  pq_help_tt<-function (id) {
+    if (!(id %in% pq_list[[tt]]$by)) return (c(0.000001,0.000001))
+    else {
+      df_help<-dplyr::filter(pq_list[[tt]],by==id)
+      return (c(df_help$uv,df_help$q))
+    }
+  }
+  pq_start<-sapply(setID,pq_help_start)
+  pq_tt<-sapply(setID,pq_help_tt)
+  p_start<-pq_start[1,]
+  p_tt<-pq_tt[1,]
+  q_start<-pq_start[2,]
+  q_tt<-pq_tt[2,]
+  #contributions
+  price_contributions<-Lv(p_start*q_start, p_tt*q_tt)*(log(p_tt)-log(p_start))
+  quantity_contributions<-Lv(p_start*q_start, p_tt*q_tt)*(log(q_tt)-log(q_start))
+  value_differences<-price_contributions+quantity_contributions
+  #value_differences<-p_tt*q_tt-p_start*q_start
+  #indicators
+  price_indicator<-sum(price_contributions)
+  quantity_indicator<-sum(quantity_contributions)
+  value_difference<-sum(value_differences)
+  #returning list
+  return (list(setID,round(value_differences,prec),
+               round(price_contributions,prec),
+               round(quantity_contributions,prec),
+               round(value_difference,prec),
+               round(price_indicator,prec),
+               round(quantity_indicator,prec)))
+  }
+  if (contributions==TRUE)
+    return (data.frame(row.names=NULL,
+                      prodID=bt(n)[[1]],
+                      value_differences=bt(n)[[2]],
+                      price_contributions=bt(n)[[3]],
+                      quantity_contributions=bt(n)[[4]]))
+  else {
+  if (interval==FALSE) k<-n
+  dates<-dates[k:n]
+  dates<-as.character(dates)
+  dates<-substr(dates,0,7)
+  v_diff<-c()
+  p_ind<-c()
+  q_ind<-c()
+  for (period in k:n) {
+    lista<-bt(period)
+    v_diff<-c(v_diff,lista[[5]])
+    p_ind<-c(p_ind, lista[[6]])
+    q_ind<-c(q_ind, lista[[7]])
+  }
+  df_result<-data.frame()
+  if (interval==FALSE) df_result<-data.frame(
+                     Value_difference=v_diff, 
+                     Price_indicator=p_ind,
+                     Quantity_indicator=q_ind)
+  else df_result<-data.frame(time=dates,
+                     Value_difference=v_diff, 
+                     Price_indicator=p_ind,
+                     Quantity_indicator=q_ind)
+  return (df_result) 
+  }
+  }
+
+
+#' An additional function used in the 'montgomery' function for matched products
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical parameter indicating whether calculations are to be made for the whole time interval (TRUE) or no (FALSE).
+#' @param contributions A logical parameter indicating whether contributions of individual products are to be displayed. If it is \code{TRUE}, then contributions are calculated for the the base period \code{start} and the current period \code{end}.
+#' @param prec A numeric vector indicating precision, i.e. the number of decimal places for presenting results.
+#' @noRd
+
+montgomery_matched_internal <-
+  function(data,
+  start,
+  end,
+  interval=FALSE,
+  contributions=FALSE,
+  prec=2)  {
+  if (start == end)
+  return (0)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  dates <- seq.Date(from = start, to = end, by = "month")
+  p<-function (tm) prices(data, period=tm, ID=TRUE)
+  q<-function (tm) quantities(data, period=tm, ID=TRUE)
+  p_list<-lapply(dates, p)  
+  q_list<-lapply(dates, q)
+  #main body
+  k<-2
+  n<-length(dates)
+  bt<-function (tt) 
+  {
+  setID<-intersect(p_list[[1]]$by,p_list[[tt]]$by)  #intersection of IDs
+  p_start<-dplyr::filter(p_list[[1]], by %in% setID)$uv
+  p_tt<-dplyr::filter(p_list[[tt]], by %in% setID)$uv
+  q_start<-dplyr::filter(q_list[[1]], by %in% setID)$q
+  q_tt<-dplyr::filter(q_list[[tt]], by %in% setID)$q
+  #resulting list
+  #contributions
+  price_contributions<-Lv(p_start*q_start, p_tt*q_tt)*(log(p_tt)-log(p_start))
+  quantity_contributions<-Lv(p_start*q_start, p_tt*q_tt)*(log(q_tt)-log(q_start))
+  value_differences<-price_contributions+quantity_contributions
+  #value_differences<-p_tt*q_tt-p_start*q_start
+  #indicators
+  price_indicator<-sum(price_contributions)
+  quantity_indicator<-sum(quantity_contributions)
+  value_difference<-sum(value_differences)
+  #returning list
+  return (list(setID,round(value_differences,prec),
+               round(price_contributions,prec),
+               round(quantity_contributions,prec),
+               round(value_difference,prec),
+               round(price_indicator,prec),
+               round(quantity_indicator,prec)))
+  }
+  if (contributions==TRUE)
+    return (data.frame(row.names=NULL,
+                      prodID=bt(n)[[1]],
+                      value_differences=bt(n)[[2]],
+                      price_contributions=bt(n)[[3]],
+                      quantity_contributions=bt(n)[[4]]))
+  else {
+  if (interval==FALSE) k<-n
+  dates<-dates[k:n]
+  dates<-as.character(dates)
+  dates<-substr(dates,0,7)
+  v_diff<-c()
+  p_ind<-c()
+  q_ind<-c()
+  for (period in k:n) {
+    lista<-bt(period)
+    v_diff<-c(v_diff,lista[[5]])
+    p_ind<-c(p_ind, lista[[6]])
+    q_ind<-c(q_ind, lista[[7]])
+  }
+  df_result<-data.frame()
+  if (interval==FALSE) df_result<-data.frame(
+                     Value_difference=v_diff, 
+                     Price_indicator=p_ind,
+                     Quantity_indicator=q_ind)
+  else df_result<-data.frame(time=dates,
+                     Value_difference=v_diff, 
+                     Price_indicator=p_ind,
+                     Quantity_indicator=q_ind)
+  return (df_result)    
+  }
+  }
+
+#' An additional function used in the 'mmontgomery' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The first period of the time window (as character) limited to the year and month, e.g. "2019-12".
+#' @param matched A logical parameter indicating whether the matched sample approach is to be used (if yes, the parameter has the value TRUE).
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param interval A logical parameter indicating whether calculations are to be made for the whole time interval (TRUE) or no (FALSE).
+#' @param contributions A logical parameter indicating whether contributions of individual products are to be displayed. If it is \code{TRUE}, then contributions are calculated for the the base period \code{start} and the current period \code{end}.
+#' @param prec A numeric vector indicating precision, i.e. the number of decimal places for presenting results.
+#' @noRd
+
+mmontgomery_internal <-
+  function(data,
+  start,
+  end,
+  wstart=start,
+  matched=FALSE,
+  window=13,
+  contributions=FALSE,
+  prec=2)  {
+  if (start == end)
+  return (0)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  #checking conditions
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  price_contributions<-NULL
+  quantity_contributions<-NULL
+  value_differences<-NULL
+  no_start<-dist(wstart, start)+1
+  no_end<-dist(wstart, end)+1
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates<-substr(dates, 0, 7)
+  setID<-NULL
+  if (matched==FALSE) setID<-available(data, period1=wstart, period2=wend, interval=TRUE)
+  else setID<-matched(data, period1=wstart, period2=wend, interval=TRUE)  
+  #frames with all prices and quantities for all periods
+  pq<-function (tm) {frame<-prices(data, period=tm, ID=TRUE)
+  frame$q<-quantities(data, period=tm, ID=FALSE)
+  return (frame)}
+  pq_list<-lapply(dates, pq)  
+  #main body
+  n<-window
+  bt<-function (tt) 
+  {
+  #helping functions
+  pq_help_start<-function (id) {
+    if (!(id %in% pq_list[[no_start]]$by)) return (c(0.000001,0.000001))
+    else {
+      df_help_start<-dplyr::filter(pq_list[[no_start]],by==id)
+      return (c(df_help_start$uv,df_help_start$q))
+    }
+  }
+  pq_help_tt<-function (id) {
+    if (!(id %in% pq_list[[tt]]$by)) return (c(0.000001,0.000001))
+    else {
+      df_help_tt<-dplyr::filter(pq_list[[tt]],by==id)
+      return (c(df_help_tt$uv,df_help_tt$q))
+    }
+  }
+  pq_help_end<-function (id) {
+    if (!(id %in% pq_list[[no_end]]$by)) return (c(0.000001,0.000001))
+    else {
+      df_help_end<-dplyr::filter(pq_list[[no_end]],by==id)
+      return (c(df_help_end$uv,df_help_end$q))
+    }
+  }  
+  pq_start<-sapply(setID,pq_help_start)
+  pq_tt<-sapply(setID,pq_help_tt)
+  pq_end<-sapply(setID,pq_help_end)
+  p_start<-pq_start[1,]
+  p_tt<-pq_tt[1,]
+  p_end<-pq_end[1,]
+  q_start<-pq_start[2,]
+  q_tt<-pq_tt[2,]
+  q_end<-pq_end[2,]
+  #contributions
+  price_contributions<-(1/window)*(Lv(p_tt*q_tt,p_end*q_end)*(log(p_end)-log(p_tt))-Lv(p_tt*q_tt,p_start*q_start)*(log(p_start)-log(p_tt)))
+  quantity_contributions<-(1/window)*(Lv(p_tt*q_tt,p_end*q_end)*(log(q_end)-log(q_tt))-Lv(p_tt*q_tt,p_start*q_start)*(log(q_start)-log(q_tt)))
   value_differences<-price_contributions+quantity_contributions
   return (data.frame(setID, value_differences,price_contributions,quantity_contributions))
   }
