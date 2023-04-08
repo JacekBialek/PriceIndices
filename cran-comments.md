@@ -1,8 +1,8 @@
 ## Package update 
 
-* Improvements: The **elasticity** and thus **elasticity_fig** are much faster now.
+* New functions for the calculation of the Montgomery indicators, i.e. **montgomery** and **mmontgomery** for the bilateral and multilateral variant, respectively).
 
-* Bug fixes: An example in **elasticity_fig** has been corrected (there is no error now). The *price_indices* function has been corrected due to the *lloyd-moulton* sub-function. 
+* Improvements: the **compare_indices_jk** function obtained new functionality (there are new elements in the resulting list for comparing pseudovalues from jackknife method). 
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

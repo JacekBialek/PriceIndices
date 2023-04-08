@@ -107,12 +107,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.56         19      1     1
-#> 2 2020-01-01   2.59         17      2     1
-#> 3 2020-01-01   2.68         21      3     1
-#> 4 2020-01-01   2.85         19      4     1
-#> 5 2020-01-01   2.81         16      5     1
-#> 6 2020-01-01   2.90         23      6     1
+#> 1 2020-01-01   2.95         24      1     1
+#> 2 2020-01-01   2.65         15      2     1
+#> 3 2020-01-01   2.79         21      3     1
+#> 4 2020-01-01   2.77         19      4     1
+#> 5 2020-01-01   2.75         20      5     1
+#> 6 2020-01-01   2.90         19      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -133,12 +133,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-12   2.78  3.6432833      1     1
-#> 2 2020-01-11   2.88  0.7080506      2     1
-#> 3 2020-01-18   2.66  5.5667455      3     1
-#> 4 2020-01-26   3.10  0.4630456      4     1
-#> 5 2020-01-13   2.72  5.8339336      5     1
-#> 6 2020-01-24   2.90  0.3260409      6     1
+#> 1 2020-01-13   2.73  0.1094363      1     1
+#> 2 2020-01-17   2.67  7.2069925      2     1
+#> 3 2020-01-26   2.68  1.0893964      3     1
+#> 4 2020-01-11   2.85  1.4251537      4     1
+#> 5 2020-01-04   2.78  1.5028121      5     1
+#> 6 2020-01-22   2.62  4.5771259      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -181,14 +181,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 0.9642009
+#> [1] 0.9755255
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 0.963828
+#> [1] 0.9760898
 ```
 
 **data\_aggregating**
@@ -842,19 +842,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.502081
-#> 2  14216 1.276489
-#> 3  15404 1.273232
-#> 4  17034 1.043357
-#> 5  34540 1.625307
-#> 6  51583 1.417476
+#> 1  14215 1.834143
+#> 2  14216 1.553697
+#> 3  15404 1.849813
+#> 4  17034 1.787058
+#> 5  34540 1.358638
+#> 6  51583 1.026042
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.00695
+#> [1] 0.9996696
 ```
 
 <a id="ad8"> </a>
@@ -1151,7 +1151,7 @@ compare_to_target(df,target=target_index)
 
 **compare\_indices\_jk**
 
-This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: **results**, which is a data frame with basic characteristics of the calculated indices (including the **jackknife estimates** for selected price indices), and **figure** which presents a box-plot for the considered indices. The User may control a way of creating product subgroups (subsamples) via the **by** parameter (in the classical jackknife method **by** should indicate **prodID**). Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
+his function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with four elements: **iterations**, which is a data frame with basic characteristics of the calculated iteration index values (means, standard deviations, coefficients of variation and results for all sample), **pseudovalues**, which is a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure (i.e. the jackknife estimators and their standard deviations and coefficients of variation), **figure\_iterations** which presents a box-plot for the calculated iteration index values, and **figure\_pseudovalues** which presents a box-plot for the calculated index pseudovalues obtained in the jackknife procedure. Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
 
 ``` r
 #creating a list with jackknife results
@@ -1162,25 +1162,46 @@ end="2019-12",
 window=c(13),
 names=c("Jevons","Fisher","GEKS"), 
 by="retID",
-title="Jackknife box-plots for milk products")
-#displaying a data frame with basic characteristics of the calculated indices
-comparison$results
-#>    index all_products mean_jack_knife sd_jack_knife
-#> 1 Jevons    1.0249373       1.0479343   0.026703299
-#> 2 Fisher    0.9868354       0.9867241   0.004328695
-#> 3   GEKS    0.9876664       0.9876414   0.003637010
+title_iterations="Box-plots for iteration values",
+title_pseudovalues="Box-plots for pseudovalues")
+#displaying a data frame with basic characteristics of the calculated iteration index values
+comparison$iterations
+#> # A tibble: 3 x 5
+#>   variable mean_iterations sd_iterations cv_iterations all_sample
+#>   <fct>              <dbl>         <dbl>         <dbl>      <dbl>
+#> 1 Jevons             1.02       0.00668       0.00655       1.02 
+#> 2 Fisher             0.987      0.00108       0.00110       0.987
+#> 3 GEKS               0.988      0.000909      0.000921      0.988
 ```
 
 ``` r
-#displaying box-plotes created for the price index values obtained by using the jackknife method:
-comparison$figure
+#displaying a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure
+comparison$pseudovalues
+#> # A tibble: 3 x 4
+#>   variable jk_estimator sd_jk_estimator   cv_jk
+#>   <fct>           <dbl>           <dbl>   <dbl>
+#> 1 Jevons          1.05          0.0267  0.0255 
+#> 2 Fisher          0.987         0.00433 0.00439
+#> 3 GEKS            0.988         0.00364 0.00368
 ```
 
-<img src="man/figures/README-unnamed-chunk-66-1.png" width="100%" />
+``` r
+#displaying box-plotes created for the calculated iteration index values
+comparison$figure_iterations
+```
+
+<img src="man/figures/README-unnamed-chunk-67-1.png" width="100%" />
+
+``` r
+#displaying box-plotes created for the calculated index pseudovalues obtained in the jackknife procedure
+comparison$figure_pseudovalues
+```
+
+<img src="man/figures/README-unnamed-chunk-68-1.png" width="100%" />
 
 <a id="ad13"> </a>
 
-There are two package functions for calculating price and quantity indicators. The **bennet** function returns the (bilateral) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mbennet** function returns the multilateral (transitive) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. For instance, the following command calculates the Bennet price and quantity indicators for milk products:
+There are four package functions for calculating price and quantity indicators. The **bennet** function returns the (bilateral) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mbennet** function returns the multilateral (transitive) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **montgomery** function returns the (bilateral) Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mmontgomery** function returns the multilateral (transitive) Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products.For instance, the following command calculates the Bennet price and quantity indicators for milk products:
 
 ``` r
 bennet(milk, start = "2018-12", end = "2019-12", interval=TRUE)
@@ -1218,4 +1239,34 @@ bennet(milk, start = "2018-12", end = "2019-12", contributions = TRUE)
 #> 4               -1895.11
 #> 5                 773.73
 #> 6                1065.63
+```
+
+The following command calculates the Montgomery price and quantity indicators for coffee products:
+
+``` r
+montgomery(coffee, start = "2018-12", end = "2019-12", interval=TRUE)
+#>       time Value_difference Price_indicator Quantity_indicator
+#> 1  2019-01       -468907.15        -9147.81         -459759.34
+#> 2  2019-02       -494284.67        20407.49         -514692.16
+#> 3  2019-03       -397279.68       -14075.89         -383203.79
+#> 4  2019-04       -354810.23        18916.05         -373726.28
+#> 5  2019-05       -504512.39        35906.94         -540419.33
+#> 6  2019-06       -461707.07       132177.82         -593884.89
+#> 7  2019-07       -423952.45       110250.18         -534202.63
+#> 8  2019-08       -275624.60       126281.93         -401906.53
+#> 9  2019-09       -346025.72       151139.77         -497165.49
+#> 10 2019-10       -310279.89       135645.97         -445925.86
+#> 11 2019-11       -260821.56        44782.99         -305604.55
+#> 12 2019-12          8945.14        75463.07          -66517.93
+```
+
+where price and quantity contributions of each subgroups of coffee products can be obtained as follows:
+
+``` r
+coffee$prodID<-coffee$description
+montgomery(coffee, start = "2018-12", end = "2019-12", contributions = TRUE)
+#>           prodID value_differences price_contributions quantity_contributions
+#> 1   coffee beans         121932.78            -6100.99              128033.77
+#> 2  ground coffee         -70172.42           -14307.11              -55865.31
+#> 3 instant coffee         -42815.22            14483.76              -57298.98
 ```

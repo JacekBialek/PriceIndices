@@ -1,3 +1,12 @@
+# Package update 0.1.6 -> 0.1.7
+
+## New functions: 
+* New functions for the calculation of the Montgomery indicators, i.e. **montgomery** and **mmontgomery** for the bilateral and multilateral variant, respectively).
+
+## Improvements: 
+* The **compare_indices_jk** function obtained new functionality (there are new elements in the resulting list for comparing pseudovalues from jackknife method).
+
+
 # Package update 0.1.5 -> 0.1.6
 
 ## Improvements: 

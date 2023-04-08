@@ -849,7 +849,7 @@ compare_to_target(df,target=target_index)
 
 **compare_indices_jk**
 
-This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with two elements: **results**, which is a data frame with basic characteristics of the calculated indices (including the **jackknife estimates** for selected price indices), and **figure** which presents a box-plot for the considered indices. The User may control a way of creating product subgroups (subsamples) via the **by** parameter (in the classical jackknife method **by** should indicate **prodID**). Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
+his function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with four elements: **iterations**, which is a data frame with basic characteristics of the calculated iteration index values (means, standard deviations, coefficients of variation and results for all sample), **pseudovalues**, which is a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure (i.e. the jackknife estimators and their standard deviations and coefficients of variation), **figure_iterations** which presents a box-plot for the calculated iteration index values, and **figure_pseudovalues** which presents a box-plot for the calculated index pseudovalues obtained in the jackknife procedure. Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
 
 ```{r}
 #creating a list with jackknife results
@@ -860,19 +860,30 @@ end="2019-12",
 window=c(13),
 names=c("Jevons","Fisher","GEKS"), 
 by="retID",
-title="Jackknife box-plots for milk products")
-#displaying a data frame with basic characteristics of the calculated indices
-comparison$results
+title_iterations="Box-plots for iteration values",
+title_pseudovalues="Box-plots for pseudovalues")
+#displaying a data frame with basic characteristics of the calculated iteration index values
+comparison$iterations
 ```
 
 ```{r}
-#displaying box-plotes created for the price index values obtained by using the jackknife method:
-comparison$figure
+#displaying a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure
+comparison$pseudovalues
+```
+
+```{r}
+#displaying box-plotes created for the calculated iteration index values
+comparison$figure_iterations
+```
+
+```{r}
+#displaying box-plotes created for the calculated index pseudovalues obtained in the jackknife procedure
+comparison$figure_pseudovalues
 ```
 
 <a id="ad13">   </a>
 
-There are two package functions for calculating price and quantity indicators. The **bennet** function returns the (bilateral) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mbennet** function returns the multilateral (transitive) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. For instance, the following command calculates the Bennet price and quantity indicators for milk products:
+There are four package functions for calculating price and quantity indicators. The **bennet** function returns the (bilateral) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mbennet** function returns the multilateral (transitive) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **montgomery** function returns the (bilateral) Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mmontgomery** function returns the multilateral (transitive) Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products.For instance, the following command calculates the Bennet price and quantity indicators for milk products:
 
 ```{r}
 bennet(milk, start = "2018-12", end = "2019-12", interval=TRUE)
@@ -886,3 +897,16 @@ milk$prodID<-milk$description
 bennet(milk, start = "2018-12", end = "2019-12", contributions = TRUE)
 ```
 
+The following command calculates the Montgomery price and quantity indicators for coffee products:
+
+```{r}
+montgomery(coffee, start = "2018-12", end = "2019-12", interval=TRUE)
+```
+
+where price and quantity contributions of each subgroups of coffee products
+can be obtained as follows:
+
+```{r}
+coffee$prodID<-coffee$description
+montgomery(coffee, start = "2018-12", end = "2019-12", contributions = TRUE)
+```
