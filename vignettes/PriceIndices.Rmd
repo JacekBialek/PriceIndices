@@ -781,11 +781,11 @@ final_index(milk, start = "2018-12", end = "2019-12",
 
 ### Functions for comparisons of price indices
 
-This package includes two functions for a simple graphical comparison of price indices and two functions for calculating distances between indices. The first one, i.e. **compare_indices_df**, is based on the syntax of the **price_indices** function and thus it allows us to compare price indices calculated on the same data set. The second function, i.e. **compare_indices_list**, has a general character since its first argument is a list of data frames which contain results obtained by using the **price_indices** or **final_index** functions. The third one, i.e. **compare_distances**, calculates (average) distances between price indices, i.e. the mean absolute distance or root mean square distance is calculated. The last function, **compare_to_target** allows to compute distances between indices from the selected index group and the indicated target price index.
+This package includes two functions for a simple graphical comparison of price indices and two functions for calculating distances between indices. The first one, i.e. **compare_indices_df**, is based on the syntax of the **price_indices** function and thus it allows us to compare price indices calculated on the same data set. The second function, i.e. **compare_indices_list**, has a general character since its first argument is a list of data frames which contain results obtained by using the **price_indices** or **final_index** functions. The third one, i.e. **compare_distances**, calculates (average) distances between price indices, i.e. the mean absolute distance or root mean square distance is calculated. The next function, **compare_to_target**, allows to compute distances between indices from the selected index group and the indicated target price index. The last function, **compare_indices_jk**, presents a comparison of selected indices obtained by using the jackknife method.
 
 **compare_indices_df** and **compare_indices_list**
 
-These function return a figure with plots of selected price indices, which are provided as a data frame (**compare_indices_df**) or a list of data frames (**compare_indices_list**). For instance, let us compare the Laspeyres and Paasche indices calculated for the data set on milk:
+These functions return a figure with plots of selected price indices, which are provided as a data frame (**compare_indices_df**) or a list of data frames (**compare_indices_list**). For instance, let us compare the Laspeyres and Paasche indices calculated for the data set on milk:
 
 ``` {r}
 df<-price_indices(milk, start = "2018-12", end = "2019-12", 
@@ -849,7 +849,7 @@ compare_to_target(df,target=target_index)
 
 **compare_indices_jk**
 
-his function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with four elements: **iterations**, which is a data frame with basic characteristics of the calculated iteration index values (means, standard deviations, coefficients of variation and results for all sample), **pseudovalues**, which is a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure (i.e. the jackknife estimators and their standard deviations and coefficients of variation), **figure_iterations** which presents a box-plot for the calculated iteration index values, and **figure_pseudovalues** which presents a box-plot for the calculated index pseudovalues obtained in the jackknife procedure. Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
+This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with four elements: **iterations**, which is a data frame with basic characteristics of the calculated iteration index values (means, standard deviations, coefficients of variation and results for all sample), **pseudovalues**, which is a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure (i.e. the jackknife estimators and their standard deviations and coefficients of variation), **figure_iterations** which presents a box-plot for the calculated iteration index values, and **figure_pseudovalues** which presents a box-plot for the calculated index pseudovalues obtained in the jackknife procedure. Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
 
 ```{r}
 #creating a list with jackknife results
@@ -880,7 +880,6 @@ comparison$figure_iterations
 #displaying box-plotes created for the calculated index pseudovalues obtained in the jackknife procedure
 comparison$figure_pseudovalues
 ```
-
 <a id="ad13">   </a>
 
 ### Functions for price and quantity indicator calculations

@@ -1,3 +1,8 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -107,12 +112,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   3.09         18      1     1
-#> 2 2020-01-01   2.85         19      2     1
-#> 3 2020-01-01   2.90         20      3     1
-#> 4 2020-01-01   2.65         22      4     1
-#> 5 2020-01-01   2.86         19      5     1
-#> 6 2020-01-01   2.86         19      6     1
+#> 1 2020-01-01   2.78         23      1     1
+#> 2 2020-01-01   2.75         19      2     1
+#> 3 2020-01-01   2.88         21      3     1
+#> 4 2020-01-01   2.66         19      4     1
+#> 5 2020-01-01   2.58         20      5     1
+#> 6 2020-01-01   2.61         18      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -133,12 +138,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-27   2.66  3.9732282      1     1
-#> 2 2020-01-01   2.64  6.2066030      2     1
-#> 3 2020-01-20   2.63  0.8292268      3     1
-#> 4 2020-01-24   2.77  7.2170989      4     1
-#> 5 2020-01-16   2.86  3.7864480      5     1
-#> 6 2020-01-20   2.74  1.3891326      6     1
+#> 1 2020-01-09   2.98   1.447739      1     1
+#> 2 2020-01-25   2.89   4.001540      2     1
+#> 3 2020-01-12   2.90   2.068384      3     1
+#> 4 2020-01-14   2.72   1.437393      4     1
+#> 5 2020-01-04   2.75   5.446941      5     1
+#> 6 2020-01-28   2.80   7.435235      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -181,14 +186,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 1.011481
+#> [1] 0.9406833
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 1.009605
+#> [1] 0.9403425
 ```
 
 **data\_aggregating**
@@ -842,19 +847,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.821901
-#> 2  14216 1.930594
-#> 3  15404 1.318359
-#> 4  17034 1.870754
-#> 5  34540 1.610790
-#> 6  51583 1.972326
+#> 1  14215 1.472867
+#> 2  14216 1.378476
+#> 3  15404 1.099301
+#> 4  17034 1.129296
+#> 5  34540 1.435951
+#> 6  51583 1.680332
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.02845
+#> [1] 0.962823
 ```
 
 <a id="ad8"> </a>
@@ -1070,11 +1075,11 @@ final_index(milk, start = "2018-12", end = "2019-12",
 
 ### Functions for comparisons of price indices
 
-This package includes two functions for a simple graphical comparison of price indices and two functions for calculating distances between indices. The first one, i.e. **compare\_indices\_df**, is based on the syntax of the **price\_indices** function and thus it allows us to compare price indices calculated on the same data set. The second function, i.e. **compare\_indices\_list**, has a general character since its first argument is a list of data frames which contain results obtained by using the **price\_indices** or **final\_index** functions. The third one, i.e. **compare\_distances**, calculates (average) distances between price indices, i.e. the mean absolute distance or root mean square distance is calculated. The last function, **compare\_to\_target** allows to compute distances between indices from the selected index group and the indicated target price index.
+This package includes two functions for a simple graphical comparison of price indices and two functions for calculating distances between indices. The first one, i.e. **compare\_indices\_df**, is based on the syntax of the **price\_indices** function and thus it allows us to compare price indices calculated on the same data set. The second function, i.e. **compare\_indices\_list**, has a general character since its first argument is a list of data frames which contain results obtained by using the **price\_indices** or **final\_index** functions. The third one, i.e. **compare\_distances**, calculates (average) distances between price indices, i.e. the mean absolute distance or root mean square distance is calculated. The next function, **compare\_to\_target**, allows to compute distances between indices from the selected index group and the indicated target price index. The last function, **compare\_indices\_jk**, presents a comparison of selected indices obtained by using the jackknife method.
 
 **compare\_indices\_df** and **compare\_indices\_list**
 
-These function return a figure with plots of selected price indices, which are provided as a data frame (**compare\_indices\_df**) or a list of data frames (**compare\_indices\_list**). For instance, let us compare the Laspeyres and Paasche indices calculated for the data set on milk:
+These functions return a figure with plots of selected price indices, which are provided as a data frame (**compare\_indices\_df**) or a list of data frames (**compare\_indices\_list**). For instance, let us compare the Laspeyres and Paasche indices calculated for the data set on milk:
 
 ``` r
 df<-price_indices(milk, start = "2018-12", end = "2019-12", 
@@ -1151,7 +1156,7 @@ compare_to_target(df,target=target_index)
 
 **compare\_indices\_jk**
 
-his function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with four elements: **iterations**, which is a data frame with basic characteristics of the calculated iteration index values (means, standard deviations, coefficients of variation and results for all sample), **pseudovalues**, which is a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure (i.e. the jackknife estimators and their standard deviations and coefficients of variation), **figure\_iterations** which presents a box-plot for the calculated iteration index values, and **figure\_pseudovalues** which presents a box-plot for the calculated index pseudovalues obtained in the jackknife procedure. Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
+This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with four elements: **iterations**, which is a data frame with basic characteristics of the calculated iteration index values (means, standard deviations, coefficients of variation and results for all sample), **pseudovalues**, which is a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure (i.e. the jackknife estimators and their standard deviations and coefficients of variation), **figure\_iterations** which presents a box-plot for the calculated iteration index values, and **figure\_pseudovalues** which presents a box-plot for the calculated index pseudovalues obtained in the jackknife procedure. Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
 
 ``` r
 #creating a list with jackknife results
@@ -1197,9 +1202,7 @@ comparison$figure_iterations
 comparison$figure_pseudovalues
 ```
 
-<img src="man/figures/README-unnamed-chunk-68-1.png" width="100%" />
-
-<a id="ad13"> </a>
+<img src="man/figures/README-unnamed-chunk-68-1.png" width="100%" /> <a id="ad13"> </a>
 
 ### Functions for price and quantity indicator calculations
 
