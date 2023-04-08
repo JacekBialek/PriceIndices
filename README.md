@@ -107,12 +107,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.95         24      1     1
-#> 2 2020-01-01   2.65         15      2     1
-#> 3 2020-01-01   2.79         21      3     1
-#> 4 2020-01-01   2.77         19      4     1
-#> 5 2020-01-01   2.75         20      5     1
-#> 6 2020-01-01   2.90         19      6     1
+#> 1 2020-01-01   3.09         18      1     1
+#> 2 2020-01-01   2.85         19      2     1
+#> 3 2020-01-01   2.90         20      3     1
+#> 4 2020-01-01   2.65         22      4     1
+#> 5 2020-01-01   2.86         19      5     1
+#> 6 2020-01-01   2.86         19      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -133,12 +133,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-13   2.73  0.1094363      1     1
-#> 2 2020-01-17   2.67  7.2069925      2     1
-#> 3 2020-01-26   2.68  1.0893964      3     1
-#> 4 2020-01-11   2.85  1.4251537      4     1
-#> 5 2020-01-04   2.78  1.5028121      5     1
-#> 6 2020-01-22   2.62  4.5771259      6     1
+#> 1 2020-01-27   2.66  3.9732282      1     1
+#> 2 2020-01-01   2.64  6.2066030      2     1
+#> 3 2020-01-20   2.63  0.8292268      3     1
+#> 4 2020-01-24   2.77  7.2170989      4     1
+#> 5 2020-01-16   2.86  3.7864480      5     1
+#> 6 2020-01-20   2.74  1.3891326      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -181,14 +181,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 0.9755255
+#> [1] 1.011481
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 0.9760898
+#> [1] 1.009605
 ```
 
 **data\_aggregating**
@@ -842,19 +842,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.834143
-#> 2  14216 1.553697
-#> 3  15404 1.849813
-#> 4  17034 1.787058
-#> 5  34540 1.358638
-#> 6  51583 1.026042
+#> 1  14215 1.821901
+#> 2  14216 1.930594
+#> 3  15404 1.318359
+#> 4  17034 1.870754
+#> 5  34540 1.610790
+#> 6  51583 1.972326
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9996696
+#> [1] 1.02845
 ```
 
 <a id="ad8"> </a>
@@ -1200,6 +1200,8 @@ comparison$figure_pseudovalues
 <img src="man/figures/README-unnamed-chunk-68-1.png" width="100%" />
 
 <a id="ad13"> </a>
+
+### Functions for price and quantity indicator calculations
 
 There are four package functions for calculating price and quantity indicators. The **bennet** function returns the (bilateral) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mbennet** function returns the multilateral (transitive) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **montgomery** function returns the (bilateral) Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mmontgomery** function returns the multilateral (transitive) Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products.For instance, the following command calculates the Bennet price and quantity indicators for milk products:
 

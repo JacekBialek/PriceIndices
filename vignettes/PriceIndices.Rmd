@@ -883,6 +883,8 @@ comparison$figure_pseudovalues
 
 <a id="ad13">   </a>
 
+### Functions for price and quantity indicator calculations
+
 There are four package functions for calculating price and quantity indicators. The **bennet** function returns the (bilateral) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mbennet** function returns the multilateral (transitive) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **montgomery** function returns the (bilateral) Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mmontgomery** function returns the multilateral (transitive) Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products.For instance, the following command calculates the Bennet price and quantity indicators for milk products:
 
 ```{r}
