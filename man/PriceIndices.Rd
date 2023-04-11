@@ -430,12 +430,16 @@ The list of package functions is as follows:
 
 \section{Functions for bilateral indicator calculations}{
 
-\code{\link{bennet}}
+\code{\link{bennet}} 
+
+\code{\link{montgomery}}
 }
 
 \section{Functions for multilateral indicator calculations}{
 
-\code{\link{mbennet}}
+\code{\link{mbennet}} 
+
+\code{\link{mmontgomery}}
 }
 
 \section{General functions for price index calculations}{
