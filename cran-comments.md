@@ -1,8 +1,7 @@
 ## Package update 
 
-* New functions for the calculation of the Montgomery indicators, i.e. **montgomery** and **mmontgomery** for the bilateral and multilateral variant, respectively).
-
-* Improvements: the **compare_indices_jk** function obtained new functionality (there are new elements in the resulting list for comparing pseudovalues from jackknife method). 
+## Improvements: 
+* New references to some of multilateral methods have been added (e.g. GEKS-AGI, GEKS-AQU methods) 
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

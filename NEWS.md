@@ -1,3 +1,9 @@
+# Package update 0.1.7 -> 0.1.8
+
+## Improvements: 
+New references to some of multilateral methods have been added (e.g. GEKS-AGI, GEKS-AQU methods)
+
+
 # Package update 0.1.6 -> 0.1.7
 
 ## New functions: 

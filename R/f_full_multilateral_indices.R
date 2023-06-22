@@ -1478,6 +1478,8 @@ wgeksgl <-
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
+#'
 #' @examples 
 #' \donttest{geksaqu(milk, start="2019-01", end="2019-08",window=10)}
 #' \donttest{geksaqu(milk, start="2018-12", end="2019-12")}
@@ -1548,6 +1550,8 @@ geksaqu <-
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
 #' @examples 
 #' \donttest{wgeksaqu(milk, start="2019-01", end="2019-08",window=10)}
@@ -1627,6 +1631,8 @@ wgeksaqu <-
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
+#'
 #' @examples 
 #' \donttest{geksaqi(milk, start="2019-01", end="2019-08",window=10)}
 #' \donttest{geksaqi(milk, start="2018-12", end="2019-12")}
@@ -1698,6 +1704,8 @@ geksaqi <-
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
 #' @examples 
 #' \donttest{wgeksaqi(milk, start="2019-01", end="2019-08",window=10)}

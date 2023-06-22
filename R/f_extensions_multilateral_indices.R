@@ -3115,6 +3115,8 @@ wgeksgl_fbmw <- function(data, start, end)  {
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
+#'
 #' @examples 
 #' \donttest{geksaqu_splice(milk, start="2018-12", end="2020-02",splice="half")}
 #' @export
@@ -3259,6 +3261,8 @@ geksaqu_splice <-
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
+#'
 #' @examples 
 #' \donttest{geksaqu_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -3317,6 +3321,8 @@ geksaqu_fbew <- function(data, start, end)  {
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
 #' @examples 
 #' \donttest{geksaqu_fbmw(milk, start="2019-12", end="2020-04")}
@@ -3379,6 +3385,8 @@ geksaqu_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
 #' @examples 
 #' \donttest{wgeksaqu_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -3524,6 +3532,8 @@ wgeksaqu_splice <-
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
+#'
 #' @examples 
 #' \donttest{wgeksaqu_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -3583,6 +3593,8 @@ wgeksaqu_fbew <- function(data, start, end)  {
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
 #' @examples 
 #' \donttest{wgeksaqu_fbmw(milk, start="2019-12", end="2020-04")}
@@ -3645,6 +3657,8 @@ wgeksaqu_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
 #' @examples 
 #' \donttest{geksaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -3790,6 +3804,8 @@ geksaqi_splice <-
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
+#'
 #' @examples 
 #' \donttest{geksaqi_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -3849,6 +3865,8 @@ geksaqi_fbew <- function(data, start, end)  {
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
 #' @examples 
 #' \donttest{geksaqi_fbmw(milk, start="2019-12", end="2020-04")}
@@ -3910,6 +3928,8 @@ geksaqi_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
 #' @examples 
 #' \donttest{wgeksaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -4055,6 +4075,8 @@ wgeksaqi_splice <-
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
+#'
 #' @examples 
 #' \donttest{wgeksaqi_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -4114,6 +4136,8 @@ wgeksaqi_fbew <- function(data, start, end)  {
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
 #' @examples 
 #' \donttest{wgeksaqi_fbmw(milk, start="2019-12", end="2020-04")}
