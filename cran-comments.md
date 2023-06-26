@@ -1,7 +1,8 @@
 ## Package update 
 
 ## Improvements: 
-* New references to some of multilateral methods have been added (e.g. GEKS-AGI, GEKS-AQU methods) 
+* New references to some of multilateral methods have been added (e.g. GEKS-AGI, GEKS-AQU methods)
+* The **final index** function has been improved. Now it skips data frames with zero rows.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

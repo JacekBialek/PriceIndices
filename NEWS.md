@@ -1,8 +1,8 @@
 # Package update 0.1.7 -> 0.1.8
 
 ## Improvements: 
-New references to some of multilateral methods have been added (e.g. GEKS-AGI, GEKS-AQU methods)
-
+* New references to some of multilateral methods have been added (e.g. GEKS-AGI, GEKS-AQU methods)
+* The **final index** function has been improved. Now it skips data frames with zero rows.
 
 # Package update 0.1.6 -> 0.1.7
 
