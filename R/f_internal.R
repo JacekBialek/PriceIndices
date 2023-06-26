@@ -4270,6 +4270,9 @@ final_index2 <-
     if ((groups==FALSE) & (outlets==TRUE)) df<-split(data, data$retID)
     if ((groups==TRUE) & (outlets==TRUE)) df<-split(data, list(data$groupID,data$retID))
     
+    #cleaning df
+    df<-df[lapply(df,nrow)>0]
+
     #indices
     indices<-c()
     for (i in 1:length(df)) 
