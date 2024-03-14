@@ -2728,7 +2728,7 @@ if (interval==TRUE)
 {# each pair of subsequent months is considered
 months<-seq.Date(from=start, to=end, by="month")  
 dates<-substr(as.character(months),0,7)
-no.dates<-length(daty)-1
+no.dates<-length(dates)-1
 flags<-c()
 for (i in 1:length(subgroup_list)) {
 matched_products<-c()

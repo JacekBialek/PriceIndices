@@ -17,7 +17,7 @@ A data frame with 6 columns and 22 rows. The used variables are as follows:
 
 \code{codeOUT} - Unique external product codes (e.g. GTIN, EAN, SKU)
 
-\code{description} Descriptions of sold coffee products
+\code{description} - Descriptions of sold coffee products
 }
 \usage{
 dataDOWNSIZED

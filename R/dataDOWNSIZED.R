@@ -13,7 +13,7 @@
 #'
 #' \code{codeOUT} - Unique external product codes (e.g. GTIN, EAN, SKU)
 #'
-#' \code{description} Descriptions of sold coffee products 
+#' \code{description} - Descriptions of sold coffee products 
 #' @docType data
 #'
 "dataDOWNSIZED"
