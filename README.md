@@ -1,3 +1,8 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
