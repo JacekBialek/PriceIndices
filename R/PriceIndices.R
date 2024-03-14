@@ -5,7 +5,7 @@
 #' The package documentation can be found \href{https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_manual.pdf}{HERE}.
 #' The list of package functions is as follows:
 #'
-#' @docType package
+#' @aliases PriceIndices-package
 #' @name PriceIndices
 #' @section Data sets in the package and generating artificial scanner data sets:
 #' \code{\link{dataAGGR}}
@@ -82,11 +82,7 @@
 #'
 #' \code{\link{elasticity}}
 #'
-#' \code{\link{elasticity2}}
-#'
 #' \code{\link{elasticity_fig}}
-#'
-#' \code{\link{elasticity2_fig}}
 #'
 #' @section Functions for bilateral unweighted price index calculation:
 #' \code{\link{bmw}} 
@@ -364,18 +360,16 @@
 #' \code{\link{tpd_fbmw}}
 #'
 #' @section General functions for price index calculations:
-#' \code{\link{price_index}} 
-#'
 #' \code{\link{price_indices}}
 #'
 #' \code{\link{final_index}}
 #'
-#' \code{\link{final_index2}}
-#'
 #' @section Functions for comparisons of price indices:
-#' \code{\link{compare_indices}} 
+#' \code{\link{compare_indices_df}}
 #'
-#' \code{\link{compare_final_indices}}
+#' \code{\link{compare_indices_list}}
+#'
+#' \code{\link{compare_indices_jk}}
 #'
 #' \code{\link{compare_distances}}
 #'
