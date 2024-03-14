@@ -1659,85 +1659,36 @@ wgeksgl_fbmw2 <- function(data, start, end)  {
 }
 
 
-#' An additional function used in the 'unit' function
-#' @param string A string which contains the grammage of the product and its unit
-#' @noRd
-
-numextract <- function(string) {
-  unlist(regmatches(string, gregexpr(
-  "[[:digit:]]+\\.*[[:digit:]]*", string
-  )))
-} 
 
 #' An additional function used in the 'data_unit' function
 #' @param string A string which contains the grammage of the product and its unit
 #' @param units Units of products which are to be detected
 #' @param multiplication A sign of the multiplication used in product descriptions
-#' @param space A maximum space between the product grammage and its unit 
 #' @noRd
 
 unit <-
   function (string,
-  units = c("g", "ml", "kg", "l"),
-  multiplication = "x",
-  space = 1)
+  units = c("g|ml|kg|l"),
+  multiplication = "x")
   {
-  detect <- FALSE
   string <- tolower(stringr::str_replace_all(string, ',', '.'))
+  string<-paste(string, " ", sep="")
   units <- tolower(units)
-  numbers <- n <- pattern <- text <- sizes <- unit <- grammage <- NULL
-  numbers <- as.numeric(numextract(string))
-  if (length(numbers) == 0)
-  return (list("1", "item"))
-  #recalculating expressions with a sign of the product
-  n <- length(numbers)
-  if (stringr::str_detect(string, multiplication) &
-  length(numbers) > 1)
-  {
-  nn <- n - 1
-  for (i in 1:nn)  {
-  patt <-
-  paste(as.character(numbers[i]),
-  multiplication,
-  as.character(numbers[i + 1]),
-  sep = "")
-  if (stringr::str_detect(string, patt)) {
-  string <-
-  stringr::str_replace(string, patt,  as.character(as.numeric(numbers[i]) * as.numeric(numbers[i +
-  1])))
-  detect <- TRUE
+  pattern.<-paste("[[:space:]]+\\d*[[:space:]]*",
+                  multiplication,
+                  "{0,1}[[:space:]]*[0-9]+[[:punct:]]{0,1}[0-9]*[[:space:]]*(",units,")[[:space:]]+", sep="")
+  extr<-stringr::str_extract(string, pattern=pattern.)
+  if (is.na(extr))
+  return (list(1, "item"))  
+  else
+  { 
+  numbers<-strex::str_extract_numbers(extr, decimals=TRUE)
+  numbers<-unlist(numbers)
+  if (length(numbers)==2) if (!(grepl(multiplication, extr))) numbers<-numbers[2]
+  numbers<-prod(numbers)
+  unit<-stringr::str_extract(extr, pattern=units)
+  return (list(numbers,unit))
   }
-  if (detect == TRUE) {
-  numbers <- numextract(string)
-  n <- length(numbers)
-  }
-  }
-  }
-  #main body
-  #initial values (no unit detected)
-  unit <- "item"
-  grammage <- 1
-  #checking for units
-  unit_list <- c()
-  
-  for (i in 1:n) {
-  text <-
-  strex::str_after_first(string, pattern = as.character(numbers[i]))
-  string<-text
-  for (k in 1:length(units)) {
-  sizes <- nchar(units[k]) + space
-  text2 <- substr(text, 0, sizes)
-  if (!(is.na(stringr::str_detect(text2, units[k])))) 
-    if (stringr::str_detect(text2, units[k])) {
-  unit_list <- c(unit_list, units[k])
-  grammage <- numbers[i]
-  }
-  }
-  }
-  if (length(unit_list) > 0)
-  unit <-
-  unit_list[max(which(nchar(unit_list) == max(nchar(unit_list))))]
-  return (list(grammage, unit))
   }
 
 #' An additional function used in the 'geksl' function
@@ -4333,7 +4284,6 @@ final_index2 <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical parameter indicating whether calculations are to be made for the whole time interval (TRUE) or no (FALSE).
 #' @param contributions A logical parameter indicating whether contributions of individual products are to be displayed. If it is \code{TRUE}, then contributions are calculated for the the base period \code{start} and the current period \code{end}.
-#' @param prec A numeric vector indicating precision, i.e. the number of decimal places for presenting results.
 #' @noRd
 
 bennet_internal <-
@@ -4341,8 +4291,7 @@ bennet_internal <-
   start,
   end,
   interval=FALSE,
-  contributions=FALSE,
-  prec=2)  {
+  contributions=FALSE)  {
   if (start == end)
   return (0)
   if (nrow(data) == 0)
@@ -4392,12 +4341,12 @@ bennet_internal <-
   quantity_indicator<-sum(quantity_contributions)
   value_difference<-sum(value_differences)
   #returning list
-  return (list(setID,round(value_differences,prec),
-               round(price_contributions,prec),
-               round(quantity_contributions,prec),
-               round(value_difference,prec),
-               round(price_indicator,prec),
-               round(quantity_indicator,prec)))
+  return (list(setID,value_differences,
+               price_contributions,
+               quantity_contributions,
+               value_difference,
+               price_indicator,
+               quantity_indicator))
   }
   if (contributions==TRUE)
     return (data.frame(row.names=NULL,
@@ -4438,7 +4387,6 @@ bennet_internal <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical parameter indicating whether calculations are to be made for the whole time interval (TRUE) or no (FALSE).
 #' @param contributions A logical parameter indicating whether contributions of individual products are to be displayed. If it is \code{TRUE}, then contributions are calculated for the the base period \code{start} and the current period \code{end}.
-#' @param prec A numeric vector indicating precision, i.e. the number of decimal places for presenting results.
 #' @noRd
 
 bennet_matched_internal <-
@@ -4446,8 +4394,7 @@ bennet_matched_internal <-
   start,
   end,
   interval=FALSE,
-  contributions=FALSE,
-  prec=2)  {
+  contributions=FALSE)  {
   if (start == end)
   return (0)
   if (nrow(data) == 0)
@@ -4481,12 +4428,12 @@ bennet_matched_internal <-
   quantity_indicator<-sum(quantity_contributions)
   value_difference<-sum(value_differences)
   #returning list
-  return (list(setID,round(value_differences,prec),
-               round(price_contributions,prec),
-               round(quantity_contributions,prec),
-               round(value_difference,prec),
-               round(price_indicator,prec),
-               round(quantity_indicator,prec)))
+  return (list(setID,value_differences,
+               price_contributions,
+               quantity_contributions,
+               value_difference,
+               price_indicator,
+               quantity_indicator))
   }
   if (contributions==TRUE)
     return (data.frame(row.names=NULL,
@@ -4530,7 +4477,6 @@ bennet_matched_internal <-
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
 #' @param interval A logical parameter indicating whether calculations are to be made for the whole time interval (TRUE) or no (FALSE).
 #' @param contributions A logical parameter indicating whether contributions of individual products are to be displayed. If it is \code{TRUE}, then contributions are calculated for the the base period \code{start} and the current period \code{end}.
-#' @param prec A numeric vector indicating precision, i.e. the number of decimal places for presenting results.
 #' @noRd
 
 mbennet_internal <-
@@ -4540,8 +4486,7 @@ mbennet_internal <-
   wstart=start,
   matched=FALSE,
   window=13,
-  contributions=FALSE,
-  prec=2)  {
+  contributions=FALSE)  {
   if (start == end)
   return (0)
   if (nrow(data) == 0)
@@ -4633,16 +4578,15 @@ mbennet_internal <-
                       quantity_contributions=sum(quantity_contributions),
                       .groups="drop")
   if (contributions==TRUE) {
-    list_df$value_differences<-round(list_df$value_differences,prec)
-    list_df$price_contributions<-round(list_df$price_contributions,prec)
-    list_df$quantity_contributions<-round(list_df$quantity_contributions,prec)
+    list_df$value_differences<-list_df$value_differences
+    list_df$price_contributions<-list_df$price_contributions
+    list_df$quantity_contributions<-list_df$quantity_contributions
     return (list_df)}
   else return (data.frame(
-                     Value_difference=round(sum(list_df$value_differences),prec), 
-                     Price_indicator=round(sum(list_df$price_contributions),prec),
-                     Quantity_indicator=round(sum(list_df$quantity_contributions),prec)))    
+                     Value_difference=sum(list_df$value_differences), 
+                     Price_indicator=sum(list_df$price_contributions),
+                  Quantity_indicator=sum(list_df$quantity_contributions)))    
   }
-
 
 #' An additional function used in the 'montgomery' function
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this function uses unit values as monthly prices.
@@ -4650,7 +4594,6 @@ mbennet_internal <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical parameter indicating whether calculations are to be made for the whole time interval (TRUE) or no (FALSE).
 #' @param contributions A logical parameter indicating whether contributions of individual products are to be displayed. If it is \code{TRUE}, then contributions are calculated for the the base period \code{start} and the current period \code{end}.
-#' @param prec A numeric vector indicating precision, i.e. the number of decimal places for presenting results.
 #' @noRd
 
 montgomery_internal <-
@@ -4658,8 +4601,7 @@ montgomery_internal <-
   start,
   end,
   interval=FALSE,
-  contributions=FALSE,
-  prec=2)  {
+  contributions=FALSE)  {
   if (start == end)
   return (0)
   if (nrow(data) == 0)
@@ -4710,12 +4652,12 @@ montgomery_internal <-
   quantity_indicator<-sum(quantity_contributions)
   value_difference<-sum(value_differences)
   #returning list
-  return (list(setID,round(value_differences,prec),
-               round(price_contributions,prec),
-               round(quantity_contributions,prec),
-               round(value_difference,prec),
-               round(price_indicator,prec),
-               round(quantity_indicator,prec)))
+  return (list(setID,value_differences,
+               price_contributions,
+               quantity_contributions,
+               value_difference,
+               price_indicator,
+               quantity_indicator))
   }
   if (contributions==TRUE)
     return (data.frame(row.names=NULL,
@@ -4750,14 +4692,12 @@ montgomery_internal <-
   }
   }
 
-
 #' An additional function used in the 'montgomery' function for matched products
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this function uses unit values as monthly prices.
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical parameter indicating whether calculations are to be made for the whole time interval (TRUE) or no (FALSE).
 #' @param contributions A logical parameter indicating whether contributions of individual products are to be displayed. If it is \code{TRUE}, then contributions are calculated for the the base period \code{start} and the current period \code{end}.
-#' @param prec A numeric vector indicating precision, i.e. the number of decimal places for presenting results.
 #' @noRd
 
 montgomery_matched_internal <-
@@ -4765,8 +4705,7 @@ montgomery_matched_internal <-
   start,
   end,
   interval=FALSE,
-  contributions=FALSE,
-  prec=2)  {
+  contributions=FALSE)  {
   if (start == end)
   return (0)
   if (nrow(data) == 0)
@@ -4801,12 +4740,12 @@ montgomery_matched_internal <-
   quantity_indicator<-sum(quantity_contributions)
   value_difference<-sum(value_differences)
   #returning list
-  return (list(setID,round(value_differences,prec),
-               round(price_contributions,prec),
-               round(quantity_contributions,prec),
-               round(value_difference,prec),
-               round(price_indicator,prec),
-               round(quantity_indicator,prec)))
+  return (list(setID,value_differences,
+               price_contributions,
+               quantity_contributions,
+               value_difference,
+               price_indicator,
+               quantity_indicator))
   }
   if (contributions==TRUE)
     return (data.frame(row.names=NULL,
@@ -4850,7 +4789,6 @@ montgomery_matched_internal <-
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
 #' @param interval A logical parameter indicating whether calculations are to be made for the whole time interval (TRUE) or no (FALSE).
 #' @param contributions A logical parameter indicating whether contributions of individual products are to be displayed. If it is \code{TRUE}, then contributions are calculated for the the base period \code{start} and the current period \code{end}.
-#' @param prec A numeric vector indicating precision, i.e. the number of decimal places for presenting results.
 #' @noRd
 
 mmontgomery_internal <-
@@ -4860,8 +4798,7 @@ mmontgomery_internal <-
   wstart=start,
   matched=FALSE,
   window=13,
-  contributions=FALSE,
-  prec=2)  {
+  contributions=FALSE)  {
   if (start == end)
   return (0)
   if (nrow(data) == 0)
@@ -4953,12 +4890,12 @@ mmontgomery_internal <-
                       quantity_contributions=sum(quantity_contributions),
                       .groups="drop")
   if (contributions==TRUE) {
-    list_df$value_differences<-round(list_df$value_differences,prec)
-    list_df$price_contributions<-round(list_df$price_contributions,prec)
-    list_df$quantity_contributions<-round(list_df$quantity_contributions,prec)
+    list_df$value_differences<-list_df$value_differences
+    list_df$price_contributions<-list_df$price_contributions
+    list_df$quantity_contributions<-list_df$quantity_contributions
     return (list_df)}
   else return (data.frame(
-                     Value_difference=round(sum(list_df$value_differences),prec), 
-                     Price_indicator=round(sum(list_df$price_contributions),prec),
-                     Quantity_indicator=round(sum(list_df$quantity_contributions),prec)))    
+                     Value_difference=sum(list_df$value_differences), 
+                     Price_indicator=sum(list_df$price_contributions),
+                  Quantity_indicator=sum(list_df$quantity_contributions)))    
   }

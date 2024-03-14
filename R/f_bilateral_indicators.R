@@ -25,19 +25,45 @@ bennet <-
   matched=FALSE,
   contributions=FALSE,
   prec=2)  {
-  if (matched==FALSE) return (bennet_internal(data=data, 
+  if (matched==FALSE) {df<-bennet_internal(data=data, 
                                               start=start,
                                               end=end,
                                               interval=interval,
-                                              contributions=contributions,
-                                              prec=prec))
-  else return (bennet_matched_internal(data=data, 
+                                              contributions=contributions)
+                      if (contributions==FALSE)
+                      {
+                      df$Value_difference<-round(df$Value_difference,prec)  
+                      df$Price_indicator<-round(df$Price_indicator,prec)
+                      df$Quantity_indicator<-round(df$Quantity_indicator,prec)
+                      }
+                      else
+                      {
+                      df$value_differences<-round(df$value_differences,prec)
+                      df$price_contributions<-round(df$price_contributions,prec)
+                      df$quantity_contributions<-round(df$quantity_contributions,prec)
+                      }
+                      }
+  else {df<-bennet_matched_internal(data=data, 
                                               start=start,
                                               end=end,
                                               interval=interval,
-                                              contributions=contributions,
-                                              prec=prec))  
+                                              contributions=contributions)
+  if (contributions==FALSE)
+                      {
+                      df$Value_difference<-round(df$Value_difference,prec)  
+                      df$Price_indicator<-round(df$Price_indicator,prec)
+                      df$Quantity_indicator<-round(df$Quantity_indicator,prec)
+                      }
+                      else
+                      {
+                      df$value_differences<-round(df$value_differences,prec)
+                      df$price_contributions<-round(df$price_contributions,prec)
+                      df$quantity_contributions<-round(df$quantity_contributions,prec)
+                      }
+       }  
+  return (df)
   }
+
 
 #' @title  Calculating the Montgomery price and quantity indicators 
 #'
@@ -66,16 +92,41 @@ montgomery <-
   matched=FALSE,
   contributions=FALSE,
   prec=2)  {
-  if (matched==FALSE) return (montgomery_internal(data=data, 
+  if (matched==FALSE) {df<-montgomery_internal(data=data, 
                                               start=start,
                                               end=end,
                                               interval=interval,
-                                              contributions=contributions,
-                                              prec=prec))
-  else return (montgomery_matched_internal(data=data, 
+                                              contributions=contributions)
+                      if (contributions==FALSE)
+                      {
+                      df$Value_difference<-round(df$Value_difference,prec)  
+                      df$Price_indicator<-round(df$Price_indicator,prec)
+                      df$Quantity_indicator<-round(df$Quantity_indicator,prec)
+                      }
+                      else
+                      {
+                      df$value_differences<-round(df$value_differences,prec)
+                      df$price_contributions<-round(df$price_contributions,prec)
+                      df$quantity_contributions<-round(df$quantity_contributions,prec)
+                      }
+                      }
+  else {df<-montgomery_matched_internal(data=data, 
                                               start=start,
                                               end=end,
                                               interval=interval,
-                                              contributions=contributions,
-                                              prec=prec))  
+                                              contributions=contributions)
+  if (contributions==FALSE)
+                      {
+                      df$Value_difference<-round(df$Value_difference,prec)  
+                      df$Price_indicator<-round(df$Price_indicator,prec)
+                      df$Quantity_indicator<-round(df$Quantity_indicator,prec)
+                      }
+                      else
+                      {
+                      df$value_differences<-round(df$value_differences,prec)
+                      df$price_contributions<-round(df$price_contributions,prec)
+                      df$quantity_contributions<-round(df$quantity_contributions,prec)
+                      }
+       }  
+  return (df)
   }

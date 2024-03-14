@@ -23,12 +23,12 @@ This function loads a list of machine learning model elements from the disk, i.e
 \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
 \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
-\donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+\donttest{ML<-model_classification(data_train,data_test,class="coicop6",grid=my.grid,
 indicators=c("description","codeIN", "grammage"),key_words=c("uht"),rounds=60)}
 #Saving the model
 \dontrun{save_model(ML, dir="My_model")}
 #Loading the model
 \dontrun{ML_fromPC<-load_model("My_model")}
-#COICOP predicting
+#classes predicting
 \dontrun{data_classifying(ML_fromPC, data_test)}
 }

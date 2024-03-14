@@ -4,28 +4,21 @@
 \alias{data_unit}
 \title{Providing information about the grammage and unit of products}
 \usage{
-data_unit(
-  data = data.frame(),
-  units = c("g", "ml", "kg", "l"),
-  multiplication = "x",
-  space = 1
-)
+data_unit(data = data.frame(), units = c("g|ml|kg|l"), multiplication = "x")
 }
 \arguments{
 \item{data}{The user's data frame. The data frame must contain the \code{description} column (as character).}
 
-\item{units}{Units of products which are to be detected}
+\item{units}{Units of products which are to be detected (e.g. "ml|g|kg")}
 
-\item{multiplication}{A sign of the multiplication used in product descriptions}
-
-\item{space}{A maximum space between the product grammage and its unit}
+\item{multiplication}{A sign of the multiplication used in product descriptions (e.g. "x")}
 }
 \value{
-The function returns the user's data frame with two additional columns: \code{grammage} and \code{unit} (both are character type). The values of these columns are extracted from product descriptions on the basis of provided \code{units}. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '2x50 g', we obtain: \code{grammage: 100} and \code{unit: g} for that product (for \code{multiplication} set to 'x').
+The function returns the user's data frame with two additional columns: \code{grammage} and \code{unit}. The values of these columns are extracted from product descriptions on the basis of provided \code{units}. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '2x50 g', we obtain: \code{grammage: 100} and \code{unit: g} for that product (for \code{multiplication} set to 'x').
 }
 \description{
 The function returns the grammage and unit of products as two additional columns.
 }
 \examples{
-data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
+data_unit(dataU, units=c("g|ml|kg|l"), multiplication="x")
 }

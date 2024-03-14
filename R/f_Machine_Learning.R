@@ -1,18 +1,18 @@
 #' @title  Building the machine learning model for product classification
 #'
-#' @description This function provides a trained machine learning model to classify products into coicop groups or any other groups defined by the user. In addition, the function returns the characteristics of the model and figures describing the learning process.
-#' @param data_train Training data set for the model. This set must contain all the columns defined by the \code{indicators} parameter and the \code{coicop} column (with matched coicop groups to all products). If the \code{key_words} vector is non-empty, the set should also contain a \code{description} column. Ideally, the indicators should be of the numerical type. If the indicator is not of the numerical type, it will be converted to this type.
+#' @description This function provides a trained machine learning model to classify products into classes or any other groups defined by the user. In addition, the function returns the characteristics of the model and figures describing the learning process.
+#' @param data_train Training data set for the model. This set must contain all the columns defined by the \code{indicators} parameter and the \code{class} column. If the \code{key_words} vector is non-empty, the set should also contain a \code{description} column. Ideally, the indicators should be of the numerical type. If the indicator is not of the numerical type, it will be converted to this type.
 #' @param data_test A test set that is used to validate the machine learning model. This set should have the same structure as the training set, but it is not obligatory. If the test set is not specified by the user then the test set is drawn from the training set (see \code{p} parameter).
-#' @param coicop A character string which indicates the column with COICOPs of products or labels for product groups. 
+#' @param class A character string which indicates the column with classes (groups) of products (e.g. COICOPs). 
 #' @param indicators A vector of column names to be considered in building a machine learning model. Important: the indicated variables can be numeric but also categorical (factor or character types are acceptable). 
 #' @param key_words A vector of keywords or phrases that will be recognized in the \code{description} column. For each such keyword and or phrase, a new binary variable (column) will be created and included in the machine model training process.
 #' @param sensitivity A logical parameter that indicates whether lowercase or uppercase letters are to be distinguished when the \code{key_words} vector is not empty.
-#' @param p A parameter related to creating the testing set, if it has not been specified by the user. The test set is then created on the basis of a coicop-balanced subsample of the training set. The size of this subsample is 100p percents of the training set size.
+#' @param p A parameter related to creating the testing set, if it has not been specified by the user. The test set is then created on the basis of a class-balanced subsample of the training set. The size of this subsample is 100p percents of the training set size.
 #' @param w A parameter for determining the measure of choosing the optimal machine learning model. For each combination of parameters specified in the \code{grid} list, the error rate of the trained model is calculated on the basis of the error on the training set (error_L=1-accuracy_L) and the error on the testing set (error_T=1-accuracy_T). Final accuracy of the model is estimated as: \code{w accuracy_L + (1-w) accuracy_T}.
 #' @param rounds The maximum number of iterations during the training stage.
 #' @param grid The list of vectors of parameters which are taken into consideration during the \code{Extreme Gradient Boosting training}. The default value of this list is as follows: \code{grid=list(eta=c(0.05,0.1,0.2),max_depth=c(6),min_child_weight=c(1),max_delta_step=c(0),subsample=c(1),gamma=c(0),lambda=c(1),alpha=c(0)}. The complete list of parameters for the used \code{Tree Booster} is available online \href{ https://xgboost.readthedocs.io/en/latest/parameter.html }{here}.
 #' @rdname model_classification
-#' @return In general, this function provides a trained machine learning model to classify products into coicop groups (or any other groups). In addition, the function returns the characteristics of the model and figures describing the learning process. The machine learning process is based on the \code{XGBoost} algorithm (from the \code{XGBoost} package) which is an implementation of gradient boosted decision trees designed for speed and performance. The function takes into account each combination of model parameters (specified by the \code{grid} list) and provides, inter alia, an optimally trained model (a model that minimizes the error rate calculated on the basis of a fixed value of the \code{w} parameter). After all, the function returns a list of the following objects: \code{model} - the optimally trained model; \code{best_parameters} - a set of parameters of the optimal model;  \code{indicators} - a vector of all indicators used; \code{key_words} - a vector of all key words and phrases used; \code{coicops} - a dataframe with categorized COICOPs; \code{sensitivity} - a value of the used 'sensitivity' parameter; \code{figure_training} - a plot of the error levels calculated for the training set and the testing set during the learning process of the returned model (error = 1 - accuracy); \code{figure_importance} - a plot of the relative importance of the used indicators. 
+#' @return In general, this function provides a trained machine learning model to classify products into classes (or any other groups). In addition, the function returns the characteristics of the model and figures describing the learning process. The machine learning process is based on the \code{XGBoost} algorithm (from the \code{XGBoost} package) which is an implementation of gradient boosted decision trees designed for speed and performance. The function takes into account each combination of model parameters (specified by the \code{grid} list) and provides, inter alia, an optimally trained model (a model that minimizes the error rate calculated on the basis of a fixed value of the \code{w} parameter). After all, the function returns a list of the following objects: \code{model} - the optimally trained model; \code{best_parameters} - a set of parameters of the optimal model;  \code{indicators} - a vector of all indicators used; \code{key_words} - a vector of all key words and phrases used; \code{classes} - a dataframe with categorized classes; \code{sensitivity} - a value of the used 'sensitivity' parameter; \code{figure_training} - a plot of the error levels calculated for the training set and the testing set during the learning process of the returned model (error = 1 - accuracy); \code{figure_importance} - a plot of the relative importance of the used indicators. 
 #' @references
 #' {Tianqi Chen and Carlos Guestrin (2016). \emph{XGBoost: A Scalable Tree Boosting System}. 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.}
 #' 
@@ -20,7 +20,7 @@
 #' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
 #' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 #' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
-#' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+#' \donttest{ML<-model_classification(data_train,data_test,class="coicop6",grid=my.grid,
 #' indicators=c("description","codeIN","grammage"),key_words=c("uht"),rounds=60)}
 #' \donttest{ML$best_parameters}
 #' \donttest{ML$indicators}
@@ -31,7 +31,7 @@
 model_classification <-
   function(data_train = data.frame(),
   data_test = data.frame(),
-  coicop="coicop",
+  class=c(),
   indicators = c(),
   key_words = c(),
   sensitivity = FALSE,
@@ -41,12 +41,13 @@ model_classification <-
   grid = list())
   {
   cn_train <- colnames(data_train)
-  if (!(coicop %in% cn_train))
-  stop ("Bad specification of the 'coicop' column!") 
+  if (length(class)==0) stop ("There is no specification of the 'class' parameter!")
+  if (!(class %in% cn_train))
+  stop ("Bad specification of the 'class' column!") 
   if (nrow(data_test) > 0) {cn_test<-colnames(data_test)
-  if (!(coicop %in% cn_test)) stop ("Bad specification of the 'coicop' column!") }
-  colnames(data_train)[which(names(data_train) == coicop)] <- "coicop"
-  if (nrow(data_test) > 0) colnames(data_test)[which(names(data_test) == coicop)] <- "coicop"
+  if (!(class %in% cn_test)) stop ("Bad specification of the 'class' column!") }
+  colnames(data_train)[which(names(data_train) == class)] <- "class"
+  if (nrow(data_test) > 0) colnames(data_test)[which(names(data_test) == class)] <- "class"
   #default value of 'grid'
   grid_default <-
   list(
@@ -81,12 +82,12 @@ model_classification <-
   stop("A column 'description' is missing!")
   }
   description <-
-  coicop <- iterations <- value <- error <- Feature <- Importance <-
+  class <- iterations <- value <- error <- Feature <- Importance <-
   NULL
   if (nrow(data_test) == 0) {
   #Creating data_train and data_test
   trainIndex <-
-  caret::createDataPartition(data_train$coicop, p = p, list = FALSE)
+  caret::createDataPartition(data_train$class, p = p, list = FALSE)
   data_test <- data_train[-trainIndex, ]
   data_train <- data_train[trainIndex, ]
   } else
@@ -111,23 +112,23 @@ model_classification <-
   
   #data_train reduction
   data_train <-
-  dplyr::select(data_train, indicators, description, coicop)
+  dplyr::select(data_train, indicators, description, class)
   data_train <- dplyr::distinct(data_train)
   
   #data_test reduction
-  data_test <- dplyr::select(data_test, indicators, description, coicop)
+  data_test <- dplyr::select(data_test, indicators, description, class)
   data_test <- dplyr::distinct(data_test)
   
-  #coicops
-  #Let us remember the oryginal names of coicops from data_train
-  coicop_oryg <- unique(data_train$coicop)
-  coicop_num <- unique(as.numeric(as.factor(data_train$coicop)))
-  coicops <- data.frame(coicop_oryg, coicop_num)
+  #classes
+  #Let us remember the oryginal names of classes from data_train
+  class_oryg <- unique(data_train$class)
+  class_num <- unique(as.numeric(as.factor(data_train$class)))
+  classes <- data.frame(class_oryg, class_num)
   
   #data_train preparation
-  Y <- as.numeric(as.factor(data_train$coicop)) - 1
-  N <- length(unique(data_train$coicop))
-  data_train$coicop <- NULL
+  Y <- as.numeric(as.factor(data_train$class)) - 1
+  N <- length(unique(data_train$class))
+  data_train$class <- NULL
   if (length(key_words) >= 1)
   for (i in 1:length(key_words)) {
   var <-
@@ -146,8 +147,8 @@ model_classification <-
   X <- data.matrix(data_train)
   
   #data_test preparation
-  Y_test <- as.numeric(as.factor(data_test$coicop)) - 1
-  data_test$coicop <- NULL
+  Y_test <- as.numeric(as.factor(data_test$class)) - 1
+  data_test$class <- NULL
   if (length(key_words) >= 1)
   for (i in 1:length(key_words)) {
   var <-
@@ -269,7 +270,7 @@ model_classification <-
   best_parameters = best_parameters,
   indicators = indicators,
   key_words = key_words,
-  coicops = coicops,
+  classes = classes,
   sensitivity = sensitivity,
   figure_training = figure_training,
   figure_importance = figure_importance
@@ -278,19 +279,19 @@ model_classification <-
   }
 
   
-#' @title  Predicting product COICOP levels via the machine learning model
+#' @title  Predicting product classes via the machine learning model
 #'
-#' @description This function predicts product COICOP levels via the selected machine learning model.
+#' @description This function predicts product class levels via the selected machine learning model.
 #' @param model A list of 8 elements which identify the previously built machine learning model (the list is obtained via the \code{model_classification} function).
 #' @param data A data set for the model (products with their characteristics). This data set must contain all the columns which were used in the built model. 
 #' @rdname data_classifying
-#' @return This function provides the indicated data set with an additional column, i.e. \code{coicop_predicted}, which is obtained by using the selected machine learning model.  
+#' @return This function provides the indicated data set with an additional column, i.e. \code{class_predicted}, which is obtained by using the selected machine learning model.  
 #' @examples 
 #' #Building the model
 #' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
 #' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 #' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
-#' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+#' \donttest{ML<-model_classification(data_train,data_test,class="coicop6",grid=my.grid,
 #' indicators=c("description","codeIN", "grammage"),key_words=c("uht"),rounds=60)}
 #' #Data classification
 #' \donttest{data_classifying(ML, data_test)}
@@ -307,7 +308,7 @@ stop ("The model appears to be incomplete")
 model_used <- model$model
 indicators <- model$indicators
 key_words <- model$key_words
-coicops <- model$coicops
+classes <- model$classes
 sensitivity <- model$sensitivity
 
 #preparing data into the right form
@@ -340,11 +341,11 @@ data_new <- data.matrix(data_new)
 predictions <- stats::predict(model_used, data_new) + 1
 predictions_new <- c()
 for (i in 1:length(predictions)) {
-no <- which(coicops$coicop_num == predictions[i])
+no <- which(classes$class_num == predictions[i])
 predictions_new <-
-c(predictions_new, as.vector(coicops$coicop_oryg)[no])
+c(predictions_new, as.vector(classes$class_oryg)[no])
 }
-data$coicop_predicted <- as.factor(predictions_new)
+data$class_predicted <- as.factor(predictions_new)
 return (data)
 }
 
@@ -365,7 +366,7 @@ return (data)
 #' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
 #' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 #' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
-#' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+#' \donttest{ML<-model_classification(data_train,data_test,class="coicop6",grid=my.grid,
 #' indicators=c("description","codeIN", "grammage"),key_words=c("uht"),rounds=60)}
 #' #Saving the model
 #' \dontrun{save_model(ML, dir="My_model")}
@@ -380,7 +381,7 @@ model_used <- model$model
 best_parameters <- model$best_parameters
 indicators <- model$indicators
 key_words <- model$key_words
-coicops <- model$coicops
+classes <- model$classes
 sensitivity <- model$sensitivity
 figure_training <- model$figure_training
 figure_importance <- model$figure_importance
@@ -391,7 +392,7 @@ xgboost::xgb.save(model_used, paste(path, "my.model", sep = ""))
 saveRDS(best_parameters, paste(path, "best_parameters.RDS", sep = ""))
 saveRDS(indicators, paste(path, "indicators.RDS", sep = ""))
 saveRDS(key_words, paste(path, "key_words.RDS", sep = ""))
-saveRDS(coicops, paste(path, "coicops.RDS", sep = ""))
+saveRDS(classes, paste(path, "classes.RDS", sep = ""))
 saveRDS(sensitivity, paste(path, "sensitivity.RDS", sep = ""))
 saveRDS(figure_training, paste(path, "figure_training.RDS", sep = ""))
 saveRDS(figure_importance,
@@ -412,13 +413,13 @@ paste(path, "figure_importance.RDS", sep = ""))
 #' \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
 #' \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 #' \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
-#' \donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+#' \donttest{ML<-model_classification(data_train,data_test,class="coicop6",grid=my.grid,
 #' indicators=c("description","codeIN", "grammage"),key_words=c("uht"),rounds=60)}
 #' #Saving the model
 #' \dontrun{save_model(ML, dir="My_model")}
 #' #Loading the model
 #' \dontrun{ML_fromPC<-load_model("My_model")}
-#' #COICOP predicting
+#' #classes predicting
 #' \dontrun{data_classifying(ML_fromPC, data_test)}
 #' @export
 
@@ -431,7 +432,7 @@ model_used <- xgboost::xgb.load(paste(path, "my.model", sep = ""))
 best_parameters <- readRDS(paste(path, "best_parameters.RDS", sep = ""))
 indicators <- readRDS(paste(path, "indicators.RDS", sep = ""))
 key_words <- readRDS(paste(path, "key_words.RDS", sep = ""))
-coicops <- readRDS(paste(path, "coicops.RDS", sep = ""))
+classes <- readRDS(paste(path, "classes.RDS", sep = ""))
 sensitivity <- readRDS(paste(path, "sensitivity.RDS", sep = ""))
 figure_training <- readRDS(paste(path, "figure_training.RDS", sep = ""))
 figure_importance <-
@@ -442,7 +443,7 @@ model = model_used,
 best_parameters = best_parameters,
 indicators = indicators,
 key_words = key_words,
-coicops = coicops,
+classes = classes,
 sensitivity = sensitivity,
 figure_training = figure_training,
 figure_importance = figure_importance

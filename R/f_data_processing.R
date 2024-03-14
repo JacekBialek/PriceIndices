@@ -186,7 +186,7 @@ data_matching <-
   if ((precision < 0) |
   (precision > 1))
   stop("parametr 'precision' must belong to [0,1]")
-  prodID<-NULL
+  prodID<-vector<-NULL
   #preparing data set
   columns <- c()
   start <- paste(start, "-01", sep = "")
@@ -347,8 +347,8 @@ data_matching <-
   #matching
   vector_test<-as.character(data_oryginal[,columns[1]])
   if (length(columns)>1) for (i in 1:length(columns)) vector_test<-paste(vector_test,as.character(data_oryginal[,columns[i]]),sep="")
-  f<-function (word) value_pattern[which(vector_pattern==word)]
-  data_oryginal$prodID<-sapply(vector_test,f)
+  vector<-match(vector_test, vector_pattern)
+  data_oryginal$prodID<-value_pattern[vector]
   return (data_oryginal)
   }
 
@@ -2098,20 +2098,18 @@ sales_groups2 <-
 #'
 #' @description The function returns the grammage and unit of products as two additional columns. 
 #' @param data The user's data frame. The data frame must contain the \code{description} column (as character). 
-#' @param units Units of products which are to be detected
-#' @param multiplication A sign of the multiplication used in product descriptions
-#' @param space A maximum space between the product grammage and its unit
+#' @param units Units of products which are to be detected (e.g. "ml|g|kg")
+#' @param multiplication A sign of the multiplication used in product descriptions (e.g. "x")
 #' @rdname data_unit
-#' @return The function returns the user's data frame with two additional columns: \code{grammage} and \code{unit} (both are character type). The values of these columns are extracted from product descriptions on the basis of provided \code{units}. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '2x50 g', we obtain: \code{grammage: 100} and \code{unit: g} for that product (for \code{multiplication} set to 'x'). 
+#' @return The function returns the user's data frame with two additional columns: \code{grammage} and \code{unit}. The values of these columns are extracted from product descriptions on the basis of provided \code{units}. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '2x50 g', we obtain: \code{grammage: 100} and \code{unit: g} for that product (for \code{multiplication} set to 'x'). 
 #' @examples 
-#' data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
+#' data_unit(dataU, units=c("g|ml|kg|l"), multiplication="x")
 #' @export
 
 data_unit <-
   function (data = data.frame(),
-  units = c("g", "ml", "kg", "l"),
-  multiplication = "x",
-  space = 1)
+  units = c("g|ml|kg|l"),
+  multiplication = "x")
   {
   if (nrow(data) == 0)
   stop("A data frame is empty")
@@ -2120,16 +2118,20 @@ data_unit <-
   stop("Your data frame must contain a 'description' column!")
   if (length(units) == 0)
   stop("You must set at least one unit")
-  descriptions <- data$description
-  grammage <- c()
-  unit <- c()
-  for (i in 1:length(descriptions)) {
-  result <- unit(descriptions[i], units, multiplication, space)
-  grammage <- c(grammage, result[[1]])
-  unit <- c(unit, result[[2]])
+  descriptions1 <- unique(data$description)
+  descriptions2 <- data$description
+  grammage. <- c()
+  unit. <- c()
+  for (i in 1:length(descriptions1)) {
+  result <- unit(string=descriptions1[i], 
+                 units=units, 
+                 multiplication=multiplication)
+  grammage. <- c(grammage., result[[1]])
+  unit. <- c(unit., result[[2]])
   }
-  data$grammage <- grammage
-  data$unit <- unit
+  vec<-match(descriptions2,descriptions1)
+  data$grammage <- grammage.[vec]
+  data$unit <- unit.[vec]
   return (data)
   }
 
@@ -2143,9 +2145,9 @@ data_unit <-
 #' @return The function returns the user's data frame with two transformed columns: \code{grammage} and \code{unit}, and two rescaled columns: \code{prices} and \code{quantities}. The above-mentioned transformation and rescaling take into consideration the user \code{rules}. Recalculated prices and quantities concern grammage units defined as the second parameter in the given rule.   
 #' @examples 
 #' # Preparing a data set
-#' data<-data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
+#' data<-data_unit(dataU, units=c("g|ml|kg|l"), multiplication="x")
 #' # Normalization of grammage units
-#' data_norm(data, rules=list(c("ml","l",1000),c("g","kg",1000)))
+#' data_norm(data, rules=list(c("ml","l",1000), c("g","kg",1000)))
 #' @export
 
 data_norm <-
@@ -2177,10 +2179,7 @@ data_norm <-
   {
   data_rules1 <- dplyr::filter(data, data$unit == rules[[i]][1])
   data_rules2 <- dplyr::filter(data, data$unit == rules[[i]][2])
-  if (nrow(data_rules2) > 0)
-  data_rules2$grammage <- as.numeric(data_rules2$grammage)
   if (nrow(data_rules1) > 0) {
-  data_rules1$grammage <- as.numeric(data_rules1$grammage)
   data_rules1$grammage <- data_rules1$grammage / as.numeric(rules[[i]][3])
   data_rules1$unit <- rules[[i]][2]
   }
@@ -2203,7 +2202,6 @@ data_norm <-
   data <- dplyr::filter(data, (!(data$unit %in% units_all)))
   data_return <- rbind(data_return, data)
   }
-  data_return$grammage <- as.character(data_return$grammage)
   return (data_return)
   }
 
@@ -2675,3 +2673,245 @@ ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
 }
 return (figure)
 }
+
+
+#' @title  Reducing products 
+#'
+#' @description The function returns a reduced data set, i.e. a data set containing sufficiently numerous matched products in the indicated groups. The input data set (data frame) must contain matched products over time, i.e. it must contain the \code{prodID} column (as numeric, factor or character), or product descriptions, i.e. it must contain the \code{description} column (as character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param type This parameter indicates whether group counts are determined by different matched prodIDs (in which case the parameter has the value 'prodID') or different matched descriptions (in which case the parameter has the value 'description').
+#' @param minN This parameter determines the minimum size of matched products in groups.
+#' @param outlets This parameter determines whether grouping is to be done for each outlet separately. If so (if it is \code{TRUE}), the data set must contain a column identifying the outlets (\code{retID}). 
+#' @param by This parameter specifies the name of the grouping column (as character).
+#' @param interval A logical value indicating whether the reducing process concerns only two periods defined by \code{start} and \code{end} parameters (then the \code{interval} is set to FALSE) or whether that function is to reduce products sold during the whole time interval <start, end>. 
+#' @rdname data_reducing
+#' @return The function returns a reduced data set, i.e. a data set containing sufficiently numerous matched products in the indicated groups. For each product group created and for selected periods, the procedure checks that the count of identical prodIDs (or identical product descriptions, which does not necessarily mean the same thing) is at least equal to \code{minN}. If it is not, such products are eliminated from the data set. The function performs the check either only for the base and current period (in which case the \code{interval} parameter is FALSE) or also for all intermediate months (in which case the \code{interval} parameter is TRUE). If the user wants to perform this check for each outlet separately, then the \code{outlets} parameter should be set to TRUE.
+#' @examples 
+#' data_reducing(sugar, start="2018-12", end="2019-12",by="description", minN=5)
+#' 
+#' @export
+
+data_reducing<-function (data, start, end, type="prodID", minN=2, outlets=FALSE, by=c(),interval=FALSE)
+{
+#checking if 'type' is correctly set
+av_types<-c("prodID","description")
+if (!(type %in% av_types)) stop('The parameter -type- is not correctly set!')
+#checking if 'by' is correctly set
+if (!(by %in% colnames(data))) stop('There is no column indicated via -by- parameter!')
+#limiting dataset to the rirgt time interval
+start <- paste(start, "-01", sep = "")
+end <- paste(end, "-01", sep = "")
+start <- as.Date(start)
+end <- as.Date(end)
+lubridate::day(end) <- lubridate::days_in_month(end)
+if (interval == TRUE)
+data <- dplyr::filter(data, data$time >= start & data$time <= end)
+else
+data <-
+dplyr::filter(
+data,
+(
+lubridate::year(data$time) == lubridate::year(start) &
+lubridate::month(data$time) == lubridate::month(start)
+) |
+(
+lubridate::year(data$time) == lubridate::year(end) &
+lubridate::month(data$time) == lubridate::month(end)
+)
+)
+#list of subgroups
+if (outlets==FALSE) subgroup_list<-base::split(x=data, f=data[,by], drop=TRUE)
+else subgroup_list<-base::split(x=data, f=list(data[,by], data$retID), drop=TRUE)
+#checking if there are at least minN products 
+if (interval==TRUE)
+{# each pair of subsequent months is considered
+months<-seq.Date(from=start, to=end, by="month")  
+dates<-substr(as.character(months),0,7)
+no.dates<-length(daty)-1
+flags<-c()
+for (i in 1:length(subgroup_list)) {
+matched_products<-c()
+for (k in 1:no.dates)  matched_products<-c(matched_products, length(matched(subgroup_list[[i]],period1=dates[k],period2=dates[k+1], type=type)))
+if (min(matched_products)<minN) flags<-c(flags,i)
+                                    }
+}
+else
+{# only the base and current periods are considered
+flags<-c()
+for (i in 1:length(subgroup_list))
+if (length(matched(subgroup_list[[i]],
+                   period1=substr(as.character(start),0,7),
+                   period2=substr(as.character(end),0,7), type=type))<minN) flags<-c(flags,i)
+}
+if (length(flags)>0) subgroup_list<-subgroup_list[-flags]
+return(dplyr::bind_rows(subgroup_list))
+}
+
+
+#' @title  Detecting and summarising downsized products.
+#'
+#' @description This function detects and summarises downsized products. 
+#'
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01') and \code{prodID} (as numeric, factor or character), \code{prices} and \code{quantities} (as numeric), \code{grammage} (as numeric), \code{unit} (as character) and \code{description} (as character). Important: prices must be standardized beforehand, that is, they must refer to the sales unit (the \code{data_norm} function can be used for this). 
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param min_change The minimum increase in the average (unit) price of a product in order for it to be considered downsized at the same time. The default value is zero, possibly positive values can be considered. 
+#' @param prec Number of decimal places for the presented summary results.
+#' @param interval A parameter that specifies whether the search for downsized products should consider the entire time interval, or only the compared months specified by the \code{start} and \code{end} parameters.
+#' @rdname shrinkflation
+#' @return This function detects and summarises downsized products. It returns a list containing the following objects: \code{changes} with detailed information on downsized products, \code{products_downsized} with prodIDs of downsized products, \code{df_downsized} being a subset of the data frame with only downsized products, \code{df_reduced} which is the difference of the input data frame and the data frame containing the downsized products, and \code{df_summary} which provides basic statistics for detected downsized products (including their share in the total number of products).
+#' @examples 
+#' #Data matching over time
+#' df<-data_matching(data=dataDOWNSIZED, start="2024-01", end="2024-02", 
+#' codeIN=TRUE,codeOUT=TRUE,description=TRUE, 
+#' onlydescription=FALSE,precision=0.9,interval=FALSE)
+#' # Extraction of information about grammage
+#' df<-data_unit(df,units=c("g|ml|kg|l"),multiplication="x")
+#' # Price standardization
+#' df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))
+#' # Downsized products detection
+#' result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE)
+#' result$changes
+#' result$products_downsized
+#' result$df_downsized
+#' result$df_reduced
+#' result$df_summary
+#' @export
+
+shrinkflation<-function (data, start, end, min_change=0, prec=2, interval=FALSE)
+{
+obligatory_columns<-c("time","prices","quantities","grammage","unit","description")
+c_names<-colnames(data)
+for (col_names in obligatory_columns) if (!(col_names %in% c_names)) stop("A data frame must contain columns: time, prices, quantities, grammage, unit, description")
+#reducing a data set regarding the time criterion
+start <- paste(start, "-01", sep = "")
+end <- paste(end, "-01", sep = "")
+start <- as.Date(start)
+end <- as.Date(end)
+lubridate::day(end) <- lubridate::days_in_month(end)
+months<-c()
+if (interval == TRUE)
+{data <- dplyr::filter(data, data$time >= start & data$time <= end)
+months<-seq.Date(from=start, to=end, by="month")
+}
+else
+{
+data <-
+dplyr::filter(
+data,
+(
+lubridate::year(data$time) == lubridate::year(start) &
+lubridate::month(data$time) == lubridate::month(start)
+) |
+(
+lubridate::year(data$time) == lubridate::year(end) &
+lubridate::month(data$time) == lubridate::month(end)
+)
+)
+months<-c(start, end)
+}
+data.<-dplyr::filter(data, !(data$unit=="item"))
+#list of potential downsized products (products with the same prodID but changed grammage)
+df<-dplyr::summarise(dplyr::group_by(data., prodID), n=length(unique(grammage)),.groups='drop')
+df<-dplyr::filter(df, n>1)
+list_potential<-unique(df$prodID)
+if (length(list_potential)==0) stop("There are no grammage changes in the data set!")
+#reducing data set to potential downsized products
+data_filtered<-dplyr::filter(data., prodID %in% list_potential)
+changes<-dplyr::summarise(dplyr::group_by(data_filtered, prodID, grammage), 
+                     unit=paste(unique(unit), collapse=" ; "),
+                     mean_price=round(sum(prices*quantities)/sum(quantities),prec),
+                     description=paste(unique(description), collapse=" ; "), 
+                     time=paste(unique(substr(time,0,7)), collapse=" ; "),
+                     .groups='drop')
+changes<-dplyr::arrange(changes, prodID, desc(grammage))
+#flag procedure (TRUE if case of downsizing)
+list_potential<-unique(changes$prodID)
+flag<-c()
+price_change<-c()
+size_change<-c()
+help_df<-dplyr::select(changes, prodID, grammage, mean_price)
+for (i in 1:length(list_potential)) {
+  frame<-dplyr::filter(help_df, prodID==list_potential[i])
+  for (k in 1:nrow(frame)) 
+    if (k==1) {flag<-c(flag, FALSE)
+    price_change<-c(price_change, "-")
+    size_change<-c(size_change,"-")
+    }
+  else {
+    sc<-frame$grammage[k]/frame$grammage[k-1]
+    sc_char<-as.character(round((1-sc)*100,prec))
+    sc_char<-paste(sc_char,"%")
+    size_change<-c(size_change, sc_char)
+    pc<-frame$mean_price[k]/frame$mean_price[k-1]
+    pc_char<-as.character(round((pc-1)*100,prec))
+    pc_char<-paste(pc_char,"%")
+    price_change<-c(price_change,pc_char)
+    if (pc>(min_change+1)) flag<-c(flag, TRUE)
+    else flag<-c(flag, FALSE)
+  }
+}
+tmp<-changes[,1:4]
+tmp$size_decrease<-size_change
+tmp$price_increase<-price_change
+tmp$downsizing<-flag
+changes<-cbind(tmp, changes[,5:6])
+#downsized product
+changes_reduced<-dplyr::filter(changes, downsizing==TRUE)
+list_downsized<-changes_reduced$prodID
+#data frame with downsized products
+df_downsized<-dplyr::filter(data., prodID %in% list_downsized)
+#data frame with no downsized products
+df_reduced<-dplyr::filter(data, !(prodID %in% list_downsized))
+#summary of downsized products
+characteristics<-c("Downsized product shares:",
+                   "number of all products", 
+                   "number of downsized products",
+                   "share of downsized products",
+                   "turnover of all products",
+                   "turnover of downsized products",
+                   "turnover share of downsized products",
+                   "Average measures:",
+                   "mean size decreases of downsized products",
+                   "mean price increase of downsized products",
+                   "median size decreases of downsized products",
+                   "median price increase of downsized products",
+                   "Volatility measures:",
+                   "standard deviation of size decreases",
+                   "standard deviation of price increases",
+                   "volatility coefficient of size decreases",
+                   "volatility coefficient of price increases"
+                    )
+n_all<-length(unique(data$prodID))
+n_downsized<-length(unique(df_downsized$prodID))
+t_all<-sum(data$prices*data$quantities)
+t_downsized<-sum(df_downsized$prices*df_downsized$quantities)
+s_decrease<-unlist(strex::str_extract_numbers(changes_reduced$size_decrease, decimals=TRUE))
+p_increase<-unlist(strex::str_extract_numbers(changes_reduced$price_increase, decimals=TRUE))
+#vector of values for summary
+values<-c("---------------",
+          as.character(n_all),
+          as.character(n_downsized),
+          paste(as.character(round(100*n_downsized/n_all,prec)),"%"),
+          as.character(round(t_all,prec)),
+          as.character(round(t_downsized,prec)),
+          paste(as.character(round(100*t_downsized/t_all,prec)), "%"),
+          "---------------",
+          paste(as.character(round(mean(s_decrease),prec)),"%"),
+          paste(as.character(round(mean(p_increase),prec)),"%"),
+          paste(as.character(round(median(s_decrease),prec)),"%"),
+          paste(as.character(round(median(p_increase),prec)),"%"),
+          "---------------",
+          paste(as.character(round(sd(s_decrease),prec)),"%"),
+          paste(as.character(round(sd(p_increase),prec)),"%"),
+          as.character(round(sd(s_decrease)/mean(s_decrease),prec)),
+          as.character(round(sd(p_increase)/mean(p_increase),prec))
+          )
+return (list(changes=changes, 
+             products_downsized=unique(list_downsized), 
+             df_downsized=df_downsized, 
+             df_reduced=df_reduced,
+             df_summary=data.frame(stats=characteristics, value=values)
+             ))
+}  

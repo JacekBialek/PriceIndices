@@ -1,3 +1,18 @@
+# Package update 0.1.8 -> 0.1.9
+
+## New functions:
+* The **data_reducing** function for eliminating product groups with small number of matched products;
+* The **shrinkflation** function for detecting downsized products;
+
+## New dataset:
+* The **dataDOWNSIZED** (artficial) scanner dataset on the sale of coffee products;
+
+## Improvements:
+* The **data_norm** function is much faster;
+* The **data_unit** has been corrected and now it works better. Its parameter **units** has now a new form (see the package documentation);
+* The functions **data_classifying** and **model_classification** have been changed with respect to the returned columns. In the current version, the user may indicate the column with classes for training of the model. As a consequence, after product classification we obtain a new column named "class_predicted";
+* A meaning of the parameter 'prec' in functions for indicators (**bennnet**, **montgomery**, **mbennet** and **mmontgomery**) has been improved. 
+
 # Package update 0.1.7 -> 0.1.8
 
 ## Improvements: 

@@ -22,7 +22,6 @@
 #' \donttest{mbennet(coffee, start="2018-12", end="2019-03", interval=TRUE)}
 #' @export
 
-
 mbennet <-
   function(data,
   start,
@@ -33,22 +32,39 @@ mbennet <-
   interval=FALSE,
   contributions=FALSE,
   prec=2)  {
-  if (interval==FALSE) return (mbennet_internal(data=data, 
+  if (interval==FALSE) {df<-mbennet_internal(data=data, 
                                               start=start,
                                               end=end,
                                               wstart=wstart,
                                               matched=matched,
                                               window=window,
-                                              contributions=contributions,
-                                              prec=prec))
-  else { if (contributions==TRUE) return (mbennet_internal(data=data, 
+                                              contributions=contributions)
+                      if (contributions==FALSE)
+                      {
+                      df$Value_difference<-round(df$Value_difference,prec)  
+                      df$Price_indicator<-round(df$Price_indicator,prec)
+                      df$Quantity_indicator<-round(df$Quantity_indicator,prec)
+                      }
+                      else
+                      {
+                      df$value_differences<-round(df$value_differences,prec)
+                      df$price_contributions<-round(df$price_contributions,prec)
+                      df$quantity_contributions<-round(df$quantity_contributions,prec)
+                      }
+                      return (df) 
+                      }
+  else { if (contributions==TRUE) {df<-mbennet_internal(data=data, 
                                               start=start,
                                               end=end,
                                               wstart=wstart,
                                               matched=matched,
                                               window=window,
-                                              contributions=TRUE,
-                                              prec=prec))
+                                              contributions=TRUE)
+                                   df$value_differences<-round(df$value_differences,prec)
+                                   df$price_contributions<-round(df$price_contributions,prec)
+                                   df$quantity_contributions<-round(df$quantity_contributions,prec)
+                                   return (df)
+                                  }
     else
     {
     start. <- paste(start, "-01", sep = "")
@@ -68,11 +84,10 @@ mbennet <-
                           wstart=wstart,
                           matched=matched,
                           window=window,
-                          contributions=FALSE,
-                          prec=prec)
-    Value_difference.<-c(Value_difference.,mb[1,1])
-    Price_indicator.<-c(Price_indicator.,mb[1,2])
-    Quantity_indicator.<-c(Quantity_indicator.,mb[1,3])
+                          contributions=FALSE)
+    Value_difference.<-c(Value_difference.,round(mb[1,1], prec))
+    Price_indicator.<-c(Price_indicator.,round(mb[1,2],prec))
+    Quantity_indicator.<-c(Quantity_indicator.,round(mb[1,3],prec))
     }
     return (data.frame(time=dates.,
                        Value_difference=Value_difference.,
@@ -116,22 +131,39 @@ mmontgomery <-
   interval=FALSE,
   contributions=FALSE,
   prec=2)  {
-  if (interval==FALSE) return (mmontgomery_internal(data=data, 
+  if (interval==FALSE) {df<-mmontgomery_internal(data=data, 
                                               start=start,
                                               end=end,
                                               wstart=wstart,
                                               matched=matched,
                                               window=window,
-                                              contributions=contributions,
-                                              prec=prec))
-  else {if (contributions==TRUE) return (mmontgomery_internal(data=data, 
+                                              contributions=contributions)
+                      if (contributions==FALSE)
+                      {
+                      df$Value_difference<-round(df$Value_difference,prec)  
+                      df$Price_indicator<-round(df$Price_indicator,prec)
+                      df$Quantity_indicator<-round(df$Quantity_indicator,prec)
+                      }
+                      else
+                      {
+                      df$value_differences<-round(df$value_differences,prec)
+                      df$price_contributions<-round(df$price_contributions,prec)
+                      df$quantity_contributions<-round(df$quantity_contributions,prec)
+                      }
+                      return (df) 
+                      }
+  else { if (contributions==TRUE) {df<-mmontgomery_internal(data=data, 
                                               start=start,
                                               end=end,
                                               wstart=wstart,
                                               matched=matched,
                                               window=window,
-                                              contributions=TRUE,
-                                              prec=prec))
+                                              contributions=TRUE)
+                                   df$value_differences<-round(df$value_differences,prec)
+                                   df$price_contributions<-round(df$price_contributions,prec)
+                                   df$quantity_contributions<-round(df$quantity_contributions,prec)
+                                   return (df)
+                                  }
     else
     {
     start. <- paste(start, "-01", sep = "")
@@ -151,14 +183,13 @@ mmontgomery <-
                           wstart=wstart,
                           matched=matched,
                           window=window,
-                          contributions=FALSE,
-                          prec=prec)
-    Value_difference.<-c(Value_difference.,mb[1,1])
-    Price_indicator.<-c(Price_indicator.,mb[1,2])
-    Quantity_indicator.<-c(Quantity_indicator.,mb[1,3])
+                          contributions=FALSE)
+    Value_difference.<-c(Value_difference.,round(mb[1,1], prec))
+    Price_indicator.<-c(Price_indicator.,round(mb[1,2],prec))
+    Quantity_indicator.<-c(Quantity_indicator.,round(mb[1,3],prec))
     }
     return (data.frame(time=dates.,
-                       Value_difference=Value_difference.,
+                       Value_difference=Value_difference.,                       
                        Price_indicator=Price_indicator.,
                        Quantity_indicator=Quantity_indicator.))
     }

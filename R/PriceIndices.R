@@ -14,6 +14,8 @@
 #'
 #' \code{\link{dataCOICOP}}
 #'
+#' \code{\link{dataDOWNSIZED}} 
+#'
 #' \code{\link{milk}} 
 #'
 #' \code{\link{sugar}}
@@ -24,16 +26,12 @@
 #'
 #' \code{\link{generate}}
 #'
-#' \code{\link{generate_CES}}
-#'
 #' \code{\link{tindex}}
 #'
 #' @section Functions for data processing:
 #' \code{\link{data_check}} 
 #'
 #' \code{\link{data_preparing}} 
-#'
-#' \code{\link{data_imputing}} 
 #'
 #' \code{\link{data_aggregating}} 
 #'
@@ -55,6 +53,8 @@
 #'
 #' \code{\link{data_filtering}} 
 #'
+#' \code{\link{shrinkflation}} 
+#'
 #' @section Functions providing dataset characteristics:
 #' \code{\link{available}} 
 #'
@@ -63,10 +63,6 @@
 #' \code{\link{matched_index}}
 #' 
 #' \code{\link{matched_fig}}
-#'
-#' \code{\link{products}}
-#'
-#' \code{\link{products_fig}}
 #'
 #' \code{\link{prices}} 
 #'
@@ -77,8 +73,6 @@
 #' \code{\link{sales_groups}} 
 #' 
 #' \code{\link{sales_groups2}} 
-#'
-#' \code{\link{expenditures}}
 #' 
 #' \code{\link{pqcor}}
 #'
@@ -88,7 +82,11 @@
 #'
 #' \code{\link{elasticity}}
 #'
+#' \code{\link{elasticity2}}
+#'
 #' \code{\link{elasticity_fig}}
+#'
+#' \code{\link{elasticity2_fig}}
 #'
 #' @section Functions for bilateral unweighted price index calculation:
 #' \code{\link{bmw}} 
@@ -103,7 +101,7 @@
 #'
 #' \code{\link{harmonic}}
 #'
-#' @section Functions for bilateral weighted index calculation:
+#' @section Functions for bilateral weighted price index calculation:
 #' \code{\link{agmean}} 
 #'
 #' \code{\link{banajree}}
@@ -156,17 +154,7 @@
 #'
 #' \code{\link{young}}
 #'
-#' \code{\link{QMp}}
-#'
-#' \code{\link{IQMp}}
-#'
-#' \code{\link{QMq}}
-#'
-#' \code{\link{value_index}}
-#'
-#' \code{\link{unit_value_index}}
-#'
-#' @section Functions for chain index calculation:
+#' @section Functions for chain price index calculation:
 #' \code{\link{chbmw}} 
 #'
 #' \code{\link{chcarli}}
@@ -231,12 +219,6 @@
 #'
 #' \code{\link{chyoung}}
 #'
-#' \code{\link{chQMp}}
-#'
-#' \code{\link{chIQMp}}
-#'
-#' \code{\link{chQMq}}
-#'
 #' @section Functions for multilateral price index calculation:
 #' \code{\link{ccdi}} 
 #'
@@ -267,12 +249,6 @@
 #' \code{\link{geksj}}
 #'
 #' \code{\link{geksw}}
-#'
-#' \code{\link{geksqm}}
-#'
-#' \code{\link{geksiqm}}
-#'
-#' \code{\link{gekslm}}
 #'
 #' \code{\link{gk}}
 #'
@@ -313,12 +289,6 @@
 #'
 #' \code{\link{wgeksgaqi_splice}}
 #'
-#' \code{\link{geksqm_splice}}
-#'
-#' \code{\link{geksiqm_splice}}
-#'
-#' \code{\link{gekslm_splice}}
-#'
 #' \code{\link{gk_splice}}
 #'
 #' \code{\link{tpd_splice}}
@@ -353,12 +323,6 @@
 #' \code{\link{geksgaqi_fbew}}
 #'
 #' \code{\link{wgeksgaqi_fbew}}
-#'
-#' \code{\link{geksqm_fbew}}
-#'
-#' \code{\link{geksiqm_fbew}}
-#'
-#' \code{\link{gekslm_fbew}}
 #'
 #' \code{\link{gk_fbew}}
 #'
@@ -395,37 +359,23 @@
 #'
 #' \code{\link{wgeksgaqi_fbmw}}
 #'
-#' \code{\link{geksqm_fbmw}}
-#'
-#' \code{\link{geksiqm_fbmw}}
-#'
-#' \code{\link{gekslm_fbmw}}
-#'
 #' \code{\link{gk_fbmw}}
 #'
 #' \code{\link{tpd_fbmw}}
 #'
-#' @section Functions for bilateral indicator calculations:
-#' \code{\link{bennet}} 
-#'
-#' \code{\link{montgomery}} 
-#'
-#' @section Functions for multilateral indicator calculations:
-#' \code{\link{mbennet}} 
-#'
-#' \code{\link{mmontgomery}} 
-#'
 #' @section General functions for price index calculations:
+#' \code{\link{price_index}} 
+#'
 #' \code{\link{price_indices}}
 #'
 #' \code{\link{final_index}}
 #'
+#' \code{\link{final_index2}}
+#'
 #' @section Functions for comparisons of price indices:
-#' \code{\link{compare_indices_df}} 
+#' \code{\link{compare_indices}} 
 #'
-#' \code{\link{compare_indices_list}}
-#'
-#' \code{\link{compare_indices_jk}}
+#' \code{\link{compare_final_indices}}
 #'
 #' \code{\link{compare_distances}}
 #'

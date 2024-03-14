@@ -25,7 +25,7 @@ The function normalizes grammage units of products and recalculates product pric
 }
 \examples{
 # Preparing a data set
-data<-data_unit(dataU,units=c("g","ml","kg","l"),multiplication="x")
+data<-data_unit(dataU, units=c("g|ml|kg|l"), multiplication="x")
 # Normalization of grammage units
-data_norm(data, rules=list(c("ml","l",1000),c("g","kg",1000)))
+data_norm(data, rules=list(c("ml","l",1000), c("g","kg",1000)))
 }

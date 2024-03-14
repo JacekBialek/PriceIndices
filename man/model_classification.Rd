@@ -7,7 +7,7 @@
 model_classification(
   data_train = data.frame(),
   data_test = data.frame(),
-  coicop = "coicop",
+  class = c(),
   indicators = c(),
   key_words = c(),
   sensitivity = FALSE,
@@ -18,11 +18,11 @@ model_classification(
 )
 }
 \arguments{
-\item{data_train}{Training data set for the model. This set must contain all the columns defined by the \code{indicators} parameter and the \code{coicop} column (with matched coicop groups to all products). If the \code{key_words} vector is non-empty, the set should also contain a \code{description} column. Ideally, the indicators should be of the numerical type. If the indicator is not of the numerical type, it will be converted to this type.}
+\item{data_train}{Training data set for the model. This set must contain all the columns defined by the \code{indicators} parameter and the \code{class} column. If the \code{key_words} vector is non-empty, the set should also contain a \code{description} column. Ideally, the indicators should be of the numerical type. If the indicator is not of the numerical type, it will be converted to this type.}
 
 \item{data_test}{A test set that is used to validate the machine learning model. This set should have the same structure as the training set, but it is not obligatory. If the test set is not specified by the user then the test set is drawn from the training set (see \code{p} parameter).}
 
-\item{coicop}{A character string which indicates the column with COICOPs of products or labels for product groups.}
+\item{class}{A character string which indicates the column with classes (groups) of products (e.g. COICOPs).}
 
 \item{indicators}{A vector of column names to be considered in building a machine learning model. Important: the indicated variables can be numeric but also categorical (factor or character types are acceptable).}
 
@@ -30,7 +30,7 @@ model_classification(
 
 \item{sensitivity}{A logical parameter that indicates whether lowercase or uppercase letters are to be distinguished when the \code{key_words} vector is not empty.}
 
-\item{p}{A parameter related to creating the testing set, if it has not been specified by the user. The test set is then created on the basis of a coicop-balanced subsample of the training set. The size of this subsample is 100p percents of the training set size.}
+\item{p}{A parameter related to creating the testing set, if it has not been specified by the user. The test set is then created on the basis of a class-balanced subsample of the training set. The size of this subsample is 100p percents of the training set size.}
 
 \item{w}{A parameter for determining the measure of choosing the optimal machine learning model. For each combination of parameters specified in the \code{grid} list, the error rate of the trained model is calculated on the basis of the error on the training set (error_L=1-accuracy_L) and the error on the testing set (error_T=1-accuracy_T). Final accuracy of the model is estimated as: \code{w accuracy_L + (1-w) accuracy_T}.}
 
@@ -39,16 +39,16 @@ model_classification(
 \item{grid}{The list of vectors of parameters which are taken into consideration during the \code{Extreme Gradient Boosting training}. The default value of this list is as follows: \code{grid=list(eta=c(0.05,0.1,0.2),max_depth=c(6),min_child_weight=c(1),max_delta_step=c(0),subsample=c(1),gamma=c(0),lambda=c(1),alpha=c(0)}. The complete list of parameters for the used \code{Tree Booster} is available online \href{ https://xgboost.readthedocs.io/en/latest/parameter.html }{here}.}
 }
 \value{
-In general, this function provides a trained machine learning model to classify products into coicop groups (or any other groups). In addition, the function returns the characteristics of the model and figures describing the learning process. The machine learning process is based on the \code{XGBoost} algorithm (from the \code{XGBoost} package) which is an implementation of gradient boosted decision trees designed for speed and performance. The function takes into account each combination of model parameters (specified by the \code{grid} list) and provides, inter alia, an optimally trained model (a model that minimizes the error rate calculated on the basis of a fixed value of the \code{w} parameter). After all, the function returns a list of the following objects: \code{model} - the optimally trained model; \code{best_parameters} - a set of parameters of the optimal model;  \code{indicators} - a vector of all indicators used; \code{key_words} - a vector of all key words and phrases used; \code{coicops} - a dataframe with categorized COICOPs; \code{sensitivity} - a value of the used 'sensitivity' parameter; \code{figure_training} - a plot of the error levels calculated for the training set and the testing set during the learning process of the returned model (error = 1 - accuracy); \code{figure_importance} - a plot of the relative importance of the used indicators.
+In general, this function provides a trained machine learning model to classify products into classes (or any other groups). In addition, the function returns the characteristics of the model and figures describing the learning process. The machine learning process is based on the \code{XGBoost} algorithm (from the \code{XGBoost} package) which is an implementation of gradient boosted decision trees designed for speed and performance. The function takes into account each combination of model parameters (specified by the \code{grid} list) and provides, inter alia, an optimally trained model (a model that minimizes the error rate calculated on the basis of a fixed value of the \code{w} parameter). After all, the function returns a list of the following objects: \code{model} - the optimally trained model; \code{best_parameters} - a set of parameters of the optimal model;  \code{indicators} - a vector of all indicators used; \code{key_words} - a vector of all key words and phrases used; \code{classes} - a dataframe with categorized classes; \code{sensitivity} - a value of the used 'sensitivity' parameter; \code{figure_training} - a plot of the error levels calculated for the training set and the testing set during the learning process of the returned model (error = 1 - accuracy); \code{figure_importance} - a plot of the relative importance of the used indicators.
 }
 \description{
-This function provides a trained machine learning model to classify products into coicop groups or any other groups defined by the user. In addition, the function returns the characteristics of the model and figures describing the learning process.
+This function provides a trained machine learning model to classify products into classes or any other groups defined by the user. In addition, the function returns the characteristics of the model and figures describing the learning process.
 }
 \examples{
 \donttest{my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))}
 \donttest{data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))}
 \donttest{data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))}
-\donttest{ML<-model_classification(data_train,data_test,coicop="coicop6",grid=my.grid,
+\donttest{ML<-model_classification(data_train,data_test,class="coicop6",grid=my.grid,
 indicators=c("description","codeIN","grammage"),key_words=c("uht"),rounds=60)}
 \donttest{ML$best_parameters}
 \donttest{ML$indicators}
