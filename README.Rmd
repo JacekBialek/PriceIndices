@@ -27,6 +27,8 @@ Białek, J. (2021). PriceIndices – a New R Package for Bilateral and Multilate
 
 Białek, J. (2022). Scanner data processing in a newest version of the PriceIndices package, Statistical Journal of the IAOS, 38 (4), 1369-1397, DOI: 10.3233/SJI-220963.
 
+Białek, J. (2023). Scanner data processing and price index calculations in the PriceIndices R package, Slovak Statistics and Demography, 3, 7-20, ISNN: 1210-1095.
+
 ## Installation
 
 You can install the released version of **PriceIndices** from CRAN with:
