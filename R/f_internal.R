@@ -1674,7 +1674,7 @@ unit <-
   string <- tolower(stringr::str_replace_all(string, ',', '.'))
   string<-paste(string, " ", sep="")
   units <- tolower(units)
-  pattern.<-paste("[[:space:]]+\\d*[[:space:]]*",
+  pattern.<-paste("\\d*[[:space:]]*",
                   multiplication,
                   "{0,1}[[:space:]]*[0-9]+[[:punct:]]{0,1}[0-9]*[[:space:]]*(",units,")[[:space:]]+", sep="")
   extr<-stringr::str_extract(string, pattern=pattern.)

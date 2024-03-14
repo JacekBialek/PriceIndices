@@ -11,7 +11,7 @@ elasticity(
   method = "lm",
   left = -10,
   right = 10,
-  precision = 1e-06
+  precision = 0.000001
 )
 }
 \arguments{
