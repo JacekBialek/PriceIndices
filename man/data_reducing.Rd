@@ -16,6 +16,8 @@ data_reducing(
 )
 }
 \arguments{
+\item{data}{The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01') and, depending on next parameter values, columns: \code{prodID} or \code{description}, and \code{retID}.}
+
 \item{start}{The base period (as character) limited to the year and month, e.g. "2020-03".}
 
 \item{end}{The research period (as character) limited to the year and month, e.g. "2020-04".}

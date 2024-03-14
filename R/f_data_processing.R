@@ -2674,10 +2674,10 @@ ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
 return (figure)
 }
 
-
 #' @title  Reducing products 
 #'
 #' @description The function returns a reduced data set, i.e. a data set containing sufficiently numerous matched products in the indicated groups. The input data set (data frame) must contain matched products over time, i.e. it must contain the \code{prodID} column (as numeric, factor or character), or product descriptions, i.e. it must contain the \code{description} column (as character).
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01') and, depending on next parameter values, columns: \code{prodID} or \code{description}, and \code{retID}.
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param type This parameter indicates whether group counts are determined by different matched prodIDs (in which case the parameter has the value 'prodID') or different matched descriptions (in which case the parameter has the value 'description').
@@ -2784,6 +2784,8 @@ shrinkflation<-function (data, start, end, min_change=0, prec=2, interval=FALSE)
 obligatory_columns<-c("time","prices","quantities","grammage","unit","description")
 c_names<-colnames(data)
 for (col_names in obligatory_columns) if (!(col_names %in% c_names)) stop("A data frame must contain columns: time, prices, quantities, grammage, unit, description")
+#initial values
+prodID<-grammage<-n<-description<-time<-desc<-mean_price<-downsizing<-NULL
 #reducing a data set regarding the time criterion
 start <- paste(start, "-01", sep = "")
 end <- paste(end, "-01", sep = "")
@@ -2900,13 +2902,13 @@ values<-c("---------------",
           "---------------",
           paste(as.character(round(mean(s_decrease),prec)),"%"),
           paste(as.character(round(mean(p_increase),prec)),"%"),
-          paste(as.character(round(median(s_decrease),prec)),"%"),
-          paste(as.character(round(median(p_increase),prec)),"%"),
+          paste(as.character(round(stats::median(s_decrease),prec)),"%"),
+          paste(as.character(round(stats::median(p_increase),prec)),"%"),
           "---------------",
-          paste(as.character(round(sd(s_decrease),prec)),"%"),
-          paste(as.character(round(sd(p_increase),prec)),"%"),
-          as.character(round(sd(s_decrease)/mean(s_decrease),prec)),
-          as.character(round(sd(p_increase)/mean(p_increase),prec))
+          paste(as.character(round(stats::sd(s_decrease),prec)),"%"),
+          paste(as.character(round(stats::sd(p_increase),prec)),"%"),
+          as.character(round(stats::sd(s_decrease)/mean(s_decrease),prec)),
+          as.character(round(stats::sd(p_increase)/mean(p_increase),prec))
           )
 return (list(changes=changes, 
              products_downsized=unique(list_downsized), 
