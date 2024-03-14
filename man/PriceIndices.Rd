@@ -41,6 +41,8 @@ The list of package functions is as follows:
 
 \code{\link{data_aggregating}} 
 
+\code{\link{data_reducing}} 
+
 \code{\link{data_unit}} 
 
 \code{\link{data_norm}} 
