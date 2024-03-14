@@ -15,7 +15,7 @@ elasticity_fig(
   names = c(),
   left = -10,
   right = 10,
-  precision = 0.000001
+  precision = 1e-06
 )
 }
 \arguments{
