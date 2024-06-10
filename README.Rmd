@@ -78,9 +78,9 @@ The second one, **dataMATCH**, can be used to demonstrate the **data_matching** 
 
 The third one, **dataCOICOP**, is a ollection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022. It is a data frame with 10 columns and 139600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products; **description** - descriptions of sold products (original: in Polish); **codeID** - retailer product codes; **retID** - IDs of retailer outlets; **grammage** - product grammages; **unit** - sales units, e.g. 'kg', 'ml', etc.; **category** - product categories (in English) corresponding to COICOP 6 levels; **coicop6** - identifiers of local COICOP 6 groups (6 levels). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model_classification** and **data_classifying**).
 
-***4) dataDOWNSIZED***
+***4) data_DOWN_UP_SIZED***
 
-This data set, **dataDOWNSIZED**, is a collection of scanner data on the sale of coffee in the period from January 2024 to February 2024 and it contains downsized products (see the **shrinkflation** function). It is a data frame with 6 columns and 22 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day), **prices** - prices of sold products [PLN], **quantities** - quantities of sold products (in units resulting the product description), **codeIN** - unique internal product codes (retaler product codes), **codeOUT** - unique external product codes (e.g. GTIN, EAN, SKU), **description** - descriptions of sold coffee products. 
+This data set, **data_DOWN_UP_SIZED**, is a collection of scanner data on the sale of coffee in the period from January 2024 to February 2024 and it contains downsized products (see the **shrinkflation** function). It is a data frame with 6 columns and 51 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day), **prices** - prices of sold products [PLN], **quantities** - quantities of sold products (in units resulting the product description), **codeIN** - unique internal product codes (retaler product codes), **codeOUT** - unique external product codes (e.g. GTIN, EAN, SKU), **description** - descriptions of sold coffee products. 
 
 ***5) milk***
 
@@ -327,22 +327,24 @@ nrow(sugar.)
 sugar_<-data_reducing(sugar., start="2018-12", end="2019-12",by="description", minN=5)
 nrow(sugar_)
 ```
-The second function, **shrinkflation**, detects and summarises downsized products. It returns a list containing the following objects: **changes** with detailed information on downsized products, **products_downsized** with prodIDs of downsized products, **df_downsized** being a subset of the data frame with only downsized products, **df_reduced** which is the difference of the input data frame and the data frame containing the downsized products, and **df_summary** which provides basic statistics for detected downsized products (including their share in the total number of products). For instance:
+The second function, **shrinkflation**, detects and summarises downsized and upsized products. The function detects phenomena such as: \code{shrinkflation},\code{shrinkdeflation}, \code{sharkflation},\code{unshrinkdeflation}, \code{unshrinkflation}, \code{sharkdeflation} (see the \code{type} parameter). It returns a list containing the following objects: \code{df_changes} - data frame with detailed information on downsized and upsized products with the whole history of size changes, \code{df_type} - data frame with recognized type of products, \code{df_overview} - a table with basic summary of all detected products grouped by the \code{type} parameter, \code{products_detected} with prodIDs of products indicated by the 'type' parameter, \code{df_detected} being a subset of the data frame with only detected products, \code{df_reduced} which is the difference of the input data frame and the data frame containing the detected products, and \code{df_summary} which provides basic statistics for all detected downsized and upsized products (including their share in the total number of products and mean price and size changes). For instance:
 ```{r}
 #Data matching over time
-df<-data_matching(data=dataDOWNSIZED, start="2024-01", end="2024-02", 
-codeIN=TRUE,codeOUT=TRUE,description=TRUE, 
-onlydescription=FALSE,precision=0.9,interval=FALSE)
+df<-data_matching(data=data_DOWN_UP_SIZED, start="2024-01", end="2024-02", 
+                  codeIN=TRUE,codeOUT=TRUE,description=TRUE,
+                  onlydescription=FALSE,precision=0.9,interval=FALSE)
 # Extraction of information about grammage
 df<-data_unit(df,units=c("g|ml|kg|l"),multiplication="x")
 # Price standardization
 df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))
-# Downsized products detection
-result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE)
-result$changes
-#result$products_downsized
-#result$df_downsized
-#result$df_reduced
+# Downsized and upsized products detection
+result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE, type="shrinkflation")
+# result$df_changes
+result$df_type
+result$df_overview
+# result$products_detected
+# result$df_detected
+# result$df_reduced
 result$df_summary
 ```
 <a id="ad3">   </a>

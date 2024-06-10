@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -65,9 +60,9 @@ The second one, **dataMATCH**, can be used to demonstrate the **data\_matching**
 
 The third one, **dataCOICOP**, is a ollection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022. It is a data frame with 10 columns and 139600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products; **description** - descriptions of sold products (original: in Polish); **codeID** - retailer product codes; **retID** - IDs of retailer outlets; **grammage** - product grammages; **unit** - sales units, e.g. 'kg', 'ml', etc.; **category** - product categories (in English) corresponding to COICOP 6 levels; **coicop6** - identifiers of local COICOP 6 groups (6 levels). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model\_classification** and **data\_classifying**).
 
-***4) dataDOWNSIZED***
+***4) data\_DOWN\_UP\_SIZED***
 
-This data set, **dataDOWNSIZED**, is a collection of scanner data on the sale of coffee in the period from January 2024 to February 2024 and it contains downsized products (see the **shrinkflation** function). It is a data frame with 6 columns and 22 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day), **prices** - prices of sold products \[PLN\], **quantities** - quantities of sold products (in units resulting the product description), **codeIN** - unique internal product codes (retaler product codes), **codeOUT** - unique external product codes (e.g. GTIN, EAN, SKU), **description** - descriptions of sold coffee products.
+This data set, **data\_DOWN\_UP\_SIZED**, is a collection of scanner data on the sale of coffee in the period from January 2024 to February 2024 and it contains downsized products (see the **shrinkflation** function). It is a data frame with 6 columns and 51 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day), **prices** - prices of sold products \[PLN\], **quantities** - quantities of sold products (in units resulting the product description), **codeIN** - unique internal product codes (retaler product codes), **codeOUT** - unique external product codes (e.g. GTIN, EAN, SKU), **description** - descriptions of sold coffee products.
 
 ***5) milk***
 
@@ -118,12 +113,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.68         17      1     1
-#> 2 2020-01-01   2.64         20      2     1
-#> 3 2020-01-01   2.61         24      3     1
-#> 4 2020-01-01   2.70         17      4     1
-#> 5 2020-01-01   2.78         17      5     1
-#> 6 2020-01-01   2.77         20      6     1
+#> 1 2020-01-01   2.93         19      1     1
+#> 2 2020-01-01   2.72         17      2     1
+#> 3 2020-01-01   2.63         21      3     1
+#> 4 2020-01-01   2.48         20      4     1
+#> 5 2020-01-01   2.74         22      5     1
+#> 6 2020-01-01   2.69         17      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -144,12 +139,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-09   2.67   1.054733      1     1
-#> 2 2020-01-28   2.64   2.571575      2     1
-#> 3 2020-01-08   2.81   6.798809      3     1
-#> 4 2020-01-06   2.62   7.806717      4     1
-#> 5 2020-01-14   2.84   6.493851      5     1
-#> 6 2020-01-06   2.79   3.030814      6     1
+#> 1 2020-01-25   2.76 7.65260731      1     1
+#> 2 2020-01-28   2.87 3.08626583      2     1
+#> 3 2020-01-02   2.67 0.01775772      3     1
+#> 4 2020-01-21   2.83 1.39534538      4     1
+#> 5 2020-01-04   2.93 2.19988361      5     1
+#> 6 2020-01-22   2.68 8.77520205      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -192,14 +187,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 1.037639
+#> [1] 0.9660987
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 1.036363
+#> [1] 0.9658429
 ```
 
 **data\_aggregating**
@@ -478,62 +473,101 @@ nrow(sugar_)
 #> [1] 275
 ```
 
-The second function, **shrinkflation**, detects and summarises downsized products. It returns a list containing the following objects: **changes** with detailed information on downsized products, **products\_downsized** with prodIDs of downsized products, **df\_downsized** being a subset of the data frame with only downsized products, **df\_reduced** which is the difference of the input data frame and the data frame containing the downsized products, and **df\_summary** which provides basic statistics for detected downsized products (including their share in the total number of products). For instance:
+The second function, **shrinkflation**, detects and summarises downsized and upsized products. The function detects phenomena such as: ,, ,, , (see the parameter). It returns a list containing the following objects: - data frame with detailed information on downsized and upsized products with the whole history of size changes, - data frame with recognized type of products, - a table with basic summary of all detected products grouped by the parameter, with prodIDs of products indicated by the 'type' parameter, being a subset of the data frame with only detected products, which is the difference of the input data frame and the data frame containing the detected products, and which provides basic statistics for all detected downsized and upsized products (including their share in the total number of products and mean price and size changes). For instance:
 
 ``` r
 #Data matching over time
-df<-data_matching(data=dataDOWNSIZED, start="2024-01", end="2024-02", 
-codeIN=TRUE,codeOUT=TRUE,description=TRUE, 
-onlydescription=FALSE,precision=0.9,interval=FALSE)
+df<-data_matching(data=data_DOWN_UP_SIZED, start="2024-01", end="2024-02", 
+                  codeIN=TRUE,codeOUT=TRUE,description=TRUE,
+                  onlydescription=FALSE,precision=0.9,interval=FALSE)
 # Extraction of information about grammage
 df<-data_unit(df,units=c("g|ml|kg|l"),multiplication="x")
 # Price standardization
 df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))
-# Downsized products detection
-result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE)
-result$changes
-#>   prodID grammage unit mean_price size_decrease price_increase downsizing
-#> 1      8     0.20   kg    100.000             -              -      FALSE
-#> 2      8     0.18   kg    100.000          10 %            0 %      FALSE
-#> 3      8     0.17   kg    105.882       5.556 %        5.882 %       TRUE
-#> 4      9     0.80   kg     51.429             -              -      FALSE
-#> 5      9     0.78   kg     53.297         2.5 %        3.632 %       TRUE
-#> 6     10     0.25    l    201.143             -              -      FALSE
-#> 7     10     0.24    l    208.333           4 %        3.575 %       TRUE
-#> 8     11     0.50    l    140.000             -              -      FALSE
-#> 9     11     0.40    l    172.500          20 %       23.214 %       TRUE
-#>           description              time
-#> 1     coffee ABC 200g           2024-01
-#> 2     coffee ABC 180g           2024-02
-#> 3     coffee ABC 170g           2024-02
-#> 4 coffee GHI 2 x 400g           2024-01
-#> 5 coffee GHI 2 x 390g           2024-02
-#> 6   coffee JKL 250 ml 2024-01 ; 2024-02
-#> 7   coffee JKL 240 ml           2024-02
-#> 8  coffee super 0,5 l           2024-01
-#> 9  coffee super 0,4 l           2024-02
-#result$products_downsized
-#result$df_downsized
-#result$df_reduced
+# Downsized and upsized products detection
+result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE, type="shrinkflation")
+# result$df_changes
+result$df_type
+#>    IDs size_change price_orig_change price_norm_change     detected_type
+#> 1    7   -20.00000       -18.8235294          1.470588     shrinkflation
+#> 2   10   -15.00000       -10.0000000          5.882000     shrinkflation
+#> 3   10   -19.04762       -10.0000000         11.176211     shrinkflation
+#> 4   10   -14.28571       -10.0000000          5.000105     shrinkflation
+#> 5   11    -2.50000         1.0402742          3.632192      sharkflation
+#> 6   12    -4.00000        -0.7936508          3.339782     shrinkflation
+#> 7   14   -10.00000       -40.0000000        -33.333000   shrinkdeflation
+#> 8   16   -15.00000        15.0000000         35.294000      sharkflation
+#> 9   18    20.00000         5.0000000        -12.500000 unshrinkdeflation
+#> 10  20    25.00000         5.5566667        -15.556000 unshrinkdeflation
+#> 11  22    12.50000        37.7766667         22.469333   unshrinkflation
+#> 12  24    33.33333        50.0000000         12.500281   unshrinkflation
+#> 13  26     5.00000       -12.5000000        -16.666500    sharkdeflation
+#>                                                             descriptions
+#> 1           coffee super 0,4 l ; coffee super 0,5 l , coffee super 0,4 l
+#> 2  coffee ABC 200g ; coffee ABC 210g , coffee ABC 170g ; coffee ABC 180g
+#> 3  coffee ABC 200g ; coffee ABC 210g , coffee ABC 170g ; coffee ABC 180g
+#> 4  coffee ABC 200g ; coffee ABC 210g , coffee ABC 170g ; coffee ABC 180g
+#> 5                              coffee GHI 2 x 400g , coffee GHI 2 x 390g
+#> 6              coffee JKL 250 ml , coffee JKL 240 ml ; coffee JKL 250 ml
+#> 7                                          coffee F 200g , coffee F 180g
+#> 8                                          coffee G 200g , coffee G 170g
+#> 9                                          coffee H 200g , coffee H 240g
+#> 10                                         coffee M 400g , coffee M 500g
+#> 11                                         coffee K 400g , coffee K 450g
+#> 12                                         coffee L 300g , coffee L 400g
+#> 13                                       coffee LX 200g , coffee LX 210g
+#>                dates
+#> 1  2024-01 , 2024-02
+#> 2  2024-01 , 2024-02
+#> 3  2024-01 , 2024-02
+#> 4  2024-01 , 2024-02
+#> 5  2024-01 , 2024-02
+#> 6  2024-01 , 2024-02
+#> 7  2024-01 , 2024-02
+#> 8  2024-01 , 2024-02
+#> 9  2024-01 , 2024-02
+#> 10 2024-01 , 2024-02
+#> 11 2024-01 , 2024-02
+#> 12 2024-01 , 2024-02
+#> 13 2024-01 , 2024-02
+result$df_overview
+#> # A tibble: 6 x 3
+#>   `type of phenomenon detected` number of detected prod~1 shares [%] of detect~2
+#>   <chr>                                             <int>                  <dbl>
+#> 1 sharkdeflation                                        1                   7.69
+#> 2 sharkflation                                          2                  15.4 
+#> 3 shrinkdeflation                                       1                   7.69
+#> 4 shrinkflation                                         3                  23.1 
+#> 5 unshrinkdeflation                                     2                  15.4 
+#> 6 unshrinkflation                                       2                  15.4 
+#> # i abbreviated names: 1: `number of detected products`,
+#> #   2: `shares [%] of detected products`
+# result$products_detected
+# result$df_detected
+# result$df_reduced
 result$df_summary
-#>                                          stats           value
-#> 1                    Downsized product shares: ---------------
-#> 2                       number of all products               6
-#> 3                 number of downsized products               4
-#> 4                  share of downsized products        66.667 %
-#> 5                     turnover of all products          157400
-#> 6               turnover of downsized products          126450
-#> 7         turnover share of downsized products        80.337 %
-#> 8                            Average measures: ---------------
-#> 9    mean size decreases of downsized products         8.014 %
-#> 10   mean price increase of downsized products         9.076 %
-#> 11 median size decreases of downsized products         4.778 %
-#> 12 median price increase of downsized products         4.757 %
-#> 13                        Volatility measures: ---------------
-#> 14        standard deviation of size decreases         8.087 %
-#> 15       standard deviation of price increases         9.487 %
-#> 16    volatility coefficient of size decreases           1.009
-#> 17   volatility coefficient of price increases           1.045
+#>                                            stats           value
+#> 1                       Detected product shares: ---------------
+#> 2                         number of all products              13
+#> 3                    number of detected products               3
+#> 4                     share of detected products        23.077 %
+#> 5                       turnover of all products          289430
+#> 6                  turnover of detected products           73380
+#> 7            turnover share of detected products        25.353 %
+#> 8                              Average measures: ---------------
+#> 9          mean size change of detected products       -14.467 %
+#> 10        mean price change of detected products        -9.923 %
+#> 11   mean unit price change of detected products         5.374 %
+#> 12       median size change of detected products           -15 %
+#> 13      median price change of detected products           -10 %
+#> 14 median unit price change of detected products             5 %
+#> 15                          Volatility measures: ---------------
+#> 16             standard deviation of size change         6.354 %
+#> 17            standard deviation of price change         6.375 %
+#> 18       standard deviation of unit price change         3.655 %
+#> 19         volatility coefficient of size change          -0.439
+#> 20        volatility coefficient of price change          -0.642
+#> 21   volatility coefficient of unit price change            0.68
 ```
 
 <a id="ad3"> </a>
@@ -922,19 +956,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.032447
-#> 2  14216 1.411876
-#> 3  15404 1.005707
-#> 4  17034 1.105433
-#> 5  34540 1.768788
-#> 6  51583 1.001701
+#> 1  14215 1.878250
+#> 2  14216 1.491521
+#> 3  15404 1.247859
+#> 4  17034 1.756548
+#> 5  34540 1.216547
+#> 6  51583 1.430987
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9714499
+#> [1] 1.001912
 ```
 
 <a id="ad8"> </a>
