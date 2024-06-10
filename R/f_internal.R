@@ -4899,3 +4899,35 @@ mmontgomery_internal <-
                      Price_indicator=sum(list_df$price_contributions),
                   Quantity_indicator=sum(list_df$quantity_contributions)))    
   }
+
+
+#' An additional function used in the 'shrinkflation' function
+#' @param n Number of replicated strings
+#' @param string A string which is replicated
+#' @param initial An additional parameter which helps in decision about a need of string replicating 
+#' @noRd
+
+replicate_str<-function(n, string, initial) 
+{ if (length(initial)>1) return (string)
+  else {
+  str<-c()
+  for (i in 1:n) str<-c(str, string)
+  str<-paste(str, collapse=" , ")
+  return (str)
+  }
+}
+
+#' An additional function used in the 'shrinkflation' function
+#' @param x First numeric vector
+#' @param y Second numeric vector
+#' @noRd
+
+ratios<-function (x,y)
+{ if (length(x)*length(y)==1) return ((y/x-1)*100)
+  else {
+    ratios.<-c()
+    for (iy in 1:length(y))
+      for (ix in 1:length(x)) ratios.<-c(ratios., (y[iy]/x[ix]-1)*100) 
+  }
+  return (ratios.)
+}

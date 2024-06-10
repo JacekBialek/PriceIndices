@@ -2,43 +2,60 @@
 % Please edit documentation in R/f_data_processing.R
 \name{shrinkflation}
 \alias{shrinkflation}
-\title{Detecting and summarising downsized products.}
+\title{Detecting and summarising downsized and upsized products.}
 \usage{
-shrinkflation(data, start, end, min_change = 0, prec = 2, interval = FALSE)
+shrinkflation(
+  data,
+  start,
+  end,
+  type = "shrinkflation",
+  min_p_change = 0,
+  min_s_change = 0,
+  prec = 2,
+  interval = FALSE
+)
 }
 \arguments{
-\item{data}{The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01') and \code{prodID} (as numeric, factor or character), \code{prices} and \code{quantities} (as numeric), \code{grammage} (as numeric), \code{unit} (as character) and \code{description} (as character). Important: prices must be standardized beforehand, that is, they must refer to the sales unit (the \code{data_norm} function can be used for this).}
+\item{data}{The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01') and \code{prodID} (as numeric, factor or character), \code{prices} (with standardised prices!) and \code{quantities} (as numeric), \code{grammage} (as numeric), \code{unit} (as character) and \code{description} (as character). Important: prices must be standardized beforehand, that is, they must refer to the sales unit (the \code{data_norm} function can be used for this).}
 
-\item{start}{The base period (as character) limited to the year and month, e.g. "2020-03".}
+\item{start}{The base period (as character) limited to the year and month, e.g. "2024-01".}
 
-\item{end}{The research period (as character) limited to the year and month, e.g. "2020-04".}
+\item{end}{The research period (as character) limited to the year and month, e.g. "2024-02".}
 
-\item{min_change}{The minimum increase in the average (unit) price of a product in order for it to be considered downsized at the same time. The default value is zero, possibly positive values can be considered.}
+\item{type}{A parameter specifying what phenomenon is to be included in the resulting elements of the returned list (i.e. in returned \code{products_detected}, \code{df_detected} and \code{df_reduced}). The available values are: \code{shrinkflation}, \code{shrinkdeflation}, \code{sharkflation}, \code{unshrinkdeflation}, \code{unshrinkflation} and \code{sharkdeflation} (default value is: \code{shrinkflation}).}
+
+\item{min_p_change}{Limiting unit price change, i.e.: a product is considered if the percentage change in its unit price is greater than the value of this parameter. The default value is zero, possibly positive values can be considered (in percentage).}
+
+\item{min_s_change}{Limiting size change, i.e.: a product is considered if the percentage change in its size is greater than the value of this parameter. The default value is zero, possibly positive values can be considered (in percentage).}
 
 \item{prec}{Number of decimal places for the presented summary results.}
 
 \item{interval}{A parameter that specifies whether the search for downsized products should consider the entire time interval, or only the compared months specified by the \code{start} and \code{end} parameters.}
 }
 \value{
-This function detects and summarises downsized products. It returns a list containing the following objects: \code{changes} with detailed information on downsized products, \code{products_downsized} with prodIDs of downsized products, \code{df_downsized} being a subset of the data frame with only downsized products, \code{df_reduced} which is the difference of the input data frame and the data frame containing the downsized products, and \code{df_summary} which provides basic statistics for detected downsized products (including their share in the total number of products).
+This function detects and summarises downsized and upsized products. The function detects phenomena such as: \code{shrinkflation}, \code{shrinkdeflation}, \code{sharkflation}, \code{unshrinkdeflation}, \code{unshrinkflation}, \code{sharkdeflation} (see the \code{type} parameter). It returns a list containing the following objects: \code{df_changes} - data frame with detailed information on downsized and upsized products with the whole history of size changes, \code{df_type} - data frame with recognized type of products, \code{df_overview} - a table with basic summary of all detected products grouped by the \code{type} parameter, \code{products_detected} with prodIDs of products indicated by the 'type' parameter, \code{df_detected} being a subset of the data frame with only detected products, \code{df_reduced} which is the difference of the input data frame and the data frame containing the detected products, 
+and \code{df_summary} which provides basic statistics for all detected downsized and upsized products (including their share in the total number of products and mean price and size changes).
 }
 \description{
-This function detects and summarises downsized products.
+This function detects and summarises downsized and upsized products.
 }
 \examples{
 #Data matching over time
-df<-data_matching(data=dataDOWNSIZED, start="2024-01", end="2024-02", 
+df<-data_matching(data=data_DOWN_UP_SIZED, start="2024-01", end="2024-02", 
 codeIN=TRUE,codeOUT=TRUE,description=TRUE, 
 onlydescription=FALSE,precision=0.9,interval=FALSE)
 # Extraction of information about grammage
 df<-data_unit(df,units=c("g|ml|kg|l"),multiplication="x")
 # Price standardization
 df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))
-# Downsized products detection
-result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE)
-result$changes
-result$products_downsized
-result$df_downsized
+# Downsized and upsized products detection
+result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE, type="shrinkflation")
+result$df_changes
+result$df_type
+result$df_overview
+result$products_detected
+result$df_detected
 result$df_reduced
 result$df_summary
+
 }

@@ -14,7 +14,7 @@
 #'
 #' \code{\link{dataCOICOP}}
 #'
-#' \code{\link{dataDOWNSIZED}} 
+#' \code{\link{data_DOWN_UP_SIZED}} 
 #'
 #' \code{\link{milk}} 
 #'

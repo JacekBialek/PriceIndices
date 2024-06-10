@@ -1,6 +1,6 @@
 Package: PriceIndices
 Title: Calculating Bilateral and Multilateral Price Indexes
-Version: 0.1.9
+Version: 0.2.0
 Authors@R: 
     person(given = "Jacek",
            family = "Białek",
