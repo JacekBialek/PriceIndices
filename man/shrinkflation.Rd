@@ -49,7 +49,8 @@ df<-data_unit(df,units=c("g|ml|kg|l"),multiplication="x")
 # Price standardization
 df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))
 # Downsized and upsized products detection
-result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE, type="shrinkflation")
+result<-shrinkflation(data=df, start="2024-01","2024-02", 
+prec=3, interval=FALSE, type="shrinkflation")
 result$df_changes
 result$df_type
 result$df_overview

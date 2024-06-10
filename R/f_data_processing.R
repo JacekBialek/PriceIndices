@@ -2776,7 +2776,8 @@ return(dplyr::bind_rows(subgroup_list))
 #' # Price standardization
 #' df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))
 #' # Downsized and upsized products detection
-#' result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE, type="shrinkflation")
+#' result<-shrinkflation(data=df, start="2024-01","2024-02", 
+#' prec=3, interval=FALSE, type="shrinkflation")
 #' result$df_changes
 #' result$df_type
 #' result$df_overview
@@ -2798,6 +2799,7 @@ c_names<-colnames(data)
 for (col_names in obligatory_columns) if (!(col_names %in% c_names)) stop("A data frame must contain columns: time, prices, quantities, grammage, unit, description")
 #initial values
 prodID<-grammage<-n<-description<-time<-desc<-mean_price<-downsizing<-median<-sd<-NULL
+mean_price_orig<-size<-price_orig<-price_norm<-detected_type<-detected_type<-mean_price_orig<-price_norm<-price_orig<-size<-NULL
 #reducing a data set regarding the time criterion
 start <- paste(start, "-01", sep = "")
 end <- paste(end, "-01", sep = "")
