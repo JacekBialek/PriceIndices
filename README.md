@@ -1,3 +1,8 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -113,12 +118,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.93         19      1     1
-#> 2 2020-01-01   2.72         17      2     1
-#> 3 2020-01-01   2.63         21      3     1
-#> 4 2020-01-01   2.48         20      4     1
-#> 5 2020-01-01   2.74         22      5     1
-#> 6 2020-01-01   2.69         17      6     1
+#> 1 2020-01-01   2.96         20      1     1
+#> 2 2020-01-01   2.68         21      2     1
+#> 3 2020-01-01   2.85         20      3     1
+#> 4 2020-01-01   2.56         22      4     1
+#> 5 2020-01-01   2.97         21      5     1
+#> 6 2020-01-01   2.78         26      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -139,12 +144,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-25   2.76 7.65260731      1     1
-#> 2 2020-01-28   2.87 3.08626583      2     1
-#> 3 2020-01-02   2.67 0.01775772      3     1
-#> 4 2020-01-21   2.83 1.39534538      4     1
-#> 5 2020-01-04   2.93 2.19988361      5     1
-#> 6 2020-01-22   2.68 8.77520205      6     1
+#> 1 2020-01-06   2.83  2.2023788      1     1
+#> 2 2020-01-15   2.83  5.9062583      2     1
+#> 3 2020-01-04   2.83  7.8985204      3     1
+#> 4 2020-01-10   2.71  0.4697018      4     1
+#> 5 2020-01-14   2.85  0.8779647      5     1
+#> 6 2020-01-19   2.66  3.7670963      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -187,14 +192,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 0.9660987
+#> [1] 1.042576
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 0.9658429
+#> [1] 1.042195
 ```
 
 **data\_aggregating**
@@ -473,7 +478,7 @@ nrow(sugar_)
 #> [1] 275
 ```
 
-The second function, **shrinkflation**, detects and summarises downsized and upsized products. The function detects phenomena such as: ,, ,, , (see the parameter). It returns a list containing the following objects: - data frame with detailed information on downsized and upsized products with the whole history of size changes, - data frame with recognized type of products, - a table with basic summary of all detected products grouped by the parameter, with prodIDs of products indicated by the 'type' parameter, being a subset of the data frame with only detected products, which is the difference of the input data frame and the data frame containing the detected products, and which provides basic statistics for all detected downsized and upsized products (including their share in the total number of products and mean price and size changes). For instance:
+The second function, **shrinkflation**, detects and summarises downsized and upsized products. The function detects phenomena such as: **shrinkflation**, **shrinkdeflation**, **sharkflation**,**unshrinkdeflation**, **unshrinkflation**, **sharkdeflation** (see the **type** parameter). It returns a list containing the following objects: **df\_changes** - data frame with detailed information on downsized and upsized products with the whole history of size changes, **df\_type** - data frame with recognized type of products, **df\_overview** - a table with basic summary of all detected products grouped by the **type** parameter, **products\_detected** with prodIDs of products indicated by the **type** parameter, **df\_detected** being a subset of the data frame with only detected products, **df\_reduced** which is the difference of the input data frame and the data frame containing the detected products, and **df\_summary** which provides basic statistics for all detected downsized and upsized products (including their share in the total number of products and mean price and size changes). For instance:
 
 ``` r
 #Data matching over time
@@ -956,19 +961,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.878250
-#> 2  14216 1.491521
-#> 3  15404 1.247859
-#> 4  17034 1.756548
-#> 5  34540 1.216547
-#> 6  51583 1.430987
+#> 1  14215 1.806546
+#> 2  14216 1.149718
+#> 3  15404 1.387917
+#> 4  17034 1.646253
+#> 5  34540 1.297355
+#> 6  51583 1.359602
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.001912
+#> [1] 0.9959344
 ```
 
 <a id="ad8"> </a>
