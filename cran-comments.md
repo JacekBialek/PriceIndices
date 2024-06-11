@@ -2,6 +2,9 @@
 
 ## New functions:
 
+## New functions:
+* There are two new index functions: **dikhanov** (bilateral formula) and **chdikhanov** (chain index formula).
+
 ## New dataset:
 * The **data_DOWN_UP_SIZED** (artficial) scanner dataset on the sale of coffee products (the corresponding old one, i.e. **dataDOWNSIZED**, has been deleted);
 

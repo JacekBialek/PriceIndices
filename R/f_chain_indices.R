@@ -307,6 +307,55 @@ chbmw <-
   return(chained)
   }
 
+#' @title  Calculating the monthly chained Dikhanov price index
+#'
+#' @description This function returns a value (or vector of values) of the monthly chained Dikhanov price index.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname chdikhanov
+#' @return The function returns a value (or vector of values) of the monthly chained Dikhanov price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).     
+#' @references
+#' {Dikhanov, Y., (2024). \emph{A New Elementary Index Number}. Paper presented at the 18th Meeting of the Ottawa Group on Price Indices, Ottawa, Canada.}
+#' @examples 
+#' chdikhanov(sugar, start="2018-12", end="2019-04")
+#' \donttest{chdikhanov(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+chdikhanov <-
+  function(data, start, end, interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  dates <- c()
+  while (start <= end)
+  {
+  t <- substr(start, 0, 7)
+  dates <- c(dates, t)
+  lubridate::month(start) <-
+  lubridate::month(start) + 1
+  }
+  f <-
+  function (i)
+  return (dikhanov(data, start = dates[i], end = dates[i + 1]))
+  ind <- seq(1:(length(dates) - 1))
+  chained1 <- sapply(ind, f)
+  chained <- prod(chained1)
+  if (interval == TRUE) {
+  #optional returning all fixed base chain indices
+  chained <- c(1)
+  for (i in 1:length(chained1))
+  chained <- c(chained, prod(chained1[seq(1, i)]))
+  }
+  return(chained)
+  }
+
 #' @title  Calculating the monthly chained Laspeyres price index
 #'
 #' @description This function returns a value (or vector of values) of the monthly chained Laspeyres price index.

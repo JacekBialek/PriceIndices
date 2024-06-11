@@ -118,12 +118,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.96         20      1     1
-#> 2 2020-01-01   2.68         21      2     1
-#> 3 2020-01-01   2.85         20      3     1
-#> 4 2020-01-01   2.56         22      4     1
-#> 5 2020-01-01   2.97         21      5     1
-#> 6 2020-01-01   2.78         26      6     1
+#> 1 2020-01-01   2.92         20      1     1
+#> 2 2020-01-01   2.84         18      2     1
+#> 3 2020-01-01   2.77         18      3     1
+#> 4 2020-01-01   2.75         18      4     1
+#> 5 2020-01-01   2.64         21      5     1
+#> 6 2020-01-01   2.72         17      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -144,12 +144,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-06   2.83  2.2023788      1     1
-#> 2 2020-01-15   2.83  5.9062583      2     1
-#> 3 2020-01-04   2.83  7.8985204      3     1
-#> 4 2020-01-10   2.71  0.4697018      4     1
-#> 5 2020-01-14   2.85  0.8779647      5     1
-#> 6 2020-01-19   2.66  3.7670963      6     1
+#> 1 2020-01-26   2.58   4.054811      1     1
+#> 2 2020-01-02   2.96   1.384213      2     1
+#> 3 2020-01-28   2.84   5.470079      3     1
+#> 4 2020-01-21   2.83   2.251028      4     1
+#> 5 2020-01-18   2.97   2.151433      5     1
+#> 6 2020-01-02   2.69   1.606861      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -192,14 +192,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 1.042576
+#> [1] 1.077743
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 1.042195
+#> [1] 1.078145
 ```
 
 **data\_aggregating**
@@ -785,16 +785,17 @@ method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))
 
 ### Functions for bilateral unweighted price index calculation
 
-This package includes 6 functions for calculating the following bilateral unweighted price indices:
+This package includes 7 functions for calculating the following bilateral unweighted price indices:
 
-| Price Index      | Function |
-|------------------|----------|
-| BMW (2007)       | bmw      |
-| Carli (1804)     | carli    |
-| CSWD (1980,1992) | cswd     |
-| Dutot (1738)     | dutot    |
-| Jevons (1865)    | jevons   |
-| Harmonic         | harmonic |
+| Price Index           | Function |
+|-----------------------|----------|
+| BMW (2007)            | bmw      |
+| Carli (1804)          | carli    |
+| CSWD (1980,1992)      | cswd     |
+| Dutot (1738)          | dutot    |
+| Jevons (1865)         | jevons   |
+| Harmonic              | harmonic |
+| Dikhanov (2021, 2024) | dikhanov |
 
 Each of these functions returns a value (or vector of values) of the choosen unweighted bilateral price index depending on the **interval** parameter. If the interval parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates please see general functions: **price\_indices** or **final\_index**. None of these functions takes into account aggregating over outlets or product subgroups (to consider these types of aggregating please use the **final\_index** function.) Below are examples of calculations for the Jevons index (in the second case a *fixed base month* is set to December 2018):
 
@@ -862,7 +863,7 @@ lowe(milk, start="2019-12", end="2020-02", base="2018-12", interval=TRUE)
 
 ### Functions for chain price index calculation
 
-This package includes 35 functions for calculating the following chain indices (weighted and unweighted):
+This package includes 36 functions for calculating the following chain indices (weighted and unweighted):
 
 | Price Index                                          | Function              |
 |------------------------------------------------------|-----------------------|
@@ -872,6 +873,7 @@ This package includes 35 functions for calculating the following chain indices (
 | Chain Dutot                                          | chdutot               |
 | Chain Jevons                                         | chjevons              |
 | Chain Harmonic                                       | chharmonic            |
+| Chain Dikhanov                                       | chdikhanov            |
 | Chain AG Mean                                        | chagmean              |
 | Chain Banajree                                       | chbanajree            |
 | Chain Bialek                                         | chbialek              |
@@ -961,19 +963,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.806546
-#> 2  14216 1.149718
-#> 3  15404 1.387917
-#> 4  17034 1.646253
-#> 5  34540 1.297355
-#> 6  51583 1.359602
+#> 1  14215 1.384321
+#> 2  14216 1.632285
+#> 3  15404 1.492862
+#> 4  17034 1.526409
+#> 5  34540 1.059083
+#> 6  51583 1.415378
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9959344
+#> [1] 0.9772939
 ```
 
 <a id="ad8"> </a>

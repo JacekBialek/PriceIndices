@@ -99,6 +99,8 @@
 #'
 #' \code{\link{harmonic}}
 #'
+#' \code{\link{dikhanov}}
+#'
 #' @section Functions for bilateral weighted price index calculation:
 #' \code{\link{agmean}} 
 #'
@@ -164,6 +166,8 @@
 #' \code{\link{chjevons}}
 #'
 #' \code{\link{chharmonic}}
+#'
+#' \code{\link{chdikhanov}}
 #'
 #' \code{\link{chagmean}} 
 #'

@@ -486,7 +486,7 @@ method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))
 
 ### Functions for bilateral unweighted price index calculation
 
-This package includes 6 functions for calculating the following bilateral unweighted price indices: 
+This package includes 7 functions for calculating the following bilateral unweighted price indices: 
 
 | Price Index | Function | 
 |----------------|---------------|
@@ -496,6 +496,7 @@ This package includes 6 functions for calculating the following bilateral unweig
 | Dutot (1738) | dutot |
 | Jevons (1865) | jevons |
 | Harmonic | harmonic |
+| Dikhanov (2021, 2024)| dikhanov |
 
 Each of these functions returns a value (or vector of values) of the choosen unweighted bilateral price index depending on the **interval** parameter. If the interval parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates please see general functions: **price_indices** or **final_index**. None of these functions takes into account aggregating over outlets or product subgroups (to consider these types of aggregating please use the **final_index** function.) Below are examples of calculations for the Jevons index (in the second case a *fixed base month* is set to December 2018):
 ```{r}
@@ -554,7 +555,7 @@ lowe(milk, start="2019-12", end="2020-02", base="2018-12", interval=TRUE)
 
 ### Functions for chain price index calculation
 
-This package includes 35 functions for calculating the following chain indices (weighted and unweighted):
+This package includes 36 functions for calculating the following chain indices (weighted and unweighted):
 
 | Price Index | Function | 
 |----------------|---------------|
@@ -564,6 +565,7 @@ This package includes 35 functions for calculating the following chain indices (
 | Chain Dutot  | chdutot |
 | Chain Jevons  | chjevons |
 | Chain Harmonic | chharmonic |
+| Chain Dikhanov | chdikhanov |
 | Chain AG Mean  | chagmean |
 | Chain Banajree  | chbanajree |
 | Chain Bialek  | chbialek |

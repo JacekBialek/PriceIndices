@@ -533,6 +533,91 @@ bmw <-
   }
   }
 
+#' @title  Calculating the unweighted Dikhanov price index
+#'
+#' @description This function returns a value (or vector of values) of the unweighted bilateral Dikhanov price index.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname dikhanov
+#' @return The function returns a value (or vector of values) of the unweighted bilateral Dikhanov price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).      
+#' @references
+#' {Dikhanov, Y., (2024). \emph{A New Elementary Index Number}. Paper presented at the 18th Meeting of the Ottawa Group on Price Indices, Ottawa, Canada.}
+#' @examples 
+#' dikhanov(sugar, start="2018-12", end="2019-12")
+#' \donttest{dikhanov(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+dikhanov <-
+  function(data, start, end, interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #returning vector of values
+  if (interval == TRUE) {
+  result <- c(1)
+  end2 <- end
+  end <- start
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  while (end <= end2)
+  {
+  t <- substr(end, 0, 7)
+  date <- c(date, t)
+  data2 <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data2, start, end)
+  price_end <-
+  prices(data2, period = end, set = id)
+  price_start <-
+  prices(data2, period = start, set = id)
+  result <-
+  c(result, sum((price_end/price_start)^0.5) / sum((price_start/price_end)^0.5))
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  }
+  return(result)
+  }
+  #returning one value
+  else {
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data, start, end)
+  price_end <-
+  prices(data, period = end, set = id)
+  price_start <-
+  prices(data, period = start, set = id)
+  return(sum((price_end/price_start)^0.5) / sum((price_start/price_end)^0.5))
+  }
+  }
+
+
 #' @title  Calculating the bilateral Laspeyres price index
 #'
 #' @description This function returns a value (or vector of values) of the bilateral Laspeyres price index.
