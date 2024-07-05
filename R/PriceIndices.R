@@ -1,6 +1,6 @@
 #' The list of package functions and their demonstration
 #'
-#' The \strong{PriceIndices} package is a tool for Bilateral and Multilateral Price Index Calculations. 
+#' The \strong{PriceIndices} package is a tool for Bilateral and Multilateral Price Index Calculations.
 #' A demonstration of package functions is here: \href{ https://github.com/JacekBialek/important_documents/blob/main/README.pdf }{README}.
 #' The package documentation can be found \href{https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_manual.pdf}{HERE}.
 #' The list of package functions is as follows:
@@ -14,9 +14,9 @@
 #'
 #' \code{\link{dataCOICOP}}
 #'
-#' \code{\link{data_DOWN_UP_SIZED}} 
+#' \code{\link{data_DOWN_UP_SIZED}}
 #'
-#' \code{\link{milk}} 
+#' \code{\link{milk}}
 #'
 #' \code{\link{sugar}}
 #'
@@ -29,17 +29,17 @@
 #' \code{\link{tindex}}
 #'
 #' @section Functions for data processing:
-#' \code{\link{data_check}} 
+#' \code{\link{data_check}}
 #'
-#' \code{\link{data_preparing}} 
+#' \code{\link{data_preparing}}
 #'
-#' \code{\link{data_aggregating}} 
+#' \code{\link{data_aggregating}}
 #'
-#' \code{\link{data_reducing}} 
+#' \code{\link{data_reducing}}
 #'
-#' \code{\link{data_unit}} 
+#' \code{\link{data_unit}}
 #'
-#' \code{\link{data_norm}} 
+#' \code{\link{data_norm}}
 #'
 #' \code{\link{data_selecting}}
 #'
@@ -51,31 +51,31 @@
 #'
 #' \code{\link{load_model}}
 #'
-#' \code{\link{data_matching}} 
+#' \code{\link{data_matching}}
 #'
-#' \code{\link{data_filtering}} 
+#' \code{\link{data_filtering}}
 #'
-#' \code{\link{shrinkflation}} 
+#' \code{\link{shrinkflation}}
 #'
 #' @section Functions providing dataset characteristics:
-#' \code{\link{available}} 
+#' \code{\link{available}}
 #'
 #' \code{\link{matched}}
 #'
 #' \code{\link{matched_index}}
-#' 
+#'
 #' \code{\link{matched_fig}}
 #'
-#' \code{\link{prices}} 
+#' \code{\link{prices}}
 #'
-#' \code{\link{quantities}} 
+#' \code{\link{quantities}}
 #'
 #' \code{\link{sales}}
 #'
-#' \code{\link{sales_groups}} 
-#' 
-#' \code{\link{sales_groups2}} 
-#' 
+#' \code{\link{sales_groups}}
+#'
+#' \code{\link{sales_groups2}}
+#'
 #' \code{\link{pqcor}}
 #'
 #' \code{\link{pqcor_fig}}
@@ -87,7 +87,7 @@
 #' \code{\link{elasticity_fig}}
 #'
 #' @section Functions for bilateral unweighted price index calculation:
-#' \code{\link{bmw}} 
+#' \code{\link{bmw}}
 #'
 #' \code{\link{carli}}
 #'
@@ -102,7 +102,7 @@
 #' \code{\link{dikhanov}}
 #'
 #' @section Functions for bilateral weighted price index calculation:
-#' \code{\link{agmean}} 
+#' \code{\link{agmean}}
 #'
 #' \code{\link{banajree}}
 #'
@@ -155,7 +155,7 @@
 #' \code{\link{young}}
 #'
 #' @section Functions for chain price index calculation:
-#' \code{\link{chbmw}} 
+#' \code{\link{chbmw}}
 #'
 #' \code{\link{chcarli}}
 #'
@@ -169,7 +169,7 @@
 #'
 #' \code{\link{chdikhanov}}
 #'
-#' \code{\link{chagmean}} 
+#' \code{\link{chagmean}}
 #'
 #' \code{\link{chbanajree}}
 #'
@@ -222,7 +222,7 @@
 #' \code{\link{chyoung}}
 #'
 #' @section Functions for multilateral price index calculation:
-#' \code{\link{ccdi}} 
+#' \code{\link{ccdi}}
 #'
 #' \code{\link{geks}}
 #'
@@ -261,7 +261,7 @@
 #' \code{\link{SPQ}}
 #'
 #' @section Functions for extending multilateral price indices by using splicing methods:
-#' \code{\link{ccdi_splice}} 
+#' \code{\link{ccdi_splice}}
 #'
 #' \code{\link{geks_splice}}
 #'
@@ -296,7 +296,7 @@
 #' \code{\link{tpd_splice}}
 #'
 #' @section Functions for extending multilateral price indices by using the FBEW method:
-#' \code{\link{ccdi_fbew}} 
+#' \code{\link{ccdi_fbew}}
 #'
 #' \code{\link{geks_fbew}}
 #'
@@ -331,7 +331,7 @@
 #' \code{\link{tpd_fbew}}
 #'
 #' @section Functions for extending multilateral price indices by using the FBMW method:
-#' \code{\link{ccdi_fbmw}} 
+#' \code{\link{ccdi_fbmw}}
 #'
 #' \code{\link{geks_fbmw}}
 #'

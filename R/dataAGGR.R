@@ -1,6 +1,6 @@
 #' A small artificial scanner data set for a demonstration of data aggregation
 #'
-#' A collection of artificial scanner data on milk products sold in three different months 
+#' A collection of artificial scanner data on milk products sold in three different months
 #' @format A data frame with 6 columns and 9 rows. The used variables are as follows:
 #'
 #' \code{time} - Dates of transactions (Year-Month-Day: 4 different dates)

@@ -1,6 +1,6 @@
 #' An artificial scanner data set for product matching
 #'
-#' A collection of scanner data on the sale of sample artificial products.  
+#' A collection of scanner data on the sale of sample artificial products.
 #' @format A data frame with 7 columns and 30 rows. The used variables are as follows:
 #'
 #' \code{time} - Dates of transactions (Year-Month-Day)
