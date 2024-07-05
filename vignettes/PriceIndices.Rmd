@@ -11,11 +11,11 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7, 
+  fig.width = 7,
   fig.height = 5,
   warning = FALSE,
   message = FALSE,
-  eval=FALSE
+  eval = FALSE
 )
 ```
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
@@ -118,26 +118,30 @@ unique(milk$description)
 
 The package includes the **generate** function which provides an artificial scanner data sets where prices and quantities are lognormally distributed. The characteristics for these lognormal distributions are set by **pmi**, **sigma**, **qmi** and **qsigma** parameters. This function works for the fixed number of products and outlets (see **n** and **r** parameters). The generated data set is ready for further price index calculations. For instance:
 ```{r}
-dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
-                  qmi=c(3,4,4),qsigma=c(0.1,0.1,0.15),
-                  start="2020-01")
+dataset <- generate(
+  pmi = c(1.02, 1.03, 1.04), psigma = c(0.05, 0.09, 0.02),
+  qmi = c(3, 4, 4), qsigma = c(0.1, 0.1, 0.15),
+  start = "2020-01"
+)
 head(dataset)
 ```
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
 ```{r}
-tindex(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),start="2020-01",ratio=FALSE)
+tindex(pmi = c(1.02, 1.03, 1.04), psigma = c(0.05, 0.09, 0.02), start = "2020-01", ratio = FALSE)
 ```
 The User may also generate an artificial scanner dataset where prices are lognormally distributed and quantities are calculated under the assumption that consumers have CES (Constant Elasticity of Substitution) preferences and their spending on all products is fixed (see the **generate_CES** function). Please watch the following example:
 ```{r}
-#Generating an artificial dataset (the elasticity of substitution is 1.25)
-df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
-elasticity=1.25,start="2020-01",n=100,days=TRUE)
+# Generating an artificial dataset (the elasticity of substitution is 1.25)
+df <- generate_CES(
+  pmi = c(1.02, 1.03), psigma = c(0.04, 0.03),
+  elasticity = 1.25, start = "2020-01", n = 100, days = TRUE
+)
 head(df)
 ```
 Now, we can verify the value of elasticity of substitution using this generated dataset:
 ```{r}
-#Verifying the elasticity of substitution
-elasticity(df, start="2020-01",end="2020-02")
+# Verifying the elasticity of substitution
+elasticity(df, start = "2020-01", end = "2020-02")
 ```
 
 <a id="ad2">   </a>
@@ -149,7 +153,7 @@ elasticity(df, start="2020-01",end="2020-02")
 This function returns a prepared data frame based on the user's data set (you can check if your data set it is suitable for further price index calculation by using **data_check** function). The resulting data frame is ready for further data processing (such as data selecting, matching or filtering) and it is also ready for price index calculations (if only it contains the required columns). The resulting data frame is free from missing values, negative and (optionally) zero prices and quantities. As a result, the column **time** is set to be **Date** type (in format: 'Year-Month-01'), while the columns **prices** and **quantities** are set to be **numeric**. If the **description** parameter is set to *TRUE* then the column **description** is set to be **character** type (otherwise it is deleted). Please note that the **milk** set is an already prepared dataset but let us assume for a moment that we want to make sure that it does not contain missing values and we do not need the column **description** for further calculations. For this purpose, we use the **data_preparing** function as follows:
 
 ```{r}
-head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
+head(data_preparing(milk, time = "time", prices = "prices", quantities = "quantities"))
 ```
 
 **data_imputing**
@@ -157,20 +161,22 @@ head(data_preparing(milk, time="time",prices="prices",quantities="quantities"))
 This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the outlets parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame which is ready for price index calculations, for instance:
 
 ```{r}
-#Creating a data frame with zero prices (df)
-data<-dplyr::filter(milk,time>=as.Date("2018-12-01") & time<=as.Date("2019-03-01"))
-sample<-dplyr::sample_n(data, 100)
-rest<-setdiff(data, sample)
-sample$prices<-0
-df<-rbind(sample, rest)
-#The Fisher price index calculated for the original data set
-fisher(df, "2018-12","2019-03")
-#Zero price imputations:
-df2<-data_imputing(df, start="2018-12", end="2019-03",
-              zero_prices=TRUE,
-              outlets=TRUE)
-#The Fisher price index calculated for the data set with imputed prices:
-fisher(df2, "2018-12","2019-03")
+# Creating a data frame with zero prices (df)
+data <- dplyr::filter(milk, time >= as.Date("2018-12-01") & time <= as.Date("2019-03-01"))
+sample <- dplyr::sample_n(data, 100)
+rest <- setdiff(data, sample)
+sample$prices <- 0
+df <- rbind(sample, rest)
+# The Fisher price index calculated for the original data set
+fisher(df, "2018-12", "2019-03")
+# Zero price imputations:
+df2 <- data_imputing(df,
+  start = "2018-12", end = "2019-03",
+  zero_prices = TRUE,
+  outlets = TRUE
+)
+# The Fisher price index calculated for the data set with imputed prices:
+fisher(df2, "2018-12", "2019-03")
 ```
 
 **data_aggregating**
@@ -192,7 +198,7 @@ data_aggregating(dataAGGR)
 The function returns the user's data frame with two additional columns: **grammage** and **unit** (both are character type). The values of these columns are extracted from product descriptions on the basis of provided **units**. Please note, that the function takes into consideration a sign of the multiplication, e.g. if the product description contains: '2x50 g', we will obtain: **grammage: 100** and **unit: g** for that product (for **multiplication** set to 'x'). For example:
 
 ```{r}
-data_unit(dataU,units=c("g|ml|kg|l"),multiplication="x")
+data_unit(dataU, units = c("g|ml|kg|l"), multiplication = "x")
 ```
 
 **data_norm**
@@ -201,9 +207,9 @@ The function returns the user's data frame with two transformed columns: **gramm
 
 ```{r}
 # Preparing a data set
-data<-data_unit(dataU,units=c("g|ml|kg|l"),multiplication="x")
+data <- data_unit(dataU, units = c("g|ml|kg|l"), multiplication = "x")
 # Normalization of grammage units
-data_norm(data, rules=list(c("ml","l",1000),c("g","kg",1000)))
+data_norm(data, rules = list(c("ml", "l", 1000), c("g", "kg", 1000)))
 ```
 
 **data_selecting**
@@ -212,7 +218,7 @@ The function returns a subset of the user's data set obtained by selection based
 
 For instance, please use 
 ```{r}
-subgroup1<-data_selecting(milk, include=c("milk"), must=c("UHT"))
+subgroup1 <- data_selecting(milk, include = c("milk"), must = c("UHT"))
 head(subgroup1)
 ```
 to obtain the subset of **milk** limited to *UHT* category:
@@ -221,7 +227,7 @@ unique(subgroup1$description)
 ```
 You can use 
 ```{r}
-subgroup2<-data_selecting(milk, must=c("milk"), exclude=c("past","goat"))
+subgroup2 <- data_selecting(milk, must = c("milk"), exclude = c("past", "goat"))
 head(subgroup2)
 ```
 to obtain the subset of **milk** with products which are not *pasteurized* and which are not **goat**:
@@ -233,16 +239,17 @@ unique(subgroup2$description)
 This function predicts product COICOP levels (or any other defined product levels) using the selected machine learning model (see the **model** parameter). It provides the indicated data set with an additional column, i.e. *class_predicted*. The selected model must be built previously (see the **model_classification** function) and after the training process it can be saved on your disk (see the **save_model** function) and then loaded at any time (see the **load_model** function). Please note that the machine learning process is based on the XGBoost algorithm (from the XGBoost package) which is an implementation of gradient boosted decision trees designed for speed and performance. For example, let us build a machine learning model
 
 ```{r, results=FALSE}
-my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))
-data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))
-data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))
-ML<-model_classification(data_train,
-                         data_test,
-                         class="coicop6",
-                         grid=my.grid,
-                         indicators=c("description","codeIN","grammage"),
-                         key_words=c("uht"), 
-                         rounds=60)
+my.grid <- list(eta = c(0.01, 0.02, 0.05), subsample = c(0.5, 0.8))
+data_train <- dplyr::filter(dataCOICOP, dataCOICOP$time <= as.Date("2021-10-01"))
+data_test <- dplyr::filter(dataCOICOP, dataCOICOP$time == as.Date("2021-11-01"))
+ML <- model_classification(data_train,
+  data_test,
+  class = "coicop6",
+  grid = my.grid,
+  indicators = c("description", "codeIN", "grammage"),
+  key_words = c("uht"),
+  rounds = 60
+)
 ```
 
 We can watch the results of the whole training process:
@@ -260,14 +267,14 @@ ML$figure_importance
 Now, let us save the model on the disk. After saving the model we can load it and use at any time:
 
 ```{r}
-#Setting a temporary directory as a working directory
-wd<-tempdir()
+# Setting a temporary directory as a working directory
+wd <- tempdir()
 setwd(wd)
-#Saving and loading the model
-save_model(ML, dir="My_model")
-ML_fromPC<-load_model("My_model")
-#Prediction
-data_predicted<-data_classifying(ML_fromPC, data_test)
+# Saving and loading the model
+save_model(ML, dir = "My_model")
+ML_fromPC <- load_model("My_model")
+# Prediction
+data_predicted <- data_classifying(ML_fromPC, data_test)
 head(data_predicted)
 ```
 
@@ -279,37 +286,47 @@ head(dataMATCH)
 ```
 Let us assume that products with two identical codes (**codeIN** and **codeOUT**) or one of the codes identical and an identical description are automatically matched. Products are also matched if they have one of the codes identical and the *Jaro-Winkler similarity* of their descriptions is bigger than the fixed **precision** value (see documentation - *Case 1*). Let us also suppose that you want to match all products sold in the interval: December 2018 - February 2019. If you use the **data_matching** function (as below), an additional column (**prodID**) will be added to your data frame:
 ```{r}
-data1<-data_matching(dataMATCH, start="2018-12",end="2019-02", codeIN=TRUE, codeOUT=TRUE, precision=.98, interval=TRUE)
+data1 <- data_matching(dataMATCH, start = "2018-12", end = "2019-02", codeIN = TRUE, codeOUT = TRUE, precision = .98, interval = TRUE)
 head(data1)
 ```
 Let us now suppose you do not want to consider **codeIN** while matching and that products with an identical **description** are to be matched too:
 ```{r}
-data2<-data_matching(dataMATCH, start="2018-12",end="2019-02", 
-                     codeIN=FALSE, onlydescription=TRUE, interval=TRUE)
+data2 <- data_matching(dataMATCH,
+  start = "2018-12", end = "2019-02",
+  codeIN = FALSE, onlydescription = TRUE, interval = TRUE
+)
 head(data2)
 ```
 Now, having a **prodID** column, your datasets are ready for further price index calculations, e.g.:
 ```{r}
-fisher(data1, start="2018-12", end="2019-02")
-jevons(data2, start="2018-12", end="2019-02")
+fisher(data1, start = "2018-12", end = "2019-02")
+jevons(data2, start = "2018-12", end = "2019-02")
 ```
 **data_filtering**
 
 This function returns a filtered data set, i.e. a reduced user's data frame with the same columns and rows limited by a criterion defined by the **filters** parameter (see documentation). If the set of filters is empty then the function returns the original data frame (defined by the **data** parameter). On the other hand, if all filters are chosen, i.e. *filters=c(extremeprices, dumpprices, lowsales)*, then these filters work independently and a summary result is returned. Please note that both variants of the *extremeprices* filter can be chosen at the same time, i.e. *plimits* and *pquantiles*, and they work also independently.
 For example, let us assume we consider three filters: **filter1** is to reject 1% of the lowest and 1% of the highest price changes comparing March 2019 to December 2018, **filter2** is to reject products with the price ratio being less than 0.5 or bigger than 2 in the same time, **filter3** rejects the same products as **filter2** rejects and also products with relatively *low sale* in compared months, **filter4** rejects products with the price ratio being less than 0.9 and with the expenditure ratio being less than 0.8 in the same time. 
 ```{r}
-filter1<-data_filtering(milk,start="2018-12",end="2019-03",
-                        filters=c("extremeprices"),pquantiles=c(0.01,0.99))
-filter2<-data_filtering(milk,start="2018-12",end="2019-03",
-                        filters=c("extremeprices"),plimits=c(0.5,2))
-filter3<-data_filtering(milk,start="2018-12",end="2019-03",
-                        filters=c("extremeprices","lowsales"),plimits=c(0.5,2))
-filter4<-data_filtering(milk,start="2018-12",end="2019-03",
-                        filters=c("dumpprices"),dplimits=c(0.9,0.8))
+filter1 <- data_filtering(milk,
+  start = "2018-12", end = "2019-03",
+  filters = c("extremeprices"), pquantiles = c(0.01, 0.99)
+)
+filter2 <- data_filtering(milk,
+  start = "2018-12", end = "2019-03",
+  filters = c("extremeprices"), plimits = c(0.5, 2)
+)
+filter3 <- data_filtering(milk,
+  start = "2018-12", end = "2019-03",
+  filters = c("extremeprices", "lowsales"), plimits = c(0.5, 2)
+)
+filter4 <- data_filtering(milk,
+  start = "2018-12", end = "2019-03",
+  filters = c("dumpprices"), dplimits = c(0.9, 0.8)
+)
 ```
 These three filters differ from each other with regard to the data reduction level:
 ```{r}
-data_without_filters<-data_filtering(milk,start="2018-12",end="2019-03",filters=c())
+data_without_filters <- data_filtering(milk, start = "2018-12", end = "2019-03", filters = c())
 nrow(data_without_filters)
 nrow(filter1)
 nrow(filter2)
@@ -318,30 +335,34 @@ nrow(filter4)
 ```
 You can also use **data_filtering** for each pair of subsequent months from the considered time interval under the condition that this filtering is done for each outlet (**retID**) separately, e.g. 
 ```{r}
-filter1B<-data_filtering(milk,start="2018-12",end="2019-03",
-                         filters=c("extremeprices"),pquantiles=c(0.01,0.99),
-                         interval=TRUE, retailers=TRUE)
+filter1B <- data_filtering(milk,
+  start = "2018-12", end = "2019-03",
+  filters = c("extremeprices"), pquantiles = c(0.01, 0.99),
+  interval = TRUE, retailers = TRUE
+)
 nrow(filter1B)
 ```
 Two more useful functions are included for the procedure of scanner data. The first, **data_reducing**, returns a data set containing sufficiently numerous matched products in the indicated groups (see documentation). It reduces the dataset to only a representative set of products that have appeared in sufficient numbers in the sales offer:
 ```{r}
-sugar.<-dplyr::filter(sugar, time==as.Date("2018-12-01") | time==as.Date("2019-12-01"))
+sugar. <- dplyr::filter(sugar, time == as.Date("2018-12-01") | time == as.Date("2019-12-01"))
 nrow(sugar.)
-sugar_<-data_reducing(sugar., start="2018-12", end="2019-12",by="description", minN=5)
+sugar_ <- data_reducing(sugar., start = "2018-12", end = "2019-12", by = "description", minN = 5)
 nrow(sugar_)
 ```
 The second function, **shrinkflation**, detects and summarises downsized and upsized products. The function detects phenomena such as: **shrinkflation**, **shrinkdeflation**, **sharkflation**,**unshrinkdeflation**, **unshrinkflation**, **sharkdeflation** (see the **type** parameter). It returns a list containing the following objects: **df_changes** - data frame with detailed information on downsized and upsized products with the whole history of size changes, **df_type** - data frame with recognized type of products, **df_overview** - a table with basic summary of all detected products grouped by the **type** parameter, **products_detected** with prodIDs of products indicated by the **type** parameter, **df_detected** being a subset of the data frame with only detected products, **df_reduced** which is the difference of the input data frame and the data frame containing the detected products, and **df_summary** which provides basic statistics for all detected downsized and upsized products (including their share in the total number of products and mean price and size changes). For instance:
 ```{r}
-#Data matching over time
-df<-data_matching(data=data_DOWN_UP_SIZED, start="2024-01", end="2024-02", 
-                  codeIN=TRUE,codeOUT=TRUE,description=TRUE,
-                  onlydescription=FALSE,precision=0.9,interval=FALSE)
+# Data matching over time
+df <- data_matching(
+  data = data_DOWN_UP_SIZED, start = "2024-01", end = "2024-02",
+  codeIN = TRUE, codeOUT = TRUE, description = TRUE,
+  onlydescription = FALSE, precision = 0.9, interval = FALSE
+)
 # Extraction of information about grammage
-df<-data_unit(df,units=c("g|ml|kg|l"),multiplication="x")
+df <- data_unit(df, units = c("g|ml|kg|l"), multiplication = "x")
 # Price standardization
-df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))
+df <- data_norm(df, rules = list(c("ml", "l", 1000), c("g", "kg", 1000)))
 # Downsized and upsized products detection
-result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE, type="shrinkflation")
+result <- shrinkflation(data = df, start = "2024-01", "2024-02", prec = 3, interval = FALSE, type = "shrinkflation")
 # result$df_changes
 result$df_type
 result$df_overview
@@ -359,37 +380,37 @@ result$df_summary
 The function returns all values from the indicated column (defined by the **type** parameter) which occur at least once in one of compared periods or in a given time interval. Possible values of the **type** parameter are: **retID**, **prodID**, **codeIN**, **codeOUT** or **description** (see documentation). If the **interval** parameter is set to FALSE, then the function compares only periods defined by **period1** and **period2**. Otherwise the whole time period between period1 and period2 is considered.
 For example:
 ```{r}
-available(milk, period1="2018-12", period2="2019-12", type="retID",interval=TRUE)
+available(milk, period1 = "2018-12", period2 = "2019-12", type = "retID", interval = TRUE)
 ```
 **matched**
 
 The function returns all values from the indicated column (defined by the **type** parameter) which occur simultaneously in the compared periods or in a given time interval.Possible values of the **type** parameter are: **retID**, **prodID**, **codeIN**, **codeOUT** or **description** (see documentation). If the **interval** parameter is set to FALSE, then the function compares only periods defined by **period1** and **period2**. Otherwise the whole time period between period1 and period2 is considered.
 For example:
 ```{r}
-matched(milk, period1="2018-12", period2="2019-12", type="prodID",interval=TRUE)
+matched(milk, period1 = "2018-12", period2 = "2019-12", type = "prodID", interval = TRUE)
 ```
 **matched_index**
 
 The function returns a ratio of values from the indicated column that occur simultaneously in the compared periods or in a given time interval to all available values from the above-mentioned column (defined by the **type** parameter) at the same time. Possible values of the **type** parameter are: **retID**, **prodID**, **codeIN**, **codeOUT** or **description** (see documentation). If the **interval** parameter is set to FALSE, then the function compares only periods defined by period1 and period2. Otherwise the whole time period between period1 and period2 is considered. The returned value is from 0 to 1. For example:
 ```{r}
-matched_index(milk, period1="2018-12", period2="2019-12", type="prodID",interval=TRUE)
+matched_index(milk, period1 = "2018-12", period2 = "2019-12", type = "prodID", interval = TRUE)
 ```
 **matched_fig**
 
 The function returns a **data frame** or a **figure** presenting the **matched_index** function calculated for the column defined by the **type** parameter and for each month from the considered time interval. The interval is set by the **start** and **end** parameters. The returned object (data frame or figure) depends on the value of the **figure** parameter. Examples:
 
 ```{r}
-matched_fig(milk, start="2018-12", end="2019-12", type="prodID")
+matched_fig(milk, start = "2018-12", end = "2019-12", type = "prodID")
 ```
 ```{r}
-matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
+matched_fig(milk, start = "2018-12", end = "2019-04", type = "prodID", figure = FALSE)
 ```
 **products**
 
 This function detects and summarises available, matched, new and disappearing products on the basis of their prodIDs. It compares products from the base period (**start**) with products from the current period (**end**). It returns a list containing the following objects: details with prodIDs of available, matched, new and disappearing products, statistics with basic statistics for them and figure with a pie chart describing a contribution of matched, new and disappearing products in a set of available products. Please see the following example:
 
 ```{r}
-list<-products(milk, "2018-12","2019-12")
+list <- products(milk, "2018-12", "2019-12")
 list$statistics
 ```
 
@@ -401,74 +422,76 @@ list$figure
 This function returns a figure with plots of volume (or contributions) of available, matched, new as well as disappearing products. The User may control which groups of products are to be taken into consideration. Available options are **available**, **matched**, **new** and **disappearing**. Please follow the example:
 
 ```{r}
-products_fig(milk, "2018-12","2019-12", 
-fixed_base=TRUE, contributions=FALSE,
-show=c("new","disappearing","matched","available"))
-
+products_fig(milk, "2018-12", "2019-12",
+  fixed_base = TRUE, contributions = FALSE,
+  show = c("new", "disappearing", "matched", "available")
+)
 ```
 **prices**
 
 The function returns prices (unit value) of products with a given ID (**prodID** column) and being sold in the time period indicated by the **period** parameter. The **set** parameter means a set of unique product IDs to be used for determining prices of sold products. If the set is empty the function returns prices of all products being available in the **period**. Please note that the function returns the price values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero).To get prices (unit values) of all available milk products sold in July, 2019, please use:
 ```{r}
-prices(milk, period="2019-06")
+prices(milk, period = "2019-06")
 ```
 **quantities**
 
 The function returns quantities of products with a given ID (**prodID** column) and being sold in the time period indicated by the **period** parameter. The **set** parameter means a set of unique product IDs to be used for determining prices of sold products. If the set is empty the function returns quantities of all products being available in the **period**. Please note that the function returns the quantity values for sorted prodIDs and in the absence of a given prodID in the data set, the function returns nothing (it does not return zero). To get a data frame containing quantities of milk products with prodIDs: 400032, 71772 and 82919, and sold in July, 2019, please use:
 ```{r}
-quantities(milk, period="2019-06", set=c(400032, 71772, 82919), ID=TRUE)
+quantities(milk, period = "2019-06", set = c(400032, 71772, 82919), ID = TRUE)
 ```
 **sales**
 
 The function returns values of sales of products with a given ID (**prodID** column) and being sold in the time period indicated by **period** parameter. The **set** parameter means a set of unique product IDs to be used for determining prices of sold products. If the set is empty the function returns values of sales of all products being available in the **period** (see also **expenditures** function which returns the expenditure values for sorted prodIDs). To get values of sales of milk products with prodIDs: 400032, 71772 and 82919, and sold in July, 2019, please use:
 ```{r}
-sales(milk, period="2019-06", set=c(400032, 71772, 82919))
+sales(milk, period = "2019-06", set = c(400032, 71772, 82919))
 ```
 **sales_groups**
 
 The function returns **values of sales** of products from one or more **datasets** or the corresponding **barplot** for these sales (if **barplot** is set to TRUE). Alternatively, it calculates the **sale shares** (if the **shares** parameter is set to TRUE). Please see also the **sales_groups2** function. As an example, let us create 3 subgroups of **milk** products and let us find out their sale shares for the time interval: April, 2019 - July, 2019. We can obtain precise values for the given **period**:
 ```{r}
-ctg<-unique(milk$description)
-categories<-c(ctg[1],ctg[2],ctg[3])
-milk1<-dplyr::filter(milk, milk$description==categories[1])
-milk2<-dplyr::filter(milk, milk$description==categories[2])
-milk3<-dplyr::filter(milk, milk$description==categories[3])
-sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07")
-sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07", shares=TRUE)
+ctg <- unique(milk$description)
+categories <- c(ctg[1], ctg[2], ctg[3])
+milk1 <- dplyr::filter(milk, milk$description == categories[1])
+milk2 <- dplyr::filter(milk, milk$description == categories[2])
+milk3 <- dplyr::filter(milk, milk$description == categories[3])
+sales_groups(datasets = list(milk1, milk2, milk3), start = "2019-04", end = "2019-07")
+sales_groups(datasets = list(milk1, milk2, milk3), start = "2019-04", end = "2019-07", shares = TRUE)
 ```
 or a barplot presenting these results:
 ```{r}
-sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07", 
-             barplot=TRUE, shares=TRUE, names=categories)
+sales_groups(
+  datasets = list(milk1, milk2, milk3), start = "2019-04", end = "2019-07",
+  barplot = TRUE, shares = TRUE, names = categories
+)
 ```
 **pqcor**
 
 The function returns **Pearson's correlation coefficient** for price and quantity of products with given IDs (defined by the **set** parameter) and sold in the **period**. If the **set** is empty, the function works for all products being available in the **period**. The **figure** parameter indicates whether the function returns a figure with a correlation coefficient (TRUE) or just a correlation coefficient (FALSE). For instance:
 ```{r}
-pqcor(milk, period="2019-05")
-pqcor(milk, period="2019-05",figure=TRUE)
+pqcor(milk, period = "2019-05")
+pqcor(milk, period = "2019-05", figure = TRUE)
 ```
 **pqcor_fig**
 
 The function returns **Pearson's correlation coefficients** between price and quantity of products with given IDs (defined by the **set** parameter) and sold in the time interval defined by the **start** and **end** parameters. If the **set** is empty the function works for all available products. Correlation coefficients are calculated for each month separately. Results are presented in tabular or graphical form depending on the **figure** parameter. Both cases are presented below:
 
 ```{r}
-pqcor_fig(milk, start="2018-12", end="2019-06", figure=FALSE)
-pqcor_fig(milk, start="2018-12", end="2019-06")
+pqcor_fig(milk, start = "2018-12", end = "2019-06", figure = FALSE)
+pqcor_fig(milk, start = "2018-12", end = "2019-06")
 ```
 **dissimilarity**
 
 This function returns a value of the relative price (dSP) and/or quantity (dSQ) dissimilarity measure. In a special case, when the **type** parameter is set to **pq**, the function provides the value of dSPQ measure (relative price and quantity dissimilarity measure calculated as **min(dSP,dSQ)**. For instance:
 
 ```{r}
-dissimilarity(milk, period1="2018-12",period2="2019-12",type="pq")
+dissimilarity(milk, period1 = "2018-12", period2 = "2019-12", type = "pq")
 ```
 **dissimilarity_fig**
 
 This function presents values of the relative price and/or quantity dissimilarity measure over time. The user can choose a benchmark period (defined by **benchmark**) and the type of dissimilarity measure is to be calculated (defined by **type**). The obtained results of dissimilarities over time can be presented in a dataframe form or via a figure (the default value of **figure** is TRUE which results a figure). For instance:
 
 ```{r}
-dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start")
+dissimilarity_fig(milk, start = "2018-12", end = "2019-12", type = "pq", benchmark = "start")
 ```
 **elasticity**
 
@@ -482,8 +505,10 @@ elasticity(coffee, start = "2018-12", end = "2019-01")
 The function provides a data frame or a figure presenting elasticities of substitution calculated for time interval (see the **figure** parameter). The elasticities of substitution can be calculated for subsequent months or for a fixed base month (see the **start** parameter) and rest of months from the given time interval (it depends on the **fixedbase** parameter). The presented function is based on the **elasticity** function. For instance, to get elasticities of substitution calculated for milk products for subsequent months we run:
 
 ```{r}
-elasticity_fig (milk,start="2018-12",end="2019-04",figure=TRUE, 
-method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))
+elasticity_fig(milk,
+  start = "2018-12", end = "2019-04", figure = TRUE,
+  method = c("lm", "f", "sv"), names = c("LM", "Fisher", "SV")
+)
 ```
 <a id="ad4">   </a>
 
@@ -503,8 +528,8 @@ This package includes 7 functions for calculating the following bilateral unweig
 
 Each of these functions returns a value (or vector of values) of the choosen unweighted bilateral price index depending on the **interval** parameter. If the interval parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates please see general functions: **price_indices** or **final_index**. None of these functions takes into account aggregating over outlets or product subgroups (to consider these types of aggregating please use the **final_index** function.) Below are examples of calculations for the Jevons index (in the second case a *fixed base month* is set to December 2018):
 ```{r}
-jevons(milk, start="2018-12", end="2020-01")
-jevons(milk, start="2018-12", end="2020-01", interval=TRUE)
+jevons(milk, start = "2018-12", end = "2020-01")
+jevons(milk, start = "2018-12", end = "2020-01", interval = TRUE)
 ```
 <a id="ad5">   </a>
 
@@ -550,9 +575,9 @@ and the general quadratic mean of order r quantity index: QMq.
 
 Each of these functions returns a value (or vector of values) of the choosen weighted bilateral price index depending on the **interval** parameter. If interval parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates please see general functions: **price_indices** or **final_index**. None of these functions takes into account aggregating over outlets or product subgroups (to consider these types of aggregating please use the **final_index** function.) Below are examples of calculations for the Fisher, the Lloyd-Moulton and the Lowe indices (in the last case, the *fixed base month* is set to December 2019 and the *prior* period is December 2018):
 ```{r}
-fisher(milk, start="2018-12", end="2020-01")
-lloyd_moulton(milk, start="2018-12", end="2020-01", sigma=0.9)
-lowe(milk, start="2019-12", end="2020-02", base="2018-12", interval=TRUE)
+fisher(milk, start = "2018-12", end = "2020-01")
+lloyd_moulton(milk, start = "2018-12", end = "2020-01", sigma = 0.9)
+lowe(milk, start = "2019-12", end = "2020-02", base = "2018-12", interval = TRUE)
 ```
 <a id="ad6">   </a>
 
@@ -602,8 +627,8 @@ This package includes 36 functions for calculating the following chain indices (
 Each time, the **interval** parameter has a logical value indicating whether the function is to compare the research period defined by **end** to the base period defined by **start** (then **interval** is set to FALSE and it is a default value) or all fixed base indices are to be calculated. In this second case, all months from the time interval **<start,end>** are considered and **start** defines the base period (**interval** is set to TRUE). Here are examples for the Fisher chain index:
 
 ```{r}
-chfisher(milk, start="2018-12", end="2020-01")
-chfisher(milk, start="2018-12", end="2020-01", interval=TRUE)
+chfisher(milk, start = "2018-12", end = "2020-01")
+chfisher(milk, start = "2018-12", end = "2020-01", interval = TRUE)
 ```
 <a id="ad7">   </a>
 
@@ -640,23 +665,22 @@ This package includes 22 functions for calculating multilateral price indices an
 The above-mentioned 21 multilateral formulas (the **SPQ** index is an exception) consider the time window defined by the **wstart** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). It measures the price dynamics by comparing the **end** period to the **start** period (both **start** and **end** must be inside the considered time window). To get information about both price index values and corresponding dates, please see functions: **price_indices** or **final_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating please use function: **final_index** ). Here are examples for the GEKS formula (see documentation):
 
 ```{r}
-geks(milk, start="2019-01", end="2019-04",window=10)
-geksl(milk, wstart="2018-12", start="2019-03", end="2019-05")
+geks(milk, start = "2019-01", end = "2019-04", window = 10)
+geksl(milk, wstart = "2018-12", start = "2019-03", end = "2019-05")
 ```
 
 The **QU** function returns a value of the *quality adjusted unit value index* (QU index) for the given set of adjustment factors. An additional **v** parameter is a data frame with adjustment factors for at least all matched **prodIDs**. It must contain two columns: **prodID** with unique product IDs and **value** with corresponding adjustment factors (see documentation). The following example starts from creating a data frame which includes sample adjusted factors:
 
 ```{r}
-prodID<-base::unique(milk$prodID)
-values<-stats::runif(length(prodID),1,2)
-v<-data.frame(prodID,values)
+prodID <- base::unique(milk$prodID)
+values <- stats::runif(length(prodID), 1, 2)
+v <- data.frame(prodID, values)
 head(v)
-
 ```
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ```{r}
-QU(milk, start="2018-12", end="2019-12", v)
+QU(milk, start = "2018-12", end = "2019-12", v)
 ```
 
 <a id="ad8">   </a>
@@ -692,7 +716,7 @@ This package includes 21 functions for calculating splice indices:
 These functions return a value (or values) of the selected multilateral  price index extended by using window splicing methods (defined by the **splice** parameter). Available splicing methods are: **movement splice**, **window splice**, **half splice**, **mean splice** and their additional variants: **window splice on published indices (WISP)**, **half splice on published indices (HASP)** and **mean splice on published indices** (see documentation). The first considered time window is defined by the **start** and **window** parameters, where **window** is a length of the time window (typically multilateral methods are based on a 13-month time window). Functions measure the price dynamics by comparing the **end** period to the **start** period, i.e. if the time interval **<start, end>** exceeds the defined time window then splicing methods are used. If the **interval** parameter is set to TRUE, then all fixed base multilateral indices are presented (the fixed base month is defined by **start**). To get information about both price index values and corresponding dates, please see functions: **price_indices** or **final_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the **final_index** function). For instance, let us calculate the **extended Time Product Dummy** index by using the **half splice method** with a 10-month time window:
 
 ```{r}
-tpd_splice(milk, start="2018-12", end="2020-02",window=10,splice="half",interval=TRUE)
+tpd_splice(milk, start = "2018-12", end = "2020-02", window = 10, splice = "half", interval = TRUE)
 ```
 <a id="ad9">   </a>
 
@@ -727,9 +751,9 @@ This package includes 21 functions for calculating extensions of multilateral in
 These functions return a value (or values) of the selected multilateral  price index extended by using the FBEW method. The FBEW method uses a time window with a fixed base month every year (December). The  window  is  enlarged  every month  with  one  month in order to include information from a new month. The full window length (13 months) is reached in December of each year. These functions measure the price dynamics between the **end** and **start** periods. A month of the **start** parameter must be December (see documentation). If the distance between **end** and **start** exceeds 13 months, then internal Decembers play a role of chain-linking months. To get information about both price index values and corresponding dates please see functions: **price_indices** or **final_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the **final_index** function). For instance, let us calculate the **extended GEKS** index by using the FBEW method. Please note that December 2019 is the chain-linking month, i.e.:
 
 ```{r}
-geks_fbew(milk, start="2018-12", end="2020-03")
-  geks_fbew(milk, start="2018-12", end="2019-12")*
-  geks_fbew(milk, start="2019-12", end="2020-03")
+geks_fbew(milk, start = "2018-12", end = "2020-03")
+geks_fbew(milk, start = "2018-12", end = "2019-12") *
+  geks_fbew(milk, start = "2019-12", end = "2020-03")
 ```
 <a id="ad10">   </a>
 
@@ -764,9 +788,9 @@ This package includes 21 functions for calculating extensions of multilateral in
 These functions return a value (or values) of the selected multilateral  price index extended by using the FBMW method. They measure the price dynamics between the **end** and **start** periods and it uses a 13-month time window with a fixed base month taken as **year(end)-1**. If the distance between **end** and **start** exceeds 13 months, then internal Decembers play a role of chain-linking months. A month of the **start** parameter must be December (see documentation). To get information about both price index values and corresponding dates, please see functions: **price_indices** or **final_index**. These functions do not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the **final_index** function). For instance, let us calculate the **extended CCDI** index by using the FBMW method. Please note that December 2019 is the chain-linking month, i.e.:
 
 ```{r}
-ccdi_fbmw(milk, start="2018-12", end="2020-03")
-    ccdi_fbmw(milk, start="2018-12", end="2019-12")*
-    ccdi_fbmw(milk, start="2019-12", end="2020-03")
+ccdi_fbmw(milk, start = "2018-12", end = "2020-03")
+ccdi_fbmw(milk, start = "2018-12", end = "2019-12") *
+  ccdi_fbmw(milk, start = "2019-12", end = "2020-03")
 ```
 <a id="ad11"> </a>
 
@@ -781,22 +805,26 @@ This function allows us to compare many price index formulas by using one comman
 For instance: 
 
 ``` {r}
-price_indices(milk, 
-         start = "2018-12", end = "2019-12",
-         formula=c("geks","ccdi","hybrid","fisher",
-         "QMp","young","geksl_fbew"),
-         window = c(13, 13),
-         base = c("2019-03", "2019-03"),
-         r=c(3), interval=TRUE)
+price_indices(milk,
+  start = "2018-12", end = "2019-12",
+  formula = c(
+    "geks", "ccdi", "hybrid", "fisher",
+    "QMp", "young", "geksl_fbew"
+  ),
+  window = c(13, 13),
+  base = c("2019-03", "2019-03"),
+  r = c(3), interval = TRUE
+)
 ```
 
 or
 
 ``` {r}
-price_indices(coffee, 
-         start = "2018-12", end = "2019-12",
-         formula=c("laspeyres","paasche","fisher"),
-         interval=FALSE)
+price_indices(coffee,
+  start = "2018-12", end = "2019-12",
+  formula = c("laspeyres", "paasche", "fisher"),
+  interval = FALSE
+)
 ```
 
 **final_index**
@@ -806,11 +834,12 @@ This general function returns a value or values of the selected final price inde
 **Example**. Let us calculate the final Fisher price index (with Laspeyres-type aggregation over outlets and product subgroups) for the data set on **milk** 
 
 ``` {r}
-final_index(milk, start = "2018-12", end = "2019-12", 
-         formula = "fisher", groups = TRUE, outlets = TRUE, 
-         aggr = "laspeyres", by = "description", 
-         interval = TRUE)
-
+final_index(milk,
+  start = "2018-12", end = "2019-12",
+  formula = "fisher", groups = TRUE, outlets = TRUE,
+  aggr = "laspeyres", by = "description",
+  interval = TRUE
+)
 ```
 <a id="ad12"> </a>
 
@@ -823,29 +852,38 @@ This package includes two functions for a simple graphical comparison of price i
 These functions return a figure with plots of selected price indices, which are provided as a data frame (**compare_indices_df**) or a list of data frames (**compare_indices_list**). For instance, let us compare the Laspeyres and Paasche indices calculated for the data set on milk:
 
 ``` {r}
-df<-price_indices(milk, start = "2018-12", end = "2019-12", 
-formula=c("laspeyres", "fisher"), interval = TRUE)
+df <- price_indices(milk,
+  start = "2018-12", end = "2019-12",
+  formula = c("laspeyres", "fisher"), interval = TRUE
+)
 compare_indices_df(df)
 ```
 
 Now, let us compare the impact of the aggregating over outlets on the price index results (e.g. the Laspeyres formula is the assumed aggregating method). For this purpose, let us calculate the Fisher price index in two cases: **case1** without the above-mentioned aggregation and **case2** which considers that aggregation. We use the **milk** dataset and the yearly time interval:
 
 ``` {r}
-case1<-price_indices(milk, start="2018-12",end="2019-12",
-                   formula="fisher", interval=TRUE)
-case2<-final_index(milk, start="2018-12", end="2019-12", 
-                   formula="fisher",
-                   outlets=TRUE, 
-                   aggr = "laspeyres", 
-                   interval=TRUE)
-
+case1 <- price_indices(milk,
+  start = "2018-12", end = "2019-12",
+  formula = "fisher", interval = TRUE
+)
+case2 <- final_index(milk,
+  start = "2018-12", end = "2019-12",
+  formula = "fisher",
+  outlets = TRUE,
+  aggr = "laspeyres",
+  interval = TRUE
+)
 ```
 The comparison of obtained results can be made as follows:
 
 ``` {r}
-compare_indices_list(data=list(case1, case2), 
-                names=c("Fisher without aggregation",
-                "Fisher with aggregation"))
+compare_indices_list(
+  data = list(case1, case2),
+  names = c(
+    "Fisher without aggregation",
+    "Fisher with aggregation"
+  )
+)
 ```
 
 **compare_distances**
@@ -855,13 +893,14 @@ The function calculates average distances between price indices and it returns a
 For instance, let us compare the Jevons, Dutot and Carli indices calculated for the **milk** data set and for the time interval: December 2018 - December 2019. Let us use the MAD measure for these comparisons:
 
 ```{r}
-#Creating a data frame with unweighted bilateral index values
-df<-price_indices(milk, 
-                  formula=c("jevons","dutot","carli"), 
-                  start="2018-12",
-                  end="2019-12",
-                  interval=TRUE)
-#Calculating average distances between indices (in p.p)
+# Creating a data frame with unweighted bilateral index values
+df <- price_indices(milk,
+  formula = c("jevons", "dutot", "carli"),
+  start = "2018-12",
+  end = "2019-12",
+  interval = TRUE
+)
+# Calculating average distances between indices (in p.p)
 compare_distances(df)
 ```
 
@@ -872,14 +911,15 @@ The function calculates average distances between considered price indices and t
 For instance, let us compare the Jevons, Laspeyres, Paasche and Walsh price indices (calculated for the **milk** data set and for the time interval: December 2018 - December 2019) with the target Fisher price index:
 
 ```{r}
-#Creating a data frame with example bilateral indices
-df<-price_indices(milk, 
-                  formula=c("jevons","laspeyres","paasche","walsh"),
-                  start="2018-12",end="2019-12",interval=TRUE)
-#Calculating the target Fisher price index
-target_index<-fisher(milk,start="2018-12",end="2019-12",interval=TRUE)
-#Calculating average distances between considered indices and the Fisher index (in p.p)
-compare_to_target(df,target=target_index)
+# Creating a data frame with example bilateral indices
+df <- price_indices(milk,
+  formula = c("jevons", "laspeyres", "paasche", "walsh"),
+  start = "2018-12", end = "2019-12", interval = TRUE
+)
+# Calculating the target Fisher price index
+target_index <- fisher(milk, start = "2018-12", end = "2019-12", interval = TRUE)
+# Calculating average distances between considered indices and the Fisher index (in p.p)
+compare_to_target(df, target = target_index)
 ```
 
 **compare_indices_jk**
@@ -887,32 +927,33 @@ compare_to_target(df,target=target_index)
 This function presents a comparison of selected indices obtained by using the jackknife method. In particular, it returns a list with four elements: **iterations**, which is a data frame with basic characteristics of the calculated iteration index values (means, standard deviations, coefficients of variation and results for all sample), **pseudovalues**, which is a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure (i.e. the jackknife estimators and their standard deviations and coefficients of variation), **figure_iterations** which presents a box-plot for the calculated iteration index values, and **figure_pseudovalues** which presents a box-plot for the calculated index pseudovalues obtained in the jackknife procedure. Please follow the example, in which the Jevons, Fisher and GEKS indices are compared by using the jackknife method:
 
 ```{r}
-#creating a list with jackknife results
-comparison<-compare_indices_jk(milk,
-formula=c("jevons","fisher","geks"),
-start="2018-12",
-end="2019-12", 
-window=c(13),
-names=c("Jevons","Fisher","GEKS"), 
-by="retID",
-title_iterations="Box-plots for iteration values",
-title_pseudovalues="Box-plots for pseudovalues")
-#displaying a data frame with basic characteristics of the calculated iteration index values
+# creating a list with jackknife results
+comparison <- compare_indices_jk(milk,
+  formula = c("jevons", "fisher", "geks"),
+  start = "2018-12",
+  end = "2019-12",
+  window = c(13),
+  names = c("Jevons", "Fisher", "GEKS"),
+  by = "retID",
+  title_iterations = "Box-plots for iteration values",
+  title_pseudovalues = "Box-plots for pseudovalues"
+)
+# displaying a data frame with basic characteristics of the calculated iteration index values
 comparison$iterations
 ```
 
 ```{r}
-#displaying a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure
+# displaying a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure
 comparison$pseudovalues
 ```
 
 ```{r}
-#displaying box-plotes created for the calculated iteration index values
+# displaying box-plotes created for the calculated iteration index values
 comparison$figure_iterations
 ```
 
 ```{r}
-#displaying box-plotes created for the calculated index pseudovalues obtained in the jackknife procedure
+# displaying box-plotes created for the calculated index pseudovalues obtained in the jackknife procedure
 comparison$figure_pseudovalues
 ```
 <a id="ad13">   </a>
@@ -922,27 +963,27 @@ comparison$figure_pseudovalues
 There are four package functions for calculating price and quantity indicators. The **bennet** function returns the (bilateral) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mbennet** function returns the multilateral (transitive) Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products. The **montgomery** function returns the (bilateral) Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products. The **mmontgomery** function returns the multilateral (transitive) Montgomery price and quantity indicators and optionally also the price and quantity contributions of individual products.For instance, the following command calculates the Bennet price and quantity indicators for milk products:
 
 ```{r}
-bennet(milk, start = "2018-12", end = "2019-12", interval=TRUE)
+bennet(milk, start = "2018-12", end = "2019-12", interval = TRUE)
 ```
 
 where price and quantity contributions of each subgroups of milk products
 can be obtained as follows:
 
 ```{r}
-milk$prodID<-milk$description
+milk$prodID <- milk$description
 bennet(milk, start = "2018-12", end = "2019-12", contributions = TRUE)
 ```
 
 The following command calculates the Montgomery price and quantity indicators for coffee products:
 
 ```{r}
-montgomery(coffee, start = "2018-12", end = "2019-12", interval=TRUE)
+montgomery(coffee, start = "2018-12", end = "2019-12", interval = TRUE)
 ```
 
 where price and quantity contributions of each subgroups of coffee products
 can be obtained as follows:
 
 ```{r}
-coffee$prodID<-coffee$description
+coffee$prodID <- coffee$description
 montgomery(coffee, start = "2018-12", end = "2019-12", contributions = TRUE)
 ```
