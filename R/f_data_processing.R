@@ -2913,7 +2913,7 @@ for (i in 1:length(list_potential)) {
     price_norm_change_num<-c(price_norm_change_num,ratios(x_price, y_price))
     }
 }
-df_num<-data.frame(IDs, dates, 
+df_num<-data.frame(prodID=IDs, dates, 
                        size_change=size_change_num,
                        price_orig_change=price_orig_change_num, 
                        price_norm_change=price_norm_change_num, 
@@ -2936,7 +2936,7 @@ for (i in 1:nrow(df_num)) {
    }
 }
 df_num$detected_type<-type_detected
-df_num<-dplyr::select(df_num,IDs,size_change,price_orig_change,price_norm_change,detected_type,descriptions,dates)
+df_num<-dplyr::select(df_num,prodID,size_change,price_orig_change,price_norm_change,detected_type,descriptions,dates)
 n_all<-length(unique(data$prodID))
 df_overview<-dplyr::summarise(dplyr::group_by(df_num, by=detected_type),
                               n=length(unique(IDs)),shares=round(length(unique(IDs))*100/n_all,prec))
@@ -2948,7 +2948,7 @@ tmp$price_norm_changes<-price_norm_change
 changes<-cbind(tmp, changes[,7])
 #limiting product
 df_filtered<-dplyr::filter(df_num, detected_type==type)
-list_sized<-unique(df_filtered$IDs)
+list_sized<-unique(df_filtered$prodID)
 #data frame with limited products
 df_sized<-dplyr::filter(data., prodID %in% list_sized)
 #data frame with no downsized products
