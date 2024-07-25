@@ -164,11 +164,10 @@ compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = 
   columns<-c()
   for (i in 1:ncol(data)) if (is.numeric(data[,i])) columns<-c(columns,i)
   if (length(columns)==0) stop("Data frame must contain at least one numerical column")
-  data<-data[,columns] #taking only numeric columns
   if (first==FALSE) {data<-data[2:nrow(data),]
   target<-target[-1]
   }
-  index<-colnames(data)
+  index<-colnames(data)[columns]
   #distances of two indices
   MAD<-function (v1, v2, type="all") {diff<-v1-v2
                                if (type=="upper") diff[which(diff<0)]<-0
@@ -183,8 +182,8 @@ compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = 
   distance<-c()
   distance_upper<-c()
   distance_lower<-c()
-  for (i in 1:ncol(data)) {
-    x<-data[,i]
+  for (col in columns) {
+    x<-data[,col]
     #distance
     if (measure=="MAD") dist<-MAD(x,target,type="all")
     else dist<-MSD(x,target,type="all")
