@@ -11,6 +11,9 @@
 ## Improvements:
 * The **shrinkflation** function has been extended; 
 
+## Bag fixed
+* The *compare_to_target** function has been fixed and now it allows for comparison of only two indices.
+
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3
 * Ubuntu Linux 16.04 LTS, R-release, GCC

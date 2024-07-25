@@ -9,6 +9,8 @@
 ## Improvements:
 * The **shrinkflation** function has been extended;
 
+## Bag fixed
+* The *compare_to_target** function has been fixed and now it allows for comparison of only two indices.
 
 # Package update 0.1.7 -> 0.1.8
 
