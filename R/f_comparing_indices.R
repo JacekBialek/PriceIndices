@@ -86,7 +86,7 @@ ggplot2::ggplot(graph, ggplot2::aes(x=time, y=value, col=formula)) + ggplot2::ge
 #' \donttest{compare_distances(df)}
 #' @export
 
-compare_distances<-function (data=data.frame(),measure="MAD", pp=TRUE, first=TRUE, prec=3)
+compare_distances<-function (data=data.frame(),measure="MAD", pp=TRUE, first=FALSE, prec=3)
 {
   if (!(is.data.frame(data))) stop("The parameter 'data' must indicate a data frame.")
   #checking values of parameters
@@ -97,7 +97,7 @@ compare_distances<-function (data=data.frame(),measure="MAD", pp=TRUE, first=TRU
   for (i in 1:ncol(data)) if (is.numeric(data[,i])) columns<-c(columns,i)
   if (length(columns)<=1) stop("Data frame must contain at least two numerical columns")
   data<-data[,columns] #taking only numeric columns
-  if (first==TRUE) data<-data[-1,]
+  if (first==FALSE) data<-data[2:nrow(data),]
   #distances of two indices
   MAD<-function (v1, v2) return (mean(abs(v1-v2)))
   MSD<-function (v1, v2) return (sqrt(mean((v1-v2)^2)))
@@ -146,8 +146,8 @@ compare_distances<-function (data=data.frame(),measure="MAD", pp=TRUE, first=TRU
 #' \donttest{compare_to_target(df,target=target_index)}
 #' @export
 
-compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = TRUE, first = TRUE, prec = 3)
-{
+compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = TRUE, first = FALSE, prec = 3)
+{  
   if (!(is.data.frame(data))) stop("The parameter 'data' must indicate a data frame.")
   if (!((is.data.frame(target)) | (is.vector(target)))) stop("The parameter 'target' must indicate a data frame or a vector") 
   if (is.data.frame(target)) 
@@ -165,7 +165,7 @@ compare_to_target<-function (data = data.frame(), target, measure = "MAD", pp = 
   for (i in 1:ncol(data)) if (is.numeric(data[,i])) columns<-c(columns,i)
   if (length(columns)==0) stop("Data frame must contain at least one numerical column")
   data<-data[,columns] #taking only numeric columns
-  if (first==TRUE) {data<-data[-1,]
+  if (first==FALSE) {data<-data[2:nrow(data),]
   target<-target[-1]
   }
   index<-colnames(data)

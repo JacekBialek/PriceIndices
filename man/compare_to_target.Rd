@@ -9,7 +9,7 @@ compare_to_target(
   target,
   measure = "MAD",
   pp = TRUE,
-  first = TRUE,
+  first = FALSE,
   prec = 3
 )
 }

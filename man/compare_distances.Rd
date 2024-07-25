@@ -8,7 +8,7 @@ compare_distances(
   data = data.frame(),
   measure = "MAD",
   pp = TRUE,
-  first = TRUE,
+  first = FALSE,
   prec = 3
 )
 }
