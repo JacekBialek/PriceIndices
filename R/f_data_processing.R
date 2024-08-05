@@ -2951,9 +2951,9 @@ df_filtered<-dplyr::filter(df_num, detected_type==type)
 list_sized<-unique(df_filtered$prodID)
 #data frame with limited products
 df_sized<-dplyr::filter(data., prodID %in% list_sized)
-#data frame with no downsized products
+#data frame with no downsized or upsized products
 df_reduced<-dplyr::filter(data, !(prodID %in% list_sized))
-#summary of downsized products
+#summary of detected products
 characteristics<-c("Detected product shares:",
                    "number of all products", 
                    "number of detected products",
