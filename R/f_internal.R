@@ -1747,6 +1747,8 @@ aqu <-
   function(data, start, end, v=data.frame())  {
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  id <-
+  matched(data, period1 = start, period2 = end, type = "prodID", interval = FALSE)
   prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
@@ -1764,8 +1766,6 @@ aqu <-
   lubridate::month(data$time) == lubridate::month(end)
   )
   )
-  id <-
-  matched(data, start, end, type = "prodID", interval = FALSE)
   data<-dplyr::filter(data, prodID %in% id) 
   price_end <-
   prices(data, period = end)
@@ -1858,6 +1858,8 @@ aqi <-
   function(data, start, end, v=data.frame())  {
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  id <-
+  matched(data, period1 = start, period2 = end, type = "prodID", interval = FALSE)
   prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
@@ -1875,8 +1877,6 @@ aqi <-
   lubridate::month(data$time) == lubridate::month(end)
   )
   )
-  id <-
-  matched(data, start, end, type = "prodID", interval = FALSE)
   data<-dplyr::filter(data, prodID %in% id) 
   price_start <-
   prices(data, period = start)
@@ -1972,6 +1972,8 @@ gaqi <-
   function(data, start, end, v=data.frame())  {
   if (nrow(data) == 0)
   stop("A data frame is empty")
+  id <-
+  matched(data, period1 = start, period2 = end, type = "prodID", interval = FALSE)
   prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
@@ -1988,9 +1990,7 @@ gaqi <-
   lubridate::year(data$time) == lubridate::year(end) &
   lubridate::month(data$time) == lubridate::month(end)
   )
-  )
-  id <-
-  matched(data, start, end, type = "prodID", interval = FALSE)
+  ) 
   data<-dplyr::filter(data, prodID %in% id) 
   price_start <-
   prices(data, period = start)
