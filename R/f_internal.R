@@ -2642,7 +2642,7 @@ wgeks_num <-
   dates<-substr(dates, 0, 7)
   #main body
   wgks_num <-
-  function (tt) fisher(data, start=tt, end=end)
+  function (tt) fisher(data, tt, end)
   vec <- sapply(dates, wgks_num)
   sales_in_time <-
   function (tt)
@@ -2701,7 +2701,7 @@ wgeks_denom <-
   dates<-substr(dates, 0, 7)
   #main body
   wgks_denom <-
-  function (tt) fisher(data, start=tt, end=start)
+  function (tt) fisher(data, tt, start)
   vec <- sapply(dates, wgks_denom)
   sales_in_time <-
   function (tt)
@@ -2862,7 +2862,7 @@ wgeksl_num <-
   dates<-substr(dates, 0, 7)
   #main body
   wgksl_num <-
-  function (tt) nl(data, start=tt, end=end)
+  function (tt) nl(data, tt, end)
   vec <- sapply(dates, wgksl_num)
   sales_in_time <-
   function (tt)
@@ -2921,7 +2921,7 @@ wgeksl_denom <-
   dates<-substr(dates, 0, 7)
   #main body
   wgksl_denom <-
-  function (tt) nl(data, start=tt, end=start)
+  function (tt) nl(data, tt, start)
   vec <- sapply(dates, wgksl_denom)
   sales_in_time <-
   function (tt)
@@ -3082,7 +3082,7 @@ wgeksgl_num <-
   dates<-substr(dates, 0, 7)
   #main body
   wgksgl_num <-
-  function (tt) geolaspeyres(data, start=tt, end=end)
+  function (tt) geolaspeyres(data, tt, end)
   vec <- sapply(dates, wgksgl_num)
   sales_in_time <-
   function (tt)
@@ -3141,7 +3141,7 @@ wgeksgl_denom <-
   dates<-substr(dates, 0, 7)
   #main body
   wgksgl_denom <-
-  function (tt) geolaspeyres(data, start=tt, end=start)
+  function (tt) geolaspeyres(data, tt, start)
   vec <- sapply(dates, wgksgl_denom)
   sales_in_time <-
   function (tt)
@@ -3204,7 +3204,7 @@ geksaqu_num <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop") 
   #main body
   gksaqu_num <-
-  function (tt) aqu(data, start=tt, end=end,v)
+  function (tt) aqu(data, tt, end,v)
   vec <- sapply(dates, gksaqu_num)
   geksaqu_num <- prod(vec)
   geksaqu_num <- geksaqu_num ^ (1 / window)
@@ -3260,7 +3260,7 @@ geksaqu_denom <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksaqu_denom <-
-  function (tt) aqu(data, start=tt, end=start,v)
+  function (tt) aqu(data, tt, start, v)
   vec <- sapply(dates, gksaqu_denom)
   geksaqu_denom <- prod(vec)
   geksaqu_denom <- geksaqu_denom ^ (1 / window)
@@ -3315,7 +3315,7 @@ wgeksaqu_num <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksaqu_num <-
-  function (tt) aqu(data, start=tt, end=end,v)
+  function (tt) aqu(data, tt, end, v)
   vec <- sapply(dates, wgksaqu_num)
   sales_in_time <-
   function (tt)
@@ -3376,7 +3376,7 @@ wgeksaqu_denom <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksaqu_denom <-
-  function (tt) aqu(data, start=tt, end=start,v)
+  function (tt) aqu(data, tt, start, v)
   vec <- sapply(dates, wgksaqu_denom)
   sales_in_time <-
   function (tt)
@@ -3437,7 +3437,7 @@ geksaqi_num <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksaqi_num <-
-  function (tt) aqi(data, start=tt, end=end,v)
+  function (tt) aqi(data, tt, end, v)
   vec <- sapply(dates, gksaqi_num)
   geksaqi_num <- prod(vec)
   geksaqi_num <- geksaqi_num ^ (1 / window)
@@ -3493,7 +3493,7 @@ geksaqi_denom <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksaqi_denom <-
-  function (tt) aqi(data, start=tt, end=start,v)
+  function (tt) aqi(data, tt, start, v)
   vec <- sapply(dates, gksaqi_denom)
   geksaqi_denom <- prod(vec)
   geksaqi_denom <- geksaqi_denom ^ (1 / window)
@@ -3549,7 +3549,7 @@ wgeksaqi_num <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksaqi_num <-
-  function (tt) aqi(data, start=tt, end=end,v)
+  function (tt) aqi(data, tt, end, v)
   vec <- sapply(dates, wgksaqi_num)
   sales_in_time <-
   function (tt)
@@ -3610,7 +3610,7 @@ wgeksaqi_denom <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksaqi_denom <-
-  function (tt) aqi(data, start=tt, end=start,v)
+  function (tt) aqi(data, tt, start, v)
   vec <- sapply(dates, wgksaqi_denom)
   sales_in_time <-
   function (tt)
@@ -3672,7 +3672,7 @@ geksgaqi_num <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksgaqi_num <-
-  function (tt) gaqi(data, start=tt, end=end,v)
+  function (tt) gaqi(data, tt, end,v)
   vec <- sapply(dates, gksgaqi_num)
   geksgaqi_num <- prod(vec)
   geksgaqi_num <- geksgaqi_num ^ (1 / window)
@@ -3728,7 +3728,7 @@ geksgaqi_denom <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   gksgaqi_denom <-
-  function (tt) gaqi(data, start=tt, end=start,v)
+  function (tt) gaqi(data, tt, start, v)
   vec <- sapply(dates, gksgaqi_denom)
   geksgaqi_denom <- prod(vec)
   geksgaqi_denom <- geksgaqi_denom ^ (1 / window)
@@ -3783,7 +3783,7 @@ wgeksgaqi_num <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksgaqi_num <-
-  function (tt) gaqi(data, start=tt, end=end,v)
+  function (tt) gaqi(data, tt, end, v)
   vec <- sapply(dates, wgksgaqi_num)
   sales_in_time <-
   function (tt)
@@ -3844,7 +3844,7 @@ wgeksgaqi_denom <-
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   #main body
   wgksgaqi_denom <-
-  function (tt) gaqi(data, start=tt, end=start,v)
+  function (tt) gaqi(data, tt, start, v)
   vec <- sapply(dates, wgksgaqi_denom)
   sales_in_time <-
   function (tt)
