@@ -1747,8 +1747,6 @@ aqu <-
   function(data, start, end, v=data.frame())  {
   if (nrow(data) == 0)
   stop("A data frame is empty")
-  id <-
-  matched(data, period1 = start, period2 = end, type = "prodID", interval = FALSE)
   prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
@@ -1766,7 +1764,9 @@ aqu <-
   lubridate::month(data$time) == lubridate::month(end)
   )
   )
-  data<-dplyr::filter(data, prodID %in% id) 
+  id <-
+  matched(data, period1 = start, period2 = end, type = "prodID", interval = FALSE)
+  data<-dplyr::filter(data, prodID %in% id)  
   price_end <-
   prices(data, period = end)
   quantity_start <-
@@ -1858,8 +1858,6 @@ aqi <-
   function(data, start, end, v=data.frame())  {
   if (nrow(data) == 0)
   stop("A data frame is empty")
-  id <-
-  matched(data, period1 = start, period2 = end, type = "prodID", interval = FALSE)
   prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
@@ -1877,6 +1875,8 @@ aqi <-
   lubridate::month(data$time) == lubridate::month(end)
   )
   )
+  id <-
+  matched(data, period1 = start, period2 = end, type = "prodID", interval = FALSE)
   data<-dplyr::filter(data, prodID %in% id) 
   price_start <-
   prices(data, period = start)
@@ -1972,8 +1972,6 @@ gaqi <-
   function(data, start, end, v=data.frame())  {
   if (nrow(data) == 0)
   stop("A data frame is empty")
-  id <-
-  matched(data, period1 = start, period2 = end, type = "prodID", interval = FALSE)
   prodID<-NULL
   start <- paste(start, "-01", sep = "")
   end <- paste(end, "-01", sep = "")
@@ -1991,6 +1989,8 @@ gaqi <-
   lubridate::month(data$time) == lubridate::month(end)
   )
   ) 
+  id <-
+  matched(data, period1 = start, period2 = end, type = "prodID", interval = FALSE)
   data<-dplyr::filter(data, prodID %in% id) 
   price_start <-
   prices(data, period = start)
@@ -3199,6 +3199,7 @@ geksaqu_num <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop") 
@@ -3255,6 +3256,7 @@ geksaqu_denom <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -3310,6 +3312,7 @@ wgeksaqu_num <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -3371,6 +3374,7 @@ wgeksaqu_denom <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -3432,6 +3436,7 @@ geksaqi_num <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -3488,6 +3493,7 @@ geksaqi_denom <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -3544,6 +3550,7 @@ wgeksaqi_num <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -3605,6 +3612,7 @@ wgeksaqi_denom <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -3667,6 +3675,7 @@ geksgaqi_num <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -3723,6 +3732,7 @@ geksgaqi_denom <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -3778,6 +3788,7 @@ wgeksgaqi_num <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -3839,6 +3850,7 @@ wgeksgaqi_denom <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
