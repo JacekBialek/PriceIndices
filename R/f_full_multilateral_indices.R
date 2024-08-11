@@ -1519,6 +1519,7 @@ geksaqu <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -1592,6 +1593,7 @@ wgeksaqu <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -1672,6 +1674,7 @@ geksaqi <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -1746,6 +1749,7 @@ wgeksaqi <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -1821,6 +1825,7 @@ geksgaqi <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
@@ -1890,6 +1895,7 @@ wgeksgaqi <-
   end <- substr(end, 0, 7)
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
+  lubridate::day(wend) <- lubridate::days_in_month(wend)
   data<-dplyr::filter(data, data$time>=wstart & data$time<=wend)
   #data frame with quality adjusted factors
   v<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
