@@ -10,8 +10,10 @@ shrinkflation(
   end,
   type = "shrinkflation",
   min_p_change = 0,
+  max_p_change = Inf,
   min_s_change = 0,
-  prec = 2,
+  max_s_change = Inf,
+  prec = 3,
   interval = FALSE
 )
 }
@@ -24,9 +26,13 @@ shrinkflation(
 
 \item{type}{A parameter specifying what phenomenon is to be included in the resulting elements of the returned list (i.e. in returned \code{products_detected}, \code{df_detected} and \code{df_reduced}). The available values are: \code{shrinkflation}, \code{shrinkdeflation}, \code{sharkflation}, \code{unshrinkdeflation}, \code{unshrinkflation} and \code{sharkdeflation} (default value is: \code{shrinkflation}).}
 
-\item{min_p_change}{Limiting unit price change, i.e.: a product is considered if the percentage change in its unit price is greater than the value of this parameter. The default value is zero, possibly positive values can be considered (in percentage).}
+\item{min_p_change}{Lower limit for unit price change, i.e.: a product is considered if the percentage change in its unit price is greater than the value of this parameter. The default value is zero, possibly positive values can be considered (in percentage).}
 
-\item{min_s_change}{Limiting size change, i.e.: a product is considered if the percentage change in its size is greater than the value of this parameter. The default value is zero, possibly positive values can be considered (in percentage).}
+\item{max_p_change}{Upper limit for unit price change, i.e.: a product is considered if the percentage change in its unit price is less than the value of this parameter. The default value is Inf, possibly positive values can be considered (in percentage).}
+
+\item{min_s_change}{Lower limit for size change, i.e.: a product is considered if the percentage change in its size is greater than the value of this parameter. The default value is zero, possibly positive values can be considered (in percentage).}
+
+\item{max_s_change}{Upper limit for size change, i.e.: a product is considered if the percentage change in its size is less than the value of this parameter. The default value is Inf, possibly positive values can be considered (in percentage).}
 
 \item{prec}{Number of decimal places for the presented summary results.}
 
@@ -44,7 +50,7 @@ This function detects and summarises downsized and upsized products.
 df<-data_matching(data=data_DOWN_UP_SIZED, start="2024-01", end="2024-02", 
 codeIN=TRUE,codeOUT=TRUE,description=TRUE, 
 onlydescription=FALSE,precision=0.9,interval=FALSE)
-# Extraction of information about grammage
+# Extraction of information about grammage (if needed)
 df<-data_unit(df,units=c("g|ml|kg|l"),multiplication="x")
 # Price standardization
 df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))
@@ -59,4 +65,7 @@ result$df_detected
 result$df_reduced
 result$df_summary
 
+}
+\references{
+{Białek, J., Bobel, A., Oprych-Franków D. (2004). \emph{Immeasurability of shrinkflation in the CPI? Automatic downsizing detection using scanner data}. 18th Meeting of the Ottawa Group, Ottawa.}
 }

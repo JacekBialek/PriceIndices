@@ -7,7 +7,7 @@
 * The **data_DOWN_UP_SIZED** (artficial) scanner dataset on the sale of coffee products (the corresponding old one, i.e. **dataDOWNSIZED**, has been deleted);
 
 ## Improvements:
-* The **shrinkflation** function has been extended;
+* The **shrinkflation** function has been extended (new parameters, new types of downsizing/upsizing);
 
 ## Bag fixed
 * The *compare_to_target** function has been fixed and now it allows for comparison of only two indices.

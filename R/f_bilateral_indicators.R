@@ -11,7 +11,9 @@
 #' @rdname bennet
 #' @return This function returns the Bennet price and quantity indicators and optionally also the price and quantity contributions of individual products.    
 #' @references
-#' {Bennet, T. L., (1920). \emph{The Theory of Measurement of Changes in Cost of Living}. Journal of the Royal Statistical Society, 83, 455-462.}
+#' {Bennet, T. L. (1920). \emph{The Theory of Measurement of Changes in Cost of Living}. Journal of the Royal Statistical Society, 83, 455-462.}
+#'
+#' {Białek, J. (2024). \emph{The use of the Bennet indicators and their transitive versions for scanner data analysis}. Statistics in Transition new series, 25(3).}
 #' @examples 
 #' bennet(milk, "2018-12", "2019-12", matched=TRUE, contributions=TRUE)
 #' \donttest{bennet(coffee, start="2018-12", end="2019-03", interval=TRUE)}

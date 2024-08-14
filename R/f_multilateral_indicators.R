@@ -17,6 +17,8 @@
 #' {Bennet, T. L., (1920). \emph{The Theory of Measurement of Changes in Cost of Living}. Journal of the Royal Statistical Society, 83, 455-462.}
 #'
 #' {Fox, K.J., (2006). \emph{A Method for Transitive and Additive Multilateral Comparisons: A Transitive Bennet Indicator}. Journal of Economics, 87(1), 73-87.}
+#'
+#' {Białek, J. (2024). \emph{The use of the Bennet indicators and their transitive versions for scanner data analysis}. Statistics in Transition new series, 25(3).}
 #' @examples 
 #' \donttest{mbennet(milk, "2018-12", "2019-12", matched=TRUE, contributions=TRUE)}
 #' \donttest{mbennet(coffee, start="2018-12", end="2019-03", interval=TRUE)}
@@ -116,6 +118,8 @@ mbennet <-
 #' {Montgomery, J. K., (1929). \emph{Is There a Theoretically Correct Price Index of a Group of Commodities?} Rome, International Institute of Agriculture}
 #'
 #' {Fox, K.J., (2006). \emph{A Method for Transitive and Additive Multilateral Comparisons: A Transitive Bennet Indicator}. Journal of Economics, 87(1), 73-87.}
+#'
+#' {Białek, J., Pawelec, N. (2024). \emph{The use of transitive Montgomery Indicators for scanner data analysis}. Argumenta Oeconomica,  2 (53).}
 #' @examples 
 #' \donttest{mmontgomery(milk, "2018-12", "2019-12", matched=TRUE, contributions=TRUE)}
 #' \donttest{mmontgomery(coffee, start="2018-12", end="2019-03", interval=TRUE)}

@@ -2758,20 +2758,24 @@ return(dplyr::bind_rows(subgroup_list))
 #' @param start The base period (as character) limited to the year and month, e.g. "2024-01".
 #' @param end The research period (as character) limited to the year and month, e.g. "2024-02".
 #' @param type A parameter specifying what phenomenon is to be included in the resulting elements of the returned list (i.e. in returned \code{products_detected}, \code{df_detected} and \code{df_reduced}). The available values are: \code{shrinkflation}, \code{shrinkdeflation}, \code{sharkflation}, \code{unshrinkdeflation}, \code{unshrinkflation} and \code{sharkdeflation} (default value is: \code{shrinkflation}).
-#' @param min_p_change Limiting unit price change, i.e.: a product is considered if the percentage change in its unit price is greater than the value of this parameter. The default value is zero, possibly positive values can be considered (in percentage). 
-#' @param min_s_change Limiting size change, i.e.: a product is considered if the percentage change in its size is greater than the value of this parameter. The default value is zero, possibly positive values can be considered (in percentage). 
+#' @param min_p_change Lower limit for unit price change, i.e.: a product is considered if the percentage change in its unit price is greater than the value of this parameter. The default value is zero, possibly positive values can be considered (in percentage). 
+#' @param max_p_change Upper limit for unit price change, i.e.: a product is considered if the percentage change in its unit price is less than the value of this parameter. The default value is Inf, possibly positive values can be considered (in percentage). 
+#' @param min_s_change Lower limit for size change, i.e.: a product is considered if the percentage change in its size is greater than the value of this parameter. The default value is zero, possibly positive values can be considered (in percentage). 
+#' @param max_s_change Upper limit for size change, i.e.: a product is considered if the percentage change in its size is less than the value of this parameter. The default value is Inf, possibly positive values can be considered (in percentage). 
 #' @param prec Number of decimal places for the presented summary results.
 #' @param interval A parameter that specifies whether the search for downsized products should consider the entire time interval, or only the compared months specified by the \code{start} and \code{end} parameters.
 #' @rdname shrinkflation
 #' @return This function detects and summarises downsized and upsized products. The function detects phenomena such as: \code{shrinkflation}, \code{shrinkdeflation}, \code{sharkflation}, \code{unshrinkdeflation}, \code{unshrinkflation}, \code{sharkdeflation} (see the \code{type} parameter). It returns a list containing the following objects: \code{df_changes} - data frame with detailed information on downsized and upsized products with the whole history of size changes, \code{df_type} - data frame with recognized type of products, \code{df_overview} - a table with basic summary of all detected products grouped by the \code{type} parameter, \code{products_detected} with prodIDs of products indicated by the 'type' parameter, \code{df_detected} being a subset of the data frame with only detected products, \code{df_reduced} which is the difference of the input data frame and the data frame containing the detected products, 
 #' and \code{df_summary} which provides basic statistics for all detected downsized and upsized products (including their share in the total number of products and mean price and size changes).
+#' @references
+#' {Białek, J., Bobel, A., Oprych-Franków D. (2004). \emph{Immeasurability of shrinkflation in the CPI? Automatic downsizing detection using scanner data}. 18th Meeting of the Ottawa Group, Ottawa.}
 #' 
 #' @examples 
 #' #Data matching over time
 #' df<-data_matching(data=data_DOWN_UP_SIZED, start="2024-01", end="2024-02", 
 #' codeIN=TRUE,codeOUT=TRUE,description=TRUE, 
 #' onlydescription=FALSE,precision=0.9,interval=FALSE)
-#' # Extraction of information about grammage
+#' # Extraction of information about grammage (if needed)
 #' df<-data_unit(df,units=c("g|ml|kg|l"),multiplication="x")
 #' # Price standardization
 #' df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))
@@ -2789,7 +2793,8 @@ return(dplyr::bind_rows(subgroup_list))
 #' @export
 
 shrinkflation<-function (data, start, end, type="shrinkflation", 
-                          min_p_change=0, min_s_change=0, prec=2, interval=FALSE)
+                          min_p_change=0, max_p_change=Inf, 
+                          min_s_change=0, max_s_change=Inf, prec=3, interval=FALSE)
 {
 potential_types<-c("shrinkflation","shrinkdeflation","sharkflation",
                    "unshrinkdeflation", "unshrinkflation", "sharkdeflation")
@@ -2799,7 +2804,6 @@ c_names<-colnames(data)
 for (col_names in obligatory_columns) if (!(col_names %in% c_names)) stop("A data frame must contain columns: time, prices, quantities, grammage, unit, description")
 #initial values
 prodID<-grammage<-n<-description<-time<-desc<-mean_price<-downsizing<-median<-sd<-NULL
-mean_price_orig<-size<-price_orig<-price_norm<-detected_type<-detected_type<-mean_price_orig<-price_norm<-price_orig<-size<-NULL
 #reducing a data set regarding the time criterion
 start <- paste(start, "-01", sep = "")
 end <- paste(end, "-01", sep = "")
@@ -2913,12 +2917,12 @@ for (i in 1:length(list_potential)) {
     price_norm_change_num<-c(price_norm_change_num,ratios(x_price, y_price))
     }
 }
-df_num<-data.frame(prodID=IDs, dates, 
+df_num<-data.frame(IDs, dates, 
                        size_change=size_change_num,
                        price_orig_change=price_orig_change_num, 
                        price_norm_change=price_norm_change_num, 
                        descriptions=descriptions)
-df_num<-dplyr::filter(df_num, abs(price_norm_change)>min_p_change & abs(size_change)>min_s_change)
+df_num<-dplyr::filter(df_num, abs(price_norm_change)>min_p_change & abs(price_norm_change)<max_p_change & abs(size_change)>min_s_change & abs(size_change)<max_s_change)
 #detection of downsizing and upsizing
 for (i in 1:nrow(df_num)) {
   dff<-df_num[i,]
@@ -2936,10 +2940,11 @@ for (i in 1:nrow(df_num)) {
    }
 }
 df_num$detected_type<-type_detected
-df_num<-dplyr::select(df_num,prodID,size_change,price_orig_change,price_norm_change,detected_type,descriptions,dates)
+df_num<-dplyr::select(df_num,IDs,size_change,price_orig_change,price_norm_change,detected_type,descriptions,dates)
 n_all<-length(unique(data$prodID))
-df_overview<-dplyr::summarise(dplyr::group_by(df_num, by=detected_type),
-                              n=length(unique(IDs)),shares=round(length(unique(IDs))*100/n_all,prec))
+t_all<-sum(data$prices*data$quantities)
+df_overview<-dplyr::summarise(dplyr::group_by(df_num, by=detected_type), n=length(unique(IDs)),
+                              shares=round(length(unique(IDs))*100/n_all,prec))
 colnames(df_overview)<-c("type of phenomenon detected","number of detected products", "shares [%] of detected products")
 tmp<-changes[,1:6]
 tmp$size_changes<-size_change
@@ -2948,12 +2953,12 @@ tmp$price_norm_changes<-price_norm_change
 changes<-cbind(tmp, changes[,7])
 #limiting product
 df_filtered<-dplyr::filter(df_num, detected_type==type)
-list_sized<-unique(df_filtered$prodID)
+list_sized<-unique(df_filtered$IDs)
 #data frame with limited products
 df_sized<-dplyr::filter(data., prodID %in% list_sized)
-#data frame with no downsized or upsized products
+#data frame with no downsized / upsized products
 df_reduced<-dplyr::filter(data, !(prodID %in% list_sized))
-#summary of detected products
+#summary of downsized / upsized products
 characteristics<-c("Detected product shares:",
                    "number of all products", 
                    "number of detected products",
@@ -2977,7 +2982,6 @@ characteristics<-c("Detected product shares:",
                    "volatility coefficient of unit price change"
                     )
 n_sized<-length(list_sized)
-t_all<-sum(data$prices*data$quantities)
 t_sized<-sum(df_sized$prices*df_sized$quantities)
 s_changes<-df_filtered$size_change
 p_changes<-df_filtered$price_orig_change
@@ -3013,4 +3017,5 @@ return (list(df_changes=changes,
              df_reduced=df_reduced,
              df_summary=data.frame(stats=characteristics, value=values)
              ))
+
 }  
