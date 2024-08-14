@@ -2804,6 +2804,7 @@ c_names<-colnames(data)
 for (col_names in obligatory_columns) if (!(col_names %in% c_names)) stop("A data frame must contain columns: time, prices, quantities, grammage, unit, description")
 #initial values
 prodID<-grammage<-n<-description<-time<-desc<-mean_price<-downsizing<-median<-sd<-NULL
+mean_price_orig<-size<-price_orig<-price_norm<-detected_type<-NULL
 #reducing a data set regarding the time criterion
 start <- paste(start, "-01", sep = "")
 end <- paste(end, "-01", sep = "")
