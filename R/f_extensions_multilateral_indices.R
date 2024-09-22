@@ -61,6 +61,10 @@ geks_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -316,6 +320,10 @@ geksw_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -574,6 +582,10 @@ geksj_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -831,6 +843,10 @@ ccdi_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -1076,6 +1092,10 @@ gk_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -1318,6 +1338,10 @@ tpd_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -1565,6 +1589,10 @@ utpd_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -1810,6 +1838,10 @@ wgeks_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -2073,6 +2105,10 @@ geksl_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -2344,6 +2380,10 @@ wgeksl_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -2615,6 +2655,10 @@ geksgl_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -2887,6 +2931,10 @@ wgeksgl_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -3159,6 +3207,10 @@ geksaqu_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -3430,6 +3482,10 @@ wgeksaqu_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -3702,6 +3758,10 @@ geksaqi_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -3973,6 +4033,10 @@ wgeksaqi_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -4243,6 +4307,10 @@ geksgaqi_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -4503,6 +4571,10 @@ wgeksgaqi_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -4763,6 +4835,10 @@ geksiqm_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -5023,6 +5099,10 @@ geksqm_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
@@ -5284,6 +5364,10 @@ gekslm_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE) {
+  start<-wend
+  lubridate::month(start)<-lubridate::month(start)-1
+  }
   while (start < end)
   {
   lubridate::month(start) <- lubridate::month(start) + 1
