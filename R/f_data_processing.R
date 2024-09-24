@@ -2889,7 +2889,7 @@ for (i in 1:length(list_potential)) {
     x_size<-frame$size[k-1]
     x_size<-strex::str_extract_numbers(x_size, decimals=TRUE)
     x_size<-unlist(x_size)
-    size_change<-c(size_change, paste0(as.character(round(ratios(x_size, y_size),2)), '%',collapse=" ; "))
+    size_change<-c(size_change, paste0(as.character(round(ratios(x_size, y_size),prec)), '%',collapse=" ; "))
     size_change_num<-c(size_change_num,ratios(x_size, y_size))
     IDs<-c(IDs,replicate(length(ratios(x_size, y_size)),list_potential[i]))
     dates<-c(dates, replicate(length(ratios(x_size, y_size)),
@@ -2904,7 +2904,7 @@ for (i in 1:length(list_potential)) {
     x_price<-strex::str_extract_numbers(x_price, decimals=TRUE)
     x_price<-unlist(x_price)
     price_orig_change<-c(price_orig_change, 
-                         paste0(as.character(round(ratios(x_price, y_price),2)), '%',collapse=" ; "))
+                         paste0(as.character(round(ratios(x_price, y_price),prec)), '%',collapse=" ; "))
     price_orig_change_num<-c(price_orig_change_num,ratios(x_price, y_price))
     #----
     y_price<-frame$price_norm[k]
@@ -2914,7 +2914,7 @@ for (i in 1:length(list_potential)) {
     x_price<-strex::str_extract_numbers(x_price, decimals=TRUE)
     x_price<-unlist(x_price)
     price_norm_change<-c(price_norm_change, 
-                         paste0(as.character(round(ratios(x_price, y_price),2)), '%',collapse=" ; "))
+                         paste0(as.character(round(ratios(x_price, y_price),prec)), '%',collapse=" ; "))
     price_norm_change_num<-c(price_norm_change_num,ratios(x_price, y_price))
     }
 }
@@ -3010,6 +3010,9 @@ values<-c("---------------",
           as.character(round(stats::sd(p_changes)/mean(p_changes),prec)),
           as.character(round(stats::sd(p_norm_changes)/mean(p_norm_changes),prec))
           )
+df_num$size_change<-round(df_num$size_change,prec)
+df_num$price_orig_change<-round(df_num$price_orig_change,prec)
+df_num$price_norm_change<-round(df_num$price_norm_change,prec)
 return (list(df_changes=changes,
              df_type=df_num,
              df_overview=df_overview,
@@ -3018,5 +3021,4 @@ return (list(df_changes=changes,
              df_reduced=df_reduced,
              df_summary=data.frame(stats=characteristics, value=values)
              ))
-
-}  
+} 

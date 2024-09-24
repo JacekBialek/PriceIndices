@@ -1,3 +1,11 @@
+# Package update 0.2.0 -> 0.2.1
+
+## Improvements: 
+* All splice indices (e.g. geks_splice(), gk_splice(), ccdi_splice() or tpd_splice()) are now much faster when the **interval** parameter is FALSE.
+
+## Bag fixed
+* A parameter **prec** in the **shrinkflation** function now works fine.
+
 # Package update 0.1.9 -> 0.2.0
 
 ## New functions:

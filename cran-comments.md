@@ -1,18 +1,10 @@
-## Package update 
+# Package update 
 
-## New functions:
-
-## New functions:
-* There are two new index functions: **dikhanov** (bilateral formula) and **chdikhanov** (chain index formula).
-
-## New dataset:
-* The **data_DOWN_UP_SIZED** (artficial) scanner dataset on the sale of coffee products (the corresponding old one, i.e. **dataDOWNSIZED**, has been deleted);
-
-## Improvements:
-* The **shrinkflation** function has been extended (new parameters, new types of downsizing/upsizing); 
+## Improvements: 
+* All splice indices (e.g. geks_splice(), gk_splice(), ccdi_splice() or tpd_splice()) are now much faster when the **interval** parameter is FALSE.
 
 ## Bag fixed
-* The *compare_to_target** function has been fixed and now it allows for comparison of only two indices.
+* A parameter **prec** in the **shrinkflation** function now works fine.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3
