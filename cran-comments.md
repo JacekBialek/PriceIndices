@@ -1,10 +1,7 @@
 # Package update 
 
-## Improvements: 
-* All splice indices (e.g. geks_splice(), gk_splice(), ccdi_splice() or tpd_splice()) are now much faster when the **interval** parameter is FALSE.
-
 ## Bag fixed
-* A parameter **prec** in the **shrinkflation** function now works fine.
+* Splicing methods on published indices (e.g. HASP and WISP) have been corrected for the case when **interval=TRUE**.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3
