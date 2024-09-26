@@ -31,6 +31,7 @@ geks_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -47,6 +48,11 @@ geks_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -71,6 +77,21 @@ geks_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (geks(data, t0, end., wstart = t0, window)*
+              geks(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -297,6 +318,7 @@ geksw_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -313,6 +335,11 @@ geksw_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -337,6 +364,21 @@ geksw_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (geksw(data, t0, end., wstart = t0, window)*
+              geksw(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -566,6 +608,7 @@ geksj_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -582,6 +625,11 @@ geksj_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -606,6 +654,21 @@ geksj_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (geksj(data, t0, end., wstart = t0, window)*
+              geksj(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -834,6 +897,7 @@ ccdi_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -850,6 +914,11 @@ ccdi_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -874,6 +943,21 @@ ccdi_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (ccdi(data, t0, end., wstart = t0, window)*
+              ccdi(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -1090,6 +1174,7 @@ gk_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -1106,6 +1191,11 @@ gk_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -1130,6 +1220,21 @@ gk_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (gk(data, t0, end., wstart = t0, window)*
+              gk(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -1343,6 +1448,7 @@ tpd_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -1359,6 +1465,11 @@ tpd_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -1383,6 +1494,21 @@ tpd_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (tpd(data, t0, end., wstart = t0, window)*
+              tpd(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -1601,6 +1727,7 @@ utpd_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -1617,6 +1744,11 @@ utpd_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -1641,6 +1773,21 @@ utpd_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (utpd(data, t0, end., wstart = t0, window)*
+              utpd(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -1857,6 +2004,7 @@ wgeks_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -1873,6 +2021,11 @@ wgeks_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -1897,6 +2050,21 @@ wgeks_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (wgeks(data, t0, end., wstart = t0, window)*
+              wgeks(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -2131,6 +2299,7 @@ geksl_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -2148,6 +2317,13 @@ geksl_splice <-
   "half",
   "mean"
   ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  if (!(splice %in% asplice))
+  stop ("The 'splice' parameter has a wrong value")
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
   if (start == end)
@@ -2171,6 +2347,21 @@ geksl_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (geksl(data, t0, end., wstart = t0, window)*
+              geksl(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -2413,6 +2604,7 @@ wgeksl_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -2429,6 +2621,11 @@ wgeksl_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -2453,6 +2650,21 @@ wgeksl_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (wgeksl(data, t0, end., wstart = t0, window)*
+              wgeksl(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -2695,6 +2907,7 @@ geksgl_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -2711,6 +2924,11 @@ geksgl_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -2735,6 +2953,21 @@ geksgl_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (geksgl(data, t0, end., wstart = t0, window)*
+              geksgl(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -2978,6 +3211,7 @@ wgeksgl_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -2994,6 +3228,11 @@ wgeksgl_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -3018,6 +3257,21 @@ wgeksgl_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (wgeksgl(data, t0, end., wstart = t0, window)*
+              wgeksgl(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -3261,6 +3515,7 @@ geksaqu_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -3277,6 +3532,11 @@ geksaqu_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -3301,6 +3561,21 @@ geksaqu_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (geksaqu(data, t0, end., wstart = t0, window)*
+              geksaqu(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -3543,6 +3818,7 @@ wgeksaqu_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -3559,6 +3835,11 @@ wgeksaqu_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -3583,6 +3864,21 @@ wgeksaqu_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (wgeksaqu(data, t0, end., wstart = t0, window)*
+              wgeksaqu(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -3826,6 +4122,7 @@ geksaqi_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -3842,6 +4139,11 @@ geksaqi_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -3866,6 +4168,21 @@ geksaqi_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (geksaqi(data, t0, end., wstart = t0, window)*
+              geksaqi(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -4108,6 +4425,7 @@ wgeksaqi_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -4124,6 +4442,11 @@ wgeksaqi_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -4148,6 +4471,21 @@ wgeksaqi_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (wgeksaqi(data, t0, end., wstart = t0, window)*
+              wgeksaqi(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -4389,6 +4727,7 @@ geksgaqi_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -4405,6 +4744,11 @@ geksgaqi_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -4429,6 +4773,21 @@ geksgaqi_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (geksgaqi(data, t0, end., wstart = t0, window)*
+              geksgaqi(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -4660,6 +5019,7 @@ wgeksgaqi_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -4676,6 +5036,11 @@ wgeksgaqi_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -4700,6 +5065,21 @@ wgeksgaqi_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (wgeksgaqi(data, t0, end., wstart = t0, window)*
+              wgeksgaqi(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -4931,6 +5311,7 @@ geksiqm_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -4947,6 +5328,11 @@ geksiqm_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -4971,6 +5357,21 @@ geksiqm_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (geksiqm(data, t0, end., wstart = t0, window)*
+              geksiqm(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -5202,6 +5603,7 @@ geksqm_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -5218,6 +5620,11 @@ geksqm_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -5242,6 +5649,21 @@ geksqm_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (geksqm(data, t0, end., wstart = t0, window)*
+              geksqm(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
@@ -5474,6 +5896,7 @@ gekslm_splice <-
   splice = "movement",
   interval = FALSE)
   {
+  L<-end.<-NULL
   asplice <-
   c(
   "movement",
@@ -5490,6 +5913,11 @@ gekslm_splice <-
   "window",
   "half",
   "mean"
+  ) #allowed values for speed procedure (when interval=FALSE)
+  asplice3 <-
+  c(
+  "window_published",
+  "half_published"
   ) #allowed values for speed procedure (when interval=FALSE)
   if (!(splice %in% asplice))
   stop ("The 'splice' parameter has a wrong value")
@@ -5514,6 +5942,21 @@ gekslm_splice <-
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
+  }
+  if (interval==FALSE & splice %in% asplice3) {
+  if (splice=="window_published") L <- window - 1
+  if (splice=="half_published") L <- floor(window / 2)
+  end.<-end
+  lubridate::month(end.)<-lubridate::month(end.)-L
+  if (end. < wend) {
+    t0 <- paste(t0, "-01", sep = "")
+    t0<-as.Date(t0)
+    tT <- end
+    lubridate::month(tT) <-
+    lubridate::month(tT) - (window - 1)
+    return (gekslm(data, t0, end., wstart = t0, window)*
+              gekslm(data, end., end, wstart=tT, window))
+                  }
   }
   while (start < end)
   {
