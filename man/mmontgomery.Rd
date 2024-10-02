@@ -50,5 +50,5 @@ This function returns the multilateral Montgomery price and quantity indicators 
 
 {Fox, K.J., (2006). \emph{A Method for Transitive and Additive Multilateral Comparisons: A Transitive Bennet Indicator}. Journal of Economics, 87(1), 73-87.}
 
-{Białek, J., Pawelec, N. (2024). \emph{The use of transitive Montgomery Indicators for scanner data analysis}. Argumenta Oeconomica,  2 (53).}
+{Białek, J., Pawelec, N. (2024). \emph{The use of transitive Montgomery Indicators for scanner data analysis}. Argumenta Oeconomica,  2(53).}
 }

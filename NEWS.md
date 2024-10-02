@@ -3,6 +3,9 @@
 ## Bag fixed
 * Splicing methods on published indices (e.g. HASP and WISP) have been corrected for the case when **interval=TRUE**
 
+## Improvements:
+* The references concerning indicators have been updated.
+
 # Package update 0.2.0 -> 0.2.1
 
 ## Improvements: 
