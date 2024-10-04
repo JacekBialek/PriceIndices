@@ -30,7 +30,7 @@ data_filtering(
 
 \item{pquantiles}{A two-dimensional vector of quantile levels for minimum and maximum price change (it works if one of the chosen filters is \code{extremeprices} filter).}
 
-\item{dplimits}{A two-dimensional vector of thresholds for maximum price drop and maximum ependiture drop (it works if one of the chosen filters is \code{dumpprices} filter).}
+\item{dplimits}{A two-dimensional vector of thresholds for maximum price drop and maximum drop in sales value (it works if one of the chosen filters is \code{dumpprices} filter).}
 
 \item{lambda}{The lambda parameter for \code{lowsales} filter (see \code{References} below).}
 

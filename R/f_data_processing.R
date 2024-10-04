@@ -361,7 +361,7 @@ data_matching <-
 #' @param filters A vector of filter names (options are: \code{extremeprices}, \code{dumpprices} and/or \code{lowsales}). 
 #' @param plimits A two-dimensional vector of thresholds  for minimum and maximum price change (it works if one of the chosen filters is \code{extremeprices} filter). 
 #' @param pquantiles A two-dimensional vector of quantile levels for minimum and maximum price change (it works if one of the chosen filters is \code{extremeprices} filter).
-#' @param dplimits A two-dimensional vector of thresholds for maximum price drop and maximum ependiture drop (it works if one of the chosen filters is \code{dumpprices} filter). 
+#' @param dplimits A two-dimensional vector of thresholds for maximum price drop and maximum drop in sales value (it works if one of the chosen filters is \code{dumpprices} filter). 
 #' @param lambda The lambda parameter for \code{lowsales} filter (see \code{References} below).
 #' @param interval A logical value indicating whether the filtering process concerns only two periods defined by \code{start} and \code{end} parameters (then the \code{interval} is set to FALSE) or whether that function is to filter products sold during the whole time interval <start, end>, i.e. any subsequent months are compared. 
 #' @param retailers A logical parameter indicating whether filtering should be done for each outlet (\code{retID}) separately. If it is set to FALSE, then there is no need to consider the \code{retID} column.
