@@ -74,6 +74,7 @@ geks_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(geks(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -361,6 +362,7 @@ geksw_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(geksw(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -651,6 +653,7 @@ geksj_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(geksj(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -940,6 +943,7 @@ ccdi_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(ccdi(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -1217,6 +1221,7 @@ gk_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(gk(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -1491,6 +1496,7 @@ tpd_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(tpd(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -1770,6 +1776,7 @@ utpd_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(utpd(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -2047,6 +2054,7 @@ wgeks_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(wgeks(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -2344,6 +2352,7 @@ geksl_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(geksl(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -2647,6 +2656,7 @@ wgeksl_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(wgeksl(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -2950,6 +2960,7 @@ geksgl_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(geksgl(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -3254,6 +3265,7 @@ wgeksgl_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(wgeksgl(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -3558,6 +3570,7 @@ geksaqu_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(geksaqu(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -3861,6 +3874,7 @@ wgeksaqu_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(wgeksaqu(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -4165,6 +4179,7 @@ geksaqi_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(geksaqi(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -4468,6 +4483,7 @@ wgeksaqi_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(wgeksaqi(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -4770,6 +4786,7 @@ geksgaqi_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(geksgaqi(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -5062,6 +5079,7 @@ wgeksgaqi_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(wgeksgaqi(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -5354,6 +5372,7 @@ geksiqm_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(geksiqm(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -5646,6 +5665,7 @@ geksqm_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(geksqm(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
@@ -5939,6 +5959,7 @@ gekslm_splice <-
   stop("parameters must satisfy: start<=end")
   set <- c(1)
   #main body
+  if (interval==FALSE & end <= wend) return(gekslm(data, start, end, start, window))
   if (interval==FALSE & splice %in% asplice2) {
   start<-wend
   lubridate::month(start)<-lubridate::month(start)-1
