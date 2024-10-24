@@ -539,7 +539,7 @@ gk <-
   d2$time<-substr(d2$time,0,7)
   #quantity weights - quality adjusted factors vi
   while (sqrt(sum((index1 - index2) ^ 2)) >
-  0.005)
+  0.000001)
   {
   gr<-dplyr::summarise(dplyr::group_by(d2, time, prodID),expend=sum(prices*quantities) / index1[which(dates == unique(time))],quant=sum(quantities),.groups="drop")
   gr2<-dplyr::summarise(dplyr::group_by(gr, prodID), value=sum(expend)/sum(quant),.groups="drop")
