@@ -1,3 +1,8 @@
+# Package update 0.2.2 -> 0.2.3
+
+## Improvements:
+* The **data_selecting** function is now much faster.
+
 # Package update 0.2.1 -> 0.2.2
 
 ## Bag fixed

@@ -1,10 +1,7 @@
 # Package update 
 
-## Bag fixed
-* Splicing methods on published indices (e.g. HASP and WISP) have been corrected for the case when **interval=TRUE**.
-
 ## Improvements:
-* The references concerning indicators have been updated.
+* The **data_selecting** function is now much faster.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3
