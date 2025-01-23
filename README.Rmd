@@ -641,7 +641,7 @@ geks(milk, start="2019-01", end="2019-04",window=10)
 geksl(milk, wstart="2018-12", start="2019-03", end="2019-05")
 ```
 
-The user may decompose GEKS-type indices. The **m_decomposition** function returns multiplicative decompositions of the selected GEKS-type indices. For instance:
+The user may decompose the GEKS-type indices. The **m_decomposition** function returns multiplicative decompositions of the selected GEKS-type indices. For instance:
 
 ```{r}
 milk.<-milk
