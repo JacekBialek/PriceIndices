@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -118,12 +113,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.92         20      1     1
-#> 2 2020-01-01   2.84         18      2     1
-#> 3 2020-01-01   2.77         18      3     1
-#> 4 2020-01-01   2.75         18      4     1
-#> 5 2020-01-01   2.64         21      5     1
-#> 6 2020-01-01   2.72         17      6     1
+#> 1 2020-01-01   2.98         20      1     1
+#> 2 2020-01-01   3.06         22      2     1
+#> 3 2020-01-01   2.92         20      3     1
+#> 4 2020-01-01   2.76         23      4     1
+#> 5 2020-01-01   2.60         24      5     1
+#> 6 2020-01-01   2.81         20      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the theoretical value of the unweighted price index for lognormally distributed prices (the month defined by **start** parameter plays a role of the fixed base period). The characteristics for these lognormal distributions are set by **pmi** and **sigma** parameters. The **ratio** parameter is a logical parameter indicating how we define the theoretical unweighted price index. If it is set to TRUE then the resulting value is a ratio of expected price values from compared months; otherwise the resulting value is the expected value of the ratio of prices from compared months.The function provides a data frame consisting of dates and corresponding expected values of the theoretical unweighted price index. For example:
@@ -144,12 +139,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-26   2.58   4.054811      1     1
-#> 2 2020-01-02   2.96   1.384213      2     1
-#> 3 2020-01-28   2.84   5.470079      3     1
-#> 4 2020-01-21   2.83   2.251028      4     1
-#> 5 2020-01-18   2.97   2.151433      5     1
-#> 6 2020-01-02   2.69   1.606861      6     1
+#> 1 2020-01-28   2.71   4.337712      1     1
+#> 2 2020-01-22   2.67   5.073240      2     1
+#> 3 2020-01-01   2.87   2.068442      3     1
+#> 4 2020-01-14   3.00   1.280645      4     1
+#> 5 2020-01-27   2.62   6.890161      5     1
+#> 6 2020-01-06   2.59   6.767169      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this generated dataset:
@@ -192,14 +187,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 1.077743
+#> [1] 0.9303019
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 1.078145
+#> [1] 0.9296978
 ```
 
 **data\_aggregating**
@@ -494,19 +489,19 @@ result<-shrinkflation(data=df, start="2024-01","2024-02", prec=3, interval=FALSE
 # result$df_changes
 result$df_type
 #>    IDs size_change price_orig_change price_norm_change     detected_type
-#> 1    7   -20.00000       -18.8235294          1.470588     shrinkflation
-#> 2   10   -15.00000       -10.0000000          5.882000     shrinkflation
-#> 3   10   -19.04762       -10.0000000         11.176211     shrinkflation
-#> 4   10   -14.28571       -10.0000000          5.000105     shrinkflation
-#> 5   11    -2.50000         1.0402742          3.632192      sharkflation
-#> 6   12    -4.00000        -0.7936508          3.339782     shrinkflation
-#> 7   14   -10.00000       -40.0000000        -33.333000   shrinkdeflation
-#> 8   16   -15.00000        15.0000000         35.294000      sharkflation
-#> 9   18    20.00000         5.0000000        -12.500000 unshrinkdeflation
-#> 10  20    25.00000         5.5566667        -15.556000 unshrinkdeflation
-#> 11  22    12.50000        37.7766667         22.469333   unshrinkflation
-#> 12  24    33.33333        50.0000000         12.500281   unshrinkflation
-#> 13  26     5.00000       -12.5000000        -16.666500    sharkdeflation
+#> 1    7     -20.000           -18.824             1.471     shrinkflation
+#> 2   10     -15.000           -10.000             5.882     shrinkflation
+#> 3   10     -19.048           -10.000            11.176     shrinkflation
+#> 4   10     -14.286           -10.000             5.000     shrinkflation
+#> 5   11      -2.500             1.040             3.632      sharkflation
+#> 6   12      -4.000            -0.794             3.340     shrinkflation
+#> 7   14     -10.000           -40.000           -33.333   shrinkdeflation
+#> 8   16     -15.000            15.000            35.294      sharkflation
+#> 9   18      20.000             5.000           -12.500 unshrinkdeflation
+#> 10  20      25.000             5.557           -15.556 unshrinkdeflation
+#> 11  22      12.500            37.777            22.469   unshrinkflation
+#> 12  24      33.333            50.000            12.500   unshrinkflation
+#> 13  26       5.000           -12.500           -16.666    sharkdeflation
 #>                                                             descriptions
 #> 1           coffee super 0,4 l ; coffee super 0,5 l , coffee super 0,4 l
 #> 2  coffee ABC 200g ; coffee ABC 210g , coffee ABC 170g ; coffee ABC 180g
@@ -955,6 +950,23 @@ geksl(milk, wstart="2018-12", start="2019-03", end="2019-05")
 #> [1] 1.002251
 ```
 
+The user may decompose GEKS-type indices. The **m\_decomposition** function returns multiplicative decompositions of the selected GEKS-type indices. For instance:
+
+``` r
+milk.<-milk
+milk.$prodID<-milk.$description
+m_decomposition(milk., start="2018-12", end="2019-12",
+                formula=c("geks","ccdi"))$multiplicative
+#>                     product      GEKS      CCDI
+#> 1         full-fat milk UHT 0.9901247 0.9901350
+#> 2 full-fat milk pasteurized 0.9966904 0.9966895
+#> 3                 goat milk 0.9999800 0.9999800
+#> 4          low-fat milk UHT 1.0018916 1.0018830
+#> 5  low-fat milk pasteurized 1.0035170 1.0035052
+#> 6             powdered milk 1.0064838 1.0065987
+#> 7     index value (product) 0.9986050 0.9987082
+```
+
 The **QU** function returns a value of the *quality adjusted unit value index* (QU index) for the given set of adjustment factors. An additional **v** parameter is a data frame with adjustment factors for at least all matched **prodIDs**. It must contain two columns: **prodID** with unique product IDs and **value** with corresponding adjustment factors (see documentation). The following example starts from creating a data frame which includes sample adjusted factors:
 
 ``` r
@@ -963,19 +975,19 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.384321
-#> 2  14216 1.632285
-#> 3  15404 1.492862
-#> 4  17034 1.526409
-#> 5  34540 1.059083
-#> 6  51583 1.415378
+#> 1  14215 1.940637
+#> 2  14216 1.643151
+#> 3  15404 1.401383
+#> 4  17034 1.755530
+#> 5  34540 1.035531
+#> 6  51583 1.974503
 ```
 
 and the next step is calculating the QU index which compares December 2019 to December 2018:
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9772939
+#> [1] 1.008456
 ```
 
 <a id="ad8"> </a>
@@ -1203,7 +1215,7 @@ formula=c("laspeyres", "fisher"), interval = TRUE)
 compare_indices_df(df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-62-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-63-1.png" width="100%" />
 
 Now, let us compare the impact of the aggregating over outlets on the price index results (e.g. the Laspeyres formula is the assumed aggregating method). For this purpose, let us calculate the Fisher price index in two cases: **case1** without the above-mentioned aggregation and **case2** which considers that aggregation. We use the **milk** dataset and the yearly time interval:
 
@@ -1225,7 +1237,7 @@ compare_indices_list(data=list(case1, case2),
                 "Fisher with aggregation"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-64-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-65-1.png" width="100%" />
 
 **compare\_distances**
 
@@ -1311,14 +1323,14 @@ comparison$pseudovalues
 comparison$figure_iterations
 ```
 
-<img src="man/figures/README-unnamed-chunk-69-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-70-1.png" width="100%" />
 
 ``` r
 #displaying box-plotes created for the calculated index pseudovalues obtained in the jackknife procedure
 comparison$figure_pseudovalues
 ```
 
-<img src="man/figures/README-unnamed-chunk-70-1.png" width="100%" /> <a id="ad13"> </a>
+<img src="man/figures/README-unnamed-chunk-71-1.png" width="100%" /> <a id="ad13"> </a>
 
 ### Functions for price and quantity indicator calculations
 
