@@ -1,7 +1,11 @@
 # Package update 
 
+## New functions: 
+* New function for multiplicative decomposing the GEKS-type indices (*m_decomposition*)
+
 ## Improvements:
 * The **data_selecting** function is now much faster.
+* The **gk** function is now much faster.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

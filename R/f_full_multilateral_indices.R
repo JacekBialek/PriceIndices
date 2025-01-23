@@ -437,28 +437,29 @@ QU<-function(data, start, end, v)
 {
 if (start==end) return (1)  
 if (nrow(data)==0) stop("A data frame is empty")
-prodID<-NULL
-start<-paste(start,"-01",sep="")
-end<-paste(end,"-01",sep="")
-start<-as.Date(start)
-end<-as.Date(end)
-data1<-dplyr::filter(data,lubridate::year(data$time)==lubridate::year(start) & lubridate::month(data$time)==lubridate::month(start)) 
-data2<-dplyr::filter(data, lubridate::year(data$time)==lubridate::year(end) & lubridate::month(data$time)==lubridate::month(end))   
-data<-dplyr::bind_rows(data1,data2)
+prodID<-time<-NULL
+data$time<-substr(data$time, 0, 7)
+data1<-dplyr::filter(data, time==start)
+data2<-dplyr::filter(data, time==end)
+data<-rbind(data1, data2)
+df_start<-dplyr::summarise(dplyr::group_by(data1,prodID),
+                          expenditures=sum(prices*quantities),
+                          quantities=sum(quantities),.groups="drop")
+df_end<-dplyr::summarise(dplyr::group_by(data2,prodID),
+                          expenditures=sum(prices*quantities),
+                          quantities=sum(quantities),.groups="drop")
+quantity_end<-df_end$quantities
+quantity_start<-df_start$quantities
+sale_end<-df_end$expenditures
+sale_start<-df_start$expenditures
 Gstart<-unique(data1$prodID) 
-Gend<-unique(data2$prodID) 
-sale_end<-expenditures(data2,period=end)
-sale_start<-expenditures(data1,period=start)
-quantity_end<-quantities(data2,period=end)
-quantity_start<-quantities(data1,period=start)
+Gend<-unique(data2$prodID)
 #main body
 a<-sum(sale_end)
 b<-sum(sale_start)
 v_end<-dplyr::filter(v, prodID %in% Gend)
-v_end<-dplyr::arrange(v_end, prodID)
 val_end<-v_end$values
 v_start<-dplyr::filter(v, prodID %in% Gstart)
-v_start<-dplyr::arrange(v_start, prodID)
 val_start<-v_start$values
 c<-sum(val_end*quantity_end)
 d<-sum(val_start*quantity_start)
@@ -534,30 +535,30 @@ gk <-
   #set of dates
   dates <- seq.Date(from = wstart, to = wend, by = "month")
   dates<-substr(dates, 0, 7)
-  d2<-d
-  d2$time<-as.character(d2$time)
-  d2$time<-substr(d2$time,0,7)
+  d$time<-substr(d$time,0,7)
+  wstart<-substr(wstart,0,7)
+  start<-substr(start,0,7)
+  end<-substr(end,0,7)
   #quantity weights - quality adjusted factors vi
-  while (sqrt(sum((index1 - index2) ^ 2)) >
+  while (max(abs(index1 - index2)) >
   0.000001)
   {
-  gr<-dplyr::summarise(dplyr::group_by(d2, time, prodID),expend=sum(prices*quantities) / index1[which(dates == unique(time))],quant=sum(quantities),.groups="drop")
+  gr<-dplyr::summarise(dplyr::group_by(d, time, prodID),expend=sum(prices*quantities) / index1[which(dates == unique(time))],quant=sum(quantities),.groups="drop")
   gr2<-dplyr::summarise(dplyr::group_by(gr, prodID), value=sum(expend)/sum(quant),.groups="drop")
   v <- data.frame(prodID=gr2$prodID, values=gr2$value)
   #series  of indices
   indd <-
   function(tt)
-  return (QU(d, substr(wstart, 0, 7), tt, v))
+  return (QU(d, wstart, tt, v))
   ind <- sapply(dates, indd)
   index2 <- index1
   index1 <- ind
   }
   result <-
-  index1[which(dates == substr(end, 0, 7))] / index1[which(dates == substr(start, 0, 7))]
+  index1[which(dates == end)] / index1[which(dates == start)]
   result <- result[[1]]
   return (result)
   }
-
 
 #' @title  Calculating the multilateral TPD price index
 #'
@@ -2123,4 +2124,498 @@ gekslm <-
   geks_lm <- geks_lm ^ (1 / window)
   return(geks_lm)
   }
+
+
+#' @title  Multiplicative decomposing the GEKS-type indices
+#'
+#' @description This function returns multiplicative decompositions of the selected GEKS-type indices.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
+#' @param formula A parameter indicating which multilateral formulas are to be decomposed. In the current version of the package, the multiplicative decomposition includes the following GEKS-type indices: GEKS, CCDI, GEKS-W, GEKS-L, GEKS-GL and GEKS-LM. Thus, this parameter can take values like: “geks”, ‘ccdi’, ‘geksw’ ‘geksl’, ‘geksgl’, ‘gekslm’. 
+#' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
+#' @param sigma The elasticity of substitution (a parameter used in the Lloyd-Moulton index formula). The default value is 0.7.
+#' @param index.value The parameter indicating whether price index values are to be displayed (at the end of the returned \code{multiplicative} data frame).
+#' @rdname m_decomposition
+#' @return This function returns a list with three elements: \code{multiplicative} - a data frame containing multiplicative decompositions of the indicated GEKS-type indices, \code{normalized} - normalized multiplicative decompositions of the indicated indices (their product is always 1), \code{impact} - relative impacts of commodities on the price index value (in p.p.).    
+#' @references
+#' {Webster, M., Tarnow-Mordi, R. C. (2019). \emph{Decomposing Multilateral Price Indexes into the Contributions of Individual Commodities}, Journal of Official Statistics, 35(2), 461-486.}
+#' @examples 
+#' \donttest{m_decomposition(milk, start="2018-12",end="2019-12",formula=c("geks","ccdi"))$multiplicative}
+#' @export
+
+
+m_decomposition <-
+  function(data,
+  start,
+  end,
+  wstart = start,
+  formula=c(),
+  window = 13,
+  sigma=0.7,
+  index.value=TRUE)  {
+  #checking conditions
+  allowed_formula<-c("geks","ccdi","geksw","geksl","geksgl","gekslm")
+  if (!(length(intersect(formula, allowed_formula))==length(formula)) | (length(formula)==0)) 
+  stop("Bad specification of the 'formula' parameter")
+  if (start == end)
+  stop ("Parameters 'start' and 'end' are the same!")
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  price<-quantity<-NULL
+  time<-prodID<-NULL
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  wstart <-
+  paste(wstart, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  wstart <- as.Date(wstart)
+  if (sigma == 1)
+  stop("A specification of the parameter 'sigma' is wrong")
+  if (window < 2)
+  stop("window must be at least 2 months")
+  if (start > end)
+  stop("parameters must satisfy: start<=end")
+  if (wstart > start)
+  stop("parameters must satisfy: wstat<=start")
+  wend <- wstart
+  lubridate::month(wend) <-
+  lubridate::month(wend) + window - 1
+  if (end > wend)
+  stop("parameters must satisfy: end<wstart+window")
+  lubridate::day(wend)<-lubridate::days_in_month(wend)
+  start <- substr(start, 0, 7)
+  end <- substr(end, 0, 7)
+  dates <- seq.Date(from = wstart, to = wend, by = "month")
+  dates.<-substr(dates, 0, 7) #only year and month
+  TT<-length(dates.) #number of periods 
+  columns<-c("product",formula)
+  columns2<-c("product")
+  #main body
+  data<-dplyr::filter(data, time>=wstart & time<=wend)
+  data$time<-as.character(data$time)
+  data$time<-substr(data$time, 0, 7)
+  data<-dplyr::summarise(dplyr::group_by(data, time, prodID),
+                         prices=sum(prices*quantities)/sum(quantities),
+                         quantities=sum(quantities),.groups="drop")
+  av<-unique(data$prodID) #all available products
+  n_av=length(av)
+  n_row = n_av
+  n_col = 1
+  mat = matrix(0, nrow = n_row, ncol = n_col)
+  result<-data.frame(mat)
+  colnames(result)<-"product"
+  result$product<-av
+  av_in_time<-function (t) {
+    d.<-dplyr::filter(data, time==t)
+    return(d.$prodID)
+  } #products available in a period t
+  av_t<-lapply(dates., av_in_time)
+  
+  #logarithmic mean
+  L<-function (x,y)
+  {if (x==y) return (x)
+  else return ((x-y)/(log(x)-log(y)))
+  }
+  #price function (universal for all decompositions)
+  price_t<-function (t) {
+  p_t<-c()
+  set<-av_t[[which(dates.==t)]]
+  for (prod in av)
+  {  
+    if (prod %in% set) {
+                      df<-dplyr::filter(data, time==t & prodID==prod)
+                      p_t<-c(p_t, df$prices)
+                       }
+  else p_t<-c(p_t,1)  
+  }
+  return (p_t)
+  }
+  price<-lapply(dates.,price_t) #prices for all products and all periods
+  #individaul treating of indices
+  #CCDI (GEKS-T)
+  if ("ccdi" %in% formula)
+  {
+  #weights for individual products
+  wT_tau_t<-function (tau, t)
+  {
+  wT<-c()
+  set<-intersect(av_t[[which(dates.==tau)]],av_t[[which(dates.==t)]])
+  df<-dplyr::filter(data, prodID %in% set)
+  dftau<-dplyr::filter(df, time==tau)
+  dft<-dplyr::filter(df, time==t)
+  sales_tau<-sum(dftau$prices*dftau$quantities)
+  sales_t<-sum(dft$prices*dft$quantities)
+  for (prod in av)  {
+    if (prod %in% set) {
+    #main work
+    dftau_i<-dplyr::filter(dftau, prodID==prod)
+    dft_i<-dplyr::filter(dft, prodID==prod)
+    wtau<-dftau_i$prices*dftau_i$quantities
+    wt<-dft_i$prices*dft_i$quantities
+    wT<-c(wT, 0.5*(wtau/sales_tau+wt/sales_t))
+   }
+  else wT<-c(wT,0)
+  }
+  return(wT)
+  #end wT function
+  }  
+  s<-which(dates.==start)
+  t<-which(dates.==end)
+  wT_start<-lapply(dates.,wT_tau_t, t=start)
+  wT_end<-lapply(dates.,wT_tau_t, t=end)
+  ccdi<-c()
+  for (i in 1:n_av)
+  {
+  suma_start<-0
+  suma_end<-0
+  prod_st<-1
+  for (tt in 1:TT) {suma_start<-suma_start+wT_start[[tt]][i]
+                    suma_end<-suma_end+wT_end[[tt]][i]
+                    prod_st<-prod_st*price[[tt]][i]^(wT_start[[tt]][i]-wT_end[[tt]][i])
+                    }
+  suma_start<-suma_start/TT
+  suma_end<-suma_end/TT
+  prod_st<-prod_st^(1/(TT))
+  ccdi<-c(ccdi, (price[[t]][i]^suma_end)/(price[[s]][i]^suma_start)*prod_st)
+  }
+  columns2<-c(columns2, "ccdi")
+  result$CCDI<-ccdi
+  #end CCDI decomposition   
+  }  
+  #GEKS (GEKS-F)
+  if ("geks" %in% formula)
+  {
+  #weights for individual products
+  wF_tau_t<-function (tau, t)
+  {
+  t_tau<-which(dates.==tau)
+  t_t<-which(dates.==t)
+  wF<-c()
+  wtau<-c()
+  wtau_t<-c()
+  L1<-c()
+  L2<-c()
+  set<-intersect(av_t[[t_tau]],av_t[[t_t]])
+  df<-dplyr::filter(data, prodID %in% set)
+  dftau<-dplyr::filter(df, time==tau)
+  dft<-dplyr::filter(df, time==t)
+  #Laspeyres and Paasche indices
+  p_tau<-dftau$prices
+  p_t<-dft$prices
+  q_tau<-dftau$quantities
+  q_t<-dft$quantities
+  lasp<-sum(q_tau*p_t)/sum(q_tau*p_tau)
+  paasch<-sum(q_t*p_t)/sum(q_t*p_tau)
+  #weights
+  for (prod in av)  {
+    if (prod %in% set) {
+  i_i<-which(av==prod)
+  dftau_i<-dplyr::filter(dftau, prodID==prod)
+  dft_i<-dplyr::filter(dft, prodID==prod)
+  wtau<-c(wtau,dftau_i$prices*dftau_i$quantities)
+  wtau_t<-c(wtau_t,dftau_i$prices*dft_i$quantities)
+  L1<-c(L1,L(price[[t_t]][i_i]/price[[t_tau]][i_i],lasp))
+  L2<-c(L2,L(price[[t_t]][i_i]/price[[t_tau]][i_i],paasch))
+  }
+  else
+  {
+  wtau<-c(wtau,0)
+  wtau_t<-c(wtau_t,0)
+  L1<-c(L1,0)
+  L2<-c(L2,0)
+  }
+  }
+  wtau<-wtau/sum(wtau)
+  wtau_t<-wtau_t/sum(wtau_t)
+  wtau<-wtau*L1
+  wtau_t<-wtau_t*L2
+  wF<-0.5*(wtau/sum(wtau)+wtau_t/sum(wtau_t))
+  return(wF)
+  #end wF function
+  }  
+  s<-which(dates.==start)
+  t<-which(dates.==end)
+  wF_start<-lapply(dates.,wF_tau_t, t=start)
+  wF_end<-lapply(dates.,wF_tau_t, t=end)
+  geks<-c()
+  for (i in 1:n_av)
+  {
+  suma_start<-0
+  suma_end<-0
+  prod_st<-1
+  for (tt in 1:TT) {suma_start<-suma_start+wF_start[[tt]][i]
+                    suma_end<-suma_end+wF_end[[tt]][i]
+                    prod_st<-prod_st*price[[tt]][i]^(wF_start[[tt]][i]-wF_end[[tt]][i])
+                    }
+  suma_start<-suma_start/TT
+  suma_end<-suma_end/TT
+  prod_st<-prod_st^(1/(TT))
+  geks<-c(geks, (price[[t]][i]^suma_end)/(price[[s]][i]^suma_start)*prod_st)
+  }
+  columns2<-c(columns2, "geks")
+  result$GEKS<-geks
+  #end GEKS decomposition   
+  }  
+  #GEKS-W 
+  if ("geksw" %in% formula)
+  {
+  #weights for individual products
+  w_tau_t<-function (tau, t)
+  {
+  t_tau<-which(dates.==tau)
+  t_t<-which(dates.==t)
+  W<-c()
+  waw<-c()
+  L<-c()
+  set<-intersect(av_t[[t_tau]],av_t[[t_t]])
+  df<-dplyr::filter(data, prodID %in% set)
+  dftau<-dplyr::filter(df, time==tau)
+  dft<-dplyr::filter(df, time==t)
+  #Walsh price index
+  p_tau<-dftau$prices
+  p_t<-dft$prices
+  q_tau<-dftau$quantities
+  q_t<-dft$quantities
+  walsh<-sum((q_tau*q_t)^0.5*p_t)/sum((q_tau*q_t)^0.5*p_tau)
+  #weights
+  for (prod in av)  {
+    if (prod %in% set) {
+  i_i<-which(av==prod)
+  dftau_i<-dplyr::filter(dftau, prodID==prod)
+  dft_i<-dplyr::filter(dft, prodID==prod)
+  waw<-c(waw,dftau_i$prices*(dftau_i$quantities*dft_i$quantities)^0.5)
+  L<-c(L,L(price[[t_t]][i_i]/price[[t_tau]][i_i],walsh))
+  }
+  else
+  {
+  waw<-c(waw,0)
+  L<-c(L,0)
+  }
+  }
+  waw<-waw/sum(waw)
+  waw<-waw*L
+  W<-waw/sum(waw)
+  return(W)
+  #end w function
+  }  
+  s<-which(dates.==start)
+  t<-which(dates.==end)
+  w_start<-lapply(dates.,w_tau_t, t=start)
+  w_end<-lapply(dates.,w_tau_t, t=end)
+  geksw<-c()
+  for (i in 1:n_av)
+  {
+  suma_start<-0
+  suma_end<-0
+  prod_st<-1
+  for (tt in 1:TT) {suma_start<-suma_start+w_start[[tt]][i]
+                    suma_end<-suma_end+w_end[[tt]][i]
+                    prod_st<-prod_st*price[[tt]][i]^(w_start[[tt]][i]-w_end[[tt]][i])
+                    }
+  suma_start<-suma_start/TT
+  suma_end<-suma_end/TT
+  prod_st<-prod_st^(1/(TT))
+  geksw<-c(geksw, (price[[t]][i]^suma_end)/(price[[s]][i]^suma_start)*prod_st)
+  }
+  columns2<-c(columns2, "geksw")
+  result$GEKS_W<-geksw
+  #end GEKS-W decomposition   
+  }  
+  #GEKS-L 
+  if ("geksl" %in% formula)
+  {
+  #weights for individual products
+  wL_tau_t<-function (tau, t)
+  {
+  t_tau<-which(dates.==tau)
+  t_t<-which(dates.==t)
+  wL<-c()
+  wtau<-c()
+  L<-c()
+  set<-intersect(av_t[[t_tau]],av_t[[t_t]])
+  df<-dplyr::filter(data, prodID %in% set)
+  dftau<-dplyr::filter(df, time==tau)
+  dft<-dplyr::filter(df, time==t)
+  #Laspeyres index
+  p_tau<-dftau$prices
+  p_t<-dft$prices
+  q_tau<-dftau$quantities
+  q_t<-dft$quantities
+  lasp<-sum(q_tau*p_t)/sum(q_tau*p_tau)
+  #weights
+  for (prod in av)  {
+    if (prod %in% set) {
+  i_i<-which(av==prod)
+  dftau_i<-dplyr::filter(dftau, prodID==prod)
+  wtau<-c(wtau,dftau_i$prices*dftau_i$quantities)
+  L<-c(L,L(price[[t_t]][i_i]/price[[t_tau]][i_i],lasp))
+  }
+  else
+  {
+  wtau<-c(wtau,0)
+  L<-c(L,0)
+  }
+  }
+  wtau<-wtau/sum(wtau)
+  wtau<-wtau*L
+  wL<-wtau/sum(wtau)
+  return(wL)
+  #end wL function
+  }  
+  s<-which(dates.==start)
+  t<-which(dates.==end)
+  wL_start<-lapply(dates.,wL_tau_t, t=start)
+  wL_end<-lapply(dates.,wL_tau_t, t=end)
+  geksl<-c()
+  for (i in 1:n_av)
+  {
+  suma_start<-0
+  suma_end<-0
+  prod_st<-1
+  for (tt in 1:TT) {suma_start<-suma_start+wL_start[[tt]][i]
+                    suma_end<-suma_end+wL_end[[tt]][i]
+                    prod_st<-prod_st*price[[tt]][i]^(wL_start[[tt]][i]-wL_end[[tt]][i])
+                    }
+  suma_start<-suma_start/TT
+  suma_end<-suma_end/TT
+  prod_st<-prod_st^(1/(TT))
+  geksl<-c(geksl, (price[[t]][i]^suma_end)/(price[[s]][i]^suma_start)*prod_st)
+  }
+  columns2<-c(columns2, "geksl")
+  result$GEKS_L<-geksl
+  #end GEKS-L decomposition   
+  }  
+  #GEKS-GL 
+  if ("geksgl" %in% formula)
+  {
+  #weights for individual products
+  wGL_tau_t<-function (tau, t)
+  {
+  wGL<-c()
+  set<-intersect(av_t[[which(dates.==tau)]],av_t[[which(dates.==t)]])
+  df<-dplyr::filter(data, prodID %in% set)
+  dftau<-dplyr::filter(df, time==tau)
+  sales_tau<-sum(dftau$prices*dftau$quantities)
+  for (prod in av)  {
+    if (prod %in% set) {
+    #main work
+    dftau_i<-dplyr::filter(dftau, prodID==prod)
+    wtau<-dftau_i$prices*dftau_i$quantities
+    wGL<-c(wGL, wtau/sales_tau)
+   }
+  else wGL<-c(wGL,0)
+  }
+  return(wGL)
+  #end wGL function
+  }  
+  s<-which(dates.==start)
+  t<-which(dates.==end)
+  wGL_start<-lapply(dates.,wGL_tau_t, t=start)
+  wGL_end<-lapply(dates.,wGL_tau_t, t=end)
+  geksgl<-c()
+  for (i in 1:n_av)
+  {
+  suma_start<-0
+  suma_end<-0
+  prod_st<-1
+  for (tt in 1:TT) {suma_start<-suma_start+wGL_start[[tt]][i]
+                    suma_end<-suma_end+wGL_end[[tt]][i]
+                    prod_st<-prod_st*price[[tt]][i]^(wGL_start[[tt]][i]-wGL_end[[tt]][i])
+                    }
+  suma_start<-suma_start/TT
+  suma_end<-suma_end/TT
+  prod_st<-prod_st^(1/(TT))
+  geksgl<-c(geksgl, (price[[t]][i]^suma_end)/(price[[s]][i]^suma_start)*prod_st)
+  }
+  columns2<-c(columns2, "geksgl")
+  result$GEKS_GL<-geksgl
+  #end GEKSGL decomposition   
+  }  
+  #GEKS-LM 
+  if ("gekslm" %in% formula)
+  {
+  #weights for individual products
+  wLM_tau_t<-function (tau, t)
+  {
+  t_tau<-which(dates.==tau)
+  t_t<-which(dates.==t)
+  wLM<-c()
+  wtau<-c()
+  L<-c()
+  set<-intersect(av_t[[t_tau]],av_t[[t_t]])
+  df<-dplyr::filter(data, prodID %in% set)
+  dftau<-dplyr::filter(df, time==tau)
+  dft<-dplyr::filter(df, time==t)
+  #LM price index
+  p_tau<-dftau$prices
+  p_t<-dft$prices
+  q_tau<-dftau$quantities
+  lm<-(1/sum(p_tau*q_tau))*sum(p_tau*q_tau*(p_t/p_tau)^(1-sigma))
+  #weights
+  for (prod in av)  {
+    if (prod %in% set) {
+  i_i<-which(av==prod)
+  dftau_i<-dplyr::filter(dftau, prodID==prod)
+  wtau<-c(wtau,dftau_i$prices*dftau_i$quantities)
+  L<-c(L,L((price[[t_t]][i_i]/price[[t_tau]][i_i])^(1-sigma),lm^(1-sigma)))
+  }
+  else
+  {
+  wtau<-c(wtau,0)
+  L<-c(L,0)
+  }
+  }
+  wtau<-wtau/sum(wtau)
+  wtau<-wtau*L
+  wLM<-wtau/sum(wtau)
+  return(wLM)
+  #end wL function
+  }  
+  s<-which(dates.==start)
+  t<-which(dates.==end)
+  wLM_start<-lapply(dates.,wLM_tau_t, t=start)
+  wLM_end<-lapply(dates.,wLM_tau_t, t=end)
+  gekslm<-c()
+  for (i in 1:n_av)
+  {
+  suma_start<-0
+  suma_end<-0
+  prod_st<-1
+  for (tt in 1:TT) {suma_start<-suma_start+wLM_start[[tt]][i]
+                    suma_end<-suma_end+wLM_end[[tt]][i]
+                    prod_st<-prod_st*price[[tt]][i]^(wLM_start[[tt]][i]-wLM_end[[tt]][i])
+                    }
+  suma_start<-suma_start/TT
+  suma_end<-suma_end/TT
+  prod_st<-prod_st^(1/(TT))
+  gekslm<-c(gekslm, (price[[t]][i]^suma_end)/(price[[s]][i]^suma_start)*prod_st)
+  }
+  result$GEKS_LM<-gekslm
+  #end GEKS-LM decomposition   
+  }
+  columns2<-c(columns2, "gekslm")
+  result<-result[,match(columns,columns2)]
+  l<-list()
+  result2<-result[1,]
+  result2[1,1]<-"index value (product)"
+  result_sum<-result[1,]
+  for (i in 2:ncol(result)) result2[1,i]<-prod(result[,i])
+  #multiplicative contributions
+  if (index.value==TRUE) {
+  result3<-rbind(result, result2)
+  l$multiplicative<-result3
+  }
+  else l$multiplicative<-result
+  #normalized multiplicative contributions
+  for (i in 2:ncol(result)) result[,i]<-result[,i]/(result2[1,i]^(1/n_av))
+  l$normalized<-result
+  #relative impacts
+  for (i in 2:ncol(result)) result[,i]<-(result[,i]-1)*100
+  l$impact<-result
+  return (l)
+  }
+
 

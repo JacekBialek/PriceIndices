@@ -497,6 +497,7 @@ data_matching <-
     {
     if (nrow(data) == 0)
     stop("A data frame is empty")
+    description<-NULL
     if (sensitivity == FALSE)
     {
     data$description <- tolower(data$description)

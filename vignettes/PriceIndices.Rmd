@@ -644,6 +644,15 @@ geks(milk, start="2019-01", end="2019-04",window=10)
 geksl(milk, wstart="2018-12", start="2019-03", end="2019-05")
 ```
 
+The user may decompose GEKS-type indices. The **m_decomposition** function returns multiplicative decompositions of the selected GEKS-type indices. For instance:
+
+```{r}
+milk.<-milk
+milk.$prodID<-milk.$description
+m_decomposition(milk., start="2018-12", end="2019-12",
+                formula=c("geks","ccdi"))$multiplicative
+```
+
 The **QU** function returns a value of the *quality adjusted unit value index* (QU index) for the given set of adjustment factors. An additional **v** parameter is a data frame with adjustment factors for at least all matched **prodIDs**. It must contain two columns: **prodID** with unique product IDs and **value** with corresponding adjustment factors (see documentation). The following example starts from creating a data frame which includes sample adjusted factors:
 
 ```{r}

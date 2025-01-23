@@ -5,7 +5,7 @@
 #' The package documentation can be found \href{https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_manual.pdf}{HERE}.
 #' The list of package functions is as follows:
 #'
-#' @aliases PriceIndices-package
+#' @docType package
 #' @name PriceIndices
 #' @section Data sets in the package and generating artificial scanner data sets:
 #' \code{\link{dataAGGR}}
@@ -13,8 +13,6 @@
 #' \code{\link{dataMATCH}}
 #'
 #' \code{\link{dataCOICOP}}
-#'
-#' \code{\link{data_DOWN_UP_SIZED}} 
 #'
 #' \code{\link{milk}} 
 #'
@@ -26,6 +24,8 @@
 #'
 #' \code{\link{generate}}
 #'
+#' \code{\link{generate_CES}}
+#'
 #' \code{\link{tindex}}
 #'
 #' @section Functions for data processing:
@@ -33,9 +33,9 @@
 #'
 #' \code{\link{data_preparing}} 
 #'
-#' \code{\link{data_aggregating}} 
+#' \code{\link{data_imputing}} 
 #'
-#' \code{\link{data_reducing}} 
+#' \code{\link{data_aggregating}} 
 #'
 #' \code{\link{data_unit}} 
 #'
@@ -55,7 +55,7 @@
 #'
 #' \code{\link{data_filtering}} 
 #'
-#' \code{\link{shrinkflation}} 
+#' \code{\link{data_reducing}} 
 #'
 #' @section Functions providing dataset characteristics:
 #' \code{\link{available}} 
@@ -66,6 +66,10 @@
 #' 
 #' \code{\link{matched_fig}}
 #'
+#' \code{\link{products}}
+#'
+#' \code{\link{products_fig}}
+#'
 #' \code{\link{prices}} 
 #'
 #' \code{\link{quantities}} 
@@ -75,6 +79,8 @@
 #' \code{\link{sales_groups}} 
 #' 
 #' \code{\link{sales_groups2}} 
+#'
+#' \code{\link{expenditures}}
 #' 
 #' \code{\link{pqcor}}
 #'
@@ -99,9 +105,7 @@
 #'
 #' \code{\link{harmonic}}
 #'
-#' \code{\link{dikhanov}}
-#'
-#' @section Functions for bilateral weighted price index calculation:
+#' @section Functions for bilateral weighted index calculation:
 #' \code{\link{agmean}} 
 #'
 #' \code{\link{banajree}}
@@ -154,7 +158,17 @@
 #'
 #' \code{\link{young}}
 #'
-#' @section Functions for chain price index calculation:
+#' \code{\link{QMp}}
+#'
+#' \code{\link{IQMp}}
+#'
+#' \code{\link{QMq}}
+#'
+#' \code{\link{value_index}}
+#'
+#' \code{\link{unit_value_index}}
+#'
+#' @section Functions for chain index calculation:
 #' \code{\link{chbmw}} 
 #'
 #' \code{\link{chcarli}}
@@ -166,8 +180,6 @@
 #' \code{\link{chjevons}}
 #'
 #' \code{\link{chharmonic}}
-#'
-#' \code{\link{chdikhanov}}
 #'
 #' \code{\link{chagmean}} 
 #'
@@ -221,6 +233,12 @@
 #'
 #' \code{\link{chyoung}}
 #'
+#' \code{\link{chQMp}}
+#'
+#' \code{\link{chIQMp}}
+#'
+#' \code{\link{chQMq}}
+#'
 #' @section Functions for multilateral price index calculation:
 #' \code{\link{ccdi}} 
 #'
@@ -252,6 +270,12 @@
 #'
 #' \code{\link{geksw}}
 #'
+#' \code{\link{geksqm}}
+#'
+#' \code{\link{geksiqm}}
+#'
+#' \code{\link{gekslm}}
+#'
 #' \code{\link{gk}}
 #'
 #' \code{\link{QU}}
@@ -259,6 +283,8 @@
 #' \code{\link{tpd}}
 #'
 #' \code{\link{SPQ}}
+#'
+#' \code{\link{m_decomposition}}
 #'
 #' @section Functions for extending multilateral price indices by using splicing methods:
 #' \code{\link{ccdi_splice}} 
@@ -290,6 +316,12 @@
 #' \code{\link{geksgaqi_splice}}
 #'
 #' \code{\link{wgeksgaqi_splice}}
+#'
+#' \code{\link{geksqm_splice}}
+#'
+#' \code{\link{geksiqm_splice}}
+#'
+#' \code{\link{gekslm_splice}}
 #'
 #' \code{\link{gk_splice}}
 #'
@@ -326,6 +358,12 @@
 #'
 #' \code{\link{wgeksgaqi_fbew}}
 #'
+#' \code{\link{geksqm_fbew}}
+#'
+#' \code{\link{geksiqm_fbew}}
+#'
+#' \code{\link{gekslm_fbew}}
+#'
 #' \code{\link{gk_fbew}}
 #'
 #' \code{\link{tpd_fbew}}
@@ -361,9 +399,25 @@
 #'
 #' \code{\link{wgeksgaqi_fbmw}}
 #'
+#' \code{\link{geksqm_fbmw}}
+#'
+#' \code{\link{geksiqm_fbmw}}
+#'
+#' \code{\link{gekslm_fbmw}}
+#'
 #' \code{\link{gk_fbmw}}
 #'
 #' \code{\link{tpd_fbmw}}
+#'
+#' @section Functions for bilateral indicator calculations:
+#' \code{\link{bennet}} 
+#'
+#' \code{\link{montgomery}} 
+#'
+#' @section Functions for multilateral indicator calculations:
+#' \code{\link{mbennet}} 
+#'
+#' \code{\link{mmontgomery}} 
 #'
 #' @section General functions for price index calculations:
 #' \code{\link{price_indices}}
@@ -371,7 +425,7 @@
 #' \code{\link{final_index}}
 #'
 #' @section Functions for comparisons of price indices:
-#' \code{\link{compare_indices_df}}
+#' \code{\link{compare_indices_df}} 
 #'
 #' \code{\link{compare_indices_list}}
 #'

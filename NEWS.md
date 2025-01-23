@@ -1,7 +1,11 @@
 # Package update 0.2.2 -> 0.2.3
 
+## New functions: 
+* New function for multiplicative decomposing the GEKS-type indices (*m_decomposition*)
+
 ## Improvements:
 * The **data_selecting** function is now much faster.
+* The **gk** function is now much faster.
 
 # Package update 0.2.1 -> 0.2.2
 
