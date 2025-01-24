@@ -2132,9 +2132,9 @@ data_unit <-
 #' @return The function returns the user's data frame with two transformed columns: \code{grammage} and \code{unit}, and two rescaled columns: \code{prices} and \code{quantities}. The above-mentioned transformation and rescaling take into consideration the user \code{rules}. Recalculated prices and quantities concern grammage units defined as the second parameter in the given rule.   
 #' @examples 
 #' # Preparing a data set
-#' data<-data_unit(dataU, units=c("g|ml|kg|l"), multiplication="x")
+#' \donttest{data<-data_unit(dataU, units=c("g|ml|kg|l"), multiplication="x")}
 #' # Normalization of grammage units
-#' data_norm(data, rules=list(c("ml","l",1000), c("g","kg",1000)))
+#' \donttest{data_norm(data, rules=list(c("ml","l",1000), c("g","kg",1000)))}
 #' @export
 
 data_norm <-
@@ -2759,23 +2759,23 @@ return(dplyr::bind_rows(subgroup_list))
 #' 
 #' @examples 
 #' #Data matching over time
-#' df<-data_matching(data=data_DOWN_UP_SIZED, start="2024-01", end="2024-02", 
+#' \donttest{df<-data_matching(data=data_DOWN_UP_SIZED, start="2024-01", end="2024-02", 
 #' codeIN=TRUE,codeOUT=TRUE,description=TRUE, 
-#' onlydescription=FALSE,precision=0.9,interval=FALSE)
+#' onlydescription=FALSE,precision=0.9,interval=FALSE)}
 #' # Extraction of information about grammage (if needed)
-#' df<-data_unit(df,units=c("g|ml|kg|l"),multiplication="x")
+#' \donttest{df<-data_unit(df,units=c("g|ml|kg|l"),multiplication="x")}
 #' # Price standardization
-#' df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))
+#' \donttest{df<-data_norm(df, rules=list(c("ml","l",1000),c("g","kg",1000)))}
 #' # Downsized and upsized products detection
-#' result<-shrinkflation(data=df, start="2024-01","2024-02", 
-#' prec=3, interval=FALSE, type="shrinkflation")
-#' result$df_changes
-#' result$df_type
-#' result$df_overview
-#' result$products_detected
-#' result$df_detected
-#' result$df_reduced
-#' result$df_summary
+#' \donttest{result<-shrinkflation(data=df, start="2024-01","2024-02", 
+#' prec=3, interval=FALSE, type="shrinkflation")}
+#' \donttest{result$df_changes}
+#' \donttest{result$df_type}
+#' \donttest{result$df_overview}
+#' \donttest{result$products_detected}
+#' \donttest{result$df_detected}
+#' \donttest{result$df_reduced}
+#' \donttest{result$df_summary}
 #' 
 #' @export
 

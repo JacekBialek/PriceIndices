@@ -1,5 +1,8 @@
 # Package update 
 
+## Resubmission
+This is a resubmission. Sending the package update yesterday, I received 1 note that the examples in the functions **data_norm** and **shrinkflation** are too time-consuming (I had no such comments before, on my computer also 'check' did not give such a message). Anyway, I corrected it using 'donttest' in the current package version. Thank you for this notification!
+
 ## New functions: 
 * New function for multiplicative decomposing the GEKS-type indices (*m_decomposition*)
 
