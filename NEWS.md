@@ -1,3 +1,11 @@
+# Package update 0.2.3 -> 0.2.4
+
+## New functions: 
+* New function for data stratification via the MARS method (*MARS*)
+
+## New data sets:
+* New artificial scanner data set for testing the MARS method (*dataMARS*)
+
 # Package update 0.2.2 -> 0.2.3
 
 ## New functions: 

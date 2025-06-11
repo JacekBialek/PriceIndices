@@ -1,14 +1,10 @@
 # Package update 
 
-## Resubmission
-This is a resubmission. Sending the package update yesterday, I received 1 note that the examples in the functions **data_norm** and **shrinkflation** are too time-consuming (I had no such comments before, on my computer also 'check' did not give such a message). Anyway, I corrected it using 'donttest' in the current package version. Thank you for this notification!
-
 ## New functions: 
-* New function for multiplicative decomposing the GEKS-type indices (*m_decomposition*)
+* New function for data stratification via the MARS method (*MARS*)
 
-## Improvements:
-* The **data_selecting** function is now much faster.
-* The **gk** function is now much faster.
+## New data sets:
+* New artificial scanner data set for testing the MARS method (*dataMARS*)
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3
