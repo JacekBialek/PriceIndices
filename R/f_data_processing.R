@@ -3008,4 +3008,187 @@ return (list(df_changes=changes,
              df_reduced=df_reduced,
              df_summary=data.frame(stats=characteristics, value=values)
              ))
+}
+
+#' @title  Data stratification via the MARS method
+#'
+#' @description This function groups prodIDs into strata (‘products’) by balancing two measures: an explained variance (R squared) measure for the ‘homogeneity’ of prodIDs within products, while the second expresses the degree to which products can be ‘matched’ over time with respect to a comparison period.
+#' @param data The user's data frame with information about products. It must contain attributes: \code{time} (as Date in format: year-month-day, e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric), \code{prodID} (as numeric or character) and the attributes indicated by the 'attributes' parameter.
+#' @param start The base period \code{0} (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period \code{t} (as character) limited to the year and month, e.g. "2020-04".
+#' @param attributes A character vector with column names specifying the product attributes. 
+#' @param n Parameter needed only if \code{last_months} strategy is selected. This parameter specifies how many last months are to be taken into account for calculating the average MARS value.
+#' @param strategy A variable that determines how to calculate the degree of product match, the degree of homogeneity (the weighted R squared measure) and the final MARS score. Available options are: \code{two_months} (only base and current periods are considered, i.e. the MARS score is computed for periods \code{0} and {t}), \code{interval_base} (MARS scores are calculated for each pair of periods: (0,1), (0,2), ...(0,t) and the geometric mean of these values is returned), \code{interval_chain} (MARS scores are calculated for each pair of periods: (0,1), (1,2), ...(t-1,t) and the geometric mean of these values is returned), \code{interval_pairs} (MARS scores are calculated for each pair of periods: (a,b) from the interval {0,1,2,...,t} and the geometric mean of these values is returned), \code{last_months} (MARS scores are calculated for each pair of periods: (t-n,t), (t-n+1,2), ...(t-1,t) and the geometric mean of these values is returned). 
+#' @rdname MARS
+#' @return This function groups prodIDs into strata (‘products’) by balancing two measures: an explained variance (R squared) measure for the ‘homogeneity’ of prodIDs within products, while the second expresses the degree to which products can be ‘matched’ over time with respect to a comparison period. The resulting product ‘match adjusted R squared’ (MARS) combines explained variance in product prices with product match over time, so that different stratification schemes can be ranked according to the combined measure. Any combination of attributes is taken into account when creating stratas. For example, for a set of attributes {A, B, C}, the stratas created by the following attribute combinations are considered: A, B, C, A-B, A-C, B-C, A-B-C.The function returns a list with the following elements: \code{scores} (with scores for degrees of product match and product homogeneity, as well as for MARS measure), \code{best_partition} (with the name of the partition for which the highest indication of the MARS measure was obtained), and \code{data_MARS} (with a data frame obtained by replacing the original prodIDs with identifiers created based on the selected best partition). 
+#' @references
+#' {Chessa, A.G. (2022). \emph{A Product Match Adjusted R Squared Method for Defining Products with Transaction Data}. Journal of Official Statistics, 37(2), 411–432.} 
+#' @examples 
+#' df<-MARS(data=dataMARS, 
+#'           start="2025-05", end="2025-09",
+#'           attributes=c("brand","size","fabric"),
+#'           strategy="two_months")
+#' #Results:
+#' df$scores
+#' df$best_partition
+#' df$data_MARS
+#' @export
+
+MARS<-function (data=data.frame(), 
+                start, 
+                end, 
+                attributes=c(), 
+                n=3, 
+                strategy="two_months")
+{#checking conditions
+ if (nrow(data)==0) stop("The data set is empty!")
+ av_strategy<-c("two_months", "interval_base", "interval_chain", "interval_pairs", "last_months")
+ if (!(strategy %in% av_strategy)) stop("Bad specification of the 'strategy' parameter!")
+ av_colnames<-colnames(data)
+ if (!length(intersect(attributes, av_colnames))==length(attributes)) stop("Bad specification of at least one attribute!")
+ #creating additional column with product definitions
+ n_col<-length(attributes)
+ combinations<-list()
+ for (i in 1:n_col) {
+  combinations<-append(combinations, combn(x=c(1:n_col),m=i, simplify=FALSE))
+ }
+ new_cols<-c()
+ attributes_joined<-c()
+ for (i in 1:length(combinations))
+ {
+ cols<-attributes[combinations[[i]]]
+ attributes_joined<-c(attributes_joined, paste0(cols, collapse = "-"))
+ new_cols<-c(new_cols, paste("new",as.character(i),sep="")) #newly created attributes new1, new2, ..etc.
+ data[,paste("new",as.character(i), sep="")] <- 
+   apply(data[ , cols], 1, paste, collapse = "-" )  
+ }
+ start.<-paste(start,"-01", sep="")
+ start.<-as.Date(start.)
+ end.<-paste(end,"-01", sep="")
+ end.<-as.Date(end.)
+ lubridate::day(end.)<-lubridate::days_in_month(end.)
+ #reducing data frame to spare time
+ if (strategy=="two_months") {
+ df<-dplyr::filter(data, 
+                   (lubridate::year(time)==lubridate::year(start.)
+                   & lubridate::month(time)==lubridate::month(start.))
+                   | (lubridate::year(time)==lubridate::year(end.)
+                   & lubridate::month(time)==lubridate::month(end.))
+                    )  
+ }
+ else #the whole interval is considered
+   df<-dplyr::filter(data, time>=start. & time<=end.)  
+ #limiting dates to year-month versions
+ df$time<-substr(df$time,0,7)
+ periods<-unique(df$time) #periods like year-month (as character)
+ #internal function
+ scores <- function (start., end.)
+ {
+ niK<-c() #product match
+ RK<-c() #product homogeneity
+ MK<-c() #MARS values of all partitions
+ df_start<-dplyr::filter(df, time==start.)
+ df_end<-dplyr::filter(df, time==end.)
+ #product match
+ sum_qt<-sum(df_end$quantities)
+ #product homogeneity
+ sum_pqt<-sum(df_end$prices*df_end$quantities)
+ mean_pt<-sum_pqt/sum_qt
+ denom_RK<-sum(df_end$quantities*(df_end$prices-mean_pt)^2)
+ #loop for all partitions
+ for (partition in new_cols)
+ {matched_products<-intersect(unique(df_start[,partition]),unique(df_end[,partition]))
+ matched_products<-matched_products[[1]] 
+ df_end$test<-df_end[,partition][[1]]
+ df_end_matched_products<-
+    dplyr::filter(df_end, test %in% matched_products)
+  niK<-c(niK, sum(df_end_matched_products$quantities)/sum_qt)
+ df_end_K<-dplyr::summarise(dplyr::group_by(df_end, by=test), 
+                  qt=sum(quantities),
+                  pt=sum(prices*quantities)/sum(quantities))
+ RK<-c(RK, sum(df_end_K$qt*(df_end_K$pt-mean_pt)^2)/denom_RK) 
+ MK<-niK*RK
+ }
+ #return(attributes_joined)
+ df_returned<-data.frame(
+   partition=attributes_joined, 
+   product_match=niK, 
+   product_homogeneity=RK, 
+   MARS=MK)
+ return (df_returned)
+ }
+ #creating a list which is returned
+ returned_list=list()
+ list_with_scores<-list()
+ if (strategy=="two_months") returned_list$scores<-scores(start, end)
+ if (strategy=="interval_base") {
+ periods.<-periods[2:length(periods)]
+ list_with_scores<-lapply(periods., scores, start.=periods[1])
+ list_with_scores<-dplyr::bind_rows(list_with_scores)
+ list_with_scores<-dplyr::summarise(dplyr::group_by(list_with_scores, by=partition),
+            product_match=prod(product_match)^(1/length(product_match)),
+            product_homogeneity=prod(product_homogeneity)^(1/length(product_homogeneity)),
+            MARS=prod(MARS)^(1/length(MARS))
+                  )
+ colnames(list_with_scores)<-c("partition","product_match","product_homogeneity","MARS")
+ #setting the order of partitions
+ list_with_scores<-
+   list_with_scores[match(attributes_joined, list_with_scores$partition),]
+ returned_list$scores<-list_with_scores
+ }
+ if (strategy=="interval_chain") {
+ for (i in 2:length(periods)) list_with_scores[[i]]<-
+     scores(start.=periods[i-1],end.=periods[i])
+ list_with_scores<-dplyr::bind_rows(list_with_scores)
+ list_with_scores<-dplyr::summarise(dplyr::group_by(list_with_scores, by=partition),
+            product_match=prod(product_match)^(1/length(product_match)),
+            product_homogeneity=prod(product_homogeneity)^(1/length(product_homogeneity)),
+            MARS=prod(MARS)^(1/length(MARS))
+                  )
+ colnames(list_with_scores)<-c("partition","product_match","product_homogeneity","MARS")
+ #setting the order of partitions
+ list_with_scores<-
+   list_with_scores[match(attributes_joined, list_with_scores$partition),]
+ returned_list$scores<-list_with_scores  
+ }
+ if (strategy=="interval_pairs") {
+ date_pairs<-combn(periods,2,simplify=FALSE)
+ for (i in 1:length(date_pairs)) list_with_scores[[i]]<-
+     scores(start.=date_pairs[[i]][1], end.=date_pairs[[i]][2])
+ list_with_scores<-dplyr::bind_rows(list_with_scores)
+ list_with_scores<-dplyr::summarise(dplyr::group_by(list_with_scores, by=partition),
+            product_match=prod(product_match)^(1/length(product_match)),
+            product_homogeneity=prod(product_homogeneity)^(1/length(product_homogeneity)),
+            MARS=prod(MARS)^(1/length(MARS))
+                  )
+ colnames(list_with_scores)<-c("partition","product_match","product_homogeneity","MARS")
+ #setting the order of partitions
+ list_with_scores<-
+   list_with_scores[match(attributes_joined, list_with_scores$partition),]
+ returned_list$scores<-list_with_scores  
+ }
+ if (strategy=="last_months") {
+ periods.<-tail(periods,n)
+ list_with_scores<-lapply(periods., scores, start.=periods[1])
+ list_with_scores<-dplyr::bind_rows(list_with_scores)
+ list_with_scores<-dplyr::summarise(dplyr::group_by(list_with_scores, by=partition),
+            product_match=prod(product_match)^(1/length(product_match)),
+            product_homogeneity=prod(product_homogeneity)^(1/length(product_homogeneity)),
+            MARS=prod(MARS)^(1/length(MARS))
+                  )
+ colnames(list_with_scores)<-c("partition","product_match","product_homogeneity","MARS")
+ #setting the order of partitions
+ list_with_scores<-
+   list_with_scores[match(attributes_joined, list_with_scores$partition),]
+ returned_list$scores<-list_with_scores  
+ }
+ #looking for best score
+ pos<-which(returned_list$scores$MARS==max(returned_list$scores$MARS))[1]
+ returned_list$best_partition<-returned_list$scores$partition[pos]
+ #returned df with re-defined prodID
+ data$prodID<-data[,new_cols[pos]][[1]]
+ data<-dplyr::select(data,-new_cols)
+ returned_list$data_MARS<-data
+ #returned_list is ready to be returned :)
+ return (returned_list)
 } 

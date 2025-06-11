@@ -16,6 +16,8 @@ The list of package functions is as follows:
 
 \code{\link{dataMATCH}}
 
+\code{\link{dataMARS}}
+
 \code{\link{dataCOICOP}}
 
 \code{\link{milk}} 
@@ -61,7 +63,9 @@ The list of package functions is as follows:
 
 \code{\link{data_filtering}} 
 
-\code{\link{data_reducing}}
+\code{\link{data_reducing}} 
+
+\code{\link{MARS}}
 }
 
 \section{Functions providing dataset characteristics}{

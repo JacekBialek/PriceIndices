@@ -12,6 +12,8 @@
 #'
 #' \code{\link{dataMATCH}}
 #'
+#' \code{\link{dataMARS}}
+#'
 #' \code{\link{dataCOICOP}}
 #'
 #' \code{\link{milk}} 
@@ -56,6 +58,8 @@
 #' \code{\link{data_filtering}} 
 #'
 #' \code{\link{data_reducing}} 
+#'
+#' \code{\link{MARS}} 
 #'
 #' @section Functions providing dataset characteristics:
 #' \code{\link{available}} 
