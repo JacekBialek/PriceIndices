@@ -3062,7 +3062,7 @@ MARS<-function (data=data.frame(),
  attributes_joined<-c(attributes_joined, paste0(cols, collapse = "-"))
  new_cols<-c(new_cols, paste("new",as.character(i),sep="")) #newly created attributes new1, new2, ..etc.
  data[,paste("new",as.character(i), sep="")] <- 
-   apply(data[ , cols], 1, paste, collapse = "-" )  
+   apply(as.matrix(data[ , cols]), 1, paste, collapse = "-" )  
  }
  start.<-paste(start,"-01", sep="")
  start.<-as.Date(start.)
