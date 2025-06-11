@@ -3045,12 +3045,14 @@ MARS<-function (data=data.frame(),
  av_strategy<-c("two_months", "interval_base", "interval_chain", "interval_pairs", "last_months")
  if (!(strategy %in% av_strategy)) stop("Bad specification of the 'strategy' parameter!")
  av_colnames<-colnames(data)
- if (!length(intersect(attributes, av_colnames))==length(attributes)) stop("Bad specification of at least one attribute!")
+ if (!length(base::intersect(attributes, av_colnames))==length(attributes)) stop("Bad specification of at least one attribute!")
+ #initial values
+ time<-test<-partition<-product_match<-product_homogeneity<-NULL
  #creating additional column with product definitions
  n_col<-length(attributes)
  combinations<-list()
  for (i in 1:n_col) {
-  combinations<-append(combinations, combn(x=c(1:n_col),m=i, simplify=FALSE))
+  combinations<-append(combinations, utils::combn(x=c(1:n_col),m=i, simplify=FALSE))
  }
  new_cols<-c()
  attributes_joined<-c()
@@ -3097,7 +3099,7 @@ MARS<-function (data=data.frame(),
  denom_RK<-sum(df_end$quantities*(df_end$prices-mean_pt)^2)
  #loop for all partitions
  for (partition in new_cols)
- {matched_products<-intersect(unique(df_start[,partition]),unique(df_end[,partition]))
+ {matched_products<-dplyr::intersect(unique(df_start[,partition]),unique(df_end[,partition]))
  matched_products<-matched_products[[1]] 
  df_end$test<-df_end[,partition][[1]]
  df_end_matched_products<-
@@ -3152,7 +3154,7 @@ MARS<-function (data=data.frame(),
  returned_list$scores<-list_with_scores  
  }
  if (strategy=="interval_pairs") {
- date_pairs<-combn(periods,2,simplify=FALSE)
+ date_pairs<-utils::combn(periods,2,simplify=FALSE)
  for (i in 1:length(date_pairs)) list_with_scores[[i]]<-
      scores(start.=date_pairs[[i]][1], end.=date_pairs[[i]][2])
  list_with_scores<-dplyr::bind_rows(list_with_scores)
@@ -3168,7 +3170,7 @@ MARS<-function (data=data.frame(),
  returned_list$scores<-list_with_scores  
  }
  if (strategy=="last_months") {
- periods.<-tail(periods,n)
+ periods.<-utils::tail(periods,n)
  list_with_scores<-lapply(periods., scores, start.=periods[1])
  list_with_scores<-dplyr::bind_rows(list_with_scores)
  list_with_scores<-dplyr::summarise(dplyr::group_by(list_with_scores, by=partition),
@@ -3191,4 +3193,4 @@ MARS<-function (data=data.frame(),
  returned_list$data_MARS<-data
  #returned_list is ready to be returned :)
  return (returned_list)
-} 
+}
