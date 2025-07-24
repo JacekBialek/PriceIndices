@@ -4,12 +4,14 @@
 \alias{data_aggregating}
 \title{Aggregating the user's data frame}
 \usage{
-data_aggregating(data, join_outlets = TRUE)
+data_aggregating(data, join_outlets = TRUE, description = FALSE)
 }
 \arguments{
 \item{data}{The user's data frame.}
 
 \item{join_outlets}{A logical value indicating whether the data aggregation over outlets should be also done.}
+
+\item{description}{A logical value indicating whether the aggregated (returned) data frame should contain product descriptions. Please note that product codes and their descriptions are not necessarily in a 1:1 relationship. When description=TRUE, the function returns the first description encountered within a given product code (prodID).}
 }
 \value{
 The function aggregates the user's data frame over time and/or over outlets. Consequently, we obtain monthly data, where the unit value is calculated instead of a price for each \code{prodID} observed in each month (the \code{time} column gets the Date format: "Year-Month-01"). If the parameter \code{join_outlets} is TRUE, then the function also performs aggregation over outlets (retIDs) and the \code{retID} column is removed from the data frame. The main advantage of using this function is the ability to reduce the size of the data frame and the time needed to calculate the price index. Please note, that unnecessary columns are removed (e.g. \code{description}).

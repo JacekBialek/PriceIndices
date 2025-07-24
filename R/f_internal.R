@@ -4951,3 +4951,134 @@ ratios<-function (x,y)
   }
   return (ratios.)
 }
+
+
+#' An additional function used in the 'data_imputing' function
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as numeric), \code{quantities} (as numeric - for future calculations) and \code{prodID} (as numeric, factor or character). A column \code{retID} (as factor, character or numeric) is also needed if the User wants to impute prices over outlets.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param method A character string indicating the imputation method. Available options are: \code{carry forward}, \code{overall mean}, \code{class mean}. For the class mean method, the \code{class} parameter must be specified.
+#' @param formula A character string indicating the index formula which will be used for the overall mean or class mean method. Available options are: \code{dutot}, \code{carli}, \code{jevons}, \code{fisher}, \code{tornqvist}, \code{walsh}.
+#' @param zero_prices A logical parameter indicating whether zero prices are to be imputed too (then it is set to TRUE).
+#' @param outlets A logical parameter indicating whether imputations are to be done for each outlet separately (then it is set to TRUE).
+#' @noRd
+
+data_imputing_help<-function (data, 
+                          start, 
+                          end, 
+                          method="carry forward",
+                          formula="jevons",
+                          zero_prices=TRUE,
+                          outlets=TRUE)
+{
+#initial step:
+time<-prodID<-retID<-label<-price_imputed<-NULL
+imp_time<-av_time<-imp_time_Date<-av_time_Date<-NULL
+start <- paste(start, "-01", sep = "")
+end <- paste(end, "-01", sep = "")
+start <- as.Date(start)
+end <- as.Date(end)
+data<-dplyr::filter(data, time>=start & time<=end)
+dates <- seq.Date(from = start, to = end, by = "month")
+dates<-substr(dates,0,7)
+#helping function for forward-backward procedure
+help<-function (x, set)
+{
+  s<-set[which(set<x)]
+  if (length(s)>0) s<-max(s)
+  else s<-min(set[which(set>x)])
+  return (s)
+}
+#main procedure
+impute_prices<-function (data.)
+{  
+# case with no aggregation over outlets and over groups 
+av_ID<-unique(data.$prodID)
+data.<-data_aggregating (data., join_outlets=TRUE)
+if (zero_prices==TRUE) data.<-dplyr::filter(data., prices>0)
+#procedure for each prodID
+prices<-c()
+impute<-function (idd)
+{
+df<-dplyr::filter(data., prodID==idd)
+if (nrow(df)==0) return (df)
+av_dates<-substr(unique(df$time),0,7) #available dates
+imp_dates<-setdiff(dates, av_dates)   #dates which require imputation
+if (length(imp_dates)==0) return (df)
+else {
+av_n<-match(av_dates, dates)
+imp_n<-match(imp_dates, dates)
+#main body for imputation
+for (x in imp_n) {
+                 if (method=="carry forward") 
+                   price_imputed<-prices(df,period=dates[help(x,av_n)],set=idd,ID=FALSE) 
+                 if (method %in% c("overall mean", "class mean")) {
+                 imp_time<-dates[x]
+                 av_time<-dates[help(x,av_n)]
+                 imp_time_Date<-as.Date(paste(imp_time,"-01", sep = ""))
+                 av_time_Date<-as.Date(paste(av_time,"-01", sep = ""))
+                 if (imp_time_Date>av_time_Date) {
+                   if (formula=="jevons") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)*jevons(data., start=av_time, end=imp_time)
+                   if (formula=="carli") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)*carli(data., start=av_time, end=imp_time)
+                   if (formula=="dutot") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)*dutot(data., start=av_time, end=imp_time)
+                   if (formula=="fisher") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)*fisher(data., start=av_time, end=imp_time)
+                   if (formula=="tornqvist") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)*tornqvist(data., start=av_time, end=imp_time)
+                   if (formula=="walsh") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)*walsh(data., start=av_time, end=imp_time)
+                                                 }
+                 else {
+                   if (formula=="jevons") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)/jevons(data., start=imp_time, end=av_time)
+                   if (formula=="carli") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)/carli(data., start=imp_time, end=av_time)
+                   if (formula=="dutot") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)/dutot(data., start=imp_time, end=av_time)
+                   if (formula=="fisher") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)/fisher(data., start=imp_time, end=av_time)
+                   if (formula=="tornqvist") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)/tornqvist(data., start=imp_time, end=av_time)
+                   if (formula=="walsh") 
+                     price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)/walsh(data., start=imp_time, end=av_time)
+                      }
+                 }
+                 #adding value to a price vector 
+                 prices<-c(prices, price_imputed)
+                 }
+#end main body of imputation
+imp_dates<-paste(imp_dates,"-01",sep="")
+imp_dates<-as.Date(imp_dates)
+df2<-data.frame(
+  time=imp_dates,
+  prices=prices,
+  quantities=rep(0,length(prices)),
+  prodID=rep(idd, length(prices))
+)
+return (rbind(df,df2))
+}
+}
+result_list<-lapply(av_ID, impute)
+result_list<-dplyr::bind_rows(result_list)
+return (dplyr::select(result_list, time, prices, quantities, prodID))
+}
+#results
+if (outlets==FALSE) return (impute_prices(data))
+else
+{
+impute_prices_list<-function (data.)
+{retID<-unique(data.$retID)
+ df_list<-impute_prices(data.)
+ df_list$retID<-retID
+ return (df_list)
+}
+outlets<-split(data, data$retID)
+result_list<-lapply(outlets, impute_prices_list)
+result_list<-dplyr::bind_rows(result_list)
+return (dplyr::select(result_list, time, prices, quantities, prodID, retID))
+}
+}
+

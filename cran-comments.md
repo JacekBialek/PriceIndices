@@ -6,6 +6,11 @@
 ## New data sets:
 * New artificial scanner data set for testing the MARS method (*dataMARS*)
 
+## Improvements:
+* New parameter (description) has been added to the *data_aggregating* function
+* New imputation methods (overall mean, class mean) have been added to the *data_imputing* function.
+
+
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3
 * Ubuntu Linux 16.04 LTS, R-release, GCC

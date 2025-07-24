@@ -2245,6 +2245,7 @@ return (TRUE)
 #' @description The function aggregates the user's data frame over time and optionally over outlets.
 #' @param data The user's data frame.
 #' @param join_outlets A logical value indicating whether the data aggregation over outlets should be also done.
+#' @param description A logical value indicating whether the aggregated (returned) data frame should contain product descriptions. Please note that product codes and their descriptions are not necessarily in a 1:1 relationship. When description=TRUE, the function returns the first description encountered within a given product code (prodID).
 #' @rdname data_aggregating
 #' @return The function aggregates the user's data frame over time and/or over outlets. Consequently, we obtain monthly data, where the unit value is calculated instead of a price for each \code{prodID} observed in each month (the \code{time} column gets the Date format: "Year-Month-01"). If the parameter \code{join_outlets} is TRUE, then the function also performs aggregation over outlets (retIDs) and the \code{retID} column is removed from the data frame. The main advantage of using this function is the ability to reduce the size of the data frame and the time needed to calculate the price index. Please note, that unnecessary columns are removed (e.g. \code{description}).
 #' @examples 
@@ -2256,20 +2257,31 @@ return (TRUE)
 #' nrow(data_aggregating(milk))
 #' @export
 
-data_aggregating<-function (data, join_outlets = TRUE)
+data_aggregating<-function (data, join_outlets = TRUE, description=FALSE)
 {
 time<-prodID<-retID<-prices2<-quantities2<-NULL
 #checking columns
 cols<-colnames(data)
 if (!("time" %in% cols) | !("prodID" %in% cols)) stop("A data frame must contain columns: time, prodID")
 if ((join_outlets==FALSE) & !("retID" %in% cols)) stop("A date frame must contain the 'retID' column")
+if ((description==TRUE) & !("description" %in% cols)) stop("A date frame must contain the 'retID' column")
 #main body
 data$time<-as.character(data$time)
 data$time<-substr(data$time,0,7)
-if (join_outlets==TRUE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),.groups="drop")
-else data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID, retID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),.groups="drop")
+if (join_outlets==TRUE) 
+{ 
+if (description==FALSE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID),   prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),.groups="drop")
+else data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID),   prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),description=description[1],.groups="drop")
+}
+else 
+{  
+if (description==FALSE)  
+data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID, retID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),.groups="drop")
+else data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID, retID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),description=description[1],.groups="drop")
+}
 data_aggr$time<-paste(data_aggr$time,"-01",sep="")
 data_aggr$time<-as.Date(data_aggr$time)
+if (description==TRUE) data_aggr$description<-as.character(data_aggr$description)
 data_aggr<-dplyr::rename(data_aggr, prices=prices2, quantities=quantities2)
 return (data_aggr)
 }
@@ -2402,15 +2414,18 @@ return (fig)
 
 #' @title  Imputing missing and (optionally) zero prices.
 #'
-#' @description This function imputes missing prices and (optionally) zero prices by using carry forward/backward prices. 
+#' @description This function imputes missing prices and (optionally) zero prices by using one of the following methods: carry forward/backward, overall mean, class mean (targeted mean). 
 #'
 #' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as numeric), \code{quantities} (as numeric - for future calculations) and \code{prodID} (as numeric, factor or character). A column \code{retID} (as factor, character or numeric) is also needed if the User wants to impute prices over outlets.
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param method A character string indicating the imputation method. Available options are: \code{carry forward}, \code{overall mean}, \code{class mean}. For the class mean method, the \code{class} parameter must be specified.
+#' @param class A character string indicating the column which describes product classes (homogeneous subgroups). 
+#' @param formula A character string indicating the index formula which will be used for the overall mean or class mean method. Available options are: \code{dutot}, \code{carli}, \code{jevons}, \code{fisher}, \code{tornqvist}, \code{walsh}.
 #' @param zero_prices A logical parameter indicating whether zero prices are to be imputed too (then it is set to TRUE).
 #' @param outlets A logical parameter indicating whether imputations are to be done for each outlet separately (then it is set to TRUE).
 #' @rdname data_imputing
-#' @return This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the \code{outlets} parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame (monthly aggregated) which is ready for price index calculations.
+#' @return This function imputes missing prices (unit values) and (optionally) zero prices by using one of the following methods: carry forward/backward, overall mean, class mean (targeted mean). The imputation can be done for each outlet separately or for aggragated data (see the \code{outlets} parameter). For the carry forward/backward method: if a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. For the overall mean method: the procedure is similar, except that the imputed price is based on the previously recorded price multiplied (or divided - in the case of the next recorded price) by the price index determined for the quoted and imputed period. The user can select the index formula via the \code{formula} parameter. For the class mean method (also known as targeted mean method): the procedure is analogous to the overall mean method, but the price index is determined for the product class specified by the \code{class} parameter. The quantities for imputed prices are set to zero. The function returns a data frame (monthly aggregated) which is ready for price index calculations.
 #'
 #' @examples 
 #' # Creating a small data set with zero prices:
@@ -2436,86 +2451,51 @@ return (fig)
 #' set2<-data[6:30,]
 #' df<-rbind(set1, set2)
 #' # Price imputing:
-#' data_imputing(df, start="2018-12", end="2019-03",
-#' zero_prices=TRUE, outlets=TRUE)}
+#' data_imputing(df, start="2018-12", end="2019-02",
+#' zero_prices=TRUE, outlets=TRUE)
+#' data_imputing(df, start="2018-12", end="2019-02",
+#' method="overall mean", zero_prices=TRUE, formula="fisher")}
 #' @export
 
-data_imputing<-function (data, start, end, 
-                         zero_prices=TRUE, 
-                         outlets=TRUE)
+data_imputing<-function (data, 
+                          start, 
+                          end, 
+                          method="carry forward",
+                          class=c(),
+                          formula="jevons",
+                          zero_prices=TRUE,
+                          outlets=TRUE)
 {
-#initial step:
-if (nrow(data) == 0)
-  stop("A data frame is empty")
-time<-prodID<-retID<-label<-NULL
-start <- paste(start, "-01", sep = "")
-end <- paste(end, "-01", sep = "")
-start <- as.Date(start)
-end <- as.Date(end)
-data<-dplyr::filter(data, time>=start & time<=end)
-dates <- seq.Date(from = start, to = end, by = "month")
-dates<-substr(dates,0,7)
-#available prodIDs
-#helping function for forward-backward procedure
-help<-function (x, set)
-{
-  s<-set[which(set<x)]
-  if (length(s)>0) s<-max(s)
-  else s<-min(set[which(set>x)])
-  return (s)
-}
-#main procedure
-impute_prices<-function (data.)
-{  
-# case with no aggregation over outlets and over groups 
-av_ID<-unique(data.$prodID)
-data.<-data_aggregating (data., join_outlets=TRUE)
-if (zero_prices==TRUE) data.<-dplyr::filter(data., prices>0)
-#procedure for each prodID
-prices<-c()
-impute<-function (id)
-{
-df<-dplyr::filter(data., prodID==id)
-if (nrow(df)==0) return (df)
-av_dates<-substr(unique(df$time),0,7) #available dates
-imp_dates<-setdiff(dates, av_dates)   #dates which require imputation
-if (length(imp_dates)==0) return (df)
-else {
-av_n<-match(av_dates, dates)
-imp_n<-match(imp_dates, dates)
-for (x in imp_n) prices<-c(prices, prices(df,
-                                period=dates[help(x,av_n)],
-                                set=id,
-                                ID=FALSE))
-imp_dates<-paste(imp_dates,"-01",sep="")
-imp_dates<-as.Date(imp_dates)
-df2<-data.frame(
-  time=imp_dates,
-  prices=prices,
-  quantities=rep(0,length(prices)),
-  prodID=rep(id, length(prices))
-)
-return (rbind(df,df2))
-}
-}
-result_list<-lapply(av_ID, impute)
-result_list<-dplyr::bind_rows(result_list)
-return (dplyr::select(result_list, time, prices, quantities, prodID))
-}
-#results
-if (outlets==FALSE) return (impute_prices(data))
+if (nrow(data) == 0) stop("A data frame is empty")
+if (!(method %in% c("carry forward","overall mean","class mean"))) 
+  stop("Available methods are: carry forward, overall mean, class mean.")
+if (!(formula %in% c("jevons","dutot","carli","fisher","walsh","tornqvist"))) 
+  stop("Available formulas are: dutot, carli, jevons, fisher, tornqvist, walsh.")
+if (method=="class mean" & (length(class)==0)) stop("The 'class' parameter must be specified when using the class mean method!")
+if (method=="class mean") if (!(class %in% colnames(data))) stop("Bad specificiation of the 'class' parameter!")  
+data_spli<-data_imputed_list<-data_classes<-NULL
+if (length(class)==0) data_imputing_help(data=data,
+                                         start=start,
+                                         end=end,
+                                         method=method,
+                                         formula=formula,
+                                         zero_prices=zero_prices,
+                                         outlets=outlets)
 else
-{
-impute_prices_list<-function (data.)
-{retID<-unique(data.$retID)
- df_list<-impute_prices(data.)
- df_list$retID<-retID
- return (df_list)
-}
-outlets<-split(data, data$retID)
-result_list<-lapply(outlets, impute_prices_list)
-result_list<-dplyr::bind_rows(result_list)
-return (dplyr::select(result_list, time, prices, quantities, prodID, retID))
+{#case for 'class mean' method
+ data_split<-split(data,f=data[,class])
+ data_classes<-names(data_split)
+ data_imputed_list<-lapply(data_split, 
+                           data_imputing_help, 
+                           start=start,
+                           end=end,
+                           method="overall mean",
+                           formula=formula,
+                           zero_prices=zero_prices,
+                           outlets=outlets)
+ for (i in 1:length(data_imputed_list)) data_imputed_list[[i]][,class]<-data_classes[i]
+ data_imputed_list<-dplyr::bind_rows(data_imputed_list)
+ return (data_imputed_list)
 }
 }
 

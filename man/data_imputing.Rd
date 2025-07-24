@@ -4,7 +4,16 @@
 \alias{data_imputing}
 \title{Imputing missing and (optionally) zero prices.}
 \usage{
-data_imputing(data, start, end, zero_prices = TRUE, outlets = TRUE)
+data_imputing(
+  data,
+  start,
+  end,
+  method = "carry forward",
+  class = c(),
+  formula = "jevons",
+  zero_prices = TRUE,
+  outlets = TRUE
+)
 }
 \arguments{
 \item{data}{The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as numeric), \code{quantities} (as numeric - for future calculations) and \code{prodID} (as numeric, factor or character). A column \code{retID} (as factor, character or numeric) is also needed if the User wants to impute prices over outlets.}
@@ -13,15 +22,21 @@ data_imputing(data, start, end, zero_prices = TRUE, outlets = TRUE)
 
 \item{end}{The research period (as character) limited to the year and month, e.g. "2020-04".}
 
+\item{method}{A character string indicating the imputation method. Available options are: \code{carry forward}, \code{overall mean}, \code{class mean}. For the class mean method, the \code{class} parameter must be specified.}
+
+\item{class}{A character string indicating the column which describes product classes (homogeneous subgroups).}
+
+\item{formula}{A character string indicating the index formula which will be used for the overall mean or class mean method. Available options are: \code{dutot}, \code{carli}, \code{jevons}, \code{fisher}, \code{tornqvist}, \code{walsh}.}
+
 \item{zero_prices}{A logical parameter indicating whether zero prices are to be imputed too (then it is set to TRUE).}
 
 \item{outlets}{A logical parameter indicating whether imputations are to be done for each outlet separately (then it is set to TRUE).}
 }
 \value{
-This function imputes missing prices (unit values) and (optionally) zero prices by using carry forward/backward prices. The imputation can be done for each outlet separately or for aggragated data (see the \code{outlets} parameter). If a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. The quantities for imputed prices are set to zeros. The function returns a data frame (monthly aggregated) which is ready for price index calculations.
+This function imputes missing prices (unit values) and (optionally) zero prices by using one of the following methods: carry forward/backward, overall mean, class mean (targeted mean). The imputation can be done for each outlet separately or for aggragated data (see the \code{outlets} parameter). For the carry forward/backward method: if a missing product has a previous price then that previous price is carried forward until the next real observation. If there is no previous price then the next real observation is found and carried backward. For the overall mean method: the procedure is similar, except that the imputed price is based on the previously recorded price multiplied (or divided - in the case of the next recorded price) by the price index determined for the quoted and imputed period. The user can select the index formula via the \code{formula} parameter. For the class mean method (also known as targeted mean method): the procedure is analogous to the overall mean method, but the price index is determined for the product class specified by the \code{class} parameter. The quantities for imputed prices are set to zero. The function returns a data frame (monthly aggregated) which is ready for price index calculations.
 }
 \description{
-This function imputes missing prices and (optionally) zero prices by using carry forward/backward prices.
+This function imputes missing prices and (optionally) zero prices by using one of the following methods: carry forward/backward, overall mean, class mean (targeted mean).
 }
 \examples{
 # Creating a small data set with zero prices:
@@ -47,6 +62,8 @@ set1$prices<-0
 set2<-data[6:30,]
 df<-rbind(set1, set2)
 # Price imputing:
-data_imputing(df, start="2018-12", end="2019-03",
-zero_prices=TRUE, outlets=TRUE)}
+data_imputing(df, start="2018-12", end="2019-02",
+zero_prices=TRUE, outlets=TRUE)
+data_imputing(df, start="2018-12", end="2019-02",
+method="overall mean", zero_prices=TRUE, formula="fisher")}
 }

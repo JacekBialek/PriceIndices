@@ -6,6 +6,11 @@
 ## New data sets:
 * New artificial scanner data set for testing the MARS method (*dataMARS*)
 
+## Improvements:
+* New parameter (description) has been added to the *data_aggregating* function
+* New imputation methods (overall mean, class mean) have been added to the *data_imputing* function.
+
+
 # Package update 0.2.2 -> 0.2.3
 
 ## New functions: 
