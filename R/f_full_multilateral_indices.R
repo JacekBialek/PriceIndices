@@ -2133,7 +2133,7 @@ gekslm <-
 #' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param wstart The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".
-#' @param formula A parameter indicating which multilateral formulas are to be decomposed. In the current version of the package, the multiplicative decomposition includes the following GEKS-type indices: GEKS, CCDI, GEKS-W, GEKS-L, GEKS-GL and GEKS-LM. Thus, this parameter can take values like: “geks”, ‘ccdi’, ‘geksw’ ‘geksl’, ‘geksgl’, ‘gekslm’. 
+#' @param formula A parameter indicating which multilateral formulas are to be decomposed. In the current version of the package, the multiplicative decomposition includes the following GEKS-type indices: GEKS, CCDI, GEKS-W, GEKS-L, GEKS-GL, GEKS-LM, GEKS-AQI, and GEKS-GAQI. Thus, this parameter can take values like: “geks”, ‘ccdi’, ‘geksw’ ‘geksl’, ‘geksgl’, ‘gekslm’, 'geksaqi','geksgaqi'. 
 #' @param window The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).
 #' @param sigma The elasticity of substitution (a parameter used in the Lloyd-Moulton index formula). The default value is 0.7.
 #' @param index.value The parameter indicating whether price index values are to be displayed (at the end of the returned \code{multiplicative} data frame).
@@ -2156,7 +2156,7 @@ m_decomposition <-
   sigma=0.7,
   index.value=TRUE)  {
   #checking conditions
-  allowed_formula<-c("geks","ccdi","geksw","geksl","geksgl","gekslm")
+  allowed_formula<-c("geks","ccdi","geksw","geksl","geksgl","gekslm","geksaqi","geksgaqi")
   if (!(length(intersect(formula, allowed_formula))==length(formula)) | (length(formula)==0)) 
   stop("Bad specification of the 'formula' parameter")
   if (start == end)
@@ -2197,6 +2197,7 @@ m_decomposition <-
   data<-dplyr::filter(data, time>=wstart & time<=wend)
   data$time<-as.character(data$time)
   data$time<-substr(data$time, 0, 7)
+  if (("geksaqi" %in% formula) | ("geksgaqi" %in% formula)) v_data<-dplyr::summarise(dplyr::group_by(data,  prodID),values=sum(prices*quantities)/sum(quantities),.groups="drop")
   data<-dplyr::summarise(dplyr::group_by(data, time, prodID),
                          prices=sum(prices*quantities)/sum(quantities),
                          quantities=sum(quantities),.groups="drop")
@@ -2213,8 +2214,7 @@ m_decomposition <-
     return(d.$prodID)
   } #products available in a period t
   av_t<-lapply(dates., av_in_time)
-  
-  #logarithmic mean
+ #logarithmic mean
   L<-function (x,y)
   {if (x==y) return (x)
   else return ((x-y)/(log(x)-log(y)))
@@ -2477,8 +2477,8 @@ m_decomposition <-
   prod_st<-1
   for (tt in 1:TT) {suma_start<-suma_start+wL_start[[tt]][i]
                     suma_end<-suma_end+wL_end[[tt]][i]
-                    prod_st<-prod_st*price[[tt]][i]^(wL_start[[tt]][i]-wL_end[[tt]][i])
                     }
+                    prod_st<-prod_st*price[[tt]][i]^(wL_start[[tt]][i]-wL_end[[tt]][i])
   suma_start<-suma_start/TT
   suma_end<-suma_end/TT
   prod_st<-prod_st^(1/(TT))
@@ -2593,10 +2593,124 @@ m_decomposition <-
   prod_st<-prod_st^(1/(TT))
   gekslm<-c(gekslm, (price[[t]][i]^suma_end)/(price[[s]][i]^suma_start)*prod_st)
   }
+  columns2<-c(columns2, "gekslm")
   result$GEKS_LM<-gekslm
   #end GEKS-LM decomposition   
   }
-  columns2<-c(columns2, "gekslm")
+  #GEKS-AQI 
+  if ("geksaqi" %in% formula)
+  {
+  #weights for individual products
+  wAQI_tau_t<-function (tau, t)
+  {
+  t_tau<-which(dates.==tau)
+  t_t<-which(dates.==t)
+  WAQI<-c()
+  wQ<-c()
+  L<-c()
+  set<-intersect(av_t[[t_tau]],av_t[[t_t]])
+  df<-dplyr::filter(data, prodID %in% set)
+  v<-dplyr::filter(v_data, prodID %in% set)
+  dftau<-dplyr::filter(df, time==tau)
+  dft<-dplyr::filter(df, time==t)
+  #AQI price index
+  p_tau<-dftau$prices
+  p_t<-dft$prices
+  q_tau<-dftau$quantities
+  aqi<-sum(v$values*q_tau * p_t/p_tau) / sum(v$values*q_tau)
+  #weights
+  for (prod in av)  {
+    if (prod %in% set) {
+  i_i<-which(av==prod)
+  dftau_i<-dplyr::filter(dftau, prodID==prod)
+  v_i<-dplyr::filter(v, prodID==prod)
+  wQ<-c(wQ, v_i$values*dftau_i$quantities)
+  L<-c(L,L(price[[t_t]][i_i]/price[[t_tau]][i_i],aqi))
+  }
+  else
+  {
+  wQ<-c(wQ,0)
+  L<-c(L,0)
+  }
+  }
+  wQ<-wQ/sum(wQ)
+  wQ<-wQ*L
+  WAQI<-wQ/sum(wQ)
+  return(WAQI)
+  #end wAQI function
+  }  
+  s<-which(dates.==start)
+  t<-which(dates.==end)
+  w_start<-lapply(dates.,wAQI_tau_t, t=start)
+  w_end<-lapply(dates.,wAQI_tau_t, t=end)
+  geksaqi<-c()
+  for (i in 1:n_av)
+  {
+  suma_start<-0
+  suma_end<-0
+  prod_st<-1
+  for (tt in 1:TT) {suma_start<-suma_start+w_start[[tt]][i]
+                    suma_end<-suma_end+w_end[[tt]][i]
+                    prod_st<-prod_st*price[[tt]][i]^(w_start[[tt]][i]-w_end[[tt]][i])
+                    }
+  suma_start<-suma_start/TT
+  suma_end<-suma_end/TT
+  prod_st<-prod_st^(1/(TT))
+  geksaqi<-c(geksaqi, (price[[t]][i]^suma_end)/(price[[s]][i]^suma_start)*prod_st)
+  }
+  columns2<-c(columns2, "geksaqi")
+  result$GEKS_AQI<-geksaqi
+  #end GEKS-AQI decomposition   
+  }  
+  #GEKS-GAQI 
+  if ("geksgaqi" %in% formula)
+  {
+  #weights for individual products
+  wGAQI_tau_t<-function (tau, t)
+  {
+  t_tau<-which(dates.==tau)
+  t_t<-which(dates.==t)
+  wGAQI<-c()
+  set<-intersect(av_t[[t_tau]],av_t[[t_t]])
+  df<-dplyr::filter(data, prodID %in% set)
+  dftau<-dplyr::filter(df, time==tau)
+  #main work: weights
+  for (prod in av)  {
+    if (prod %in% set) {
+  i_i<-which(av==prod)
+  dftau_i<-dplyr::filter(dftau, prodID==prod)
+  v_data_i<-dplyr::filter(v_data, prodID==prod)
+  wGAQI<-c(wGAQI, v_data_i$values*dftau_i$quantities)
+  }
+  else wGAQI<-c(wGAQI,0)
+  }
+  wGAQI<-wGAQI/sum(wGAQI)
+  return(wGAQI)
+  #end wGAQI function
+  }  
+  s<-which(dates.==start)
+  t<-which(dates.==end)
+  w_start<-lapply(dates.,wGAQI_tau_t, t=start)
+  w_end<-lapply(dates.,wGAQI_tau_t, t=end)
+  geksgaqi<-c()
+  for (i in 1:n_av)
+  {
+  suma_start<-0
+  suma_end<-0
+  prod_st<-1
+  for (tt in 1:TT) {suma_start<-suma_start+w_start[[tt]][i]
+                    suma_end<-suma_end+w_end[[tt]][i]
+                    prod_st<-prod_st*price[[tt]][i]^(w_start[[tt]][i]-w_end[[tt]][i])
+                    }
+  suma_start<-suma_start/TT
+  suma_end<-suma_end/TT
+  prod_st<-prod_st^(1/(TT))
+  geksgaqi<-c(geksgaqi, (price[[t]][i]^suma_end)/(price[[s]][i]^suma_start)*prod_st)
+  }
+  columns2<-c(columns2, "geksgaqi")
+  result$GEKS_GAQI<-geksgaqi
+  #end GEKS-GAQI decomposition   
+  }  
   result<-result[,match(columns,columns2)]
   l<-list()
   result2<-result[1,]
@@ -2617,5 +2731,3 @@ m_decomposition <-
   l$impact<-result
   return (l)
   }
-
-

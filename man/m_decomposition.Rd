@@ -24,7 +24,7 @@ m_decomposition(
 
 \item{wstart}{The beginning of the time interval (which is used by multilateral methods) limited to the year and month, e.g. "2020-01".}
 
-\item{formula}{A parameter indicating which multilateral formulas are to be decomposed. In the current version of the package, the multiplicative decomposition includes the following GEKS-type indices: GEKS, CCDI, GEKS-W, GEKS-L, GEKS-GL and GEKS-LM. Thus, this parameter can take values like: “geks”, ‘ccdi’, ‘geksw’ ‘geksl’, ‘geksgl’, ‘gekslm’.}
+\item{formula}{A parameter indicating which multilateral formulas are to be decomposed. In the current version of the package, the multiplicative decomposition includes the following GEKS-type indices: GEKS, CCDI, GEKS-W, GEKS-L, GEKS-GL, GEKS-LM, GEKS-AQI, and GEKS-GAQI. Thus, this parameter can take values like: “geks”, ‘ccdi’, ‘geksw’ ‘geksl’, ‘geksgl’, ‘gekslm’, 'geksaqi','geksgaqi'.}
 
 \item{window}{The length of the time window (as positive integer: typically multilateral methods are based on the 13-month time window).}
 
