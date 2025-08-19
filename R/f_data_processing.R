@@ -2430,18 +2430,20 @@ return (fig)
 #' @examples 
 #' # Creating a small data set with zero prices:
 #' time.<-c("2018-12-01","2019-01-01")
-#' time<-as.Date(c(time., time.))
-#' p1<-c(0,23)
-#' p2<-c(14,0)
-#' q1<-c(15,25)
-#' q2<-c(44,79)
+#' time<-as.Date(c(time., time., time.))
+#' p1<-c(0,23,10)
+#' p2<-c(40,0,20)
+#' q1<-c(15,25,30)
+#' q2<-c(44,79,30)
 #' quantities<-c(q1,q2)
 #' prices<-c(p1,p2)
-#' prodID<-c(1,1,2,2)
+#' prodID<-c(1,1,2,2,3,3)
 #' my_data<-data.frame(time, prices, quantities, prodID)
 #' # Price imputing:
 #' data_imputing(my_data, start="2018-12", end="2019-01",
 #' zero_prices=TRUE, outlets=FALSE)
+#' data_imputing(my_data, start="2018-12", end="2019-01",
+#' zero_prices=TRUE, outlets=FALSE, method="overall mean", formula="dutot")
 #' \donttest{
 #' # Preparing a data set with zero and missing prices:
 #' dataMATCH$prodID<-dataMATCH$codeIN 

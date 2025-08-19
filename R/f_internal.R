@@ -5013,6 +5013,7 @@ for (x in imp_n) {
                  if (method=="carry forward") 
                    price_imputed<-prices(df,period=dates[help(x,av_n)],set=idd,ID=FALSE) 
                  if (method %in% c("overall mean", "class mean")) {
+                 data.<-dplyr::filter(data., prices>0)
                  imp_time<-dates[x]
                  av_time<-dates[help(x,av_n)]
                  imp_time_Date<-as.Date(paste(imp_time,"-01", sep = ""))
