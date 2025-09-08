@@ -2246,6 +2246,7 @@ return (TRUE)
 #' @param data The user's data frame.
 #' @param join_outlets A logical value indicating whether the data aggregation over outlets should be also done.
 #' @param description A logical value indicating whether the aggregated (returned) data frame should contain product descriptions. Please note that product codes and their descriptions are not necessarily in a 1:1 relationship. When description=TRUE, the function returns the first description encountered within a given product code (prodID).
+#' @param class A logical value indicating whether the aggregated (returned) data frame should contain product class. When class=TRUE, the function returns the first class value encountered within a given product code (prodID).
 #' @rdname data_aggregating
 #' @return The function aggregates the user's data frame over time and/or over outlets. Consequently, we obtain monthly data, where the unit value is calculated instead of a price for each \code{prodID} observed in each month (the \code{time} column gets the Date format: "Year-Month-01"). If the parameter \code{join_outlets} is TRUE, then the function also performs aggregation over outlets (retIDs) and the \code{retID} column is removed from the data frame. The main advantage of using this function is the ability to reduce the size of the data frame and the time needed to calculate the price index. Please note, that unnecessary columns are removed (e.g. \code{description}).
 #' @examples 
@@ -2257,27 +2258,31 @@ return (TRUE)
 #' nrow(data_aggregating(milk))
 #' @export
 
-data_aggregating<-function (data, join_outlets = TRUE, description=FALSE)
+data_aggregating<-function (data, join_outlets = TRUE, description=FALSE, class=FALSE)
 {
 time<-prodID<-retID<-prices2<-quantities2<-NULL
 #checking columns
 cols<-colnames(data)
 if (!("time" %in% cols) | !("prodID" %in% cols)) stop("A data frame must contain columns: time, prodID")
 if ((join_outlets==FALSE) & !("retID" %in% cols)) stop("A date frame must contain the 'retID' column")
-if ((description==TRUE) & !("description" %in% cols)) stop("A date frame must contain the 'retID' column")
+if ((description==TRUE) & !("description" %in% cols)) stop("A date frame must contain the 'description' column")
+if ((class==TRUE) & !("class" %in% cols)) stop("A date frame must contain the 'class' column")
 #main body
 data$time<-as.character(data$time)
 data$time<-substr(data$time,0,7)
 if (join_outlets==TRUE) 
 { 
-if (description==FALSE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID),   prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),.groups="drop")
-else data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID),   prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),description=description[1],.groups="drop")
+if (description==FALSE & class==FALSE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID),   prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),.groups="drop")
+if (description==TRUE & class==FALSE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID),   prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),description=description[1],.groups="drop")
+if (description==FALSE & class==TRUE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID),   prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),class=class[1],.groups="drop")
+if (description==TRUE & class==TRUE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID),   prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),description=description[1],class=class[1],.groups="drop")
 }
 else 
 {  
-if (description==FALSE)  
-data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID, retID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),.groups="drop")
-else data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID, retID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),description=description[1],.groups="drop")
+if (description==FALSE & class==FALSE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID, retID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),.groups="drop")
+if (description==TRUE & class==FALSE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID, retID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),description=description[1],.groups="drop")
+if (description==FALSE & class==TRUE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID, retID), prices2=sum(prices*quantities)/sum(quantities),quantities2=sum(quantities),class=class[1],.groups="drop")
+if (description==TRUE & class==TRUE) data_aggr<-dplyr::summarise(dplyr::group_by(data, time, prodID, retID), prices2=sum(prices*quantities)/sum(quantities),quantities=sum(quantities),description=description[1],class=class[1],.groups="drop")
 }
 data_aggr$time<-paste(data_aggr$time,"-01",sep="")
 data_aggr$time<-as.Date(data_aggr$time)
