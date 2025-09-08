@@ -2484,14 +2484,14 @@ if (length(class)==0) data_imputing_help(data=data,
                                          zero_prices=zero_prices,
                                          outlets=outlets)
 else
-{#case for 'class mean' method
+{#case with classes considered
  data_split<-split(data,f=data[,class])
  data_classes<-names(data_split)
  data_imputed_list<-lapply(data_split, 
                            data_imputing_help, 
                            start=start,
                            end=end,
-                           method="overall mean",
+                           method=method,
                            formula=formula,
                            zero_prices=zero_prices,
                            outlets=outlets)

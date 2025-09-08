@@ -5012,8 +5012,6 @@ imp_n<-match(imp_dates, dates)
 for (x in imp_n) {
                  if (method=="carry forward") 
                    price_imputed<-prices(df,period=dates[help(x,av_n)],set=idd,ID=FALSE) 
-                 else
-                 {   
                  if (method %in% c("overall mean", "class mean")) {
                  data.<-dplyr::filter(data., prices>0)
                  imp_time<-dates[x]
@@ -5049,7 +5047,6 @@ for (x in imp_n) {
                      price_imputed<-prices(df,period=av_time,set=idd,ID=FALSE)/walsh(data., start=imp_time, end=av_time)
                       }
                  }
-                 }   
                  #adding value to a price vector 
                  prices<-c(prices, price_imputed)
                  }
@@ -5073,9 +5070,9 @@ return (dplyr::select(result_list, time, prices, quantities, prodID))
 if (outlets==FALSE) return (impute_prices(data))
 else
 {
-impute_prices_list<-function (data.)
-{retID<-unique(data.$retID)
- df_list<-impute_prices(data.)
+impute_prices_list<-function (data_)
+{retID<-unique(data_$retID)
+ df_list<-impute_prices(data_)
  df_list$retID<-retID
  return (df_list)
 }
