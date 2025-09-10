@@ -17,7 +17,7 @@
 #' @param zero_prices A logical parameter indicating whether zero prices are to be acceptable.
 #' @param zero_quantities A logical parameter indicating whether zero quantities are to be acceptable.
 #' @rdname data_preparing
-#' @return The resulting data frame is free from: missing values, negative prices (if \code{zero_prices} is set to TRUE), zero or negative prices (if \code{zero_prices} is set to FALSE), negative quantities (if \code{zero_quantities} is set to TRUE) and zero and negative quantities (if \code{zero_prices} is set to FALSE). As a result, column \code{time} is set to be Date type (in format: `Year-Month-01`), columns \code{prices} and \code{quantities} are set to be numeric. If the column \code{description} is selected, then it is set to be character type. If columns: \code{prodID}, \code{retID}, \code{codeIN} or  \code{codeOUT} are selected, then they are set to be factor type.
+#' @return The resulting data frame is free from: missing values, negative prices (if \code{zero_prices} is set to TRUE), zero or negative prices (if \code{zero_prices} is set to FALSE), negative quantities (if \code{zero_quantities} is set to TRUE) and zero and negative quantities (if \code{zero_prices} is set to FALSE). As a result, column \code{time} is set to be Date type (in format: `Year-Month-01`), columns \code{prices} and \code{quantities} are set to be numeric. If the column \code{description} is selected, then it is set to be character type. If columns: \code{prodID}, \code{retID}, \code{codeIN} or  \code{codeOUT} are selected, then they are set to be character type.
 #'
 #' @examples 
 #' \donttest{data_preparing(milk, time="time",prices="prices",quantities="quantities")}
@@ -79,16 +79,16 @@ data_preparing <-
   if (!(prodID %in% cn))
   stop ("Bad specification of the 'prodID' column!")
   colnames(data)[which(names(data) == prodID)] <- "prodID"
-  if (!(is.factor(data$prodID)))
-  data$prodID <- as.factor(data$prodID)
+  if (!(is.character(data$prodID)))
+  data$prodID <- as.character(data$prodID)
   variables <- c(variables, "prodID")
   }
   if (length(retID) > 0) {
   if (!(retID %in% cn))
   stop ("Bad specification of the 'retID' column!")
   colnames(data)[which(names(data) == retID)] <- "retID"
-  if (!(is.factor(data$retID)))
-  data$retID <- as.factor(data$retID)
+  if (!(is.character(data$retID)))
+  data$retID <- as.character(data$retID)
   variables <- c(variables, "retID")
   }
   if (length(description) > 0) {
@@ -104,16 +104,16 @@ data_preparing <-
   if (!(codeIN %in% cn))
   stop ("Bad specification of the 'codeIN' column!")
   colnames(data)[which(names(data) == codeIN)] <- "codeIN"
-  if (!(is.factor(data$codeIN)))
-  data$codeIN <- as.factor(data$codeIN)
+  if (!(is.character(data$codeIN)))
+  data$codeIN <- as.character(data$codeIN)
   variables <- c(variables, "codeIN")
   }
   if (length(codeOUT) > 0) {
   if (!(codeOUT %in% cn))
   stop ("Bad specification of the 'codeOUT' column!")
   colnames(data)[which(names(data) == codeOUT)] <- "codeOUT"
-  if (!(is.factor(data$codeOUT)))
-  data$codeOUT <- as.factor(data$codeOUT)
+  if (!(is.character(data$codeOUT)))
+  data$codeOUT <- as.character(data$codeOUT)
   variables <- c(variables, "codeOUT")
   }
   if (length(grammage) > 0) {
