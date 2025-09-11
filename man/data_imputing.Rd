@@ -12,7 +12,7 @@ data_imputing(
   class = c(),
   formula = "jevons",
   zero_prices = TRUE,
-  outlets = TRUE
+  outlets = FALSE
 )
 }
 \arguments{

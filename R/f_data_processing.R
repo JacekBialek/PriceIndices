@@ -364,7 +364,7 @@ data_matching <-
 #' @param dplimits A two-dimensional vector of thresholds for maximum price drop and maximum drop in sales value (it works if one of the chosen filters is \code{dumpprices} filter). 
 #' @param lambda The lambda parameter for \code{lowsales} filter (see \code{References} below).
 #' @param interval A logical value indicating whether the filtering process concerns only two periods defined by \code{start} and \code{end} parameters (then the \code{interval} is set to FALSE) or whether that function is to filter products sold during the whole time interval <start, end>, i.e. any subsequent months are compared. 
-#' @param retailers A logical parameter indicating whether filtering should be done for each outlet (\code{retID}) separately. If it is set to FALSE, then there is no need to consider the \code{retID} column.
+#' @param outlets A logical parameter indicating whether filtering should be done for each outlet (\code{retID}) separately. If it is set to FALSE, then there is no need to consider the \code{retID} column.
 #' @rdname data_filtering
 #' @return This function returns a filtered data set (a reduced user's data frame). If the set of \code{filters} is empty, then the function returns the original data frame (defined by the \code{data} parameter) limited to considered months. On the other hand, if all filters are chosen, i.e. \code{filters=c(extremeprices,dumpprices,lowsales)}, then these filters work independently and a summary result is returned. Please note that both variants of \code{extremeprices} filter can be chosen at the same time, i.e. \code{plimits} and \code{pquantiles}, and they work also independently.
 #' @references
@@ -386,11 +386,11 @@ data_matching <-
     dplimits = c(),
     lambda = 1.25,
     interval = FALSE,
-    retailers = FALSE)
+    outlets = FALSE)
     {
     if (nrow(data) == 0)
     stop("A data frame is empty")
-    if (retailers == FALSE) {
+    if (outlets == FALSE) {
     if (interval == FALSE)
     return (filtering(
     data,
@@ -2471,7 +2471,7 @@ data_imputing<-function (data,
                           class=c(),
                           formula="jevons",
                           zero_prices=TRUE,
-                          outlets=TRUE)
+                          outlets=FALSE)
 {
 if (nrow(data) == 0) stop("A data frame is empty")
 if (!(method %in% c("carry forward","overall mean","class mean"))) 
