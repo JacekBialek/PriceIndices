@@ -1,5 +1,8 @@
 # Package update 
 
+## This is a resubmission. 
+* I corrected a small problem with brackates in MARS function.
+
 ## New functions: 
 * New function for data stratification via the MARS method (*MARS*)
 
