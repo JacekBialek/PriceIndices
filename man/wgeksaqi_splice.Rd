@@ -49,4 +49,6 @@ This function returns a value (or values) of the multilateral weighted GEKS-AQI 
 {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 
 {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
+
+{Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
 }

@@ -10,6 +10,7 @@
 * New parameters (description, class) have been added to the *data_aggregating* function
 * New imputation methods (overall mean, class mean) have been added to the *data_imputing* function.
 * New index methods (GEKS-AQI, GEKS-GAQI) have been added to the *m_decomposition* function.
+* Update of references for multilateral methods.
 
 # Package update 0.2.2 -> 0.2.3
 

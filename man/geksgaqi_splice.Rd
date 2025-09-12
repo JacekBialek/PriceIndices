@@ -47,4 +47,6 @@ This function returns a value (or values) of the multilateral GEKS-GAQI price in
 {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 
 {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+
+{Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
 }

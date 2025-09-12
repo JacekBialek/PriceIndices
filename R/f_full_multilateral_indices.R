@@ -1038,7 +1038,9 @@ wgeks <-
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
-#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, 57, 2893–2921. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{geksl(milk, start="2019-01", end="2019-08",window=10)}
@@ -1141,7 +1143,9 @@ geksl <-
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
-#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, 57, 2893–2921. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{wgeksl(milk, start="2019-01", end="2019-08",window=10)}
@@ -1253,7 +1257,9 @@ wgeksl <-
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
-#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, 57, 2893–2921. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{geksgl(milk, start="2019-01", end="2019-08",window=10)}
@@ -1362,7 +1368,9 @@ geksgl <-
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
-#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, https://doi.org/10.1007/s11135-022-01506-6.}
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, 57, 2893–2921. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{wgeksgl(milk, start="2019-01", end="2019-08",window=10)}
@@ -1787,6 +1795,8 @@ wgeksaqi <-
 #'
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
+#' {Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
+#'
 #' @examples 
 #' \donttest{geksgaqi(milk, start="2019-01", end="2019-08",window=10)}
 #' \donttest{geksgaqi(milk, start="2018-12", end="2019-12")}
@@ -1856,6 +1866,8 @@ geksgaqi <-
 #' {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
 #'
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+#'
+#' {Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
 #'
 #' @examples 
 #' \donttest{wgeksgaqi(milk, start="2019-01", end="2019-08",window=10)}
@@ -2141,6 +2153,9 @@ gekslm <-
 #' @return This function returns a list with three elements: \code{multiplicative} - a data frame containing multiplicative decompositions of the indicated GEKS-type indices, \code{normalized} - normalized multiplicative decompositions of the indicated indices (their product is always 1), \code{impact} - relative impacts of commodities on the price index value (in p.p.).    
 #' @references
 #' {Webster, M., Tarnow-Mordi, R. C. (2019). \emph{Decomposing Multilateral Price Indexes into the Contributions of Individual Commodities}, Journal of Official Statistics, 35(2), 461-486.}
+#'
+#' {Białek, J. (2025). \emph{Multiplicative Decompositions of GEKS-type Indices into the Contribution of Individual Commodities.} Journal of Official Statistics (in press)}
+#'
 #' @examples 
 #' \donttest{m_decomposition(milk, start="2018-12",end="2019-12",formula=c("geks","ccdi"))$multiplicative}
 #' @export

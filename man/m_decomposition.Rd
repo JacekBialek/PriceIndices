@@ -43,4 +43,6 @@ This function returns multiplicative decompositions of the selected GEKS-type in
 }
 \references{
 {Webster, M., Tarnow-Mordi, R. C. (2019). \emph{Decomposing Multilateral Price Indexes into the Contributions of Individual Commodities}, Journal of Official Statistics, 35(2), 461-486.}
+
+{Białek, J. (2025). \emph{Multiplicative Decompositions of GEKS-type Indices into the Contribution of Individual Commodities.} Journal of Official Statistics (in press)}
 }

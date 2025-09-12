@@ -30,4 +30,6 @@ This function returns a value of the multilateral weighted GEKS-GAQI price index
 {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 
 {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+
+{Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
 }

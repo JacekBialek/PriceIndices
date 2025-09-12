@@ -32,4 +32,8 @@ This function returns a value of the multilateral GEKS-LM price index extended b
 {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 
 {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+
+{Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, 57, 2893–2921. https://doi.org/10.1007/s11135-022-01506-6.}
+
+{Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
 }

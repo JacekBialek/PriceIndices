@@ -4124,6 +4124,8 @@ wgeksaqu_fbmw <- function(data, start, end)  {
 #'
 #' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{geksaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
 #' @export
@@ -4303,6 +4305,8 @@ geksaqi_splice <-
 #'
 #' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{geksaqi_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -4364,6 +4368,8 @@ geksaqi_fbew <- function(data, start, end)  {
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
+#'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{geksaqi_fbmw(milk, start="2019-12", end="2020-04")}
@@ -4427,6 +4433,8 @@ geksaqi_fbmw <- function(data, start, end)  {
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
 #'
 #' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
+#'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
 #'
 #' @examples 
 #' \donttest{wgeksaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -4607,6 +4615,8 @@ wgeksaqi_splice <-
 #'
 #' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{wgeksaqi_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -4669,6 +4679,8 @@ wgeksaqi_fbew <- function(data, start, end)  {
 #'
 #' {Białek, J. (2023). \emph{Quality adjusted GEKS-type indices for price comparisons based on scanner data.} Statistics in Transition – new series, 24(3), 151-169.}
 #'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{wgeksaqi_fbmw(milk, start="2019-12", end="2020-04")}
 #' @export
@@ -4730,6 +4742,8 @@ wgeksaqi_fbmw <- function(data, start, end)  {
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
 #'
 #' {Białek, J. (2022). \emph{The general class of multilateral indices and its two special cases.} Paper presented at the 17th Meeting of the Ottawa Group on Price Indices, Rome, Italy.}
+#'
+#' {Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
 #'
 #' @examples 
 #' \donttest{geksgaqi_splice(milk, start="2018-12", end="2020-01",window=10)}
@@ -4906,6 +4920,8 @@ geksgaqi_splice <-
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
+#' {Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
+#'
 #' @examples 
 #' \donttest{geksgaqi_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -4963,6 +4979,8 @@ geksgaqi_fbew <- function(data, start, end)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
 #'
 #' @examples 
 #' \donttest{geksgaqi_fbmw(milk, start="2019-12", end="2020-04")}
@@ -5023,6 +5041,8 @@ geksgaqi_fbmw <- function(data, start, end)  {
 #' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' {Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
 #'
 #' @examples 
 #' \donttest{wgeksgaqi_splice(milk, start="2018-12", end="2020-02",splice="half")}
@@ -5198,6 +5218,8 @@ wgeksgaqi_splice <-
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
 #'
+#' {Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
+#'
 #' @examples 
 #' \donttest{wgeksgaqi_fbew(milk, start="2018-12", end="2019-08")}
 #' @export
@@ -5255,6 +5277,8 @@ wgeksgaqi_fbew <- function(data, start, end)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
 #'
 #' @examples 
 #' \donttest{wgeksgaqi_fbmw(milk, start="2019-12", end="2020-04")}
@@ -5903,6 +5927,11 @@ geksqm_fbmw <- function(data, start, end, r)  {
 #' {de Haan, J.(2015). \emph{A Framework for Large Scale Use of Scanner Data in the Dutch CPI.} Paper presented at the 14th Ottawa Group meeting, Tokyo, Japan.}
 #'
 #' {Diewert, W.E., and Fox, K.J. (2017). \emph{Substitution Bias in Multilateral Methods for CPI Construction using Scanner Data.} Discussion paper 17-02, Vancouver School of Economics, The University of British Columbia, Vancouver, Canada.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, 57, 2893–2921. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{gekslm_splice(milk, start="2018-12", end="2020-02", sigma=0.8, splice="half")}
 #' @export
@@ -6079,6 +6108,11 @@ gekslm_splice <-
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, 57, 2893–2921. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{gekslm_fbew(milk, start="2018-12", end="2019-08", sigma=1.2)}
 #' @export
@@ -6137,6 +6171,11 @@ gekslm_fbew <- function(data, start, end, sigma)  {
 #' {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 #'
 #' {Lamboray, C.(2017). \emph{The Geary Khamis index and the Lehr index: how much do they differ?} Paper presented at the 15th Ottawa Group meeting, 10-12 May 2017, Elville am Rhein, Germany.}
+#'
+#' {Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, 57, 2893–2921. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
+#' {Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
+#'
 #' @examples 
 #' \donttest{geksqm_fbmw(milk, start="2019-12", end="2020-04", r=1.6)}
 #' @export

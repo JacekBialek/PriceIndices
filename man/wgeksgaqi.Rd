@@ -33,4 +33,6 @@ This function returns a value of the multilateral weighted WGEKS-GAQI price inde
 {Elteto, O., and Koves, P. (1964). \emph{On a Problem of Index Number Computation Relating to International Comparisons.} Statisztikai Szemle 42, 507-518.}
 
 {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
+
+{Białek, J., Pawelec, N. (2025). \emph{Proposition of the Quality Adjusted Geks-Type Price Index.} Statistika – Statistics and Economy Journal, 105(3), 291-305. https://doi.org/10.54694/stat.2024.71.}
 }

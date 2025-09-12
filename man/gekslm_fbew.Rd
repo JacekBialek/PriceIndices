@@ -32,4 +32,8 @@ This function returns a value of the multilateral GEKS-LM price index extended b
 {Szulc, B. (1983). \emph{Linking Price Index Numbers.} In: Price Level Measurement, W. E. Diewert and C. Montmarquette (eds.), 537-566.}
 
 {Chessa, A.G. (2016). \emph{A New Methodology for Processing Scanner Data in the Dutch CPI.} Eurona 1/2016, 49-69.}
+
+{Białek, J. (2022). \emph{Improving quality of the scanner CPI: proposition of new multilateral methods}, Quality & Quantity, 57, 2893–2921. https://doi.org/10.1007/s11135-022-01506-6.}
+
+{Białek, J. (2025). \emph{General Classes of GEKS-Type Price Indices With Application to Scanner  Data}, . Review of Income and Wealth, 71(1): e12726, 1-21. https://doi.org/10.1007/s11135-022-01506-6.}
 }
