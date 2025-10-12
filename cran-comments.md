@@ -1,19 +1,8 @@
 # Package update 
 
-## This is a resubmission. 
-* I corrected a small problem with brackates in MARS function.
-
-## New functions: 
-* New function for data stratification via the MARS method (*MARS*)
-
-## New data sets:
-* New artificial scanner data set for testing the MARS method (*dataMARS*)
-
 ## Improvements:
-* New parameters (description, class) have been added to the *data_aggregating* function
-* New imputation methods (overall mean, class mean) have been added to the *data_imputing* function.
-* New index methods (GEKS-AQI, GEKS-GAQI) have been added to the *m_decomposition* function
-* Update of references for multilateral methods.
+* New reference in *shrinkflation* function has been added;
+* A type of the *grammage* parameter has been changed from *character* to *numeric*.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

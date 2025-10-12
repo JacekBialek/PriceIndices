@@ -1,3 +1,9 @@
+# Package update 0.2.4 -> 0.2.5
+
+## Improvements:
+* New reference in *shrinkflation* function has been added;
+* A type of the *grammage* parameter has been changed from *character* to *numeric*.
+
 # Package update 0.2.3 -> 0.2.4
 
 ## New functions: 

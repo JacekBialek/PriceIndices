@@ -120,8 +120,8 @@ data_preparing <-
   if (!(grammage %in% cn))
   stop ("Bad specification of the 'grammage' column!")
   colnames(data)[which(names(data) == grammage)] <- "grammage"
-  if (!(is.character(data$grammage)))
-  data$grammage <- as.character(data$grammage)
+  if (!(is.numeric(data$grammage)))
+  data$grammage <- as.numeric(data$grammage)
   variables <- c(variables, "grammage")
   }
   if (length(unit) > 0) {
@@ -2742,7 +2742,9 @@ return(dplyr::bind_rows(subgroup_list))
 #' @return This function detects and summarises downsized and upsized products. The function detects phenomena such as: \code{shrinkflation}, \code{shrinkdeflation}, \code{sharkflation}, \code{unshrinkdeflation}, \code{unshrinkflation}, \code{sharkdeflation} (see the \code{type} parameter). It returns a list containing the following objects: \code{df_changes} - data frame with detailed information on downsized and upsized products with the whole history of size changes, \code{df_type} - data frame with recognized type of products, \code{df_overview} - a table with basic summary of all detected products grouped by the \code{type} parameter, \code{products_detected} with prodIDs of products indicated by the 'type' parameter, \code{df_detected} being a subset of the data frame with only detected products, \code{df_reduced} which is the difference of the input data frame and the data frame containing the detected products, 
 #' and \code{df_summary} which provides basic statistics for all detected downsized and upsized products (including their share in the total number of products and mean price and size changes).
 #' @references
-#' {Białek, J., Bobel, A., Oprych-Franków D. (2004). \emph{Immeasurability of shrinkflation in the CPI? Automatic downsizing detection using scanner data}. 18th Meeting of the Ottawa Group, Ottawa.}
+#' {Białek, J., Bobel, A., Oprych-Franków D. (2024). \emph{Immeasurability of shrinkflation in the CPI? Automatic downsizing detection using scanner data}. 18th Meeting of the Ottawa Group, Ottawa.}
+#' 
+#' {Białek, J., Bobel, A., Oprych-Franków D. (2025). \emph{Automatic downsizing and upsizing detection using scanner data and their impact on price indices}. Statistical Journal of the IAOS, 41(3):858-872.}
 #' 
 #' @examples 
 #' #Data matching over time
