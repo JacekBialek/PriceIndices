@@ -2,6 +2,7 @@
 % Please edit documentation in R/PriceIndices.R
 \docType{package}
 \name{PriceIndices}
+\alias{PriceIndices-package}
 \alias{PriceIndices}
 \title{The list of package functions and their demonstration}
 \description{
@@ -470,3 +471,7 @@ The list of package functions is as follows:
 \code{\link{compare_to_target}}
 }
 
+\author{
+\strong{Maintainer}: Jacek Białek \email{jacek.bialek@uni.lodz.pl} (\href{https://orcid.org/0000-0002-0952-5327}{ORCID})
+
+}

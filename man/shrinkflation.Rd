@@ -67,5 +67,7 @@ prec=3, interval=FALSE, type="shrinkflation")}
 
 }
 \references{
-{Białek, J., Bobel, A., Oprych-Franków D. (2004). \emph{Immeasurability of shrinkflation in the CPI? Automatic downsizing detection using scanner data}. 18th Meeting of the Ottawa Group, Ottawa.}
+{Białek, J., Bobel, A., Oprych-Franków D. (2024). \emph{Immeasurability of shrinkflation in the CPI? Automatic downsizing detection using scanner data}. 18th Meeting of the Ottawa Group, Ottawa.}
+
+{Białek, J., Bobel, A., Oprych-Franków D. (2025). \emph{Automatic downsizing and upsizing detection using scanner data and their impact on price indices}. Statistical Journal of the IAOS, 41(3):858-872.}
 }
