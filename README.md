@@ -1,8 +1,3 @@
----
-output:
-  word_document: default
-  html_document: default
----
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -240,12 +235,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.95         19      1     1
-#> 2 2020-01-01   2.64         21      2     1
-#> 3 2020-01-01   2.65         22      3     1
-#> 4 2020-01-01   2.91         21      4     1
-#> 5 2020-01-01   2.78         21      5     1
-#> 6 2020-01-01   2.81         24      6     1
+#> 1 2020-01-01   2.72         20      1     1
+#> 2 2020-01-01   2.51         16      2     1
+#> 3 2020-01-01   2.96         23      3     1
+#> 4 2020-01-01   2.75         23      4     1
+#> 5 2020-01-01   2.89         22      5     1
+#> 6 2020-01-01   2.76         21      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the
@@ -280,13 +275,13 @@ preferences and their spending on all products is fixed (see the
 df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
-#>         time prices quantities prodID retID
-#> 1 2020-01-03   2.94  3.9178697      1     1
-#> 2 2020-01-03   2.72  5.8467339      2     1
-#> 3 2020-01-11   2.57  5.1738009      3     1
-#> 4 2020-01-28   2.79  4.9104002      4     1
-#> 5 2020-01-01   2.84  0.2461706      5     1
-#> 6 2020-01-08   2.94  7.1452539      6     1
+#>         time prices  quantities prodID retID
+#> 1 2020-01-15   2.76 0.004054976      1     1
+#> 2 2020-01-01   2.57 4.381450864      2     1
+#> 3 2020-01-21   2.87 1.951505522      3     1
+#> 4 2020-01-22   2.74 6.023471617      4     1
+#> 5 2020-01-10   2.76 8.720427630      5     1
+#> 6 2020-01-17   2.70 0.234098490      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this
@@ -362,14 +357,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 1.040794
+#> [1] 0.9620283
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 1.040597
+#> [1] 0.9621234
 ```
 
 **data_aggregating**
@@ -1469,12 +1464,12 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.680924
-#> 2  14216 1.693888
-#> 3  15404 1.459954
-#> 4  17034 1.312700
-#> 5  34540 1.520899
-#> 6  51583 1.982745
+#> 1  14215 1.315882
+#> 2  14216 1.559663
+#> 3  15404 1.006219
+#> 4  17034 1.644008
+#> 5  34540 1.971376
+#> 6  51583 1.733978
 ```
 
 and the next step is calculating the QU index which compares December
@@ -1482,7 +1477,7 @@ and the next step is calculating the QU index which compares December
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9938458
+#> [1] 0.9851099
 ```
 
 <a id="ad8"> </a>
