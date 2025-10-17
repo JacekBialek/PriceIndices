@@ -324,7 +324,7 @@ You can also use **data_filtering** for each pair of subsequent months from the 
 ```{r}
 filter1B<-data_filtering(milk,start="2018-12",end="2019-03",
                          filters=c("extremeprices"),pquantiles=c(0.01,0.99),
-                         interval=TRUE, retailers=TRUE)
+                         interval=TRUE, outlets=TRUE)
 nrow(filter1B)
 ```
 Two more useful functions are included for the procedure of scanner data. The first, **data_reducing**, returns a data set containing sufficiently numerous matched products in the indicated groups (see documentation). It reduces the dataset to only a representative set of products that have appeared in sufficient numbers in the sales offer:
@@ -571,6 +571,12 @@ fisher(milk, start="2018-12", end="2020-01")
 lloyd_moulton(milk, start="2018-12", end="2020-01", sigma=0.9)
 lowe(milk, start="2019-12", end="2020-02", base="2018-12", interval=TRUE)
 ```
+
+The package also allows the User to calculate *retrospective price indices*. The **retro_index** function implements the correction or imputation approaches (see von Auer (2024) cited in the documentation) and also estimates the Diewert-Huwiler-Kohli-Hansen index (DHKH). For example, let us determine the retrospective DHKH index for the milk set:
+```{r}
+retro_index(milk, start="2018-12", end="2019-12", formula="dhkh")
+```
+
 <a id="ad6">   </a>
 
 ### Functions for chain price index calculation

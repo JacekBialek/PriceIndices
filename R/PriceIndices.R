@@ -5,14 +5,12 @@
 #' The package documentation can be found \href{https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_manual.pdf}{HERE}.
 #' The list of package functions is as follows:
 #'
-#' @docType package
+#' _PACKAGE
 #' @name PriceIndices
 #' @section Data sets in the package and generating artificial scanner data sets:
 #' \code{\link{dataAGGR}}
 #'
 #' \code{\link{dataMATCH}}
-#'
-#' \code{\link{dataMARS}}
 #'
 #' \code{\link{dataCOICOP}}
 #'
@@ -58,8 +56,6 @@
 #' \code{\link{data_filtering}} 
 #'
 #' \code{\link{data_reducing}} 
-#'
-#' \code{\link{MARS}} 
 #'
 #' @section Functions providing dataset characteristics:
 #' \code{\link{available}} 
@@ -171,6 +167,8 @@
 #' \code{\link{value_index}}
 #'
 #' \code{\link{unit_value_index}}
+#'
+#' \code{\link{retro_index}}
 #'
 #' @section Functions for chain index calculation:
 #' \code{\link{chbmw}} 

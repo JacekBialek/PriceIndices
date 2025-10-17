@@ -240,12 +240,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.80         18      1     1
-#> 2 2020-01-01   2.90         21      2     1
-#> 3 2020-01-01   2.67         18      3     1
-#> 4 2020-01-01   2.74         19      4     1
-#> 5 2020-01-01   2.85         19      5     1
-#> 6 2020-01-01   2.97         18      6     1
+#> 1 2020-01-01   2.95         19      1     1
+#> 2 2020-01-01   2.64         21      2     1
+#> 3 2020-01-01   2.65         22      3     1
+#> 4 2020-01-01   2.91         21      4     1
+#> 5 2020-01-01   2.78         21      5     1
+#> 6 2020-01-01   2.81         24      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the
@@ -281,12 +281,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-02   2.93  6.9459051      1     1
-#> 2 2020-01-08   2.63  3.7163269      2     1
-#> 3 2020-01-20   2.85  6.8443365      3     1
-#> 4 2020-01-22   2.76  2.7882684      4     1
-#> 5 2020-01-13   2.72  7.8292804      5     1
-#> 6 2020-01-11   2.83  0.5324123      6     1
+#> 1 2020-01-03   2.94  3.9178697      1     1
+#> 2 2020-01-03   2.72  5.8467339      2     1
+#> 3 2020-01-11   2.57  5.1738009      3     1
+#> 4 2020-01-28   2.79  4.9104002      4     1
+#> 5 2020-01-01   2.84  0.2461706      5     1
+#> 6 2020-01-08   2.94  7.1452539      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this
@@ -362,14 +362,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 0.9301253
+#> [1] 1.040794
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 0.9331439
+#> [1] 1.040597
 ```
 
 **data_aggregating**
@@ -402,7 +402,7 @@ After aggregating this data set over time and outlets we obtain:
 
 ``` r
 data_aggregating(dataAGGR)
-#> # A tibble: 4 x 4
+#> # A tibble: 4 × 4
 #>   time       prodID prices quantities
 #>   <date>      <int>  <dbl>      <int>
 #> 1 2018-12-01 400032     15        300
@@ -709,7 +709,7 @@ filtering is done for each outlet (**retID**) separately, e.g. 
 ``` r
 filter1B<-data_filtering(milk,start="2018-12",end="2019-03",
                          filters=c("extremeprices"),pquantiles=c(0.01,0.99),
-                         interval=TRUE, retailers=TRUE)
+                         interval=TRUE, outlets=TRUE)
 nrow(filter1B)
 #> [1] 773
 ```
@@ -803,8 +803,8 @@ result$df_type
 #> 12 2024-01 , 2024-02
 #> 13 2024-01 , 2024-02
 result$df_overview
-#> # A tibble: 6 x 3
-#>   `type of phenomenon detected` number of detected prod~1 shares [%] of detect~2
+#> # A tibble: 6 × 3
+#>   `type of phenomenon detected` number of detected prod…¹ shares [%] of detect…²
 #>   <chr>                                             <int>                  <dbl>
 #> 1 sharkdeflation                                        1                   7.69
 #> 2 sharkflation                                          2                  15.4 
@@ -812,8 +812,8 @@ result$df_overview
 #> 4 shrinkflation                                         3                  23.1 
 #> 5 unshrinkdeflation                                     2                  15.4 
 #> 6 unshrinkflation                                       2                  15.4 
-#> # i abbreviated names: 1: `number of detected products`,
-#> #   2: `shares [%] of detected products`
+#> # ℹ abbreviated names: ¹​`number of detected products`,
+#> #   ²​`shares [%] of detected products`
 # result$products_detected
 # result$df_detected
 # result$df_reduced
@@ -1043,7 +1043,7 @@ and 82919, and sold in July, 2019, please use:
 
 ``` r
 quantities(milk, period="2019-06", set=c(400032, 71772, 82919), ID=TRUE)
-#> # A tibble: 3 x 2
+#> # A tibble: 3 × 2
 #>       by     q
 #>    <int> <dbl>
 #> 1  71772  117 
@@ -1307,6 +1307,18 @@ lowe(milk, start="2019-12", end="2020-02", base="2018-12", interval=TRUE)
 #> [1] 1.0000000 0.9880546 1.0024443
 ```
 
+The package also allows the User to calculate *retrospective price
+indices*. The **retro_index** function implements the correction or
+imputation approaches (see von Auer (2024) cited in the documentation)
+and also estimates the Diewert-Huwiler-Kohli-Hansen index (DHKH). For
+example, let us determine the retrospective DHKH index for the milk set:
+
+``` r
+retro_index(milk, start="2018-12", end="2019-12", formula="dhkh")
+#>  [1] 1.0000000 1.0040989 0.9989670 0.9947970 0.9949623 0.9896931 0.9929759
+#>  [8] 0.9903619 0.9972183 0.9997273 0.9768806 0.9966931 0.9868354
+```
+
 <a id="ad6"> </a>
 
 ### Functions for chain price index calculation
@@ -1457,12 +1469,12 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.273890
-#> 2  14216 1.389917
-#> 3  15404 1.650688
-#> 4  17034 1.891372
-#> 5  34540 1.979441
-#> 6  51583 1.710088
+#> 1  14215 1.680924
+#> 2  14216 1.693888
+#> 3  15404 1.459954
+#> 4  17034 1.312700
+#> 5  34540 1.520899
+#> 6  51583 1.982745
 ```
 
 and the next step is calculating the QU index which compares December
@@ -1470,7 +1482,7 @@ and the next step is calculating the QU index which compares December
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9525297
+#> [1] 0.9938458
 ```
 
 <a id="ad8"> </a>
@@ -1797,7 +1809,7 @@ formula=c("laspeyres", "fisher"), interval = TRUE)
 compare_indices_df(df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-64-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-65-1.png" width="100%" />
 
 Now, let us compare the impact of the aggregating over outlets on the
 price index results (e.g. the Laspeyres formula is the assumed
@@ -1824,7 +1836,7 @@ compare_indices_list(data=list(case1, case2),
                 "Fisher with aggregation"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-66-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-67-1.png" width="100%" />
 
 **compare_distances**
 
@@ -1919,7 +1931,7 @@ title_iterations="Box-plots for iteration values",
 title_pseudovalues="Box-plots for pseudovalues")
 #displaying a data frame with basic characteristics of the calculated iteration index values
 comparison$iterations
-#> # A tibble: 3 x 5
+#> # A tibble: 3 × 5
 #>   variable mean_iterations sd_iterations cv_iterations all_sample
 #>   <fct>              <dbl>         <dbl>         <dbl>      <dbl>
 #> 1 Jevons             1.02       0.00668       0.00655       1.02 
@@ -1930,7 +1942,7 @@ comparison$iterations
 ``` r
 #displaying a data frame with basic characteristics of the calculated index pseudovalues obtained in the jackknife procedure
 comparison$pseudovalues
-#> # A tibble: 3 x 4
+#> # A tibble: 3 × 4
 #>   variable jk_estimator sd_jk_estimator   cv_jk
 #>   <fct>           <dbl>           <dbl>   <dbl>
 #> 1 Jevons          1.05          0.0267  0.0255 
@@ -1943,14 +1955,14 @@ comparison$pseudovalues
 comparison$figure_iterations
 ```
 
-<img src="man/figures/README-unnamed-chunk-71-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-72-1.png" width="100%" />
 
 ``` r
 #displaying box-plotes created for the calculated index pseudovalues obtained in the jackknife procedure
 comparison$figure_pseudovalues
 ```
 
-<img src="man/figures/README-unnamed-chunk-72-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-73-1.png" width="100%" />
 <a id="ad13"> </a>
 
 ### Functions for price and quantity indicator calculations

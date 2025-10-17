@@ -103,8 +103,6 @@ This data set, **dataU**, is a collection of artificial scanner data on 6 produc
 This data set, **dataMARS**,  is a collection of artificial scanner data on shirts for testing the MARS method. It contains 9 columns and 44 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day), **prices** - prices of sold products [PLN], **quantities** - quantities of sold products, **prodID** - unique product identifiers (data set contains 28 different prodIDs), **description** - descriptions (labels) of sold shirts (data set contains 12 different descriptions), **brand** - brand of sold shirts (data set contains 2 different brands: X and Y), **gender** - gender of the person for whom the shirt is dedicated (M or F), **size** - size of shirts (M, L, and XL), **fabric** - fabric of shirts (cotton, polyester, blend).
 
 
-
-
 The set **milk** represents a typical data frame used in the package for most calculations and is organized as follows:
 
 ```{r}
@@ -322,7 +320,7 @@ You can also use **data_filtering** for each pair of subsequent months from the 
 ```{r}
 filter1B<-data_filtering(milk,start="2018-12",end="2019-03",
                          filters=c("extremeprices"),pquantiles=c(0.01,0.99),
-                         interval=TRUE, retailers=TRUE)
+                         interval=TRUE, outlets=TRUE)
 nrow(filter1B)
 ```
 
@@ -570,6 +568,13 @@ fisher(milk, start="2018-12", end="2020-01")
 lloyd_moulton(milk, start="2018-12", end="2020-01", sigma=0.9)
 lowe(milk, start="2019-12", end="2020-02", base="2018-12", interval=TRUE)
 ```
+
+The package also allows the User to calculate *retrospective price indices*. The **retro_index** function implements the correction or imputation approaches (see von Auer (2024) cited in the documentation) and also estimates the Diewert-Huwiler-Kohli-Hansen index (DHKH). For example, let us determine the retrospective DHKH index for the milk set:
+```{r}
+retro_index(milk, start="2018-12", end="2019-12", formula="dhkh")
+```
+
+
 <a id="ad6">   </a>
 
 ### Functions for chain price index calculation

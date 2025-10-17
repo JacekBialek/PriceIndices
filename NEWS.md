@@ -1,3 +1,8 @@
+# Package update 0.2.5 -> 0.2.6
+
+## New function:
+* New function *retro_index* (for computing retrospective price indices) has been added;
+
 # Package update 0.2.4 -> 0.2.5
 
 ## Improvements:

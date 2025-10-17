@@ -1,8 +1,7 @@
 # Package update 
 
-## Improvements:
-* New reference in *shrinkflation* function has been added;
-* A type of the *grammage* parameter has been changed from *character* to *numeric*.
+## New function:
+* New function *retro_index* (for computing retrospective price indices) has been added;
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3
