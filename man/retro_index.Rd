@@ -13,6 +13,7 @@ retro_index(
   method_index = "additive",
   method_weights = "additive",
   lambda = "linear",
+  sigma = 0.7,
   df = FALSE,
   name = "RETRO_index"
 )
@@ -26,7 +27,7 @@ retro_index(
 
 \item{formula}{A parameter indicating which index formula to use within the \code{correction} or \code{imputation} approach, with the values 'fisher' and 'tornqvist' available. If the parameter value is set to 'dhkh', then the retrospective Diewert-Huwiler-Kohli-Hansen index (DHKH) will be computed instead of the correction or imputation method.}
 
-\item{approach}{A parameter indicating which approach to use to obtain retrospectively computed price indices. Available options are: 'correction', 'imputation', or 'correction-imputation'.}
+\item{approach}{A parameter indicating which approach to use to obtain retrospectively computed price indices. Available options are: 'correction', 'imputation', 'correction-imputation', or 'CES-imputation'.}
 
 \item{method_index}{A parameter indicating how to apply the correction approach. Available options are: 'additive' and 'multiplicative'.}
 
@@ -34,12 +35,14 @@ retro_index(
 
 \item{lambda}{A parameter indicating the relevance of the second expenditure reference period relative to the relevance of the first (base) expenditure reference period. Available options are: 'linear' and 'sinusoidal'.}
 
+\item{sigma}{A parameter indicating elasticity of substitution.}
+
 \item{df}{A parameter indicating whether the function should return a data frame with dates and retrospective index values (TRUE) or just a vector of its values for subsequent months (FALSE).}
 
 \item{name}{A parameter indicating the index (or method) name returned in a resulting data frame.}
 }
 \value{
-The function returns values of the selected retrospective price index for all period between \code{start} and \code{end}. Depending on the \code{formula} parameter it can provide values of the Diewert-Huwiler-Kohli-Hansen index (DHKH) or run correction and imputation approach, as well as the mixture of them, to obtain a vector (or a data frame) of retrospective price indices. The user may control the relevance of the second expenditure reference period (\code{end}) relative to the relevance of the first (base) expenditure reference period (\code{start}) by using the \code{lambda} parameter.
+The function returns values of the selected retrospective price index for all period between \code{start} and \code{end}. Depending on the \code{formula} parameter it can provide values of the Diewert-Huwiler-Kohli-Hansen index (DHKH) or run correction and imputation approach, as well as the mixture of them, to obtain a vector (or a data frame) of retrospective price indices. Note that the 'CES-imputation' approach requires elasticity of substitution. The user may control the relevance of the second expenditure reference period (\code{end}) relative to the relevance of the first (base) expenditure reference period (\code{start}) by using the \code{lambda} parameter.
 }
 \description{
 This function returns values of the selected retrospective price index.

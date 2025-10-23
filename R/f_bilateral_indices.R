@@ -4056,14 +4056,15 @@ unit_value_index <-
 #' @param start The base period, being the first expenditure reference period (as character), limited to the year and month, e.g. "2020-03". We assume that the quantity (and thus expenditure) information is available for this period.
 #' @param end The second expenditure reference period (as character) limited to the year and month, e.g. "2020-04". We assume that the quantity (and thus expenditure) information is available for this period.
 #' @param formula A parameter indicating which index formula to use within the \code{correction} or \code{imputation} approach, with the values 'fisher' and 'tornqvist' available. If the parameter value is set to 'dhkh', then the retrospective Diewert-Huwiler-Kohli-Hansen index (DHKH) will be computed instead of the correction or imputation method.
-#' @param approach A parameter indicating which approach to use to obtain retrospectively computed price indices. Available options are: 'correction', 'imputation', or 'correction-imputation'.
+#' @param approach A parameter indicating which approach to use to obtain retrospectively computed price indices. Available options are: 'correction', 'imputation', 'correction-imputation', or 'CES-imputation'.
 #' @param method_index A parameter indicating how to apply the correction approach. Available options are: 'additive' and 'multiplicative'.
 #' @param method_weights A parameter indicating how to apply the imputation approach for calculating weights for all periods within the time interval. Available options are: 'additive' and 'multiplicative'.
 #' @param lambda A parameter indicating the relevance of the second expenditure reference period relative to the relevance of the first (base) expenditure reference period. Available options are: 'linear' and 'sinusoidal'.
+#' @param sigma A parameter indicating elasticity of substitution.
 #' @param df A parameter indicating whether the function should return a data frame with dates and retrospective index values (TRUE) or just a vector of its values for subsequent months (FALSE).
 #' @param name A parameter indicating the index (or method) name returned in a resulting data frame.  
 #' @rdname retro_index
-#' @return The function returns values of the selected retrospective price index for all period between \code{start} and \code{end}. Depending on the \code{formula} parameter it can provide values of the Diewert-Huwiler-Kohli-Hansen index (DHKH) or run correction and imputation approach, as well as the mixture of them, to obtain a vector (or a data frame) of retrospective price indices. The user may control the relevance of the second expenditure reference period (\code{end}) relative to the relevance of the first (base) expenditure reference period (\code{start}) by using the \code{lambda} parameter.       
+#' @return The function returns values of the selected retrospective price index for all period between \code{start} and \code{end}. Depending on the \code{formula} parameter it can provide values of the Diewert-Huwiler-Kohli-Hansen index (DHKH) or run correction and imputation approach, as well as the mixture of them, to obtain a vector (or a data frame) of retrospective price indices. Note that the 'CES-imputation' approach requires elasticity of substitution. The user may control the relevance of the second expenditure reference period (\code{end}) relative to the relevance of the first (base) expenditure reference period (\code{start}) by using the \code{lambda} parameter.       
 #' @references
 #' {Diewert, E. W., Huwiler, M., Kohli, U. (2009). \emph{Retrospective approximations of superlative price indexes for years where expenditure data is unavailable}. In: Biggeri, L., Ferrari, G. (eds), \emph{Price indexes in time and space. Contributions to statistics.}, Physica-Verlag, Heidelberg, 25-42.}
 #'
@@ -4082,6 +4083,7 @@ retro_index<-function (data, start, end,
             method_index="additive", 
             method_weights="additive",
             lambda="linear",
+            sigma=0.7,
             df=FALSE,
             name="RETRO_index")
 {
@@ -4089,7 +4091,7 @@ retro_index<-function (data, start, end,
   return (1)
   if (nrow(data) == 0) stop("A data frame is empty")
   if (!(formula %in% c("fisher","tornqvist","dhkh"))) stop("There is a bad specification of the 'formula' parameter!")
-  if (!(approach %in% c("correction","imputation","correction-imputation"))) stop("There is a bad specification of the 'approach' parameter!")
+  if (!(approach %in% c("correction","imputation","correction-imputation","CES-imputation"))) stop("There is a bad specification of the 'approach' parameter!")
   if (!(method_index %in% c("additive","multiplicative"))) stop("There is a bad specification of the 'method_index' parameter!")
   if (!(method_weights %in% c("additive","multiplicative"))) stop("There is a bad specification of the 'method_weights' parameter!")
   if (!(lambda %in% c("linear","sinusoidal"))) stop("There is a bad specification of the 'lambda' parameter!")
@@ -4334,7 +4336,42 @@ retro_index<-function (data, start, end,
   #retro index
   if (method_index=="additive") retro<-sum(expenditures_start*(price_t/price_start))+lambda_t*(base_formula-base_Laspeyres)
   if (method_index=="multiplicative") retro<-sum(expenditures_start*(price_t/price_start))*(base_formula/base_Laspeyres)^lambda_t
+  }
+  #CES-imputation approach -------------------------------------------------
+  if (approach=="CES-imputation")
+  {
+  data2 <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(dates[t]) &
+  lubridate::month(data$time) == lubridate::month(dates[t])
+  ) 
+  )
+  id <- matched(data2, start, dates.[t])
+  #prices
+  price_t <-
+  prices(data2, period = dates.[t], set = id)
+  price_start <-
+  prices(data2, period = start, set = id)
+  #base expenditure shares
+  expenditures_start<-expenditures(data2,period=start, set=id)
+  expenditures_start<-expenditures_start/sum(expenditures_start)
+  #weights
+  weights_t<-expenditures_start*(price_t/price_start)^(1-sigma)
+  weights_t<-weights_t/sum(weights_t)
+  #retro index
+  if (formula=="fisher") {
+    lasp<-sum(expenditures_start*(price_t/price_start))
+    paasch<-1/sum(weights_t*(price_start/price_t))
+    retro<-(lasp*paasch)^0.5  
   }  
+  if (formula=="tornqvist") retro<-prod((price_t/price_start)^(0.5*(expenditures_start+weights_t)))
+  }
   index_results<-c(index_results, retro)  
   }
   if (df==FALSE) return(index_results)
@@ -4344,4 +4381,3 @@ retro_index<-function (data, start, end,
   return(df_result)
   }
 }
-
