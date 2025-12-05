@@ -18,8 +18,6 @@ Imports:
     reshape,
     reclin2,
     stringr,
-    xgboost,
-    caret,
     strex
 License: GPL-3
 Encoding: UTF-8

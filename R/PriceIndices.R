@@ -43,16 +43,6 @@
 #'
 #' \code{\link{data_selecting}}
 #'
-#' \code{\link{data_classifying}}
-#'
-#' \code{\link{model_classification}}
-#'
-#' \code{\link{save_model}}
-#'
-#' \code{\link{load_model}}
-#'
-#' \code{\link{data_matching}} 
-#'
 #' \code{\link{data_filtering}} 
 #'
 #' \code{\link{data_reducing}} 

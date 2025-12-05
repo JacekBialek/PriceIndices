@@ -3,6 +3,10 @@
 ## New function:
 * New function *retro_index* (for computing retrospective price indices) has been added;
 
+## Deleted functions:
+* The following functions have been removed: *data_classifying*, *model_classification*, 
+*save_model*, and *load_model*.
+
 # Package update 0.2.4 -> 0.2.5
 
 ## Improvements:
