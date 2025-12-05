@@ -108,8 +108,7 @@ units, e.g. ‘kg’, ‘ml’, etc.; **category** - product categories (in
 English) corresponding to COICOP 6 levels; **coicop6** - identifiers of
 local COICOP 6 groups (6 levels). Please note that this data set can
 serve as a training or testing set in product classification using
-machine learning methods (see the functions: **model_classification**
-and **data_classifying**).
+machine learning methods.
 
 ***4) data_DOWN_UP_SIZED***
 
@@ -235,12 +234,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.72         20      1     1
-#> 2 2020-01-01   2.51         16      2     1
-#> 3 2020-01-01   2.96         23      3     1
-#> 4 2020-01-01   2.75         23      4     1
-#> 5 2020-01-01   2.89         22      5     1
-#> 6 2020-01-01   2.76         21      6     1
+#> 1 2020-01-01   2.92         20      1     1
+#> 2 2020-01-01   2.82         20      2     1
+#> 3 2020-01-01   2.86         22      3     1
+#> 4 2020-01-01   2.92         19      4     1
+#> 5 2020-01-01   2.62         20      5     1
+#> 6 2020-01-01   2.64         23      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the
@@ -275,13 +274,13 @@ preferences and their spending on all products is fixed (see the
 df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
-#>         time prices  quantities prodID retID
-#> 1 2020-01-15   2.76 0.004054976      1     1
-#> 2 2020-01-01   2.57 4.381450864      2     1
-#> 3 2020-01-21   2.87 1.951505522      3     1
-#> 4 2020-01-22   2.74 6.023471617      4     1
-#> 5 2020-01-10   2.76 8.720427630      5     1
-#> 6 2020-01-17   2.70 0.234098490      6     1
+#>         time prices quantities prodID retID
+#> 1 2020-01-07   2.88  0.9790418      1     1
+#> 2 2020-01-06   2.73  5.3789274      2     1
+#> 3 2020-01-04   2.82  3.1146025      3     1
+#> 4 2020-01-22   2.92  6.0069316      4     1
+#> 5 2020-01-07   2.79  1.2040424      5     1
+#> 6 2020-01-09   2.68  1.1890912      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this
@@ -357,14 +356,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 0.9620283
+#> [1] 0.9532882
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 0.9621234
+#> [1] 0.9559547
 ```
 
 **data_aggregating**
@@ -500,78 +499,6 @@ to obtain the subset of **milk** with products which are not
 ``` r
 unique(subgroup2$description)
 #> [1] "powdered milk"     "low-fat milk uht"  "full-fat milk uht"
-```
-
-**data_classifying**
-
-This function predicts product COICOP levels (or any other defined
-product levels) using the selected machine learning model (see the
-**model** parameter). It provides the indicated data set with an
-additional column, i.e. *class_predicted*. The selected model must be
-built previously (see the **model_classification** function) and after
-the training process it can be saved on your disk (see the
-**save_model** function) and then loaded at any time (see the
-**load_model** function). Please note that the machine learning process
-is based on the XGBoost algorithm (from the XGBoost package) which is an
-implementation of gradient boosted decision trees designed for speed and
-performance. For example, let us build a machine learning model
-
-``` r
-my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))
-data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))
-data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))
-ML<-model_classification(data_train,
-                         data_test,
-                         class="coicop6",
-                         grid=my.grid,
-                         indicators=c("description","codeIN","grammage"),
-                         key_words=c("uht"), 
-                         rounds=60)
-```
-
-We can watch the results of the whole training process:
-
-``` r
-ML$figure_training
-```
-
-<img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" />
-
-or we can observe the importance of the used indicators:
-
-``` r
-ML$figure_importance
-```
-
-<img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" />
-
-Now, let us save the model on the disk. After saving the model we can
-load it and use at any time:
-
-``` r
-#Setting a temporary directory as a working directory
-wd<-tempdir()
-setwd(wd)
-#Saving and loading the model
-save_model(ML, dir="My_model")
-ML_fromPC<-load_model("My_model")
-#Prediction
-data_predicted<-data_classifying(ML_fromPC, data_test)
-head(data_predicted)
-#>         time prices quantities                            description codeIN
-#> 1 2021-11-01   3.03        379 g/wydojone mleko bez laktozyuht 3,2%1l  60001
-#> 2 2021-11-01   3.03        856 g/wydojone mleko bez laktozyuht 3,2%1l  60001
-#> 3 2021-11-01   3.03        369 g/wydojone mleko bez laktozyuht 3,2%1l  60001
-#> 4 2021-11-01   3.03        617 g/wydojone mleko bez laktozyuht 3,2%1l  60001
-#> 5 2021-11-01   3.03        613 g/wydojone mleko bez laktozyuht 3,2%1l  60001
-#> 6 2021-11-01   3.03        261 g/wydojone mleko bez laktozyuht 3,2%1l  60001
-#>   retID grammage unit       category coicop6 class_predicted
-#> 1     2        1    l UHT whole milk 11411_1         11411_1
-#> 2     3        1    l UHT whole milk 11411_1         11411_1
-#> 3     4        1    l UHT whole milk 11411_1         11411_1
-#> 4     5        1    l UHT whole milk 11411_1         11411_1
-#> 5     6        1    l UHT whole milk 11411_1         11411_1
-#> 6     7        1    l UHT whole milk 11411_1         11411_1
 ```
 
 **data_matching**
@@ -945,7 +872,7 @@ returned object (data frame or figure) depends on the value of the
 matched_fig(milk, start="2018-12", end="2019-12", type="prodID")
 ```
 
-<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" />
 
 ``` r
 matched_fig(milk, start="2018-12", end="2019-04", type="prodID", figure=FALSE)
@@ -983,7 +910,7 @@ list$statistics
 list$figure
 ```
 
-<img src="man/figures/README-unnamed-chunk-38-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" />
 **products_fig**
 
 This function returns a figure with plots of volume (or contributions)
@@ -998,7 +925,7 @@ fixed_base=TRUE, contributions=FALSE,
 show=c("new","disappearing","matched","available"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" />
 **prices**
 
 The function returns prices (unit value) of products with a given ID
@@ -1093,7 +1020,7 @@ sales_groups(datasets=list(milk1,milk2,milk3),start="2019-04", end="2019-07",
              barplot=TRUE, shares=TRUE, names=categories)
 ```
 
-<img src="man/figures/README-unnamed-chunk-44-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-40-1.png" width="100%" />
 **pqcor**
 
 The function returns **Pearson’s correlation coefficient** for price and
@@ -1110,7 +1037,7 @@ pqcor(milk, period="2019-05")
 pqcor(milk, period="2019-05",figure=TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-45-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-41-1.png" width="100%" />
 **pqcor_fig**
 
 The function returns **Pearson’s correlation coefficients** between
@@ -1134,7 +1061,7 @@ pqcor_fig(milk, start="2018-12", end="2019-06", figure=FALSE)
 pqcor_fig(milk, start="2018-12", end="2019-06")
 ```
 
-<img src="man/figures/README-unnamed-chunk-46-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-42-1.png" width="100%" />
 **dissimilarity**
 
 This function returns a value of the relative price (dSP) and/or
@@ -1162,7 +1089,7 @@ For instance:
 dissimilarity_fig(milk, start="2018-12",end="2019-12",type="pq",benchmark="start")
 ```
 
-<img src="man/figures/README-unnamed-chunk-48-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-44-1.png" width="100%" />
 **elasticity**
 
 This function returns a value of the elasticity of substitution. If the
@@ -1202,7 +1129,7 @@ elasticity_fig (milk,start="2018-12",end="2019-04",figure=TRUE,
 method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-50-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-46-1.png" width="100%" />
 <a id="ad4"> </a>
 
 ### Functions for bilateral unweighted price index calculation
@@ -1464,12 +1391,12 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.315882
-#> 2  14216 1.559663
-#> 3  15404 1.006219
-#> 4  17034 1.644008
-#> 5  34540 1.971376
-#> 6  51583 1.733978
+#> 1  14215 1.317605
+#> 2  14216 1.994591
+#> 3  15404 1.068785
+#> 4  17034 1.717897
+#> 5  34540 1.861452
+#> 6  51583 1.265770
 ```
 
 and the next step is calculating the QU index which compares December
@@ -1477,7 +1404,7 @@ and the next step is calculating the QU index which compares December
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9851099
+#> [1] 0.982037
 ```
 
 <a id="ad8"> </a>
@@ -1804,7 +1731,7 @@ formula=c("laspeyres", "fisher"), interval = TRUE)
 compare_indices_df(df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-65-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-61-1.png" width="100%" />
 
 Now, let us compare the impact of the aggregating over outlets on the
 price index results (e.g. the Laspeyres formula is the assumed
@@ -1831,7 +1758,7 @@ compare_indices_list(data=list(case1, case2),
                 "Fisher with aggregation"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-67-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-63-1.png" width="100%" />
 
 **compare_distances**
 
@@ -1950,14 +1877,14 @@ comparison$pseudovalues
 comparison$figure_iterations
 ```
 
-<img src="man/figures/README-unnamed-chunk-72-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-68-1.png" width="100%" />
 
 ``` r
 #displaying box-plotes created for the calculated index pseudovalues obtained in the jackknife procedure
 comparison$figure_pseudovalues
 ```
 
-<img src="man/figures/README-unnamed-chunk-73-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-69-1.png" width="100%" />
 <a id="ad13"> </a>
 
 ### Functions for price and quantity indicator calculations
