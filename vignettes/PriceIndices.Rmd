@@ -80,7 +80,7 @@ The second one, **dataMATCH**, can be used to demonstrate the **data_matching** 
 
 ***3) dataCOICOP***
 
-The third one, **dataCOICOP**, is a ollection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022. It is a data frame with 10 columns and 139600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products; **description** - descriptions of sold products (original: in Polish); **codeID** - retailer product codes; **retID** - IDs of retailer outlets; **grammage** - product grammages; **unit** - sales units, e.g. 'kg', 'ml', etc.; **category** - product categories (in English) corresponding to COICOP 6 levels; **coicop6** - identifiers of local COICOP 6 groups (6 levels). Please note that this data set can serve as a training or testing set in product classification using machine learning methods (see the functions: **model_classification** and **data_classifying**).
+The third one, **dataCOICOP**, is a ollection of real scanner data on the sale of milk products sold in a period: Dec, 2020 - Feb, 2022. It is a data frame with 10 columns and 139600 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day); **prices** - prices of sold products (PLN); **quantities** - quantities of sold products; **description** - descriptions of sold products (original: in Polish); **codeID** - retailer product codes; **retID** - IDs of retailer outlets; **grammage** - product grammages; **unit** - sales units, e.g. 'kg', 'ml', etc.; **category** - product categories (in English) corresponding to COICOP 6 levels; **coicop6** - identifiers of local COICOP 6 groups (6 levels). Please note that this data set can serve as a training or testing set in product classification using machine learning methods.
 
 ***4) data_DOWN_UP_SIZED***
 
@@ -231,48 +231,6 @@ head(subgroup2)
 to obtain the subset of **milk** with products which are not *pasteurized* and which are not **goat**:
 ```{r}
 unique(subgroup2$description)
-```
-**data_classifying**
-
-This function predicts product COICOP levels (or any other defined product levels) using the selected machine learning model (see the **model** parameter). It provides the indicated data set with an additional column, i.e. *class_predicted*. The selected model must be built previously (see the **model_classification** function) and after the training process it can be saved on your disk (see the **save_model** function) and then loaded at any time (see the **load_model** function). Please note that the machine learning process is based on the XGBoost algorithm (from the XGBoost package) which is an implementation of gradient boosted decision trees designed for speed and performance. For example, let us build a machine learning model
-
-```{r, results=FALSE}
-my.grid=list(eta=c(0.01,0.02,0.05),subsample=c(0.5,0.8))
-data_train<-dplyr::filter(dataCOICOP,dataCOICOP$time<=as.Date("2021-10-01"))
-data_test<-dplyr::filter(dataCOICOP,dataCOICOP$time==as.Date("2021-11-01"))
-ML<-model_classification(data_train,
-                         data_test,
-                         class="coicop6",
-                         grid=my.grid,
-                         indicators=c("description","codeIN","grammage"),
-                         key_words=c("uht"), 
-                         rounds=60)
-```
-
-We can watch the results of the whole training process:
-
-```{r}
-ML$figure_training
-```
-
-or we can observe the importance of the used indicators:
-
-```{r}
-ML$figure_importance
-```
-
-Now, let us save the model on the disk. After saving the model we can load it and use at any time:
-
-```{r}
-#Setting a temporary directory as a working directory
-wd<-tempdir()
-setwd(wd)
-#Saving and loading the model
-save_model(ML, dir="My_model")
-ML_fromPC<-load_model("My_model")
-#Prediction
-data_predicted<-data_classifying(ML_fromPC, data_test)
-head(data_predicted)
 ```
 
 **data_matching**
