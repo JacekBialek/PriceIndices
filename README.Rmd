@@ -64,7 +64,7 @@ remotes::install_github("JacekBialek/PriceIndices")
 
 ### Data sets included in the package and generating artificial scanner data sets         
 
-**This package includes nine data sets: artificial and real.** 
+**This package includes 10 data sets: artificial and real.** 
 
 ***1) dataAGGR***
 
@@ -102,6 +102,8 @@ This data set, **dataU**, is a collection of artificial scanner data on 6 produc
 
 This data set, **dataMARS**,  is a collection of artificial scanner data on shirts for testing the MARS method. It contains 9 columns and 44 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day), **prices** - prices of sold products [PLN], **quantities** - quantities of sold products, **prodID** - unique product identifiers (data set contains 28 different prodIDs), **description** - descriptions (labels) of sold shirts (data set contains 12 different descriptions), **brand** - brand of sold shirts (data set contains 2 different brands: X and Y), **gender** - gender of the person for whom the shirt is dedicated (M or F), **size** - size of shirts (M, L, and XL), **fabric** - fabric of shirts (cotton, polyester, blend).
 
+***10) dataRSM***
+This data set, **dataRSM**, is a collection of scanner data on the sale of rice, sugar and milk products in one of Polish supermarkets in the period from December 2023 to January 2025. It contains 9 columns and 8090 rows. The used variables are as follows: **time** - dates of transactions (Year-Month-Day), **prices** - prices of sold products [PLN], **quantities** - quantities of sold products, **retID** - unique codes identifying outlets/retailer sale points (data set contains 4 different retIDs), **description** - descriptions (labels) of sold products (data set contains 152 different descriptions), **retailer_code** - retailer codes for product definition (134 retailer codes), **EAN_code** - EAN codes (bar codes) for product definition (138 EAN codes), **category** - product categories at the 6-digit COICOP level (4 categories), and **subcategory** - product subcategories from 7-digit COICOP level (11 subcategories). Please note that the data frame does not contain the **prodID** column, so it must be defined (or specified) before calculating price indices.
 
 The set **milk** represents a typical data frame used in the package for most calculations and is organized as follows:
 

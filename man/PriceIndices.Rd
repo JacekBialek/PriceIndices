@@ -28,6 +28,10 @@ _PACKAGE
 
 \code{\link{dataU}}
 
+\code{\link{dataMARS}}
+
+\code{\link{dataRSM}}
+
 \code{\link{generate}}
 
 \code{\link{generate_CES}}

@@ -7,6 +7,9 @@
 * The following functions have been removed: *data_classifying*, *model_classification*, 
 *save_model*, and *load_model*.
 
+## New dataset
+* New detailed scanner dataset on *milk*, *sugar* and *rice* products
+
 # Package update 0.2.4 -> 0.2.5
 
 ## Improvements:

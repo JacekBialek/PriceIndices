@@ -1,3 +1,8 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -67,7 +72,7 @@ remotes::install_github("JacekBialek/PriceIndices")
 
 ### Data sets included in the package and generating artificial scanner data sets
 
-**This package includes nine data sets: artificial and real.**
+**This package includes 10 data sets: artificial and real.**
 
 ***1) dataAGGR***
 
@@ -194,6 +199,23 @@ the person for whom the shirt is dedicated (M or F), **size** - size of
 shirts (M, L, and XL), **fabric** - fabric of shirts (cotton, polyester,
 blend).
 
+***10) dataRSM*** This data set, **dataRSM**, is a collection of scanner
+data on the sale of rice, sugar and milk products in one of Polish
+supermarkets in the period from December 2023 to January 2025. It
+contains 9 columns and 8090 rows. The used variables are as follows:
+**time** - dates of transactions (Year-Month-Day), **prices** - prices
+of sold products \[PLN\], **quantities** - quantities of sold products,
+**retID** - unique codes identifying outlets/retailer sale points (data
+set contains 4 different retIDs), **description** - descriptions
+(labels) of sold products (data set contains 152 different
+descriptions), **retailer_code** - retailer codes for product definition
+(134 retailer codes), **EAN_code** - EAN codes (bar codes) for product
+definition (138 EAN codes), **category** - product categories at the
+6-digit COICOP level (4 categories), and **subcategory** - product
+subcategories from 7-digit COICOP level (11 subcategories). Please note
+that the data frame does not contain the **prodID** column, so it must
+be defined (or specified) before calculating price indices.
+
 The set **milk** represents a typical data frame used in the package for
 most calculations and is organized as follows:
 
@@ -234,12 +256,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.92         20      1     1
-#> 2 2020-01-01   2.82         20      2     1
-#> 3 2020-01-01   2.86         22      3     1
-#> 4 2020-01-01   2.92         19      4     1
-#> 5 2020-01-01   2.62         20      5     1
-#> 6 2020-01-01   2.64         23      6     1
+#> 1 2020-01-01   2.72         22      1     1
+#> 2 2020-01-01   2.73         19      2     1
+#> 3 2020-01-01   2.53         20      3     1
+#> 4 2020-01-01   2.77         20      4     1
+#> 5 2020-01-01   2.79         19      5     1
+#> 6 2020-01-01   2.65         21      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the
@@ -275,12 +297,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-07   2.88  0.9790418      1     1
-#> 2 2020-01-06   2.73  5.3789274      2     1
-#> 3 2020-01-04   2.82  3.1146025      3     1
-#> 4 2020-01-22   2.92  6.0069316      4     1
-#> 5 2020-01-07   2.79  1.2040424      5     1
-#> 6 2020-01-09   2.68  1.1890912      6     1
+#> 1 2020-01-20   2.92 6.71811531      1     1
+#> 2 2020-01-08   2.86 3.31189094      2     1
+#> 3 2020-01-01   2.78 2.17158733      3     1
+#> 4 2020-01-28   2.74 0.09200503      4     1
+#> 5 2020-01-02   2.83 2.34227406      5     1
+#> 6 2020-01-23   3.07 4.09552856      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this
@@ -356,14 +378,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 0.9532882
+#> [1] 0.9842347
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 0.9559547
+#> [1] 0.9843441
 ```
 
 **data_aggregating**
@@ -1391,12 +1413,12 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.317605
-#> 2  14216 1.994591
-#> 3  15404 1.068785
-#> 4  17034 1.717897
-#> 5  34540 1.861452
-#> 6  51583 1.265770
+#> 1  14215 1.075300
+#> 2  14216 1.941136
+#> 3  15404 1.641582
+#> 4  17034 1.651275
+#> 5  34540 1.493244
+#> 6  51583 1.778899
 ```
 
 and the next step is calculating the QU index which compares December
@@ -1404,7 +1426,7 @@ and the next step is calculating the QU index which compares December
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.982037
+#> [1] 1.017355
 ```
 
 <a id="ad8"> </a>
