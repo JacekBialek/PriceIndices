@@ -8,7 +8,7 @@
 *save_model*, and *load_model*.
 
 ## New dataset
-* New detailed scanner dataset on *milk*, *sugar* and *rice* products
+* New detailed scanner dataset (*dataRSM*) on *milk*, *sugar* and *rice* products
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3
