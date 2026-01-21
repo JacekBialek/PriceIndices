@@ -29,6 +29,6 @@ A data frame with 9 columns and 8090 rows. The used variables are as follows:
 dataRSM
 }
 \description{
-A collection of scanner data on the sale of rice, sugar and milk products in one of Polish supermarkets in the period from December 2023 to January 2025
+A collection of scanner data on the sale of rice, sugar and milk products in one of Polish supermarkets in the period from December 2024 to January 2026
 }
 \keyword{datasets}
