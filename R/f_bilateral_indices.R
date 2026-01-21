@@ -4226,6 +4226,7 @@ retro_index<-function (data, start, end,
   #imputation approach------------------------------------------------------
   if (approach=="imputation")
   {
+  #right side of the formula on G_0_t_T-----------------------
   data2 <-
   dplyr::filter(
   data,
@@ -4246,31 +4247,55 @@ retro_index<-function (data, start, end,
   id2 <- matched(data2, start, end)
   id<-intersect(id1, id2)
   #prices
-  price_t <-
+  price_t2 <-
   prices(data2, period = dates.[t], set = id)
-  price_start <-
+  price_start2 <-
   prices(data2, period = start, set = id)
   #base expenditure shares
-  expenditures_start<-expenditures(data2,period=start, set=id)
-  expenditures_start<-expenditures_start/sum(expenditures_start)
+  expenditures_start2<-expenditures(data2,period=start, set=id)
+  expenditures_start2<-expenditures_start2/sum(expenditures_start2)
   #current expenditure shares
-  expenditures_end<-expenditures(data2,period=end, set=id)
-  expenditures_end<-expenditures_end/sum(expenditures_end)  
+  expenditures_end2<-expenditures(data2,period=end, set=id)
+  expenditures_end2<-expenditures_end2/sum(expenditures_end2)  
   #weights
-  if (method_weights=="additive") weights_t<-(1-lambda_t)*expenditures_start+lambda_t*expenditures_end  
-  if (method_weights=="multiplicative") weights_t<-(expenditures_start^(1-lambda_t))*(expenditures_end^lambda_t)
+  if (method_weights=="additive") weights_t2<-(1-lambda_t)*expenditures_start2+lambda_t*expenditures_end2  
+  if (method_weights=="multiplicative") weights_t2<-(expenditures_start2^(1-lambda_t))*(expenditures_end2^lambda_t)
+  #left side of the formula on G_0_t--------------------------
+  data2 <-
+  dplyr::filter(
+  data2,
+  (
+  lubridate::year(data2$time) == lubridate::year(start) &
+  lubridate::month(data2$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data2$time) == lubridate::year(dates[t]) &
+  lubridate::month(data2$time) == lubridate::month(dates[t])
+  )
+  )
+  id <- matched(data2, start, dates.[t]) 
+  #prices
+  price_t1 <-
+  prices(data2, period = dates.[t], set = id)
+  price_start1 <-
+  prices(data2, period = start, set = id)
+  #base expenditure shares
+  expenditures_start1<-expenditures(data2,period=start, set=id)
+  expenditures_start1<-expenditures_start1/sum(expenditures_start1) 
   #retro index
   if (formula=="fisher") {
-    lasp<-sum(expenditures_start*(price_t/price_start))
-    paasch<-1/sum(weights_t*(price_start/price_t))
+    lasp<-sum(expenditures_start1*(price_t1/price_start1))
+    paasch<-1/sum(weights_t2*(price_start2/price_t2))
     retro<-(lasp*paasch)^0.5
   }
-  if (formula=="tornqvist") retro<-prod((price_t/price_start)^(0.5*(expenditures_start+weights_t)))
+  if (formula=="tornqvist") 
+  retro<-prod((price_t1/price_start1)^(0.5*expenditures_start1))*prod((price_t2/price_start2)^(0.5*weights_t2))  
   }
   #correction and imputation approach---------------------------------------
   if (approach=="correction-imputation")
   {
   #imputation part--------------------------
+  #right side of the formula on G_0_t_T-----------------------
   data2 <-
   dplyr::filter(
   data,
@@ -4291,26 +4316,48 @@ retro_index<-function (data, start, end,
   id2 <- matched(data2, start, end)
   id<-intersect(id1, id2)
   #prices
-  price_t <-
+  price_t2 <-
   prices(data2, period = dates.[t], set = id)
-  price_start <-
+  price_start2 <-
   prices(data2, period = start, set = id)
   #base expenditure shares
-  expenditures_start<-expenditures(data2,period=start, set=id)
-  expenditures_start<-expenditures_start/sum(expenditures_start)
+  expenditures_start2<-expenditures(data2,period=start, set=id)
+  expenditures_start2<-expenditures_start2/sum(expenditures_start2)
   #current expenditure shares
-  expenditures_end<-expenditures(data2,period=end, set=id)
-  expenditures_end<-expenditures_end/sum(expenditures_end)  
+  expenditures_end2<-expenditures(data2,period=end, set=id)
+  expenditures_end2<-expenditures_end2/sum(expenditures_end2)  
   #weights
-  if (method_weights=="additive") weights_t<-(1-lambda_t)*expenditures_start+lambda_t*expenditures_end  
-  if (method_weights=="multiplicative") weights_t<-(expenditures_start^(1-lambda_t))*(expenditures_end^lambda_t)
-  #base index
+  if (method_weights=="additive") weights_t2<-(1-lambda_t)*expenditures_start2+lambda_t*expenditures_end2  
+  if (method_weights=="multiplicative") weights_t2<-(expenditures_start2^(1-lambda_t))*(expenditures_end2^lambda_t)
+  #left side of the formula on G_0_t--------------------------
+  data2 <-
+  dplyr::filter(
+  data2,
+  (
+  lubridate::year(data2$time) == lubridate::year(start) &
+  lubridate::month(data2$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data2$time) == lubridate::year(dates[t]) &
+  lubridate::month(data2$time) == lubridate::month(dates[t])
+  )
+  )
+  id <- matched(data2, start, dates.[t]) 
+  #prices
+  price_t1 <-
+  prices(data2, period = dates.[t], set = id)
+  price_start1 <-
+  prices(data2, period = start, set = id)
+  #base expenditure shares
+  expenditures_start1<-expenditures(data2,period=start, set=id)
+  expenditures_start1<-expenditures_start1/sum(expenditures_start1) 
+  #retro index
   if (formula=="fisher") {
-    lasp<-sum(expenditures_start*(price_t/price_start))
-    paasch<-1/sum(weights_t*(price_start/price_t))
+    lasp<-sum(expenditures_start1*(price_t1/price_start1))
+    paasch<-1/sum(weights_t2*(price_start2/price_t2))
     base_formula<-(lasp*paasch)^0.5
   }
-  if (formula=="tornqvist") base_formula<-prod((price_t/price_start)^(0.5*(expenditures_start+weights_t)))
+  if (formula=="tornqvist")   base_formula<-prod((price_t1/price_start1)^(0.5*expenditures_start1))*prod((price_t2/price_start2)^(0.5*weights_t2))  
   #correction part------------------------------
   data3 <-
   dplyr::filter(
@@ -4334,8 +4381,9 @@ retro_index<-function (data, start, end,
   expenditures_start<-expenditures(data3,period=start, set=id)
   expenditures_start<-expenditures_start/sum(expenditures_start)
   #retro index
-  if (method_index=="additive") retro<-sum(expenditures_start*(price_t/price_start))+lambda_t*(base_formula-base_Laspeyres)
-  if (method_index=="multiplicative") retro<-sum(expenditures_start*(price_t/price_start))*(base_formula/base_Laspeyres)^lambda_t
+  current_Laspeyres<-sum(expenditures_start*(price_t/price_start))
+  if (method_index=="additive") retro<-current_Laspeyres+lambda_t*(base_formula-current_Laspeyres)
+  if (method_index=="multiplicative") retro<-current_Laspeyres*(base_formula/current_Laspeyres)^lambda_t
   }
   #CES-imputation approach -------------------------------------------------
   if (approach=="CES-imputation")

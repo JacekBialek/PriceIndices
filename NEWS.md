@@ -1,3 +1,9 @@
+# Package update 0.2.6 -> 0.2.7
+
+## Improvements and corrections:
+* The function *retro_index* (for computing retrospective price indices) has been improved and corrected;
+* Recently added scanner dataset (*dataRSM*) has been anonymized and updated. 
+
 # Package update 0.2.5 -> 0.2.6
 
 ## New function:
