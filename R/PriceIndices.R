@@ -93,11 +93,15 @@
 #'
 #' \code{\link{cswd}}
 #'
+#' \code{\link{dikhanov}}
+#'
 #' \code{\link{dutot}}
 #'
 #' \code{\link{jevons}}
 #'
 #' \code{\link{harmonic}}
+#'
+#' \code{\link{ybmd}}
 #'
 #' @section Functions for bilateral weighted index calculation:
 #' \code{\link{agmean}} 
@@ -120,9 +124,13 @@
 #'
 #' \code{\link{geopaasche}}
 #'
+#' \code{\link{geowalsh}}
+#'
 #' \code{\link{geoyoung}}
 #'
 #' \code{\link{geohybrid}}
+#'
+#' \code{\link{hlc}}
 #'
 #' \code{\link{hybrid}}
 #'
@@ -144,11 +152,17 @@
 #'
 #' \code{\link{stuvel}}
 #'
+#' \code{\link{theil1}}
+#'
+#' \code{\link{theil2}}
+#'
 #' \code{\link{tornqvist}}
 #'
 #' \code{\link{vartia}}
 #'
 #' \code{\link{walsh}}
+#'
+#' \code{\link{walsh_vartia}}
 #'
 #' \code{\link{young}}
 #'
@@ -177,6 +191,12 @@
 #'
 #' \code{\link{chharmonic}}
 #'
+#' \code{\link{chbmw}}
+#'
+#' \code{\link{chdikhanov}}
+#'
+#' \code{\link{chybmd}}
+#'
 #' \code{\link{chagmean}} 
 #'
 #' \code{\link{chbanajree}}
@@ -201,6 +221,10 @@
 #'
 #' \code{\link{chgeohybrid}}
 #'
+#' \code{\link{chgeowalsh}}
+#'
+#' \code{\link{chhlc}}
+#'
 #' \code{\link{chhybrid}}
 #'
 #' \code{\link{chlaspeyres}}
@@ -223,9 +247,15 @@
 #'
 #' \code{\link{chtornqvist}}
 #'
+#' \code{\link{chtheil1}}
+#'
+#' \code{\link{chtheil2}}
+#'
 #' \code{\link{chvartia}}
 #'
 #' \code{\link{chwalsh}}
+#'
+#' \code{\link{chwalsh_vartia}}
 #'
 #' \code{\link{chyoung}}
 #'

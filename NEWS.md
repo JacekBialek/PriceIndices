@@ -1,3 +1,13 @@
+# Package update 0.2.7 -> 0.2.8
+
+## New functions:
+* The following new functions for bilateral price index calculations have been added: *ybmd* (the Young-Balk-Mehrhoff-Dikhanov index), 
+*geowalsh* (the geometric Walsh index), *theil1* (the Theil I index), *theil2* (the Theil II index), *walsh_vartia* (the Walsh-Vartia index),
+*hlc* (the harmonic log-change index) + their chain versions, i.e., *chybmd*, *chgeowalsh*, *chtheil1*, *chtheil2*, *chwalsh_vartia*, and *chhlc*.
+
+## Improvements
+* Functions *price_indices* and *final_index* have been extended to take into consideration all these new index formulas.
+
 # Package update 0.2.6 -> 0.2.7
 
 ## Improvements and corrections:

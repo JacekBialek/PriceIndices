@@ -26,17 +26,11 @@
     end <- paste(end, "-01", sep = "")
     start <- as.Date(start)
     end <- as.Date(end)
-    date <- c()
-    while (start <= end)
-    {
-    t <- substr(start, 0, 7)
-    date <- c(date, t)
-    lubridate::month(start) <-
-    lubridate::month(start) + 1
-    }
+    dates <- seq.Date(from=start, to=end, by="month")
+    dates <- format(dates, format = "%Y-%m")
     f <-
     function (i)
-    return (jevons(data, start = date[i], end = date[i + 1]))
+    return (jevons(data, start = dates[i], end = dates[i + 1]))
     ind <- seq(1:(length(date) - 1))
     chained1 <- sapply(ind, f)
     chained <- prod(chained1)
@@ -78,14 +72,8 @@ chcarli <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (carli(data, start = dates[i], end = dates[i + 1]))
@@ -129,14 +117,8 @@ chdutot <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (dutot(data, start = dates[i], end = dates[i + 1]))
@@ -182,14 +164,8 @@ chcswd <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (cswd(data, start = dates[i], end = dates[i + 1]))
@@ -233,14 +209,8 @@ chharmonic <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (harmonic(data, start = dates[i], end = dates[i + 1]))
@@ -284,14 +254,8 @@ chbmw <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (bmw(data, start = dates[i], end = dates[i + 1]))
@@ -333,14 +297,8 @@ chdikhanov <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (dikhanov(data, start = dates[i], end = dates[i + 1]))
@@ -355,6 +313,55 @@ chdikhanov <-
   }
   return(chained)
   }
+
+#' @title  Calculating the monthly chained YBMD price index
+#'
+#' @description This function returns a value (or vector of values) of the monthly chained Young-Balk-Mehrhoff Dikhanov price index
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this  function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname chybmd
+#' @return The function returns a value (or vector of values) of the monthly chained  Young-Balk-Mehrhoff Dikhanov (YBMD) price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). This function returns values identical to those of the chain Dikhanov and chain BMW indices (three different names for this index are used in the literature).
+#' @references
+#' {Mehrhoff, J.(2007). \emph{A linear approximation to the Jevons index}. In: Von der Lippe (2007): Index Theory and Price Statistics, Peter Lang: Berlin, Germany.}
+#'
+#' {(2018). \emph{Harmonised Index of Consumer Prices (HICP). Methodological Manual}. Publication Office of the European union, Luxembourg.}
+#'
+#' {Dikhanov, Y., (2024). \emph{A New Elementary Index Number}. Paper presented at the 18th Meeting of the Ottawa Group on Price Indices, Ottawa, Canada.}
+#'
+#' {Białek, J., Dikhanov, Y. (2026). \emph{Properties of the Young-Balk-Mehrhoff-Dikhanov elementary price index}. Paper presented at the 19th Meeting of the Ottawa Group on Price Indices, Warsaw, Poland.}
+#' @examples 
+#' chybmd(sugar, start="2018-12", end="2019-04")
+#' \donttest{chybmd(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+  chybmd <-
+    function(data, start, end, interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    dates <- seq.Date(from=start, to=end, by="month")
+    dates <- format(dates, format = "%Y-%m")
+    f <-
+    function (i)
+    return (ybmd(data, start = dates[i], end = dates[i + 1]))
+    ind <- seq(1:(length(dates) - 1))
+    chained1 <- sapply(ind, f)
+    chained <- prod(chained1)
+    if (interval == TRUE) {
+    #optional returning all fixed base chain indices
+    chained <- c(1)
+    for (i in 1:length(chained1))
+    chained <- c(chained, prod(chained1[seq(1, i)]))
+    }
+    return(chained)
+    }
 
 #' @title  Calculating the monthly chained Laspeyres price index
 #'
@@ -384,14 +391,8 @@ chlaspeyres <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (laspeyres(data, start = dates[i], end = dates[i + 1]))
@@ -435,14 +436,8 @@ chpaasche <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (paasche(data, start = dates[i], end = dates[i + 1]))
@@ -486,14 +481,8 @@ chfisher <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (fisher(data, start = dates[i], end = dates[i + 1]))
@@ -537,14 +526,8 @@ chtornqvist <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (tornqvist(data, start = dates[i], end = dates[i + 1]))
@@ -588,14 +571,8 @@ chgeolaspeyres <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (geolaspeyres(data, start = dates[i], end = dates[i + 1]))
@@ -639,14 +616,8 @@ chgeopaasche <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (geopaasche(data, start = dates[i], end = dates[i + 1]))
@@ -692,14 +663,8 @@ chdrobisch <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (drobisch(data, start = dates[i], end = dates[i + 1]))
@@ -747,14 +712,8 @@ chmarshall_edgeworth <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (marshall_edgeworth(data, start = dates[i], end = dates[i + 1]))
@@ -800,14 +759,8 @@ chwalsh <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (walsh(data, start = dates[i], end = dates[i + 1]))
@@ -853,14 +806,8 @@ chbialek <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (bialek(data, start = dates[i], end = dates[i + 1]))
@@ -906,14 +853,8 @@ chbanajree <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (banajree(data, start = dates[i], end = dates[i + 1]))
@@ -959,14 +900,8 @@ chdavies <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (davies(data, start = dates[i], end = dates[i + 1]))
@@ -1012,14 +947,8 @@ chstuvel <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (stuvel(data, start = dates[i], end = dates[i + 1]))
@@ -1065,14 +994,8 @@ chpalgrave <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (palgrave(data, start = dates[i], end = dates[i + 1]))
@@ -1120,14 +1043,8 @@ chgeary_khamis <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (geary_khamis(data, start = dates[i], end = dates[i + 1]))
@@ -1171,14 +1088,8 @@ chlehr <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (lehr(data, start = dates[i], end = dates[i + 1]))
@@ -1225,14 +1136,8 @@ chvartia <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (vartia(data, start = dates[i], end = dates[i + 1]))
@@ -1280,14 +1185,8 @@ chsato_vartia <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (sato_vartia(data, start = dates[i], end = dates[i + 1]))
@@ -1342,14 +1241,8 @@ chlloyd_moulton <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (lloyd_moulton(data, start = dates[i], end = dates[i + 1], sigma))
@@ -1398,7 +1291,6 @@ chagmean <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
   dates <- seq.Date(from = start, to = end, by = "month")
   dates <- format(dates, format = "%Y-%m")
   f <-
@@ -1449,7 +1341,6 @@ chyoung <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
   dates <- seq.Date(from = start, to = end, by = "month")
   dates <- format(dates, format = "%Y-%m")
   f <-
@@ -1500,7 +1391,6 @@ chgeoyoung <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
   dates <- seq.Date(from = start, to = end, by = "month")
   dates <- format(dates, format = "%Y-%m")
   f <-
@@ -1549,7 +1439,6 @@ chlowe <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
   dates <- seq.Date(from = start, to = end, by = "month")
   dates <- format(dates, format = "%Y-%m")
   f <-
@@ -1598,7 +1487,6 @@ chgeolowe <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
   dates <- seq.Date(from = start, to = end, by = "month")
   dates <- format(dates, format = "%Y-%m")
   f <-
@@ -1697,7 +1585,6 @@ chgeohybrid <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
   dates <- seq.Date(from = start, to = end, by = "month")
   dates <- format(dates, format = "%Y-%m")
   f <-
@@ -1742,14 +1629,8 @@ chQMq <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (QMq(data, start = dates[i], end = dates[i + 1], r = r))
@@ -1792,14 +1673,8 @@ chQMp <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (QMp(data, start = dates[i], end = dates[i + 1], r = r))
@@ -1842,14 +1717,8 @@ chIQMp <-
   end <- paste(end, "-01", sep = "")
   start <- as.Date(start)
   end <- as.Date(end)
-  dates <- c()
-  while (start <= end)
-  {
-  t <- substr(start, 0, 7)
-  dates <- c(dates, t)
-  lubridate::month(start) <-
-  lubridate::month(start) + 1
-  }
+  dates <- seq.Date(from=start, to=end, by="month")
+  dates <- format(dates, format = "%Y-%m")
   f <-
   function (i)
   return (IQMp(data, start = dates[i], end = dates[i + 1], r = r))
@@ -1864,3 +1733,219 @@ chIQMp <-
   }
   return(chained)
   }
+
+
+#' @title  Calculating the monthly chained geometric Walsh price index
+#'
+#' @description This function returns a value (or vector of values) of the monthly chained geometric Walsh price index
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this  function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname chgeowalsh
+#' @return The function returns a value (or vector of values) of the monthly chained  geometric Walsh price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). 
+#' @references
+#' {Walsh, C.M. (1901). \emph{The Measurement of General Exchange Value}. New York: Macmillan and Co., p.202}
+#'
+#' {Walsh, C.M. (1921). \emph{The Problem of Estimation}. London: P.S. King & Son, p.97}
+#' @examples 
+#' chgeowalsh(sugar, start="2018-12", end="2019-04")
+#' \donttest{chgeowalsh(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+  chgeowalsh <-
+    function(data, start, end, interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    dates <- seq.Date(from=start, to=end, by="month")
+    dates <- format(dates, format = "%Y-%m")
+    f <-
+    function (i)
+    return (geowalsh(data, start = dates[i], end = dates[i + 1]))
+    ind <- seq(1:(length(dates) - 1))
+    chained1 <- sapply(ind, f)
+    chained <- prod(chained1)
+    if (interval == TRUE) {
+    #optional returning all fixed base chain indices
+    chained <- c(1)
+    for (i in 1:length(chained1))
+    chained <- c(chained, prod(chained1[seq(1, i)]))
+    }
+    return(chained)
+    }
+
+#' @title  Calculating the monthly chained Theil I price index
+#'
+#' @description This function returns a value (or vector of values) of the monthly chained Theil I price index
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this  function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname chtheil1
+#' @return The function returns a value (or vector of values) of the monthly chained  Theil I price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). 
+#' @references
+#' {Naohito Abe (2025). \emph{Price Index Numbers. Theory and Application.} Springer, p. 6}
+#' @examples 
+#' chtheil1(sugar, start="2018-12", end="2019-04")
+#' \donttest{chtheil1(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+  chtheil1 <-
+    function(data, start, end, interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    dates <- seq.Date(from=start, to=end, by="month")
+    dates <- format(dates, format = "%Y-%m")
+    f <-
+    function (i)
+    return (theil1(data, start = dates[i], end = dates[i + 1]))
+    ind <- seq(1:(length(dates) - 1))
+    chained1 <- sapply(ind, f)
+    chained <- prod(chained1)
+    if (interval == TRUE) {
+    #optional returning all fixed base chain indices
+    chained <- c(1)
+    for (i in 1:length(chained1))
+    chained <- c(chained, prod(chained1[seq(1, i)]))
+    }
+    return(chained)
+    }
+
+#' @title  Calculating the monthly chained Theil II price index
+#'
+#' @description This function returns a value (or vector of values) of the monthly chained Theil II price index
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this  function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname chtheil2
+#' @return The function returns a value (or vector of values) of the monthly chained  Theil II price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). 
+#' @references
+#' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang, Germany, p. 232.}
+#' @examples 
+#' chtheil2(sugar, start="2018-12", end="2019-04")
+#' \donttest{chtheil2(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+  chtheil2 <-
+    function(data, start, end, interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    dates <- seq.Date(from=start, to=end, by="month")
+    dates <- format(dates, format = "%Y-%m")
+    f <-
+    function (i)
+    return (theil2(data, start = dates[i], end = dates[i + 1]))
+    ind <- seq(1:(length(dates) - 1))
+    chained1 <- sapply(ind, f)
+    chained <- prod(chained1)
+    if (interval == TRUE) {
+    #optional returning all fixed base chain indices
+    chained <- c(1)
+    for (i in 1:length(chained1))
+    chained <- c(chained, prod(chained1[seq(1, i)]))
+    }
+    return(chained)
+    }
+
+#' @title  Calculating the monthly chained Walsh-Vartia price index
+#'
+#' @description This function returns a value (or vector of values) of the monthly chained Walsh-Vartia price index
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this  function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname chwalsh_vartia
+#' @return The function returns a value (or vector of values) of the monthly chained  Walsh-Vartia price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). 
+#' @references
+#' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang, Germany, p. 232.}
+#' @examples 
+#' chwalsh_vartia(sugar, start="2018-12", end="2019-04")
+#' \donttest{chwalsh_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+  chwalsh_vartia <-
+    function(data, start, end, interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    dates <- seq.Date(from=start, to=end, by="month")
+    dates <- format(dates, format = "%Y-%m")
+    f <-
+    function (i)
+    return (walsh_vartia(data, start = dates[i], end = dates[i + 1]))
+    ind <- seq(1:(length(dates) - 1))
+    chained1 <- sapply(ind, f)
+    chained <- prod(chained1)
+    if (interval == TRUE) {
+    #optional returning all fixed base chain indices
+    chained <- c(1)
+    for (i in 1:length(chained1))
+    chained <- c(chained, prod(chained1[seq(1, i)]))
+    }
+    return(chained)
+    }
+
+#' @title  Calculating the monthly chained harmonic log-change (HLC) price index
+#'
+#' @description This function returns a value (or vector of values) of the monthly chained harmonic log-change (HLC) price index
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this  function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname chhlc
+#' @return The function returns a value (or vector of values) of the monthly chained  harmonic log-change (HLC) price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions: \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). 
+#' @examples 
+#' chhlc(sugar, start="2018-12", end="2019-04")
+#' \donttest{chhlc(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+  chhlc <-
+    function(data, start, end, interval = FALSE)  {
+    if (start == end)
+    return (1)
+    if (nrow(data) == 0)
+    stop("A data frame is empty")
+    start <- paste(start, "-01", sep = "")
+    end <- paste(end, "-01", sep = "")
+    start <- as.Date(start)
+    end <- as.Date(end)
+    dates <- seq.Date(from=start, to=end, by="month")
+    dates <- format(dates, format = "%Y-%m")
+    f <-
+    function (i)
+    return (hlc(data, start = dates[i], end = dates[i + 1]))
+    ind <- seq(1:(length(dates) - 1))
+    chained1 <- sapply(ind, f)
+    chained <- prod(chained1)
+    if (interval == TRUE) {
+    #optional returning all fixed base chain indices
+    chained <- c(1)
+    for (i in 1:length(chained1))
+    chained <- c(chained, prod(chained1[seq(1, i)]))
+    }
+    return(chained)
+    }

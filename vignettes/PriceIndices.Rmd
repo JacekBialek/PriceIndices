@@ -467,17 +467,18 @@ method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))
 
 ### Functions for bilateral unweighted price index calculation
 
-This package includes 7 functions for calculating the following bilateral unweighted price indices: 
+This package includes 8 functions for calculating the following bilateral unweighted price indices: 
 
 | Price Index | Function | 
 |----------------|---------------|
 | BMW (2007) | bmw |
 | Carli (1804) | carli |
 | CSWD (1980,1992) | cswd |
+| Dikhanov (2021, 2024)| dikhanov |
 | Dutot (1738) | dutot |
 | Jevons (1865) | jevons |
 | Harmonic | harmonic |
-| Dikhanov (2021, 2024)| dikhanov |
+| YBMD (2026)| ybmd |
 
 Each of these functions returns a value (or vector of values) of the choosen unweighted bilateral price index depending on the **interval** parameter. If the interval parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates please see general functions: **price_indices** or **final_index**. None of these functions takes into account aggregating over outlets or product subgroups (to consider these types of aggregating please use the **final_index** function.) Below are examples of calculations for the Jevons index (in the second case a *fixed base month* is set to December 2018):
 ```{r}
@@ -488,7 +489,7 @@ jevons(milk, start="2018-12", end="2020-01", interval=TRUE)
 
 ### Functions for bilateral weighted price index calculation
 
-This package includes 30 functions for calculating the following bilateral weighted price indices: 
+This package includes 35 functions for calculating the following bilateral weighted price indices: 
 
 | Price Index | Function | 
 |----------------|---------------|
@@ -502,8 +503,10 @@ This package includes 30 functions for calculating the following bilateral weigh
 | Geo-Laspeyres | geolaspeyres |
 | Geo-Lowe| geolowe |
 | Geo-Paasche | geopaasche |
+| Geo-Walsh | geowalsh |
 | Geo-Young | geoyoung |
 | Geo-hybrid (2020) | geohybrid |
+| Harmonic log-change | hlc |
 | Hybrid (2020) | hybrid |
 | Laspeyres (1871) | laspeyres |
 | Lehr (1885) | lehr |
@@ -514,9 +517,12 @@ This package includes 30 functions for calculating the following bilateral weigh
 | Palgrave (1886) | palgrave |
 | Sato-Vartia (1976) | sato_vartia |
 | Stuvel (1957) | stuvel |
+| Theil I | theil1 |
+| Theil II | theil2 |
 | Tornqvist (1936) | tornqvist |
 | Vartia (1976) | vartia |
 | Walsh (1901) | walsh |
+| Walsh-Vartia | walsh_vartia |
 | Young | young |
 | Quadratic mean of order r price index | QMp |
 | Implicit quadratic mean of order r price index | IQMp |
@@ -542,7 +548,7 @@ retro_index(milk, start="2018-12", end="2019-12", formula="dhkh")
 
 ### Functions for chain price index calculation
 
-This package includes 36 functions for calculating the following chain indices (weighted and unweighted):
+This package includes 42 functions for calculating the following chain indices (weighted and unweighted):
 
 | Price Index | Function | 
 |----------------|---------------|
@@ -553,6 +559,7 @@ This package includes 36 functions for calculating the following chain indices (
 | Chain Jevons  | chjevons |
 | Chain Harmonic | chharmonic |
 | Chain Dikhanov | chdikhanov |
+| Chain YBMD | chybmd |
 | Chain AG Mean  | chagmean |
 | Chain Banajree  | chbanajree |
 | Chain Bialek  | chbialek |
@@ -563,8 +570,10 @@ This package includes 36 functions for calculating the following chain indices (
 | Chain Geo-Laspeyres | chgeolaspeyres |
 | Chain Geo-Lowe| chgeolowe |
 | Chain Geo-Paasche | chgeopaasche |
+| Chain Geo-Walsh | chgeowalsh |
 | Chain Geo-Young | chgeoyoung |
 | Chain Geo-hybrid | chgeohybrid |
+| Chain harmonic log-change | chhlc |
 | Chain Hybrid | chhybrid |
 | Chain Laspeyres  | chlaspeyres |
 | Chain Lehr  | chlehr |
@@ -575,9 +584,12 @@ This package includes 36 functions for calculating the following chain indices (
 | Chain Palgrave  | chpalgrave |
 | Chain Sato-Vartia  | chsato_vartia |
 | Chain Stuvel  | chstuvel |
+| Chain Theil I  | chtheil1 |
+| Chain Theil II  | chtheil2 |
 | Chain Tornqvist  | chtornqvist |
 | Chain Vartia  | chvartia |
 | Chain Walsh  | chwalsh |
+| Chain Walsh-Vartia  | chwalsh_vartia |
 | Chain Young | chyoung |
 | Chain quadratic mean of order r price index | chQMp |
 | Chain implicit quadratic mean of order r price index | chIQMp |

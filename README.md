@@ -256,12 +256,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.72         22      1     1
-#> 2 2020-01-01   2.73         19      2     1
-#> 3 2020-01-01   2.53         20      3     1
-#> 4 2020-01-01   2.77         20      4     1
-#> 5 2020-01-01   2.79         19      5     1
-#> 6 2020-01-01   2.65         21      6     1
+#> 1 2020-01-01   2.67         19      1     1
+#> 2 2020-01-01   2.67         20      2     1
+#> 3 2020-01-01   2.89         21      3     1
+#> 4 2020-01-01   2.72         19      4     1
+#> 5 2020-01-01   2.93         19      5     1
+#> 6 2020-01-01   2.66         21      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the
@@ -297,12 +297,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-20   2.92 6.71811531      1     1
-#> 2 2020-01-08   2.86 3.31189094      2     1
-#> 3 2020-01-01   2.78 2.17158733      3     1
-#> 4 2020-01-28   2.74 0.09200503      4     1
-#> 5 2020-01-02   2.83 2.34227406      5     1
-#> 6 2020-01-23   3.07 4.09552856      6     1
+#> 1 2020-01-03   2.66   4.412698      1     1
+#> 2 2020-01-02   2.53   2.340218      2     1
+#> 3 2020-01-23   2.93   3.732539      3     1
+#> 4 2020-01-01   2.67   4.239343      4     1
+#> 5 2020-01-11   2.96   7.229107      5     1
+#> 6 2020-01-20   2.71   8.003085      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this
@@ -378,14 +378,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 0.9842347
+#> [1] 0.9694849
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 0.9843441
+#> [1] 0.9694771
 ```
 
 **data_aggregating**
@@ -1156,7 +1156,7 @@ method=c("lm","f","sv"),names=c("LM","Fisher", "SV"))
 
 ### Functions for bilateral unweighted price index calculation
 
-This package includes 7 functions for calculating the following
+This package includes 8 functions for calculating the following
 bilateral unweighted price indices:
 
 | Price Index           | Function |
@@ -1164,10 +1164,11 @@ bilateral unweighted price indices:
 | BMW (2007)            | bmw      |
 | Carli (1804)          | carli    |
 | CSWD (1980,1992)      | cswd     |
+| Dikhanov (2021, 2024) | dikhanov |
 | Dutot (1738)          | dutot    |
 | Jevons (1865)         | jevons   |
 | Harmonic              | harmonic |
-| Dikhanov (2021, 2024) | dikhanov |
+| YBMD (2026)           | ybmd     |
 
 Each of these functions returns a value (or vector of values) of the
 choosen unweighted bilateral price index depending on the **interval**
@@ -1192,7 +1193,7 @@ jevons(milk, start="2018-12", end="2020-01", interval=TRUE)
 
 ### Functions for bilateral weighted price index calculation
 
-This package includes 30 functions for calculating the following
+This package includes 35 functions for calculating the following
 bilateral weighted price indices:
 
 | Price Index                                    | Function           |
@@ -1207,8 +1208,10 @@ bilateral weighted price indices:
 | Geo-Laspeyres                                  | geolaspeyres       |
 | Geo-Lowe                                       | geolowe            |
 | Geo-Paasche                                    | geopaasche         |
+| Geo-Walsh                                      | geowalsh           |
 | Geo-Young                                      | geoyoung           |
 | Geo-hybrid (2020)                              | geohybrid          |
+| Harmonic log-change                            | hlc                |
 | Hybrid (2020)                                  | hybrid             |
 | Laspeyres (1871)                               | laspeyres          |
 | Lehr (1885)                                    | lehr               |
@@ -1219,9 +1222,12 @@ bilateral weighted price indices:
 | Palgrave (1886)                                | palgrave           |
 | Sato-Vartia (1976)                             | sato_vartia        |
 | Stuvel (1957)                                  | stuvel             |
+| Theil I                                        | theil1             |
+| Theil II                                       | theil2             |
 | Tornqvist (1936)                               | tornqvist          |
 | Vartia (1976)                                  | vartia             |
 | Walsh (1901)                                   | walsh              |
+| Walsh-Vartia                                   | walsh_vartia       |
 | Young                                          | young              |
 | Quadratic mean of order r price index          | QMp                |
 | Implicit quadratic mean of order r price index | IQMp               |
@@ -1267,7 +1273,7 @@ retro_index(milk, start="2018-12", end="2019-12", formula="dhkh")
 
 ### Functions for chain price index calculation
 
-This package includes 36 functions for calculating the following chain
+This package includes 42 functions for calculating the following chain
 indices (weighted and unweighted):
 
 | Price Index                                          | Function             |
@@ -1279,6 +1285,7 @@ indices (weighted and unweighted):
 | Chain Jevons                                         | chjevons             |
 | Chain Harmonic                                       | chharmonic           |
 | Chain Dikhanov                                       | chdikhanov           |
+| Chain YBMD                                           | chybmd               |
 | Chain AG Mean                                        | chagmean             |
 | Chain Banajree                                       | chbanajree           |
 | Chain Bialek                                         | chbialek             |
@@ -1289,8 +1296,10 @@ indices (weighted and unweighted):
 | Chain Geo-Laspeyres                                  | chgeolaspeyres       |
 | Chain Geo-Lowe                                       | chgeolowe            |
 | Chain Geo-Paasche                                    | chgeopaasche         |
+| Chain Geo-Walsh                                      | chgeowalsh           |
 | Chain Geo-Young                                      | chgeoyoung           |
 | Chain Geo-hybrid                                     | chgeohybrid          |
+| Chain harmonic log-change                            | chhlc                |
 | Chain Hybrid                                         | chhybrid             |
 | Chain Laspeyres                                      | chlaspeyres          |
 | Chain Lehr                                           | chlehr               |
@@ -1301,9 +1310,12 @@ indices (weighted and unweighted):
 | Chain Palgrave                                       | chpalgrave           |
 | Chain Sato-Vartia                                    | chsato_vartia        |
 | Chain Stuvel                                         | chstuvel             |
+| Chain Theil I                                        | chtheil1             |
+| Chain Theil II                                       | chtheil2             |
 | Chain Tornqvist                                      | chtornqvist          |
 | Chain Vartia                                         | chvartia             |
 | Chain Walsh                                          | chwalsh              |
+| Chain Walsh-Vartia                                   | chwalsh_vartia       |
 | Chain Young                                          | chyoung              |
 | Chain quadratic mean of order r price index          | chQMp                |
 | Chain implicit quadratic mean of order r price index | chIQMp               |
@@ -1413,12 +1425,12 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.075300
-#> 2  14216 1.941136
-#> 3  15404 1.641582
-#> 4  17034 1.651275
-#> 5  34540 1.493244
-#> 6  51583 1.778899
+#> 1  14215 1.997964
+#> 2  14216 1.442881
+#> 3  15404 1.938168
+#> 4  17034 1.795812
+#> 5  34540 1.451062
+#> 6  51583 1.236759
 ```
 
 and the next step is calculating the QU index which compares December
@@ -1426,7 +1438,7 @@ and the next step is calculating the QU index which compares December
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 1.017355
+#> [1] 1.031549
 ```
 
 <a id="ad8"> </a>
@@ -1704,20 +1716,20 @@ final_index(milk, start = "2018-12", end = "2019-12",
          formula = "fisher", groups = TRUE, outlets = TRUE, 
          aggr = "laspeyres", by = "description", 
          interval = TRUE)
-#>       time final_index
-#> 1  2018-12   1.0000000
-#> 2  2019-01   1.0043285
-#> 3  2019-02   0.9994987
-#> 4  2019-03   0.9909980
-#> 5  2019-04   0.9955766
-#> 6  2019-05   0.9922104
-#> 7  2019-06   0.9910091
-#> 8  2019-07   0.9862940
-#> 9  2019-08   0.9981004
-#> 10 2019-09   0.9978900
-#> 11 2019-10   0.9764887
-#> 12 2019-11   0.9837980
-#> 13 2019-12   0.9871036
+#>       time final  fisher
+#> 1  2018-12     1.0000000
+#> 2  2019-01     1.0043285
+#> 3  2019-02     0.9994987
+#> 4  2019-03     0.9909980
+#> 5  2019-04     0.9955766
+#> 6  2019-05     0.9922104
+#> 7  2019-06     0.9910091
+#> 8  2019-07     0.9862940
+#> 9  2019-08     0.9981004
+#> 10 2019-09     0.9978900
+#> 11 2019-10     0.9764887
+#> 12 2019-11     0.9837980
+#> 13 2019-12     0.9871036
 ```
 
 <a id="ad12"> </a>

@@ -447,11 +447,15 @@ harmonic <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname bmw
-#' @return The function returns a value (or vector of values) of the unweighted bilateral BMW price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).  
+#' @return The function returns a value (or vector of values) of the unweighted bilateral BMW price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). This function returns values identical to those of the Dikhanov and YBMD indices (three different names for this index are used in the literature).
 #' @references
 #' {Mehrhoff, J.(2007). \emph{A linear approximation to the Jevons index}. In: Von der Lippe (2007): Index Theory and Price Statistics, Peter Lang: Berlin, Germany.}
 #'
 #' {(2018). \emph{Harmonised Index of Consumer Prices (HICP). Methodological Manual}. Publication Office of the European union, Luxembourg.}
+#'
+#' {Dikhanov, Y., (2024). \emph{A New Elementary Index Number}. Paper presented at the 18th Meeting of the Ottawa Group on Price Indices, Ottawa, Canada.}
+#'
+#' {Białek, J., Dikhanov, Y. (2026). \emph{Properties of the Young-Balk-Mehrhoff-Dikhanov elementary price index}. Paper presented at the 19th Meeting of the Ottawa Group on Price Indices, Warsaw, Poland.}
 #' @examples 
 #' bmw(sugar, start="2018-12", end="2019-12")
 #' \donttest{bmw(milk, start="2018-12", end="2020-01", interval=TRUE)}
@@ -541,9 +545,15 @@ bmw <-
 #' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
 #' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
 #' @rdname dikhanov
-#' @return The function returns a value (or vector of values) of the unweighted bilateral Dikhanov price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).      
+#' @return The function returns a value (or vector of values) of the unweighted bilateral Dikhanov price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). This function returns values identical to those of the BMW and YBMD indices (three different names for this index are used in the literature).     
 #' @references
+#' {Mehrhoff, J.(2007). \emph{A linear approximation to the Jevons index}. In: Von der Lippe (2007): Index Theory and Price Statistics, Peter Lang: Berlin, Germany.}
+#'
+#' {(2018). \emph{Harmonised Index of Consumer Prices (HICP). Methodological Manual}. Publication Office of the European union, Luxembourg.}
+#'
 #' {Dikhanov, Y., (2024). \emph{A New Elementary Index Number}. Paper presented at the 18th Meeting of the Ottawa Group on Price Indices, Ottawa, Canada.}
+#'
+#' {Białek, J., Dikhanov, Y. (2026). \emph{Properties of the Young-Balk-Mehrhoff-Dikhanov elementary price index}. Paper presented at the 19th Meeting of the Ottawa Group on Price Indices, Warsaw, Poland.}
 #' @examples 
 #' dikhanov(sugar, start="2018-12", end="2019-12")
 #' \donttest{dikhanov(milk, start="2018-12", end="2020-01", interval=TRUE)}
@@ -614,6 +624,104 @@ dikhanov <-
   price_start <-
   prices(data, period = start, set = id)
   return(sum((price_end/price_start)^0.5) / sum((price_start/price_end)^0.5))
+  }
+  }
+
+#' @title  Calculating the unweighted YBMD price index
+#'
+#' @description This function returns a value (or vector of values) of the unweighted Young-Balk-Mehrhoff-Dikhanov (YBMD)  price index.
+#' @param data User's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric) and \code{prodID} (as numeric, factor or character). A column \code{quantities} (as positive numeric) is also needed because this function uses unit values as monthly prices.
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname ybmd
+#' @return The function returns a value (or vector of values) of the unweighted bilateral YBMD price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). This function returns values identical to those of the BMW and YBMD indices (three different names for this index are used in the literature).
+#' @references
+#' {Mehrhoff, J.(2007). \emph{A linear approximation to the Jevons index}. In: Von der Lippe (2007): Index Theory and Price Statistics, Peter Lang: Berlin, Germany.}
+#'
+#' {(2018). \emph{Harmonised Index of Consumer Prices (HICP). Methodological Manual}. Publication Office of the European union, Luxembourg.}
+#'
+#' {Dikhanov, Y., (2024). \emph{A New Elementary Index Number}. Paper presented at the 18th Meeting of the Ottawa Group on Price Indices, Ottawa, Canada.}
+#'
+#' {Białek, J., Dikhanov, Y. (2026). \emph{Properties of the Young-Balk-Mehrhoff-Dikhanov elementary price index}. Paper presented at the 19th Meeting of the Ottawa Group on Price Indices, Warsaw, Poland.}
+#' @examples 
+#' ybmd(sugar, start="2018-12", end="2019-12")
+#' \donttest{ybmd(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+ybmd <-
+  function(data, start, end, interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #returning vector of values
+  if (interval == TRUE) {
+  result <- c(1)
+  end2 <- end
+  end <- start
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  while (end <= end2)
+  {
+  t <- substr(end, 0, 7)
+  date <- c(date, t)
+  data2 <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data2, start, end)
+  price_end <-
+  prices(data2, period = end, set = id)
+  price_start <-
+  prices(data2, period = start, set = id)
+  a <-
+  sum((price_start / price_end) ^ 0.5)
+  b <-
+  sum((price_end / price_start) * ((price_start / price_end) ^ 0.5))
+  result <- c(result, b / a)
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  }
+  return(result)
+  }
+  #returning one value
+  else
+  {
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data, start, end)
+  price_end <-
+  prices(data, period = end, set = id)
+  price_start <-
+  prices(data, period = start, set = id)
+  a <-
+  sum((price_start / price_end) ^ 0.5)
+  b <-
+  sum((price_end / price_start) * ((price_start / price_end) ^ 0.5))
+  return(b / a)
   }
   }
 
@@ -4429,3 +4537,494 @@ retro_index<-function (data, start, end,
   return(df_result)
   }
 }
+
+
+#' @title  Calculating the bilateral Theil I price index
+#'
+#' @description This function returns a value (or vector of values) of the bilateral geometric Theil I price index.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname theil1
+#' @return The function returns a value (or vector of values) of the bilateral geometric Theil I price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @references
+#' {Naohito Abe (2025). \emph{Price Index Numbers. Theory and Application.} Springer, p. 60.}
+#' @examples 
+#' theil1(sugar, start="2018-12", end="2019-12")
+#' \donttest{theil1(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+theil1 <-
+  function(data, start, end, interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #returning vector of values
+  if (interval == TRUE) {
+  result <- c(1)
+  end2 <- end
+  end <- start
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  while (end <= end2)
+  {
+  t <- substr(end, 0, 7)
+  date <- c(date, t)
+  data2 <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data2, start, end)
+  price_end <-
+  prices(data2, period = end, set = id)
+  price_start <-
+  prices(data2, period = start, set = id)
+  sales_end <-
+  expenditures(data2, period = end, set = id)
+  sales_start <-
+  expenditures(data2, period = start, set = id)
+  sales_start <- sales_start / sum(sales_start)
+  sales_end <- sales_end / sum(sales_end)
+  weights <- (sales_start*sales_end)^0.5
+  theil1 <- prod((price_end / price_start) ^ weights)
+  result <- c(result, theil1)
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  }
+  return(result)
+  }
+  #returning one value
+  else {
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data, start, end)
+  price_end <-
+  prices(data, period = end, set = id)
+  price_start <-
+  prices(data, period = start, set = id)
+  sales_end <-
+  expenditures(data, period = end, set = id)
+  sales_start <-
+  expenditures(data, period = start, set = id)
+  sales_start <- sales_start / sum(sales_start)
+  sales_end <- sales_end / sum(sales_end)
+  weights <- (sales_start*sales_end)^0.5
+  theil1 <- prod((price_end / price_start) ^ weights)
+  return(theil1)
+  }
+  }
+
+#' @title  Calculating the bilateral Theil II price index
+#'
+#' @description This function returns a value (or vector of values) of the bilateral geometric Theil II price index.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname theil2
+#' @return The function returns a value (or vector of values) of the bilateral geometric Theil II price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @references
+#' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang, Germany, p. 232.}
+#' @examples 
+#' theil2(sugar, start="2018-12", end="2019-12")
+#' \donttest{theil2(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+theil2 <-
+  function(data, start, end, interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #returning vector of values
+  if (interval == TRUE) {
+  result <- c(1)
+  end2 <- end
+  end <- start
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  while (end <= end2)
+  {
+  t <- substr(end, 0, 7)
+  date <- c(date, t)
+  data2 <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data2, start, end)
+  price_end <-
+  prices(data2, period = end, set = id)
+  price_start <-
+  prices(data2, period = start, set = id)
+  sales_end <-
+  expenditures(data2, period = end, set = id)
+  sales_start <-
+  expenditures(data2, period = start, set = id)
+  weights <- (0.5*sales_start*sales_end*(sales_start+sales_end))^(1/3)
+  weights <- weights / sum(weights)
+  theil2 <- prod((price_end / price_start) ^ weights)
+  result <- c(result, theil2)
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  }
+  return(result)
+  }
+  #returning one value
+  else {
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data, start, end)
+  price_end <-
+  prices(data, period = end, set = id)
+  price_start <-
+  prices(data, period = start, set = id)
+  sales_end <-
+  expenditures(data, period = end, set = id)
+  sales_start <-
+  expenditures(data, period = start, set = id)
+  weights <- (0.5*sales_start*sales_end*(sales_start+sales_end))^(1/3)
+  weights <- weights / sum(weights)
+  theil2 <- prod((price_end / price_start) ^ weights)
+  return(theil2)
+  }
+  }
+
+#' @title  Calculating the bilateral Walsh-Vartia price index
+#'
+#' @description This function returns a value (or vector of values) of the bilateral Walsh-Vartia price index.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname walsh_vartia
+#' @return The function returns a value (or vector of values) of the bilateral Walsh-Vartia price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @references
+#' {Von der Lippe, P. (2007). \emph{Index Theory and Price Statistics}. Peter Lang, Germany, p. 232.}
+#' @examples 
+#' walsh_vartia(sugar, start="2018-12", end="2019-12")
+#' \donttest{walsh_vartia(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+walsh_vartia <-
+  function(data, start, end, interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #returning vector of values
+  if (interval == TRUE) {
+  result <- c(1)
+  end2 <- end
+  end <- start
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  while (end <= end2)
+  {
+  t <- substr(end, 0, 7)
+  date <- c(date, t)
+  data2 <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data2, start, end)
+  price_end <-
+  prices(data2, period = end, set = id)
+  price_start <-
+  prices(data2, period = start, set = id)
+  sales_end <-
+  expenditures(data2, period = end, set = id)
+  sales_start <-
+  expenditures(data2, period = start, set = id)
+  weights <- (sales_start*sales_end)^0.5
+  weights <- weights / (sum(sales_start)*sum(sales_end))^0.5
+  walsh_vartia <- prod((price_end / price_start) ^ weights)
+  result <- c(result, walsh_vartia)
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  }
+  return(result)
+  }
+  #returning one value
+  else {
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data, start, end)
+  price_end <-
+  prices(data, period = end, set = id)
+  price_start <-
+  prices(data, period = start, set = id)
+  sales_end <-
+  expenditures(data, period = end, set = id)
+  sales_start <-
+  expenditures(data, period = start, set = id)
+  weights <- (sales_start*sales_end)^0.5
+  weights <- weights / (sum(sales_start)*sum(sales_end))^0.5
+  walsh_vartia <- prod((price_end / price_start) ^ weights)
+  return(walsh_vartia)
+  }
+  }
+
+
+#' @title  Calculating the bilateral harmonic log-change (HLC) price index
+#'
+#' @description This function returns a value (or vector of values) of the bilateral harmonic log-change price index.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname hlc
+#' @return The function returns a value (or vector of values) of the bilateral harmonic log-change price index (HLC), i.e., the log-change index constructed using weights equal to the harmonic mean of expenditure shares (rather than the arithmetic mean used in the Törnqvist index). If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @examples 
+#' hlc(sugar, start="2018-12", end="2019-12")
+#' \donttest{hlc(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+hlc <-
+  function(data, start, end, interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #returning vector of values
+  if (interval == TRUE) {
+  result <- c(1)
+  end2 <- end
+  end <- start
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  while (end <= end2)
+  {
+  t <- substr(end, 0, 7)
+  date <- c(date, t)
+  data2 <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data2, start, end)
+  price_end <-
+  prices(data2, period = end, set = id)
+  price_start <-
+  prices(data2, period = start, set = id)
+  sales_end <-
+  expenditures(data2, period = end, set = id)
+  sales_start <-
+  expenditures(data2, period = start, set = id)
+  sales_start <- sales_start / sum(sales_start)
+  sales_end <- sales_end / sum(sales_end)
+  weights <- 2*sales_start*sales_end/(sales_start+sales_end)
+  hlc <- prod((price_end / price_start) ^ weights)
+  result <- c(result, hlc)
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  }
+  return(result)
+  }
+  #returning one value
+  else {
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data, start, end)
+  price_end <-
+  prices(data, period = end, set = id)
+  price_start <-
+  prices(data, period = start, set = id)
+  sales_end <-
+  expenditures(data, period = end, set = id)
+  sales_start <-
+  expenditures(data, period = start, set = id)
+  sales_start <- sales_start / sum(sales_start)
+  sales_end <- sales_end / sum(sales_end)
+  weights <- 2*sales_start*sales_end/(sales_start+sales_end)
+  hlc <- prod((price_end / price_start) ^ weights)
+  return(hlc)
+  }
+  }
+
+#' @title  Calculating the bilateral geometric Walsh price index
+#'
+#' @description This function returns a value (or vector of values) of the geometric Walsh price index.
+#' @param data The user's data frame with information about sold products. It must contain columns: \code{time} (as Date in format: year-month-day,e.g. '2020-12-01'), \code{prices} (as positive numeric), \code{quantities}  (as positive numeric) and \code{prodID} (as numeric, factor or character).
+#' @param start The base period (as character) limited to the year and month, e.g. "2020-03".
+#' @param end The research period (as character) limited to the year and month, e.g. "2020-04".
+#' @param interval A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).
+#' @rdname geowalsh
+#' @return The function returns a value (or vector of values) of the bilateral geometric Walsh price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).   
+#' @references
+#' {Walsh, C.M. (1901). \emph{The Measurement of General Exchange Value}. New York: Macmillan and Co., p.202}
+#'
+#' {Walsh, C.M. (1921). \emph{The Problem of Estimation}. London: P.S. King & Son, p.97}
+#' @examples 
+#' geowalsh(sugar, start="2018-12", end="2019-12")
+#' \donttest{geowalsh(milk, start="2018-12", end="2020-01", interval=TRUE)}
+#' @export
+
+geowalsh <-
+  function(data, start, end, interval = FALSE)  {
+  if (start == end)
+  return (1)
+  if (nrow(data) == 0)
+  stop("A data frame is empty")
+  start <- paste(start, "-01", sep = "")
+  end <- paste(end, "-01", sep = "")
+  start <- as.Date(start)
+  end <- as.Date(end)
+  #returning vector of values
+  if (interval == TRUE) {
+  result <- c(1)
+  end2 <- end
+  end <- start
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  while (end <= end2)
+  {
+  t <- substr(end, 0, 7)
+  date <- c(date, t)
+  data2 <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data2, start, end)
+  price_end <-
+  prices(data2, period = end, set = id)
+  price_start <-
+  prices(data2, period = start, set = id)
+  sales_end <-
+  expenditures(data2, period = end, set = id)
+  sales_start <-
+  expenditures(data2, period = start, set = id)
+  weights <- (sales_start*sales_end)^0.5
+  weights <- weights / sum(weights)
+  geowalsh <- prod((price_end / price_start) ^ weights)
+  result <- c(result, geowalsh)
+  lubridate::month(end) <-
+  lubridate::month(end) + 1
+  }
+  return(result)
+  }
+  #returning one value
+  else {
+  data <-
+  dplyr::filter(
+  data,
+  (
+  lubridate::year(data$time) == lubridate::year(start) &
+  lubridate::month(data$time) == lubridate::month(start)
+  ) |
+  (
+  lubridate::year(data$time) == lubridate::year(end) &
+  lubridate::month(data$time) == lubridate::month(end)
+  )
+  )
+  id <- matched(data, start, end)
+  price_end <-
+  prices(data, period = end, set = id)
+  price_start <-
+  prices(data, period = start, set = id)
+  sales_end <-
+  expenditures(data, period = end, set = id)
+  sales_start <-
+  expenditures(data, period = start, set = id)
+  weights <- (sales_start*sales_end)^0.5
+  weights <- weights / sum(weights)
+  geowalsh <- prod((price_end / price_start) ^ weights)
+  return(geowalsh)
+  }
+  }

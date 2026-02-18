@@ -16,7 +16,7 @@ dikhanov(data, start, end, interval = FALSE)
 \item{interval}{A logical value indicating whether the function is to compare the research period defined by \code{end} to the base period defined by \code{start} (then \code{interval} is set to FALSE) or all fixed base indices are to be calculated. In this latter case, all months from the time interval \code{<start,end>} are considered and \code{start} defines the base period (\code{interval} is set to TRUE).}
 }
 \value{
-The function returns a value (or vector of values) of the unweighted bilateral Dikhanov price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function).
+The function returns a value (or vector of values) of the unweighted bilateral Dikhanov price index depending on the \code{interval} parameter. If the \code{interval} parameter is set to TRUE, the function returns a vector of price index values without dates. To get information about both price index values and corresponding dates, please see functions:  \code{\link{price_indices}} or \code{\link{final_index}}. The function does not take into account aggregating over outlets or product subgroups (to consider these types of aggregating, please use the \code{\link{final_index}} function). This function returns values identical to those of the BMW and YBMD indices (three different names for this index are used in the literature).
 }
 \description{
 This function returns a value (or vector of values) of the unweighted bilateral Dikhanov price index.
@@ -26,5 +26,11 @@ dikhanov(sugar, start="2018-12", end="2019-12")
 \donttest{dikhanov(milk, start="2018-12", end="2020-01", interval=TRUE)}
 }
 \references{
+{Mehrhoff, J.(2007). \emph{A linear approximation to the Jevons index}. In: Von der Lippe (2007): Index Theory and Price Statistics, Peter Lang: Berlin, Germany.}
+
+{(2018). \emph{Harmonised Index of Consumer Prices (HICP). Methodological Manual}. Publication Office of the European union, Luxembourg.}
+
 {Dikhanov, Y., (2024). \emph{A New Elementary Index Number}. Paper presented at the 18th Meeting of the Ottawa Group on Price Indices, Ottawa, Canada.}
+
+{Białek, J., Dikhanov, Y. (2026). \emph{Properties of the Young-Balk-Mehrhoff-Dikhanov elementary price index}. Paper presented at the 19th Meeting of the Ottawa Group on Price Indices, Warsaw, Poland.}
 }

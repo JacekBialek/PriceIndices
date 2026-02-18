@@ -53,6 +53,7 @@ price_indices <-
   "harmonic",
   "bmw",
   "dikhanov",
+  "ybmd",
   "laspeyres",
   "paasche",
   "fisher",
@@ -77,6 +78,11 @@ price_indices <-
   "geoyoung",
   "lowe",
   "geolowe",
+  "geowalsh",
+  "theil1",
+  "theil2",
+  "walsh_vartia",
+  "hlc",
   "QMq",
   "QMp",
   "IQMp",
@@ -91,6 +97,8 @@ price_indices <-
   "chcswd",
   "chharmonic",
   "chdikhanov",
+  "chbmw",
+  "chybmd",
   "chlaspeyres",
   "chpaasche",
   "chfisher",
@@ -115,7 +123,11 @@ price_indices <-
   "chgeoyoung",
   "chlowe",
   "chgeolowe",
-  "chbmw",
+  "chgeowalsh",
+  "chtheil1",
+  "chtheil2",
+  "chwalsh_vartia",
+  "chhlc",
   "geks",
   "wgeks",
   "geksj",
@@ -447,6 +459,8 @@ final_index <-
   interval=FALSE
   )
   {
+  if (length(formula)==0) stop("The specification of the price index formula has not been provided!")
+  if (length(formula)>1) stop("Only one formula for the final price index should be provided!")
   if (start==end) return (1)
   if (interval==FALSE) 
     return(final_index2(data, start, end, formula, window, splice, base, sigma, r, outlets, groups, by, aggr))   
@@ -460,8 +474,9 @@ final_index <-
   result<-c(1)
   for (i in 2:length(time)) 
     result<-c(result, final_index2(data, start, as.character(time[i]), formula, window, splice, base, sigma, r, outlets, groups, by, aggr))
-  df<-data.frame(time, final_index=result)
+  df<-data.frame(time, result)
   df$time<-as.character(df$time)
+  colnames(df)<-c("time", paste("final ", formula))
   return (df)
   }  
   }
