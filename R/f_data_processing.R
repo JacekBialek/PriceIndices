@@ -3198,7 +3198,7 @@ MARS<-function (data=data.frame(),
 #' @return The function first determines the fraction of outlets (within subsets defined by the grouping column specified by the \code{by} parameter) that are complete, i.e., those containing at least \code{minN} matched products. If this fraction exceeds the value specified by \code{threshold}, a resulting data frame \code{df} is created consisting only of complete outlets, and the variable \code{result} is set to TRUE. Otherwise, df remains the original \code{data}, and the variable \code{result} is set to FALSE. The function returns a list consisting of the following elements: \code{fraction} (indicating the fraction of complete outlets), \code{result}, and \code{df}. This function can be used to automatically set the values of the \code{data} and \code{outlets} parameters in the \code{final_index} function.
 #' 
 #' @examples 
-#' \donttest{outlet_reduction <- outlet_check(milk, start="2018-12", end="2019-12", by="description", minN=5)}
+#' \donttest{outlet_reduction <- outlet_check(milk, start="2018-12", end="2019-12", by="description", minN=6)}
 #' \donttest{outlet_reduction$fraction}
 #' \donttest{outlet_reduction$result}
 #' \donttest{outlet_reduction$df}
@@ -3218,7 +3218,7 @@ outlet_check<-function (data, start, end, by=c(), minN=2, threshold=0.9, interva
   outlets<-dplyr::group_split(dplyr::group_by(data, groupID, retID))
   } 
   else outlets <- dplyr::group_split(dplyr::group_by(data, retID)) 
-  no_outlets <- length(outlets)
+  no_outlets <- length(unique(data$retID))
   check <- function (subset) ifelse(length(matched(subset, period1=start, period2=end, type="prodID", interval=interval)) >= minN, 1, 0)
   bad_outlets <- c()
   outlets_verification <- c()
