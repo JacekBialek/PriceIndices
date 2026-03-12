@@ -3198,7 +3198,7 @@ MARS<-function (data=data.frame(),
 #' @return The function first determines the fraction of outlets (within subsets defined by the grouping column specified by the \code{by} parameter) that are complete, i.e., those containing at least \code{minN} matched products. If this fraction exceeds the value specified by \code{threshold}, a resulting data frame \code{df} is created consisting only of complete outlets, and the variable \code{result} is set to TRUE. Otherwise, df remains the original \code{data}, and the variable \code{result} is set to FALSE. The function returns a list consisting of the following elements: \code{fraction} (indicating the fraction of complete outlets), \code{result}, and \code{df}. This function can be used to automatically set the values of the \code{data} and \code{outlets} parameters in the \code{final_index} function.
 #' 
 #' @examples 
-#' \donttest{outlet_reduction <- outlet_check(milk, start="2018-12", end="2019-12", by="description", minN=6)}
+#' \donttest{outlet_check(coffee, start="2018-12", end="2019-12",  minN=3, by="description", interval=TRUE)}
 #' \donttest{outlet_reduction$fraction}
 #' \donttest{outlet_reduction$result}
 #' \donttest{outlet_reduction$df}
@@ -3207,8 +3207,8 @@ MARS<-function (data=data.frame(),
 outlet_check<-function (data, start, end, by=c(), minN=2, threshold=0.9, interval=FALSE)
 {
   av_col <- colnames(data)
-  if (!(by %in% av_col)) stop("Bad specification of the 'by' parameter!")
   if (length(by) > 1) stop("Only one column may be selected via 'by' parameter!")
+  if (length(by)==1) if (!(by %in% av_col)) stop("Bad specification of the 'by' parameter!")
   if (minN < 0) stop("The value of the minN parameter must not be negative!")
   if (threshold < 0 | threshold > 1) stop("The value of the threshold parameter must lie within the interval <0, 1>!")
   groupID <- retID <- NULL
@@ -3216,19 +3216,20 @@ outlet_check<-function (data, start, end, by=c(), minN=2, threshold=0.9, interva
   if (length(by)==1) {
   colnames(data)[which(colnames(data)==by)]<-"groupID"
   outlets<-dplyr::group_split(dplyr::group_by(data, groupID, retID))
+  colnames(data)[which(colnames(data)=="groupID")] <- by
   } 
   else outlets <- dplyr::group_split(dplyr::group_by(data, retID)) 
-  no_outlets <- length(unique(data$retID))
+  no_outlets <- length(available(data, period1=start, period2=end, type="retID", interval=interval))
   check <- function (subset) ifelse(length(matched(subset, period1=start, period2=end, type="prodID", interval=interval)) >= minN, 1, 0)
   bad_outlets <- c()
   outlets_verification <- c()
-  for (i in 1:no_outlets) {
+  for (i in 1:length(outlets)) {
     outlet<-outlets[[i]]
     verification <- check(outlet)
     outlets_verification <- c(outlets_verification, verification)
     if (verification==0) bad_outlets <- c(bad_outlets, outlet$retID[1])
   }
-  fraction_good_outlets <- 1-length(bad_outlets)/no_outlets
+  fraction_good_outlets <- 1-length(unique(bad_outlets))/no_outlets
   result_list <- list()
   if (fraction_good_outlets >= threshold) result_list <- list(fraction=fraction_good_outlets, result=TRUE, df=dplyr::filter(data, !(retID %in% bad_outlets)))
   else result_list <- list(fraction = fraction_good_outlets, result = FALSE, df = data)
