@@ -4,7 +4,7 @@
 \alias{PriceIndices}
 \title{The list of package functions and their demonstration}
 \description{
-The \strong{PriceIndices} package is a tool for Bilateral and Multilateral Price Index Calculations. 
+The \strong{PriceIndices} package is a tool for Bilateral and Multilateral Price Index Calculations.
 A demonstration of package functions is here: \href{ https://github.com/JacekBialek/important_documents/blob/main/README.pdf }{README}.
 The package documentation can be found \href{https://github.com/JacekBialek/important_documents/blob/main/PriceIndices_manual.pdf}{HERE}.
 The list of package functions is as follows:
@@ -20,7 +20,7 @@ _PACKAGE
 
 \code{\link{dataCOICOP}}
 
-\code{\link{milk}} 
+\code{\link{milk}}
 
 \code{\link{sugar}}
 
@@ -41,28 +41,30 @@ _PACKAGE
 
 \section{Functions for data processing}{
 
-\code{\link{data_check}} 
+\code{\link{data_check}}
 
-\code{\link{data_preparing}} 
+\code{\link{data_preparing}}
 
-\code{\link{data_imputing}} 
+\code{\link{data_imputing}}
 
-\code{\link{data_aggregating}} 
+\code{\link{data_aggregating}}
 
-\code{\link{data_unit}} 
+\code{\link{data_unit}}
 
-\code{\link{data_norm}} 
+\code{\link{data_norm}}
 
 \code{\link{data_selecting}}
 
-\code{\link{data_filtering}} 
+\code{\link{data_filtering}}
 
 \code{\link{data_reducing}}
+
+\code{\link{outlet_check}}
 }
 
 \section{Functions providing dataset characteristics}{
 
-\code{\link{available}} 
+\code{\link{available}}
 
 \code{\link{matched}}
 
@@ -74,15 +76,15 @@ _PACKAGE
 
 \code{\link{products_fig}}
 
-\code{\link{prices}} 
+\code{\link{prices}}
 
-\code{\link{quantities}} 
+\code{\link{quantities}}
 
 \code{\link{sales}}
 
-\code{\link{sales_groups}} 
+\code{\link{sales_groups}}
 
-\code{\link{sales_groups2}} 
+\code{\link{sales_groups2}}
 
 \code{\link{expenditures}}
 
@@ -99,7 +101,7 @@ _PACKAGE
 
 \section{Functions for bilateral unweighted price index calculation}{
 
-\code{\link{bmw}} 
+\code{\link{bmw}}
 
 \code{\link{carli}}
 
@@ -118,7 +120,7 @@ _PACKAGE
 
 \section{Functions for bilateral weighted index calculation}{
 
-\code{\link{agmean}} 
+\code{\link{agmean}}
 
 \code{\link{banajree}}
 
@@ -195,7 +197,7 @@ _PACKAGE
 
 \section{Functions for chain index calculation}{
 
-\code{\link{chbmw}} 
+\code{\link{chbmw}}
 
 \code{\link{chcarli}}
 
@@ -213,7 +215,7 @@ _PACKAGE
 
 \code{\link{chybmd}}
 
-\code{\link{chagmean}} 
+\code{\link{chagmean}}
 
 \code{\link{chbanajree}}
 
@@ -284,7 +286,7 @@ _PACKAGE
 
 \section{Functions for multilateral price index calculation}{
 
-\code{\link{ccdi}} 
+\code{\link{ccdi}}
 
 \code{\link{geks}}
 
@@ -333,7 +335,7 @@ _PACKAGE
 
 \section{Functions for extending multilateral price indices by using splicing methods}{
 
-\code{\link{ccdi_splice}} 
+\code{\link{ccdi_splice}}
 
 \code{\link{geks_splice}}
 
@@ -376,7 +378,7 @@ _PACKAGE
 
 \section{Functions for extending multilateral price indices by using the FBEW method}{
 
-\code{\link{ccdi_fbew}} 
+\code{\link{ccdi_fbew}}
 
 \code{\link{geks_fbew}}
 
@@ -419,7 +421,7 @@ _PACKAGE
 
 \section{Functions for extending multilateral price indices by using the FBMW method}{
 
-\code{\link{ccdi_fbmw}} 
+\code{\link{ccdi_fbmw}}
 
 \code{\link{geks_fbmw}}
 
@@ -462,14 +464,14 @@ _PACKAGE
 
 \section{Functions for bilateral indicator calculations}{
 
-\code{\link{bennet}} 
+\code{\link{bennet}}
 
 \code{\link{montgomery}}
 }
 
 \section{Functions for multilateral indicator calculations}{
 
-\code{\link{mbennet}} 
+\code{\link{mbennet}}
 
 \code{\link{mmontgomery}}
 }
@@ -483,7 +485,7 @@ _PACKAGE
 
 \section{Functions for comparisons of price indices}{
 
-\code{\link{compare_indices_df}} 
+\code{\link{compare_indices_df}}
 
 \code{\link{compare_indices_list}}
 

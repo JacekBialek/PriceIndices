@@ -1,3 +1,8 @@
+# Package update 0.2.8 -> 0.2.9
+
+## New functions:
+* A new function for outlet reducing has been added (*outlet_check*).
+
 # Package update 0.2.7 -> 0.2.8
 
 ## New functions:
