@@ -1,3 +1,8 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
 
 # PriceIndices – a Package for Bilateral and Multilateral Price Index Calculations
 
@@ -251,12 +256,12 @@ dataset<-generate(pmi=c(1.02,1.03,1.04),psigma=c(0.05,0.09,0.02),
                   start="2020-01")
 head(dataset)
 #>         time prices quantities prodID retID
-#> 1 2020-01-01   2.69         21      1     1
-#> 2 2020-01-01   2.76         20      2     1
-#> 3 2020-01-01   2.73         22      3     1
-#> 4 2020-01-01   2.74         17      4     1
-#> 5 2020-01-01   2.74         23      5     1
-#> 6 2020-01-01   2.62         21      6     1
+#> 1 2020-01-01   2.50         19      1     1
+#> 2 2020-01-01   2.79         20      2     1
+#> 3 2020-01-01   2.81         21      3     1
+#> 4 2020-01-01   2.82         20      4     1
+#> 5 2020-01-01   2.93         20      5     1
+#> 6 2020-01-01   2.92         19      6     1
 ```
 
 From the other hand you can use **tindex** function to obtain the
@@ -292,12 +297,12 @@ df<-generate_CES(pmi=c(1.02,1.03),psigma=c(0.04,0.03),
 elasticity=1.25,start="2020-01",n=100,days=TRUE)
 head(df)
 #>         time prices quantities prodID retID
-#> 1 2020-01-18   2.66   5.366316      1     1
-#> 2 2020-01-23   2.68   6.885262      2     1
-#> 3 2020-01-16   2.68   4.197251      3     1
-#> 4 2020-01-12   2.84   5.440070      4     1
-#> 5 2020-01-04   2.74   4.960113      5     1
-#> 6 2020-01-14   2.78   6.902869      6     1
+#> 1 2020-01-05   2.61  0.7726294      1     1
+#> 2 2020-01-27   2.78  6.2124349      2     1
+#> 3 2020-01-23   2.54  0.3642905      3     1
+#> 4 2020-01-03   2.88  0.2887769      4     1
+#> 5 2020-01-01   2.69  6.6807764      5     1
+#> 6 2020-01-03   2.67  0.7289000      6     1
 ```
 
 Now, we can verify the value of elasticity of substitution using this
@@ -373,14 +378,14 @@ sample$prices<-0
 df<-rbind(sample, rest)
 #The Fisher price index calculated for the original data set
 fisher(df, "2018-12","2019-03")
-#> [1] 0.9787457
+#> [1] 0.9943152
 #Zero price imputations:
 df2<-data_imputing(df, start="2018-12", end="2019-03",
               zero_prices=TRUE,
               outlets=TRUE)
 #The Fisher price index calculated for the data set with imputed prices:
 fisher(df2, "2018-12","2019-03")
-#> [1] 0.9772752
+#> [1] 0.993532
 ```
 
 **data_aggregating**
@@ -1420,12 +1425,12 @@ values<-stats::runif(length(prodID),1,2)
 v<-data.frame(prodID,values)
 head(v)
 #>   prodID   values
-#> 1  14215 1.292803
-#> 2  14216 1.412204
-#> 3  15404 1.978355
-#> 4  17034 1.226328
-#> 5  34540 1.714334
-#> 6  51583 1.784309
+#> 1  14215 1.008968
+#> 2  14216 1.598099
+#> 3  15404 1.663394
+#> 4  17034 1.446394
+#> 5  34540 1.652309
+#> 6  51583 1.567611
 ```
 
 and the next step is calculating the QU index which compares December
@@ -1433,7 +1438,7 @@ and the next step is calculating the QU index which compares December
 
 ``` r
 QU(milk, start="2018-12", end="2019-12", v)
-#> [1] 0.9700477
+#> [1] 1.0207
 ```
 
 <a id="ad8"> </a>
@@ -1729,6 +1734,21 @@ final_index(milk, start = "2018-12", end = "2019-12",
 #> 13 2019-12     0.9871036
 ```
 
+**resultant_index**
+
+The User may also calculate the resultant price index based on partial
+price indices, the system of weights from the base and current periods,
+and taking into account the aggregation formula by using the
+**resultant_index** function. For instance:
+
+``` r
+resultant_index(w0 = c(0.4, 0.4, 0.2), 
+                wt = c(0.35, 0.5, 0.15), 
+                subindices = c(1.1, 0.95, 1.12), 
+                aggr = "fisher")
+#> [1] 1.032966
+```
+
 <a id="ad12"> </a>
 
 ### Functions for comparisons of price indices
@@ -1762,7 +1782,7 @@ formula=c("laspeyres", "fisher"), interval = TRUE)
 compare_indices_df(df)
 ```
 
-<img src="man/figures/README-unnamed-chunk-61-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-62-1.png" width="100%" />
 
 Now, let us compare the impact of the aggregating over outlets on the
 price index results (e.g. the Laspeyres formula is the assumed
@@ -1789,7 +1809,7 @@ compare_indices_list(data=list(case1, case2),
                 "Fisher with aggregation"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-63-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-64-1.png" width="100%" />
 
 **compare_distances**
 
@@ -1908,14 +1928,14 @@ comparison$pseudovalues
 comparison$figure_iterations
 ```
 
-<img src="man/figures/README-unnamed-chunk-68-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-69-1.png" width="100%" />
 
 ``` r
 #displaying box-plotes created for the calculated index pseudovalues obtained in the jackknife procedure
 comparison$figure_pseudovalues
 ```
 
-<img src="man/figures/README-unnamed-chunk-69-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-70-1.png" width="100%" />
 <a id="ad13"> </a>
 
 ### Functions for price and quantity indicator calculations

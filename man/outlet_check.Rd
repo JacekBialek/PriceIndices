@@ -36,7 +36,9 @@ The function first determines the fraction of outlets (within subsets defined by
 The general purpose of the function is to determine in what proportion of the retail chain’s outlets the number of matched products within the analyzed time interval (or at its boundaries) exceeds a certain minimum specified by the user. The input data set (data frame) must contain matched products over time, i.e. it must contain the \code{prodID} column (as numeric, factor or character) and the grouping variable (i.e., an optional column) selected via \code{by} parameter.
 }
 \examples{
-\donttest{outlet_check(coffee, start="2018-12", end="2019-12",  minN=3, by="description", interval=TRUE)}
+\donttest{outlet_reduction <- 
+outlet_check(coffee, start="2018-12", end="2019-12",  
+minN=3, by="description", interval=TRUE)}
 \donttest{outlet_reduction$fraction}
 \donttest{outlet_reduction$result}
 \donttest{outlet_reduction$df}

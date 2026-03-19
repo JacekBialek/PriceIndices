@@ -817,6 +817,19 @@ final_index(milk, start = "2018-12", end = "2019-12",
          interval = TRUE)
 
 ```
+
+**resultant_index**
+
+The User may also calculate the resultant price index based on partial price indices, the system of weights from the base and current periods, and taking into account the aggregation formula by using the **resultant_index** function. For instance:
+
+``` {r}
+resultant_index(w0 = c(0.4, 0.4, 0.2), 
+                wt = c(0.35, 0.5, 0.15), 
+                subindices = c(1.1, 0.95, 1.12), 
+                aggr = "fisher")
+
+```
+
 <a id="ad12"> </a>
 
 ### Functions for comparisons of price indices

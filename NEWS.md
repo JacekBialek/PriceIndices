@@ -1,3 +1,11 @@
+# Package update 0.2.9 -> 0.3.0
+
+## New functions:
+* A new function for resultant index calculations has been added (*resultant_index*).
+
+## Improvements
+* An example in the *outlet_check* function has been corrected.
+
 # Package update 0.2.8 -> 0.2.9
 
 ## New functions:

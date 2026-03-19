@@ -452,6 +452,8 @@
 #'
 #' \code{\link{final_index}}
 #'
+#' \code{\link{resultant_index}}
+#'
 #' @section Functions for comparisons of price indices:
 #' \code{\link{compare_indices_df}}
 #'

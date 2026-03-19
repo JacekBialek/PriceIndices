@@ -481,6 +481,8 @@ _PACKAGE
 \code{\link{price_indices}}
 
 \code{\link{final_index}}
+
+\code{\link{resultant_index}}
 }
 
 \section{Functions for comparisons of price indices}{
