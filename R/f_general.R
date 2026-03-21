@@ -481,7 +481,7 @@ final_index <-
   }  
   }
 
-#' @title  A general function to compute a resultatnt price index on the basis of partial price indices
+#' @title  A general function to compute a resultatnt bilateral price index on the basis of partial price indices
 #'
 #' @description This function returns the resultant price index based on partial price indices, the system of weights from the base and current periods, and taking into account the aggregation formula specified by the user. 
 #' @param w0 A vector of positive weights from the base period that sum to one.
@@ -489,7 +489,7 @@ final_index <-
 #' @param subindices A numeric vector of partial indices.
 #' @param aggr The formula used for aggregating partial index results (available values are: "arithmetic", "geometric", "laspeyres", "paasche", "fisher", "tornqvist").
 #' @rdname resultant_index
-#' @return This function returns the resultant price index based on partial price indices, the system of weights from the base and current periods (if needed), and taking into account the aggregation formula specified by the user. The user can apply the following formulas to aggregate partial indices: the unweighted arithmetic mean, the unweighted geometric mean, the Laspeyres index formula, the Paasche index formula, the Fisher index formula, and the Törnqvist index formula. The aggregation formula is selected using the \code{aggr} parameter. 
+#' @return This function returns the resultant bilateral price index based on partial price indices, the system of weights from the base and current periods (if needed), and taking into account the aggregation formula specified by the user. The user can apply the following formulas to aggregate partial indices: the unweighted arithmetic mean, the unweighted geometric mean, the Laspeyres index formula, the Paasche index formula, the Fisher index formula, and the Törnqvist index formula. The aggregation formula is selected using the \code{aggr} parameter. 
 #' @examples 
 #' resultant_index(w0 = c(0.4, 0.4, 0.2), 
 #' subindices = c(1.1, 0.95, 1.12), aggr = "laspeyres")
