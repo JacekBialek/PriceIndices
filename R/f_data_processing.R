@@ -2820,7 +2820,7 @@ data_filtered$time<-substr(as.character(data_filtered$time),0,7)
 changes<-dplyr::summarise(dplyr::group_by(data_filtered, prodID, time, grammage), 
                      unit=paste(unique(unit), collapse=" ; "),
                      mean_price=round(sum(prices*quantities)/sum(quantities),prec),
-                     mean_price_orig=round(as.numeric(grammage)*sum(prices*quantities)/sum(quantities),prec),
+                     mean_price_orig=round(as.numeric(unique(grammage))*sum(prices*quantities)/sum(quantities),prec),
                      description=paste(unique(description), collapse=" ; "), 
                      .groups='drop')
 changes<-dplyr::summarise(dplyr::group_by(changes, prodID, time), 

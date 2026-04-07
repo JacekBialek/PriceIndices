@@ -501,6 +501,7 @@ resultant_index<-function(w0=c(), wt=c(), subindices=c(), aggr="fisher")
 {
   final_value<-NULL
   #initial check
+  if (length(subindices)==0) stop("The vector with subindices cannot be empty!")
   av_aggr<-c("arithmetic", "geometric", "laspeyres", "paasche", "fisher", "tornqvist")
   if (!(aggr %in% av_aggr)) stop("There is a wrong value of the aggr paramater!")
   if (aggr %in% c("fisher","tornqvist") & length(w0)*length(wt)==0) stop("Vectors w0 and wt cannot be empty!")
