@@ -2154,7 +2154,7 @@ gekslm <-
 #' @references
 #' {Webster, M., Tarnow-Mordi, R. C. (2019). \emph{Decomposing Multilateral Price Indexes into the Contributions of Individual Commodities}, Journal of Official Statistics, 35(2), 461-486.}
 #'
-#' {Białek, J. (2025). \emph{Multiplicative Decompositions of GEKS-type Indices into the Contribution of Individual Commodities.} Journal of Official Statistics (in press)}
+#' {Białek, J. (2026). \emph{Multiplicative Decompositions of GEKS-type Indices into the Contribution of Individual Commodities.} Journal of Official Statistics, 42(1), 62-91}
 #'
 #' @examples 
 #' \donttest{m_decomposition(milk, start="2018-12",end="2019-12",formula=c("geks","ccdi"))$multiplicative}

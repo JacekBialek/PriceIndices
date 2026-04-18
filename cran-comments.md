@@ -1,10 +1,8 @@
 # Package update 
 
-## New functions:
-* A new function for resultant index calculations has been added (*resultant_index*).
-
 ## Improvements
-* An example in the *outlet_check* function has been corrected.
+* The *chjevons* function has been corrected.
+* The references in the *m_decomposition* function have been updated.
 
 ## Test environments
 * local OS (Windows 10 Home) install, R 3.6.3

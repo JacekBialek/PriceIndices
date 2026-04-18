@@ -31,7 +31,7 @@
     f <-
     function (i)
     return (jevons(data, start = dates[i], end = dates[i + 1]))
-    ind <- seq(1:(length(date) - 1))
+    ind <- seq(1:(length(dates) - 1))
     chained1 <- sapply(ind, f)
     chained <- prod(chained1)
     if (interval == TRUE) {

@@ -1,3 +1,10 @@
+# Package update 0.3.0 -> 0.3.1
+
+## Improvements
+* The *chjevons* function has been corrected.
+* The references in the *m_decomposition* function have been updated.
+
+
 # Package update 0.2.9 -> 0.3.0
 
 ## New functions:
